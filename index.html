@@ -1331,16 +1331,8 @@ body::before {
         </svg>
         5 Pilares
       </div>
-      <div class="nav-item" onclick="showView('rotas')">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M2 4h12M2 8h8M2 12h5"/>
-          <circle cx="13" cy="11" r="2.5"/>
-        </svg>
-        Planos & Rotas
-      </div>
-
       <div class="nav-section-label" style="margin-top:8px;">Recursos</div>
-      <div class="nav-item">
+      <div class="nav-item" onclick="showView('materiais')">
         <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
           <path d="M4 1h6l4 4v9a1 1 0 01-1 1H4a1 1 0 01-1-1V2a1 1 0 011-1z"/>
           <polyline points="10,1 10,5 14,5"/>
@@ -1348,7 +1340,7 @@ body::before {
           <line x1="8" y1="7.5" x2="8" y2="12.5"/>
         </svg>
         Materiais
-        <span class="nav-badge" style="background:rgba(200,146,42,0.15);color:var(--accent);">6</span>
+        <span class="nav-badge" style="background:rgba(200,146,42,0.15);color:var(--accent);">8</span>
       </div>
       <div class="nav-item">
         <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -1380,8 +1372,8 @@ body::before {
         </div>
       </div>
       <div class="topbar-actions">
-        <span class="chip chip-gold">Rota B — 12 Módulos</span>
-        <button class="btn-ghost" onclick="showView('rotas')">Ver Planos</button>
+        <span class="chip chip-gold">12 Módulos · 5 Pilares</span>
+        <button class="btn-ghost" onclick="showView('materiais')">Materiais</button>
         <button class="btn-gold">Agendar Mentoria</button>
       </div>
     </div>
@@ -1451,7 +1443,7 @@ body::before {
             <div class="module-subtitle">Entender onde o produto passa, onde ele para e onde ele se perde.</div>
           </div>
           <div class="current-module-actions">
-            <button class="btn-ghost" onclick="showView('trilha')">Ver Trilha</button>
+            <button class="btn-ghost" onclick="showView('materiais')">Materiais</button>
             <button class="btn-gold" onclick="showModuleDetail(1)">Iniciar Aula</button>
           </div>
         </div>
@@ -1697,85 +1689,14 @@ body::before {
       </div>
 
       <!-- ══════════════════════════════════
-           VIEW: ROTAS / PRICING
+           VIEW: MATERIAIS
       ══════════════════════════════════ -->
-      <div class="view" id="view-rotas">
-
+      <div class="view" id="view-materiais">
         <div style="margin-bottom:24px;">
-          <div style="font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;letter-spacing:1px;margin-bottom:6px;">Rotas Comerciais</div>
-          <div style="font-size:13px;color:var(--text-secondary);">Três formatos de entrega com proposta de valor diferente por estágio e budget do mentorado.</div>
+          <div style="font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;letter-spacing:1px;margin-bottom:6px;">Materiais & Planilhas</div>
+          <div style="font-size:13px;color:var(--text-secondary);">Ferramentas práticas organizadas por módulo. Baixe, preencha e aplique na sua operação.</div>
         </div>
-
-        <div class="rotas-grid">
-
-          <!-- Rota A -->
-          <div class="rota-card">
-            <div class="rota-tag">Rota A</div>
-            <div class="rota-name">Diagnóstico + Aceleração</div>
-            <div class="rota-profile">Faturamento R$20–50k/mês &nbsp;·&nbsp; "Não sei onde está o problema"</div>
-            <div class="rota-price">R$ 3.000</div>
-            <div class="rota-price-sub">3x R$1.000 sem juros &nbsp;·&nbsp; À vista: R$2.550</div>
-            <ul class="rota-includes">
-              <li>Diagnóstico completo (2 sessões de 2h)</li>
-              <li>Identificação dos 3 maiores gargalos</li>
-              <li>Plano de ação 30/60/90 dias</li>
-              <li>Acesso à turma completa por +R$3.000</li>
-            </ul>
-          </div>
-
-          <!-- Rota B — Featured -->
-          <div class="rota-card featured">
-            <div class="rota-badge">Mais Popular</div>
-            <div class="rota-tag">Rota B</div>
-            <div class="rota-name">Mentoria 3 Meses: Estruturação</div>
-            <div class="rota-profile">Faturamento R$50–150k/mês &nbsp;·&nbsp; Desorganização / equipe / prazo / processos</div>
-            <div class="rota-price">R$ 10.000</div>
-            <div class="rota-price-sub">10x R$1.000 sem juros &nbsp;·&nbsp; À vista: R$8.500</div>
-            <ul class="rota-includes">
-              <li>12 aulas gravadas (1 por semana)</li>
-              <li>12 mentorias ao vivo semanais (1h cada)</li>
-              <li>6 planilhas Excel prontas (precificação, PCP, KPIs, fluxo de caixa, diagnóstico, plano)</li>
-              <li>Scripts de vendas completos</li>
-              <li>Modelos de contratos</li>
-              <li>Lista de fornecedores premium Lukana</li>
-            </ul>
-            <ul class="rota-results">
-              <li>✓ Margem mínima 35% garantida</li>
-              <li>✓ PCP funcionando — prazo cumprido</li>
-              <li>✓ Equipe com estrutura e critério</li>
-            </ul>
-          </div>
-
-          <!-- Rota C -->
-          <div class="rota-card">
-            <div class="rota-tag">Rota C</div>
-            <div class="rota-name">Mentoria 6 Meses: Transformação</div>
-            <div class="rota-profile">Faturamento R$100k+/mês &nbsp;·&nbsp; Transformação completa e acompanhamento profundo</div>
-            <div class="rota-price">R$ 15–25k</div>
-            <div class="rota-price-sub">Condições negociadas caso a caso</div>
-            <ul class="rota-includes">
-              <li>24 aulas gravadas (ritmo espaçado para aplicação)</li>
-              <li>12 mentorias quinzenais ao vivo (1h30 cada)</li>
-              <li>3 aulas especiais: contador, financeiro, gerente Matheus (PCP avançado)</li>
-              <li>2 consultorias individuais de 60min</li>
-              <li>6 planilhas Excel PRO com dashboards e simuladores</li>
-              <li>Revisão de aplicação a cada 4 semanas</li>
-            </ul>
-            <ul class="rota-results">
-              <li>✓ Transformação operacional completa</li>
-              <li>✓ Liderança intermediária formada</li>
-              <li>✓ Financeiro profissionalizado</li>
-              <li>✓ Sistema de crescimento instalado</li>
-            </ul>
-          </div>
-
-        </div>
-
-        <div style="text-align:center;padding:32px 0;">
-          <div style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Não sabe qual rota escolher? Comece pelo diagnóstico gratuito.</div>
-          <button class="btn-gold" style="font-size:14px;padding:12px 32px;">Agendar Diagnóstico Gratuito (45min)</button>
-        </div>
-
+        <div id="materiais-content"></div>
       </div>
 
     </div><!-- /content -->
@@ -1783,6 +1704,82 @@ body::before {
 </div>
 
 <script>
+// ─── FILES DATA ────────────────────────────────────────────────────
+const allFiles = [
+  {
+    id: "diagnostico",
+    name: "Diagnóstico Financeiro",
+    filename: "diagnostico_financeiro_pro.xlsx",
+    type: "xlsx",
+    desc: "Mapeamento completo do financeiro: custos, margem e estrutura.",
+    modules: [0, 9],
+    size: "21 KB"
+  },
+  {
+    id: "precificacao",
+    name: "Precificação v2",
+    filename: "precificacao_pro.xlsx",
+    type: "xlsx",
+    desc: "Calculadora de preço por m² + complexidade + variáveis.",
+    modules: [2],
+    size: "12 KB"
+  },
+  {
+    id: "crm",
+    name: "CRM Simplificado",
+    filename: "crm_simplificado_pro.xlsx",
+    type: "xlsx",
+    desc: "Gestão de leads, funil comercial e acompanhamento por origem.",
+    modules: [2, 10],
+    size: "11 KB"
+  },
+  {
+    id: "pcp",
+    name: "PCP Simplificado",
+    filename: "pcp_simplificado_pro.xlsx",
+    type: "xlsx",
+    desc: "Controle de projetos, etapas e cronograma 60 dias úteis.",
+    modules: [5],
+    size: "12 KB"
+  },
+  {
+    id: "kpis",
+    name: "Painel de Indicadores",
+    filename: "painel_indicadores_pro.xlsx",
+    type: "xlsx",
+    desc: "KPI 25/50/75/100 + aderência ao cronograma + comercial.",
+    modules: [7],
+    size: "13 KB"
+  },
+  {
+    id: "estoque",
+    name: "Controle de Estoque",
+    filename: "controle_estoque_pro.xlsx",
+    type: "xlsx",
+    desc: "Gestão de material: entrada, saída e estoque mínimo por item.",
+    modules: [4, 7],
+    size: "14 KB"
+  },
+  {
+    id: "fab",
+    name: "FAB — Maquinário de Fábrica",
+    filename: "FAB-mach.pdf",
+    type: "pdf",
+    desc: "Referência técnica de maquinário para marcenaria.",
+    modules: [4],
+    size: "138 KB"
+  },
+  {
+    id: "projeto",
+    name: "Projeto Mentoria Marceneiros",
+    filename: "Projeto_Mentoria_Marceneiros.pdf",
+    type: "pdf",
+    desc: "Documento de estrutura e visão geral da mentoria.",
+    modules: [],
+    size: "6 KB"
+  }
+];
+
 // ─── DATA ─────────────────────────────────────────────────────────
 const modules = [
   {
@@ -2247,6 +2244,96 @@ function rowClass(status) {
   return 'module-row';
 }
 
+// ─── FILE ICON ──────────────────────────────────────────────────
+function fileIcon(type) {
+  if (type === 'xlsx') return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>';
+  return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>';
+}
+
+function fileBadge(type) {
+  if (type === 'xlsx') return '<span style="font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 6px;border-radius:4px;background:rgba(34,197,94,0.1);color:#22c55e;font-family:\'Rajdhani\',sans-serif;">XLSX</span>';
+  return '<span style="font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 6px;border-radius:4px;background:rgba(239,68,68,0.1);color:#ef4444;font-family:\'Rajdhani\',sans-serif;">PDF</span>';
+}
+
+// ─── RENDER MATERIAIS ────────────────────────────────────────────
+function renderMateriais() {
+  const container = document.getElementById('materiais-content');
+
+  // All files section
+  const generalFiles = allFiles.filter(f => f.modules.length === 0);
+  const moduleFiles = allFiles.filter(f => f.modules.length > 0);
+
+  // Group by module
+  const byModule = {};
+  moduleFiles.forEach(f => {
+    f.modules.forEach(mId => {
+      if (!byModule[mId]) byModule[mId] = [];
+      byModule[mId].push(f);
+    });
+  });
+
+  let html = '';
+
+  // Files by module
+  const moduleIds = Object.keys(byModule).map(Number).sort((a,b) => a-b);
+  moduleIds.forEach(mId => {
+    const mod = modules[mId];
+    const files = byModule[mId];
+    html += `
+      <div style="margin-bottom:24px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <span style="font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--navy);background:var(--gold-gradient);padding:2px 8px;border-radius:4px;">M${String(mId+1).padStart(2,'0')}</span>
+          <span style="font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:var(--text-primary);">${mod.title}</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;">
+          ${files.map(f => fileCard(f)).join('')}
+        </div>
+      </div>
+    `;
+  });
+
+  // General files
+  if (generalFiles.length > 0) {
+    html += `
+      <div style="margin-bottom:24px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <span style="font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);border:1px solid var(--navy-border);padding:2px 8px;border-radius:4px;">GERAL</span>
+          <span style="font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:var(--text-primary);">Documentos Gerais</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;">
+          ${generalFiles.map(f => fileCard(f)).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  container.innerHTML = html;
+}
+
+function fileCard(f) {
+  return `
+    <div style="background:var(--navy-light);border:1px solid var(--navy-border);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px;transition:border-color 0.15s;" onmouseover="this.style.borderColor='rgba(200,146,42,0.35)'" onmouseout="this.style.borderColor='rgba(200,146,42,0.18)'">
+      <div style="display:flex;align-items:flex-start;gap:10px;">
+        <div style="flex-shrink:0;margin-top:2px;">${fileIcon(f.type)}</div>
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;">
+            <span style="font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;color:var(--text-primary);">${f.name}</span>
+            ${fileBadge(f.type)}
+          </div>
+          <div style="font-size:11px;color:var(--text-muted);">${f.desc}</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding-top:8px;border-top:1px solid var(--navy-border);">
+        <span style="font-size:10px;color:var(--text-muted);">${f.size}</span>
+        <a href="files/${f.filename}" download style="display:inline-flex;align-items:center;gap:5px;background:rgba(200,146,42,0.1);border:1px solid rgba(200,146,42,0.25);color:var(--accent-light);padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;font-family:'Rajdhani',sans-serif;letter-spacing:1px;text-transform:uppercase;text-decoration:none;transition:all 0.15s;" onmouseover="this.style.background='rgba(200,146,42,0.18)'" onmouseout="this.style.background='rgba(200,146,42,0.1)'">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v8M4 10l4 4 4-4"/><path d="M2 14h12"/></svg>
+          Baixar
+        </a>
+      </div>
+    </div>
+  `;
+}
+
 // ─── RENDER TRILHA ──────────────────────────────────────────────
 function renderTrilha() {
   [1, 2, 3].forEach(phase => {
@@ -2360,14 +2447,29 @@ function showModuleDetail(id) {
     </div>
     ` : ''}
 
-    ${mod.tools ? `
+    ${(() => {
+      const modFiles = allFiles.filter(f => f.modules.includes(mod.id));
+      if (!modFiles.length) return '';
+      return `
     <div class="content-card" style="margin-bottom:16px;">
-      <div class="content-card-title">📦 Ferramentas & Planilhas</div>
-      <div style="display:flex;flex-wrap:wrap;gap:8px;">
-        ${mod.tools.map(t => `<span class="chip chip-gold">📄 ${t}</span>`).join('')}
+      <div class="content-card-title">📦 Materiais deste Módulo</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        ${modFiles.map(f => `
+          <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--navy-mid);border-radius:8px;">
+            ${fileIcon(f.type)}
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:500;color:var(--text-primary);">${f.name}</div>
+              <div style="font-size:10px;color:var(--text-muted);">${f.desc}</div>
+            </div>
+            <a href="files/${f.filename}" download style="display:inline-flex;align-items:center;gap:4px;background:rgba(200,146,42,0.1);border:1px solid rgba(200,146,42,0.25);color:var(--accent-light);padding:5px 10px;border-radius:6px;font-size:10px;font-weight:700;font-family:'Rajdhani',sans-serif;letter-spacing:1px;text-transform:uppercase;text-decoration:none;flex-shrink:0;">
+              <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v8M4 10l4 4 4-4"/><path d="M2 14h12"/></svg>
+              Baixar
+            </a>
+          </div>
+        `).join('')}
       </div>
-    </div>
-    ` : ''}
+    </div>`;
+    })()}
 
     <div class="nav-module-btns">
       ${prev !== null ? `<button class="btn-ghost" onclick="showModuleDetail(${prev})">← M${String(prev+1).padStart(2,'0')} — ${modules[prev].title}</button>` : '<div></div>'}
@@ -2385,7 +2487,7 @@ const viewLabels = {
   trilha: 'Trilha de Aulas',
   module: 'Detalhe do Módulo',
   pilares: '5 Pilares',
-  rotas: 'Planos & Rotas'
+  materiais: 'Materiais & Planilhas'
 };
 
 function showView(name) {
@@ -2393,22 +2495,22 @@ function showView(name) {
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById(`view-${name}`).classList.add('active');
 
-  const navMap = { dashboard: 0, trilha: 1, pilares: 2, rotas: 3 };
+  // nav items: índices 2=Dashboard, 3=Trilha, 4=Pilares, 5=Materiais
+  const navMap = { dashboard: 2, trilha: 3, pilares: 4, materiais: 5 };
   if (navMap[name] !== undefined) {
-    document.querySelectorAll('.nav-item')[navMap[name] + 2]?.classList.add('active');
+    document.querySelectorAll('.nav-item')[navMap[name]]?.classList.add('active');
   }
 
   document.getElementById('topbar-current').textContent = viewLabels[name] || name;
-
-  // Reset scroll
   document.querySelector('.content').scrollTop = 0;
 }
 
 // ─── INIT ────────────────────────────────────────────────────────
 renderTrilha();
 renderPilares();
+renderMateriais();
 
-// Set nav active on dashboard initially
+// Dashboard ativo na abertura
 document.querySelectorAll('.nav-item')[2]?.classList.add('active');
 </script>
 </body>
