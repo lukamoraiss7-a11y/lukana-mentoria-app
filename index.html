@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mentoria Alta Performance — Área de Membros</title>
+<title>MAP — Marcenaria Alta Performance | Área de Membros</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -1294,8 +1294,9 @@ body::before {
   <!-- ═══ SIDEBAR ═══ -->
   <aside class="sidebar">
     <div class="sidebar-logo">
-      <div class="brand-name">Lukana</div>
-      <div class="brand-sub">Mentoria Alta Performance</div>
+      <div class="brand-name" style="font-size:17px;letter-spacing:2px;">Marcenaria</div>
+      <div class="brand-name" style="font-size:17px;letter-spacing:2px;margin-top:-2px;">Alta Performance</div>
+      <div class="brand-sub" style="margin-top:5px;color:rgba(200,146,42,0.55);">do plano à realidade</div>
     </div>
 
     <div class="sidebar-user">
@@ -1374,7 +1375,7 @@ body::before {
       <div class="topbar-actions">
         <span class="chip chip-gold">12 Módulos · 5 Pilares</span>
         <button class="btn-ghost" onclick="showView('materiais')">Materiais</button>
-        <button class="btn-gold">Agendar Mentoria</button>
+        <button class="btn-gold" onclick="showView('trilha')">Continuar Trilha →</button>
       </div>
     </div>
 
@@ -1387,13 +1388,13 @@ body::before {
 
         <div class="welcome-banner">
           <div class="wb-glow"></div>
-          <div class="wb-greeting">Bem-vindo à Mentoria</div>
-          <div class="wb-title">Alta Performance <span class="text-gold">Marcenaria Sob Medida</span></div>
-          <div class="wb-sub">Programa estruturado de desenvolvimento para donos e gestores de marcenarias. 12 módulos, 5 pilares, 3 fases — do diagnóstico à escala sem caos.</div>
+          <div class="wb-greeting">Área de Membros</div>
+          <div class="wb-title">Marcenaria Alta Performance <span class="text-gold">— do plano à realidade</span></div>
+          <div class="wb-sub">Você está dentro. O programa tem 12 módulos em 3 fases — cada aula tem entregável concreto, planilha aplicável e contexto operacional real. Sem teoria de livro.</div>
           <div class="wb-stats">
             <div class="wb-stat">
               <span class="ws-val">12</span>
-              <span class="ws-label">Módulos</span>
+              <span class="ws-label">Aulas</span>
             </div>
             <div class="wb-stat">
               <span class="ws-val">5</span>
@@ -1404,28 +1405,36 @@ body::before {
               <span class="ws-label">Trabalho Aplicado</span>
             </div>
             <div class="wb-stat">
-              <span class="ws-val">6</span>
-              <span class="ws-label">Planilhas Excel</span>
+              <span class="ws-val">8</span>
+              <span class="ws-label">Materiais</span>
             </div>
           </div>
         </div>
 
-        <!-- Stat cards -->
-        <div class="dash-grid">
-          <div class="stat-card">
-            <div class="stat-label">Módulo Atual</div>
-            <div class="stat-value text-gold">M01</div>
-            <div class="stat-sub">Raio-X da Empresa</div>
+        <!-- Fase timeline -->
+        <div class="section-title">Jornada de 12 Semanas</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:24px;">
+          <div style="background:rgba(200,146,42,0.08);border:1px solid rgba(200,146,42,0.3);border-radius:12px;padding:16px;position:relative;overflow:hidden;">
+            <div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold-gradient);"></div>
+            <div style="font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;color:var(--accent);margin-bottom:6px;">FASE 1 — SEMANAS 1–4</div>
+            <div style="font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;margin-bottom:4px;">Diagnóstico e Base</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-bottom:10px;">Mapear com honestidade antes de qualquer mudança.</div>
+            <div style="background:var(--navy-mid);border-radius:3px;height:3px;"><div style="width:25%;height:100%;background:var(--gold-gradient);border-radius:3px;"></div></div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:5px;">1 de 4 módulos</div>
           </div>
-          <div class="stat-card">
-            <div class="stat-label">Fase Atual</div>
-            <div class="stat-value text-gold">1 / 3</div>
-            <div class="stat-sub">Diagnóstico e Base</div>
+          <div style="background:var(--navy-light);border:1px solid var(--navy-border);border-radius:12px;padding:16px;">
+            <div style="font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;color:var(--text-muted);margin-bottom:6px;">FASE 2 — SEMANAS 5–8</div>
+            <div style="font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;margin-bottom:4px;color:var(--text-secondary);">Sistemas e Processos</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-bottom:10px;">Construir a máquina que funciona sem improviso.</div>
+            <div style="background:var(--navy-mid);border-radius:3px;height:3px;"><div style="width:0%;height:100%;background:var(--gold-gradient);border-radius:3px;"></div></div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:5px;">0 de 4 módulos</div>
           </div>
-          <div class="stat-card">
-            <div class="stat-label">Progresso</div>
-            <div class="stat-value text-gold">8%</div>
-            <div class="stat-sub">1 de 12 módulos concluídos</div>
+          <div style="background:var(--navy-light);border:1px solid var(--navy-border);border-radius:12px;padding:16px;">
+            <div style="font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;color:var(--text-muted);margin-bottom:6px;">FASE 3 — SEMANAS 9–12</div>
+            <div style="font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;margin-bottom:4px;color:var(--text-secondary);">Crescimento e Escala</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-bottom:10px;">Crescer sem quebrar o que já funciona.</div>
+            <div style="background:var(--navy-mid);border-radius:3px;height:3px;"><div style="width:0%;height:100%;background:var(--gold-gradient);border-radius:3px;"></div></div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:5px;">0 de 4 módulos</div>
           </div>
         </div>
 
@@ -1798,6 +1807,14 @@ const modules = [
     deliverable: "Diagnóstico empresarial em uma página: números reais, pontos críticos e prioridade de intervenção.",
     pilar: "Processos",
     status: "completed",
+    duration: "2h aula + 3h prática",
+    checklist: [
+      "Preencher planilha de Diagnóstico Financeiro com dados dos últimos 12 meses",
+      "Mapear estrutura de custos: fixo, variável, pessoal — com números reais",
+      "Calcular produtividade por pessoa (faturamento ÷ headcount)",
+      "Identificar os 3 gargalos mais críticos por categoria",
+      "Escrever diagnóstico em 1 página para apresentar à equipe de gestão"
+    ],
     context: {
       title: "Benchmarks de Referência — Marcenaria Sob Medida Premium",
       items: [
@@ -1826,6 +1843,14 @@ const modules = [
     deliverable: "Mapa do fluxo produtivo + planilha de capacidade real por etapa.",
     pilar: "Processos",
     status: "current",
+    duration: "2h aula + 4h prática",
+    checklist: [
+      "Andar pelo chão de fábrica e cronometrar tempo em cada etapa — sem interromper",
+      "Desenhar o VSM atual no papel: da chapa ao móvel instalado",
+      "Identificar os 3 pontos onde o produto 'para' mais tempo",
+      "Calcular capacidade real vs capacidade teórica por etapa",
+      "Quantificar o custo do retrabalho no último mês (horas × custo-hora)"
+    ],
     context: {
       title: "Fluxo Completo da Operação — 8 Etapas Macro",
       items: [
@@ -1858,6 +1883,14 @@ const modules = [
     deliverable: "Funil comercial mapeado + calculadora de margem por projeto.",
     pilar: "Vendas",
     status: "available",
+    duration: "2h aula + 3h prática",
+    checklist: [
+      "Desenhar o funil atual: onde entram os leads, onde perdem, quem decide",
+      "Calcular taxa de conversão orçamento → venda do último trimestre",
+      "Preencher calculadora de margem com 3 obras recentes — ver o resultado",
+      "Definir critério de qualificação: quem entra em proposta e quem não entra",
+      "Mapear o tempo médio do ciclo: primeiro contato → assinatura de contrato"
+    ],
     context: {
       title: "Funil Comercial — 5 Etapas Padrão",
       items: [
@@ -1887,6 +1920,14 @@ const modules = [
     deliverable: "Mapa de equipe atual + estrutura de liderança proposta + plano de transição.",
     pilar: "Liderança",
     status: "available",
+    duration: "2h aula + 2h prática",
+    checklist: [
+      "Preencher mapa de equipe atual: nome, função real, função no organograma",
+      "Avaliar cada pessoa em 3 critérios: entrega, atitude, potencial (1–5)",
+      "Identificar lacunas de liderança intermediária — quem decide quando você não está",
+      "Definir estrutura ideal: quem lidera quem, com KPI de cada posição",
+      "Esboçar plano de transição para a estrutura desejada (90 dias)"
+    ],
     context: {
       title: "Cadência de Reunião — Mínimo Viável",
       items: [
@@ -1915,6 +1956,14 @@ const modules = [
     deliverable: "Proposta de layout otimizado + plano de reorganização faseado.",
     pilar: "Processos",
     status: "locked",
+    duration: "2h aula + 5h prática",
+    checklist: [
+      "Fotografar o layout atual e marcar no papel o fluxo real de cada produto",
+      "Medir distâncias que o produto percorre da entrada até a expedição",
+      "Identificar zonas sem definição clara e zonas com conflito de uso",
+      "Propor rearranjo de layout sem parar a produção — planejar em 3 fases",
+      "Implementar sinalização visual nas zonas já definidas"
+    ],
     context: {
       title: "Zonas Funcionais — Fábrica Organizada por Fluxo",
       items: [
@@ -1944,6 +1993,14 @@ const modules = [
     deliverable: "Modelo de PCP no ClickUp + fluxo de comunicação de prazo.",
     pilar: "Processos",
     status: "locked",
+    duration: "2h aula + 4h prática",
+    checklist: [
+      "Configurar o PCP no ClickUp: estrutura de projeto → ambiente → etapas",
+      "Publicar cronograma-alvo dos 3 projetos mais próximos de entrar em produção",
+      "Definir quem é o PCP — mesmo que provisório — e documentar as regras de ouro",
+      "Criar rotina semanal: segunda revisão, quarta check, sexta relatório",
+      "Mapear prazo de cada fornecedor-chave e alimentar no cronograma pré-25%"
+    ],
     context: {
       title: "Ciclo End-to-End — 60 Dias Úteis Padrão",
       items: [
@@ -1973,6 +2030,14 @@ const modules = [
     deliverable: "Dois playbooks completos: Fábrica (versão inicial) e Comercial.",
     pilar: "Liderança",
     status: "locked",
+    duration: "2h aula + 6h prática",
+    checklist: [
+      "Listar os 5 processos mais críticos que dependem de uma pessoa específica",
+      "Escolher 1 processo para documentar como POP nesta semana",
+      "Escrever o playbook de fábrica: nível 1 (operação de máquinas e etapas de corte)",
+      "Escrever o playbook comercial: nível 1 (atendimento inicial e qualificação de lead)",
+      "Testar o playbook com outra pessoa — ela consegue executar sem perguntar?"
+    ],
     context: {
       title: "Delegação com Régua — Não com Fé",
       items: [
@@ -2002,6 +2067,14 @@ const modules = [
     deliverable: "Painel de indicadores operacional + ritual de revisão semanal/mensal.",
     pilar: "Processos",
     status: "locked",
+    duration: "2h aula + 3h prática",
+    checklist: [
+      "Configurar o KPI 25/50/75/100 para todos os projetos ativos no ClickUp",
+      "Criar o campo 'cronograma-alvo' por projeto e alimentar com as datas",
+      "Publicar o primeiro relatório diário 17h30 com % real e % planejado",
+      "Definir ritual de revisão: semanal tático (60min) e mensal estratégico (half-day)",
+      "Identificar qual KPI vai pro painel de indicadores — decidir frequência de leitura"
+    ],
     context: {
       title: "KPI 25/50/75/100 — Critérios Objetivos",
       items: [
@@ -2034,6 +2107,14 @@ const modules = [
     deliverable: "Modelo de remuneração variável por função + critérios de pagamento.",
     pilar: "Liderança",
     status: "locked",
+    duration: "2h aula + 2h prática",
+    checklist: [
+      "Rodar simulação do Cenário C para as 3 últimas obras: quanto cada pessoa receberia?",
+      "Definir quem mede o dia de entrega oficial — PCP ou Gerente?",
+      "Escrever a política em 1 página: base, regra de antecedência, regra de atraso, qualidade",
+      "Definir cronograma de comunicação para o time — dar pelo menos 2 semanas de aviso",
+      "Registrar ciência por assinatura antes de implementar"
+    ],
     context: {
       title: "Cenário C — Curva Simétrica (Recomendado)",
       items: [
@@ -2064,6 +2145,14 @@ const modules = [
     deliverable: "DRE gerencial simplificado + modelo de fluxo de caixa 90 dias.",
     pilar: "Financeiro",
     status: "locked",
+    duration: "2h aula + 5h prática",
+    checklist: [
+      "Escolher 5 obras recentes representativas e puxar os números reais de cada uma",
+      "Calcular custo-hora real: (folha total ÷ horas produtivas reais do mês)",
+      "Preencher DRE gerencial para as 5 obras — descobrir a margem real de cada uma",
+      "Comparar com o orçamento cloud: onde a MO está sendo inchada?",
+      "Projetar fluxo de caixa dos próximos 90 dias com os projetos em carteira"
+    ],
     context: {
       title: "Roadmap de Intervenção Financeira — 4 Fases",
       items: [
@@ -2092,6 +2181,14 @@ const modules = [
     deliverable: "Calendário editorial 4 semanas + estrutura de campanha paga localizada.",
     pilar: "Digital",
     status: "locked",
+    duration: "2h aula + 3h prática",
+    checklist: [
+      "Classificar todos os leads dos últimos 3 meses por origem: pago vs orgânico",
+      "Calcular taxa de conversão separado por canal — qual converte mais?",
+      "Criar calendário editorial 4 semanas: definir 3 Reels + 3 Stories por semana",
+      "Definir o KPI real: custo por reunião qualificada — não likes nem alcance",
+      "Configurar UTMs ou registro manual para rastrear origem de cada lead novo"
+    ],
     context: {
       title: "KPI Comercial — Separado por Origem (Obrigatório)",
       items: [
@@ -2120,6 +2217,14 @@ const modules = [
     deliverable: "Plano estratégico 12 meses: metas, iniciativas priorizadas, responsáveis, prazo.",
     pilar: "Processos",
     status: "locked",
+    duration: "2h aula + 4h prática",
+    checklist: [
+      "Revisar os 5 pilares: o que foi implementado de fato, o que ficou pela metade",
+      "Definir 3 metas numéricas para 12 meses: faturamento, margem por obra, produtividade",
+      "Priorizar as iniciativas restantes — sequência, responsável e prazo para cada uma",
+      "Bloquear 2h semanais na agenda para pensar estrategicamente — sem operação nesse tempo",
+      "Escrever o plano estratégico final e apresentar para Matheus e Ana"
+    ],
     context: {
       title: "Intenções Estratégicas — 6 Frentes",
       items: [
@@ -2386,7 +2491,7 @@ function showModuleDetail(id) {
       <div class="module-meta-row">
         <div class="meta-pill"><span>🎯</span> ${mod.pilar}</div>
         <div class="meta-pill"><span>📅</span> Semana ${mod.week}</div>
-        <div class="meta-pill"><span>⏱</span> ~2h de sessão + 3–5h prática</div>
+        <div class="meta-pill"><span>⏱</span> ${mod.duration || '~2h aula + 3–5h prática'}</div>
         ${statusChip(mod.status)}
       </div>
     </div>
@@ -2430,6 +2535,21 @@ function showModuleDetail(id) {
         </div>
       </div>
     </div>
+
+    ${mod.checklist ? `
+    <div class="section-title" style="margin-top:24px;">Checklist de Implementação</div>
+    <div style="background:var(--navy-light);border:1px solid var(--navy-border);border-radius:12px;padding:20px;margin-bottom:16px;">
+      <div style="font-size:11px;color:var(--text-muted);margin-bottom:14px;">Faça isso <strong style="color:var(--text-secondary)">depois</strong> da aula. Sem executar, não adianta assistir.</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        ${mod.checklist.map((item, i) => `
+          <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;padding:8px 10px;border-radius:8px;transition:background 0.15s;" onmouseover="this.style.background='rgba(22,32,53,0.8)'" onmouseout="this.style.background='transparent'">
+            <input type="checkbox" style="margin-top:3px;accent-color:var(--accent);flex-shrink:0;width:14px;height:14px;cursor:pointer;">
+            <span style="font-size:13px;color:var(--text-secondary);line-height:1.5;">${item}</span>
+          </label>
+        `).join('')}
+      </div>
+    </div>
+    ` : ''}
 
     ${mod.context ? `
     <div class="section-title" style="margin-top:24px;">Contexto Operacional</div>
