@@ -18,7 +18,7 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
 /* ── Login ── */
 .login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
 .login-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 44px 40px; width: 380px; text-align: center; }
-.login-icon { width: 64px; height: 64px; border-radius: 16px; overflow: hidden; margin: 0 auto 24px; display: block; }
+.login-icon { background: #fff; border-radius: 12px; padding: 10px 18px; display: block; margin: 0 auto 24px; max-width: 180px; height: auto; }
 .login-title { font-family: 'Rajdhani', sans-serif; font-size: 24px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
 .login-sub { font-size: 12px; color: var(--muted); margin-bottom: 32px; }
 .field-input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 13px 16px; font-size: 14px; color: var(--text); font-family: inherit; outline: none; margin-bottom: 12px; transition: border-color .2s; }
@@ -30,7 +30,7 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
 /* ── Header ── */
 .header { background: #08101a; border-bottom: 1px solid var(--border); padding: 0 32px; height: 62px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
 .header-brand { display: flex; align-items: center; gap: 14px; }
-.logo-box { width: 40px; height: 40px; border-radius: 10px; overflow: hidden; flex-shrink: 0; }
+.logo-box { background: #fff; border-radius: 8px; padding: 4px 10px; height: 32px; width: auto; flex-shrink: 0; display: block; }
 .header-title { font-family: 'Rajdhani',sans-serif; font-weight: 700; font-size: 16px; letter-spacing: 2px; text-transform: uppercase; }
 .header-sub { font-size: 10px; color: var(--dim); letter-spacing: 1px; margin-top: 2px; }
 .header-right { display: flex; align-items: center; gap: 12px; }
@@ -142,7 +142,7 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
 <!-- ── Login ── -->
 <div class="login-wrap" id="loginWrap">
   <div class="login-card">
-    <img src="aresta-icon.svg" class="login-icon" alt="Aresta">
+    <img src="aresta-logo.png" class="login-icon" alt="Aresta">
     <div class="login-title">Painel Admin</div>
     <div class="login-sub">APM · Diagnóstico Rota Empresarial</div>
     <input type="password" class="field-input" id="pwdInput" placeholder="Senha de acesso"
@@ -156,7 +156,7 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
 <div id="dashWrap" style="display:none">
   <div class="header">
     <div class="header-brand">
-      <img src="aresta-icon.svg" class="logo-box" alt="Aresta">
+      <img src="aresta-logo.png" class="logo-box" alt="Aresta">
       <div>
         <div class="header-title">Painel Admin</div>
         <div class="header-sub">APM · Diagnóstico Rota Empresarial</div>

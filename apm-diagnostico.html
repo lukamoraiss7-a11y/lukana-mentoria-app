@@ -21,7 +21,7 @@
     display: flex; align-items: center; justify-content: space-between;
     position: sticky; top: 0; z-index: 100;
   }
-  .logo-box { width: 40px; height: 40px; border-radius: 10px; overflow: hidden; flex-shrink: 0; }
+  .logo-box { background: #fff; border-radius: 8px; padding: 4px 10px; height: 32px; width: auto; flex-shrink: 0; display: block; }
   .header-brand { display: flex; align-items: center; gap: 12px; }
   .header-title { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 16px; letter-spacing: 2px; text-transform: uppercase; }
   .header-sub { font-size: 10px; color: var(--dim); letter-spacing: 1px; }
@@ -60,7 +60,7 @@
 
   /* ── Intro ── */
   .intro { text-align: center; padding: 40px 0; }
-  .intro .big-badge { width: 80px; height: 80px; border-radius: 20px; overflow: hidden; display: block; margin: 0 auto 28px; }
+  .intro .big-badge { background: #fff; border-radius: 16px; padding: 14px 24px; display: block; margin: 0 auto 28px; max-width: 220px; height: auto; }
   .intro h1 { font-family: 'Rajdhani', sans-serif; font-size: 40px; font-weight: 700; line-height: 1.1; margin-bottom: 16px; }
   .intro h1 span { color: var(--gold-light); }
   .intro p { font-size: 14px; color: var(--muted); line-height: 1.7; max-width: 480px; margin: 0 auto 36px; }
@@ -200,7 +200,7 @@
 
 <div class="header">
   <div class="header-brand">
-    <img src="aresta-icon.svg" class="logo-box" alt="Aresta">
+    <img src="aresta-logo.png" class="logo-box" alt="Aresta">
     <div>
       <div class="header-title">ARESTA · APM</div>
       <div class="header-sub">Diagnóstico Rota Empresarial</div>
@@ -217,7 +217,7 @@
   <!-- INTRO -->
   <div class="screen active" id="screen-intro">
     <div class="intro">
-      <img src="aresta-icon.svg" class="big-badge" alt="Aresta APM">
+      <img src="aresta-logo.png" class="big-badge" alt="Aresta APM">
       <div id="nomeTag" style="display:none;margin-bottom:16px;font-size:12px;color:var(--muted);letter-spacing:1px;">Diagnóstico de <strong id="nomeTagText" style="color:var(--gold-light)"></strong></div>
       <h1>Diagnóstico<br><span>Rota Empresarial</span></h1>
       <p>Avalie sua empresa em 4 quadrantes estratégicos. O resultado mostra onde você está e qual é o próximo passo para sair da operação e construir um negócio de alta performance.</p>
