@@ -463,13 +463,20 @@ function calcAndShow() {
     }
   })
   const total = Math.round(results.reduce((s, r) => s + r.score * r.weight, 0))
-  showResult(results, total)
-  goTo('screen-result')
   window._lastResults = results
   window._lastTotal = total
+  showResult(results, total)
+  goTo('screen-result')
+  // Auto-salvar imediatamente — não depende de clique do usuário
+  saveResult(total, results).then(() => {
+    document.getElementById('enviadoMsg').style.display = 'block'
+    document.getElementById('btnEnviar').style.display = 'none'
+  }).catch(() => {
+    // falha silenciosa — botão manual ainda disponível
+  })
 }
 
-// ── Enviar para análise ──
+// ── Enviar manual (fallback caso auto-save falhe) ──
 async function enviarAnalise() {
   const btn = document.getElementById('btnEnviar')
   btn.disabled = true
