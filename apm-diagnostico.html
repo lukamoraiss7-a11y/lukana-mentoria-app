@@ -336,7 +336,8 @@
       <div class="result-cta">
         <h3>Próximo passo: Fase 1 do APM</h3>
         <p>Seu diagnóstico está mapeado. A Fase 1 do programa parte exatamente desse ponto — transformando os gaps identificados em plano de ação com prazo e dono.</p>
-        <button class="btn-cta" onclick="window.location.reload()">Refazer diagnóstico</button>
+        <button class="btn-cta" id="btnEnviar" onclick="enviarAnalise()">Enviar para análise →</button>
+        <div id="enviadoMsg" style="display:none;margin-top:16px;font-size:13px;color:#10B981;font-weight:600;">✓ Diagnóstico enviado com sucesso!</div>
       </div>
     </div>
   </div>
@@ -466,8 +467,19 @@ function calcAndShow() {
   })
   const total = Math.round(results.reduce((s, r) => s + r.score * r.weight, 0))
   showResult(results, total)
-  saveResult(total, results)
   goTo('screen-result')
+  window._lastResults = results
+  window._lastTotal = total
+}
+
+// ── Enviar para análise ──
+async function enviarAnalise() {
+  const btn = document.getElementById('btnEnviar')
+  btn.disabled = true
+  btn.textContent = 'Enviando...'
+  await saveResult(window._lastTotal, window._lastResults)
+  btn.style.display = 'none'
+  document.getElementById('enviadoMsg').style.display = 'block'
 }
 
 // ── Level ──
