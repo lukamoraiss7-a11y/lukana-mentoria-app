@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APM — Painel Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0c1221; --surface: #111929; --surface2: #162035; --border: rgba(255,255,255,.07);
+  --gold: #C8922A; --gold-light: #F0C060;
+  --text: #e8eaf0; --muted: #8899b4; --dim: #4a5a72;
+  --green: #10B981; --blue: #3b82f6; --purple: #8b5cf6; --amber: #F59E0B;
+}
+body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; min-height: 100vh; }
+
+/* ── Login ── */
+.login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+.login-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 44px 40px; width: 380px; text-align: center; }
+.login-icon { width: 60px; height: 60px; background: linear-gradient(135deg,#C8922A,#F0C060); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-family: 'Rajdhani',sans-serif; font-weight: 700; font-size: 13px; color: #0c1221; letter-spacing: 1px; margin: 0 auto 24px; }
+.login-title { font-family: 'Rajdhani', sans-serif; font-size: 24px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
+.login-sub { font-size: 12px; color: var(--muted); margin-bottom: 32px; }
+.field-input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 13px 16px; font-size: 14px; color: var(--text); font-family: inherit; outline: none; margin-bottom: 12px; transition: border-color .2s; }
+.field-input:focus { border-color: rgba(200,146,42,.35); }
+.btn-gold { width: 100%; background: linear-gradient(135deg,#C8922A,#F0C060); color: #0c1221; border: none; border-radius: 10px; padding: 14px; font-family: 'Rajdhani',sans-serif; font-size: 15px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; transition: opacity .2s, transform .15s; }
+.btn-gold:hover { opacity: .9; transform: translateY(-1px); }
+.login-err { font-size: 12px; color: #ef4444; margin-top: 12px; display: none; }
+
+/* ── Header ── */
+.header { background: #08101a; border-bottom: 1px solid var(--border); padding: 0 32px; height: 62px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+.header-brand { display: flex; align-items: center; gap: 14px; }
+.logo-box { width: 38px; height: 38px; background: linear-gradient(135deg,#C8922A,#F0C060); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: 'Rajdhani',sans-serif; font-weight: 700; font-size: 11px; color: #0c1221; letter-spacing: 1px; }
+.header-title { font-family: 'Rajdhani',sans-serif; font-weight: 700; font-size: 16px; letter-spacing: 2px; text-transform: uppercase; }
+.header-sub { font-size: 10px; color: var(--dim); letter-spacing: 1px; margin-top: 2px; }
+.header-right { display: flex; align-items: center; gap: 12px; }
+.admin-badge { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 5px 12px; border-radius: 20px; background: rgba(200,146,42,.1); border: 1px solid rgba(200,146,42,.2); color: var(--gold); font-family: 'Rajdhani',sans-serif; }
+.btn-refresh { background: transparent; border: 1px solid var(--border); color: var(--muted); border-radius: 8px; padding: 7px 14px; font-size: 12px; cursor: pointer; font-family: inherit; transition: all .15s; }
+.btn-refresh:hover { border-color: rgba(255,255,255,.18); color: var(--text); }
+
+/* ── Content ── */
+.content { max-width: 1000px; margin: 0 auto; padding: 36px 24px 80px; }
+.section-label { font-family: 'Rajdhani',sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 3px; color: var(--dim); text-transform: uppercase; margin-bottom: 14px; }
+
+/* ── Generator ── */
+.gen-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; margin-bottom: 36px; }
+.gen-row { display: flex; gap: 12px; }
+.gen-input { flex: 1; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; font-size: 14px; color: var(--text); font-family: inherit; outline: none; transition: border-color .2s; }
+.gen-input:focus { border-color: rgba(200,146,42,.35); }
+.gen-input::placeholder { color: var(--dim); }
+.btn-gerar { background: linear-gradient(135deg,#C8922A,#F0C060); color: #0c1221; border: none; border-radius: 10px; padding: 12px 22px; font-family: 'Rajdhani',sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; white-space: nowrap; transition: opacity .15s; }
+.btn-gerar:hover { opacity: .9; }
+.link-output { margin-top: 16px; display: none; animation: slideDown .2s ease; }
+@keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+.link-box { display: flex; gap: 10px; align-items: stretch; }
+.link-text { flex: 1; background: rgba(200,146,42,.04); border: 1px solid rgba(200,146,42,.2); border-radius: 10px; padding: 11px 14px; font-size: 12px; color: var(--gold-light); font-family: monospace; word-break: break-all; line-height: 1.5; }
+.btn-copy { background: transparent; border: 1px solid rgba(200,146,42,.3); color: var(--gold); border-radius: 10px; padding: 11px 18px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all .15s; white-space: nowrap; font-family: inherit; }
+.btn-copy:hover { background: rgba(200,146,42,.1); }
+.btn-copy.copied { border-color: var(--green); color: var(--green); }
+.link-hint { font-size: 11px; color: var(--dim); margin-top: 10px; }
+
+/* ── Stats ── */
+.stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 36px; }
+.stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px 20px; }
+.stat-val { font-family: 'Rajdhani',sans-serif; font-size: 40px; font-weight: 700; line-height: 1; margin-bottom: 4px; }
+.stat-lbl { font-size: 11px; color: var(--muted); }
+
+/* ── Table ── */
+.table-section { margin-bottom: 0; }
+.table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+.t-head { display: grid; grid-template-columns: 1.4fr 90px 72px 72px 72px 72px 72px; padding: 12px 22px; background: rgba(255,255,255,.02); border-bottom: 1px solid var(--border); }
+.th { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--dim); }
+.t-row { display: grid; grid-template-columns: 1.4fr 90px 72px 72px 72px 72px 72px; padding: 16px 22px; border-bottom: 1px solid rgba(255,255,255,.03); transition: background .15s; }
+.t-row:last-child { border-bottom: none; }
+.t-row:hover { background: rgba(255,255,255,.018); }
+.td { font-size: 13px; color: var(--text); display: flex; align-items: center; }
+.td-name { font-weight: 600; flex-direction: column; align-items: flex-start; gap: 2px; }
+.td-name span { font-size: 10px; color: var(--dim); font-weight: 400; }
+.pill { font-family: 'Rajdhani',sans-serif; font-size: 13px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+.empty { padding: 64px 20px; text-align: center; }
+.empty p { color: var(--muted); font-size: 14px; }
+.empty p strong { color: var(--text); }
+.loading-msg { padding: 40px; text-align: center; color: var(--muted); font-size: 13px; }
+
+/* ── Config banner ── */
+.config-banner { background: rgba(239,68,68,.06); border: 1px solid rgba(239,68,68,.18); border-radius: 12px; padding: 16px 20px; margin-bottom: 28px; display: none; }
+.config-banner p { font-size: 12px; color: #fca5a5; line-height: 1.7; }
+.config-banner code { background: rgba(239,68,68,.12); padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 11px; }
+</style>
+</head>
+<body>
+
+<!-- ── Login ── -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-card">
+    <div class="login-icon">APM</div>
+    <div class="login-title">Painel Admin</div>
+    <div class="login-sub">Diagnóstico Rota Empresarial</div>
+    <input type="password" class="field-input" id="pwdInput" placeholder="Senha de acesso"
+      onkeydown="if(event.key==='Enter')login()">
+    <button class="btn-gold" onclick="login()">Entrar</button>
+    <div class="login-err" id="loginErr">Senha incorreta.</div>
+  </div>
+</div>
+
+<!-- ── Dashboard ── -->
+<div id="dashWrap" style="display:none">
+  <div class="header">
+    <div class="header-brand">
+      <div class="logo-box">APM</div>
+      <div>
+        <div class="header-title">Painel Admin</div>
+        <div class="header-sub">Diagnóstico Rota Empresarial</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <button class="btn-refresh" onclick="carregarResultados()">↻ Atualizar</button>
+      <div class="admin-badge">Admin</div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- Config warning -->
+    <div class="config-banner" id="configBanner">
+      <p>⚠️ Supabase não configurado. Edite as constantes <code>SUPABASE_URL</code> e <code>SUPABASE_ANON_KEY</code> neste arquivo para ativar o salvamento de resultados. Veja o passo a passo no comentário no topo do script.</p>
+    </div>
+
+    <!-- Gerar link -->
+    <div class="section-label">Gerar link de diagnóstico</div>
+    <div class="gen-card">
+      <div class="gen-row">
+        <input class="gen-input" id="nomeInput" placeholder="Nome do mentorado (ex: João Silva)"
+          onkeydown="if(event.key==='Enter')gerarLink()">
+        <button class="btn-gerar" onclick="gerarLink()">Gerar link</button>
+      </div>
+      <div class="link-output" id="linkOutput">
+        <div class="link-box">
+          <div class="link-text" id="linkText"></div>
+          <button class="btn-copy" id="btnCopy" onclick="copiarLink()">Copiar</button>
+        </div>
+        <div class="link-hint">Envie este link diretamente para o mentorado via WhatsApp.</div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid" id="statsGrid">
+      <div class="stat-card">
+        <div class="stat-val" id="sTotal" style="color:var(--gold-light)">—</div>
+        <div class="stat-lbl">Diagnósticos feitos</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="sMedia" style="color:var(--blue)">—</div>
+        <div class="stat-lbl">Score médio</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="sAlto" style="color:var(--green)">—</div>
+        <div class="stat-lbl">Nível 4 ou 5</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="sBaixo" style="color:#ef4444">—</div>
+        <div class="stat-lbl">Nível 1 ou 2</div>
+      </div>
+    </div>
+
+    <!-- Tabela -->
+    <div class="table-section">
+      <div class="section-label">Resultados</div>
+      <div class="table-wrap">
+        <div class="t-head">
+          <div class="th">Mentorado</div>
+          <div class="th">Data</div>
+          <div class="th" style="color:var(--green)">Financ.</div>
+          <div class="th" style="color:var(--blue)">Exec.</div>
+          <div class="th" style="color:var(--purple)">Pessoas</div>
+          <div class="th" style="color:var(--amber)">Estrat.</div>
+          <div class="th">Score</div>
+        </div>
+        <div id="tableBody">
+          <div class="loading-msg">Carregando...</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/*
+  ──────────────────────────────────────────────
+  CONFIGURAÇÃO SUPABASE
+  1. Acesse supabase.com e crie um projeto gratuito
+  2. Em SQL Editor, execute:
+
+  CREATE TABLE diagnostico_resultados (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    criado_em TIMESTAMPTZ DEFAULT NOW(),
+    nome TEXT NOT NULL,
+    score_total INT,
+    score_fin INT,
+    score_exec INT,
+    score_pess INT,
+    score_estr INT,
+    nivel TEXT
+  );
+
+  ALTER TABLE diagnostico_resultados ENABLE ROW LEVEL SECURITY;
+  CREATE POLICY "insert_anon" ON diagnostico_resultados FOR INSERT TO anon WITH CHECK (true);
+  CREATE POLICY "select_anon" ON diagnostico_resultados FOR SELECT TO anon USING (true);
+
+  3. Copie a URL e a anon key em Settings > API
+  4. Substitua os valores abaixo
+  ──────────────────────────────────────────────
+*/
+
+const SUPABASE_URL = 'SUA_URL_SUPABASE'
+const SUPABASE_ANON_KEY = 'SUA_ANON_KEY_SUPABASE'
+const ADMIN_PWD = 'apm2026'
+const DIAG_BASE_URL = location.origin + '/apm-diagnostico.html'
+
+const CONFIGURED = !SUPABASE_URL.startsWith('SUA')
+let sb = null
+if (CONFIGURED) sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+
+// ── Auth ──
+function login() {
+  const pwd = document.getElementById('pwdInput').value
+  if (pwd === ADMIN_PWD) {
+    document.getElementById('loginWrap').style.display = 'none'
+    document.getElementById('dashWrap').style.display = 'block'
+    if (!CONFIGURED) document.getElementById('configBanner').style.display = 'block'
+    carregarResultados()
+  } else {
+    const err = document.getElementById('loginErr')
+    err.style.display = 'block'
+    setTimeout(() => err.style.display = 'none', 2500)
+  }
+}
+
+// ── Link generator ──
+function gerarLink() {
+  const nome = document.getElementById('nomeInput').value.trim()
+  if (!nome) { document.getElementById('nomeInput').focus(); return }
+  const url = `${DIAG_BASE_URL}?nome=${encodeURIComponent(nome)}`
+  document.getElementById('linkText').textContent = url
+  document.getElementById('linkOutput').style.display = 'block'
+  const btn = document.getElementById('btnCopy')
+  btn.textContent = 'Copiar'
+  btn.classList.remove('copied')
+}
+
+function copiarLink() {
+  const link = document.getElementById('linkText').textContent
+  navigator.clipboard.writeText(link).then(() => {
+    const btn = document.getElementById('btnCopy')
+    btn.textContent = '✓ Copiado'
+    btn.classList.add('copied')
+    setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('copied') }, 2000)
+  })
+}
+
+// ── Load results ──
+async function carregarResultados() {
+  if (!CONFIGURED) {
+    document.getElementById('tableBody').innerHTML =
+      `<div class="empty"><p>Configure o Supabase para ver os resultados aqui.<br><strong>Veja o passo a passo no topo do script.</strong></p></div>`
+    atualizarStats([])
+    return
+  }
+  document.getElementById('tableBody').innerHTML = `<div class="loading-msg">Carregando...</div>`
+  const { data, error } = await sb.from('diagnostico_resultados')
+    .select('*').order('criado_em', { ascending: false })
+  if (error) {
+    document.getElementById('tableBody').innerHTML =
+      `<div class="empty"><p>Erro: ${error.message}</p></div>`
+    return
+  }
+  renderTabela(data || [])
+  atualizarStats(data || [])
+}
+
+function levelColor(s) {
+  if (s >= 81) return '#22c55e'
+  if (s >= 61) return '#10B981'
+  if (s >= 41) return '#eab308'
+  if (s >= 21) return '#f97316'
+  return '#ef4444'
+}
+
+function renderTabela(rows) {
+  const body = document.getElementById('tableBody')
+  if (!rows.length) {
+    body.innerHTML = `<div class="empty"><p>Nenhum diagnóstico registrado ainda.<br><strong>Gere um link acima e envie para seu mentorado.</strong></p></div>`
+    return
+  }
+  body.innerHTML = rows.map(r => {
+    const c = levelColor(r.score_total)
+    const data = new Date(r.criado_em).toLocaleDateString('pt-BR')
+    const hora = new Date(r.criado_em).toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' })
+    return `<div class="t-row">
+      <div class="td td-name">${r.nome}<span>${data} às ${hora}</span></div>
+      <div class="td"><span style="font-size:11px;color:var(--dim)">${data}</span></div>
+      <div class="td"><span class="pill" style="background:#10B98118;color:#10B981">${r.score_fin ?? '—'}</span></div>
+      <div class="td"><span class="pill" style="background:#3b82f618;color:#3b82f6">${r.score_exec ?? '—'}</span></div>
+      <div class="td"><span class="pill" style="background:#8b5cf618;color:#8b5cf6">${r.score_pess ?? '—'}</span></div>
+      <div class="td"><span class="pill" style="background:#F59E0B18;color:#F59E0B">${r.score_estr ?? '—'}</span></div>
+      <div class="td"><span class="pill" style="background:${c}18;color:${c};font-size:15px">${r.score_total ?? '—'}</span></div>
+    </div>`
+  }).join('')
+}
+
+function atualizarStats(rows) {
+  document.getElementById('sTotal').textContent = rows.length
+  if (!rows.length) {
+    document.getElementById('sMedia').textContent = '—'
+    document.getElementById('sAlto').textContent = '0'
+    document.getElementById('sBaixo').textContent = '0'
+    return
+  }
+  const media = Math.round(rows.reduce((s,r) => s + (r.score_total||0), 0) / rows.length)
+  document.getElementById('sMedia').textContent = media
+  document.getElementById('sAlto').textContent = rows.filter(r => r.score_total >= 61).length
+  document.getElementById('sBaixo').textContent = rows.filter(r => r.score_total < 41).length
+}
+</script>
+</body>
+</html>

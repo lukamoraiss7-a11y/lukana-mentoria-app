@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagnóstico ARESTA APM — Rota Empresarial</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0c1221; --surface: #111929; --border: rgba(255,255,255,.07);
+    --gold: #C8922A; --gold-light: #F0C060; --text: #e8eaf0;
+    --muted: #8899b4; --dim: #4a5a72;
+  }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; min-height: 100vh; }
+
+  /* ── Header ── */
+  .header {
+    background: #08101a; border-bottom: 1px solid var(--border);
+    padding: 0 32px; height: 62px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .logo-box {
+    width: 38px; height: 38px;
+    background: linear-gradient(135deg, #C8922A, #F0C060);
+    border-radius: 10px; display: flex; align-items: center; justify-content: center;
+    font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 11px; color: #0c1221; letter-spacing: 1px;
+  }
+  .header-brand { display: flex; align-items: center; gap: 12px; }
+  .header-title { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 16px; letter-spacing: 2px; text-transform: uppercase; }
+  .header-sub { font-size: 10px; color: var(--dim); letter-spacing: 1px; }
+
+  .progress-wrap { background: rgba(255,255,255,.04); height: 3px; }
+  .progress-bar { height: 3px; background: linear-gradient(90deg, #C8922A, #F0C060); transition: width .4s ease; }
+
+  .container { max-width: 680px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  /* ── Form ── */
+  .step-label { font-family: 'Rajdhani', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 3px; color: var(--dim); text-transform: uppercase; margin-bottom: 8px; }
+  .step-title { font-family: 'Rajdhani', sans-serif; font-size: 32px; font-weight: 700; margin-bottom: 6px; }
+  .step-desc { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 28px; }
+  .quad-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: 1px; margin-bottom: 28px; text-transform: uppercase; }
+  .quad-badge .dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  .field-block { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px 22px 20px; margin-bottom: 12px; transition: border-color .2s; }
+  .field-block:focus-within { border-color: rgba(200,146,42,.3); }
+  .field-macro { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; line-height: 1.3; }
+  .field-micro { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 3px 9px; border-radius: 20px; margin-bottom: 10px; }
+  .field-question { font-size: 12px; color: var(--muted); line-height: 1.55; margin-bottom: 18px; }
+
+  input[type="range"] { -webkit-appearance: none; width: 100%; height: 6px; background: rgba(255,255,255,.08); border-radius: 3px; outline: none; }
+  input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: linear-gradient(135deg, #C8922A, #F0C060); cursor: pointer; box-shadow: 0 0 10px rgba(200,146,42,.4); }
+  .slider-row { display: flex; align-items: center; gap: 16px; }
+  .slider-val { font-family: 'Rajdhani', sans-serif; font-size: 28px; font-weight: 700; min-width: 40px; text-align: right; }
+  .slider-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--dim); margin-top: 6px; }
+
+  .nav { display: flex; justify-content: space-between; margin-top: 36px; align-items: center; }
+  .btn { font-family: 'Rajdhani', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 1px; padding: 14px 28px; border-radius: 10px; border: none; cursor: pointer; text-transform: uppercase; transition: all .2s; }
+  .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--muted); }
+  .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+  .btn-primary { background: linear-gradient(135deg, #C8922A, #F0C060); color: #0c1221; }
+  .btn-primary:hover { opacity: .9; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(200,146,42,.3); }
+  .step-count { font-size: 12px; color: var(--dim); }
+
+  /* ── Intro ── */
+  .intro { text-align: center; padding: 40px 0; }
+  .intro .big-badge { width: 80px; height: 80px; background: linear-gradient(135deg, #C8922A, #F0C060); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 14px; color: #0c1221; letter-spacing: 1px; margin: 0 auto 28px; }
+  .intro h1 { font-family: 'Rajdhani', sans-serif; font-size: 40px; font-weight: 700; line-height: 1.1; margin-bottom: 16px; }
+  .intro h1 span { color: var(--gold-light); }
+  .intro p { font-size: 14px; color: var(--muted); line-height: 1.7; max-width: 480px; margin: 0 auto 36px; }
+  .quadrants-preview { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 480px; margin: 0 auto 36px; }
+  .qp-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 12px; }
+  .qp-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+  .qp-name { font-size: 12px; font-weight: 600; color: var(--text); }
+  .qp-weight { font-size: 10px; color: var(--dim); margin-top: 2px; }
+
+  /* ── Result ── */
+  .result { animation: fadeIn .5s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+
+  .result-header { text-align: center; margin-bottom: 44px; }
+  .result-score-ring { width: 150px; height: 150px; margin: 0 auto 20px; position: relative; }
+  .result-score-ring canvas { display: block; }
+  .score-label { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); text-align: center; }
+  .score-num { font-family: 'Rajdhani', sans-serif; font-size: 48px; font-weight: 700; line-height: 1; }
+  .score-sub { font-size: 10px; color: var(--dim); letter-spacing: 1px; }
+  .level-badge { display: inline-block; padding: 8px 20px; border-radius: 20px; font-family: 'Rajdhani', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-top: 12px; }
+  .result-name { font-size: 14px; color: var(--muted); margin-top: 6px; }
+
+  /* ── Wheel ── */
+  .wheel-section { margin-bottom: 44px; }
+  .wheel-title { font-family: 'Rajdhani', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 3px; color: var(--dim); text-transform: uppercase; text-align: center; margin-bottom: 20px; }
+  .wheel-canvas-wrap { max-width: 520px; margin: 0 auto; filter: drop-shadow(0 0 30px rgba(0,0,0,.5)); }
+  .wheel-canvas-wrap canvas { display: block; width: 100% !important; height: auto !important; }
+
+  /* ── Quad result block ── */
+  .quad-block {
+    margin-bottom: 16px;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity .4s ease, transform .4s ease;
+  }
+  .quad-block.visible { opacity: 1; transform: none; }
+
+  .qb-header {
+    padding: 16px 20px 14px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .qb-header-left { }
+  .qb-label { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; }
+  .qb-weight { font-size: 10px; color: var(--dim); margin-top: 2px; }
+  .qb-score { font-family: 'Rajdhani', sans-serif; font-size: 36px; font-weight: 700; line-height: 1; }
+
+  /* 3-column sub-items */
+  .qb-items { display: grid; grid-template-columns: 1fr 1fr 1fr; }
+  .qb-item {
+    padding: 16px 14px 14px;
+    border-top: 1px solid rgba(255,255,255,.05);
+    border-right: 1px solid rgba(255,255,255,.05);
+    position: relative;
+    transition: background .2s;
+  }
+  .qb-item:last-child { border-right: none; }
+  .qb-item:hover { background: rgba(255,255,255,.02); }
+
+  .qb-item-score {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 36px; font-weight: 700; line-height: 1;
+    margin-bottom: 6px;
+  }
+  .qb-item-micro {
+    display: inline-block;
+    font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+    padding: 3px 8px; border-radius: 20px; margin-bottom: 6px;
+  }
+  .qb-item-macro { font-size: 11px; color: var(--muted); line-height: 1.4; }
+
+  /* Score bar per item */
+  .qb-item-bar { height: 3px; background: rgba(255,255,255,.05); border-radius: 2px; margin-top: 10px; overflow: hidden; }
+  .qb-item-bar-fill { height: 100%; border-radius: 2px; width: 0; transition: width .8s ease; }
+
+  /* ── Priorities ── */
+  .priority-section { margin-bottom: 32px; }
+  .priority-title { font-family: 'Rajdhani', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 3px; color: var(--dim); text-transform: uppercase; margin-bottom: 16px; }
+  .priority-list { display: flex; flex-direction: column; gap: 8px; }
+  .priority-item { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; display: flex; align-items: center; gap: 14px; }
+  .priority-num { font-family: 'Rajdhani', sans-serif; font-size: 18px; font-weight: 700; width: 28px; text-align: center; flex-shrink: 0; }
+  .priority-text { font-size: 13px; color: var(--text); }
+  .priority-score { font-family: 'Rajdhani', sans-serif; font-size: 20px; font-weight: 700; margin-left: auto; flex-shrink: 0; }
+
+  .divider { height: 1px; background: var(--border); margin: 32px 0; }
+
+  .result-cta { background: linear-gradient(135deg, rgba(200,146,42,.1), rgba(240,192,96,.05)); border: 1px solid rgba(200,146,42,.2); border-radius: 16px; padding: 28px; text-align: center; }
+  .result-cta h3 { font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+  .result-cta p { font-size: 13px; color: var(--muted); margin-bottom: 20px; line-height: 1.6; }
+  .btn-cta { background: linear-gradient(135deg, #C8922A, #F0C060); color: #0c1221; font-family: 'Rajdhani', sans-serif; font-size: 15px; font-weight: 700; letter-spacing: 1px; padding: 16px 36px; border-radius: 12px; border: none; cursor: pointer; text-transform: uppercase; }
+  .btn-cta:hover { opacity: .9; box-shadow: 0 4px 20px rgba(200,146,42,.3); }
+
+  /* ── Panorama section ── */
+  .panorama-section { margin-bottom: 32px; }
+  .panorama-label { font-family: 'Rajdhani', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 3px; color: var(--dim); text-transform: uppercase; margin-bottom: 16px; }
+  .panorama-card { border-radius: 16px; overflow: hidden; border: 1px solid var(--border); opacity: 0; transform: translateY(16px); transition: opacity .5s ease .4s, transform .5s ease .4s; }
+  .panorama-card.visible { opacity: 1; transform: none; }
+
+  .pan-header { padding: 22px 22px 18px; display: flex; gap: 16px; align-items: flex-start; }
+  .pan-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; flex-shrink: 0; }
+  .pan-headline { font-family: 'Rajdhani', sans-serif; font-size: 20px; font-weight: 700; line-height: 1.2; margin-bottom: 8px; }
+  .pan-diag { font-size: 13px; color: var(--muted); line-height: 1.65; }
+
+  .pan-sintomas { padding: 16px 22px 18px; border-top: 1px solid rgba(255,255,255,.05); }
+  .pan-sint-title { font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--dim); margin-bottom: 10px; }
+  .pan-sint-list { display: flex; flex-direction: column; gap: 8px; }
+  .pan-sint-item { display: flex; align-items: flex-start; gap: 10px; font-size: 12px; color: var(--muted); line-height: 1.45; }
+  .pan-sint-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+
+  .pan-apm { padding: 18px 22px 20px; border-top: 1px solid rgba(200,146,42,.12); background: rgba(200,146,42,.04); }
+  .pan-apm-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); background: rgba(200,146,42,.12); border: 1px solid rgba(200,146,42,.2); padding: 4px 10px; border-radius: 20px; margin-bottom: 10px; }
+  .pan-apm-badge::before { content: ''; display: block; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
+  .pan-apm-text { font-size: 13px; color: var(--text); line-height: 1.65; }
+
+  .pan-also { padding: 14px 22px 16px; border-top: 1px solid rgba(255,255,255,.04); }
+  .pan-also-label { font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--dim); margin-bottom: 8px; }
+  .pan-also-row { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--muted); padding: 4px 0; }
+  .pan-also-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  @media (max-width: 520px) {
+    .quadrants-preview { grid-template-columns: 1fr; }
+    .step-title { font-size: 26px; }
+    .intro h1 { font-size: 30px; }
+    .qb-items { grid-template-columns: 1fr; }
+    .qb-item { border-right: none; border-bottom: 1px solid rgba(255,255,255,.05); }
+    .qb-item:last-child { border-bottom: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-brand">
+    <div class="logo-box">ARESTA</div>
+    <div>
+      <div class="header-title">ARESTA · APM</div>
+      <div class="header-sub">Diagnóstico Rota Empresarial</div>
+    </div>
+  </div>
+  <div id="stepIndicator" style="font-family:'Rajdhani',sans-serif;font-size:13px;color:var(--dim);display:none">
+    <span id="stepCurrent" style="color:var(--gold-light);font-weight:700"></span> / 4
+  </div>
+</div>
+<div class="progress-wrap"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
+
+<div class="container">
+
+  <!-- INTRO -->
+  <div class="screen active" id="screen-intro">
+    <div class="intro">
+      <div class="big-badge">APM</div>
+      <div id="nomeTag" style="display:none;margin-bottom:16px;font-size:12px;color:var(--muted);letter-spacing:1px;">Diagnóstico de <strong id="nomeTagText" style="color:var(--gold-light)"></strong></div>
+      <h1>Diagnóstico<br><span>Rota Empresarial</span></h1>
+      <p>Avalie sua empresa em 4 quadrantes estratégicos. O resultado mostra onde você está e qual é o próximo passo para sair da operação e construir um negócio de alta performance.</p>
+      <div class="quadrants-preview">
+        <div class="qp-card"><div class="qp-dot" style="background:#10B981"></div><div><div class="qp-name">Financeiro & Resultado</div><div class="qp-weight">Peso 25%</div></div></div>
+        <div class="qp-card"><div class="qp-dot" style="background:#3b82f6"></div><div><div class="qp-name">Execução & Processos</div><div class="qp-weight">Peso 30%</div></div></div>
+        <div class="qp-card"><div class="qp-dot" style="background:#8b5cf6"></div><div><div class="qp-name">Pessoas & Liderança</div><div class="qp-weight">Peso 25%</div></div></div>
+        <div class="qp-card"><div class="qp-dot" style="background:#F59E0B"></div><div><div class="qp-name">Estratégia & Direção</div><div class="qp-weight">Peso 20%</div></div></div>
+      </div>
+      <p style="font-size:12px;color:var(--dim)">Leva cerca de 5 minutos. Responda com base na realidade atual da sua empresa.</p>
+      <button class="btn btn-primary" style="margin-top:8px;font-size:16px;padding:16px 40px" onclick="goTo('screen-1')">Iniciar diagnóstico →</button>
+    </div>
+  </div>
+
+  <!-- Q1 — Financeiro -->
+  <div class="screen" id="screen-1">
+    <div class="step-label">Quadrante 1 de 4</div>
+    <div class="step-title">Financeiro & Resultado</div>
+    <div class="step-desc">Como está a saúde financeira do negócio? Avalie com honestidade o que acontece hoje.</div>
+    <div class="quad-badge" style="background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);color:#10B981"><div class="dot" style="background:#10B981"></div>Peso 25% no score total</div>
+    <div id="fields-fin"></div>
+    <div class="nav">
+      <button class="btn btn-ghost" onclick="goTo('screen-intro')">← Voltar</button>
+      <span class="step-count">1 de 4</span>
+      <button class="btn btn-primary" onclick="goTo('screen-2')">Próximo →</button>
+    </div>
+  </div>
+
+  <!-- Q2 — Execução -->
+  <div class="screen" id="screen-2">
+    <div class="step-label">Quadrante 2 de 4</div>
+    <div class="step-title">Execução & Processos</div>
+    <div class="step-desc">O que é combinado acontece? A operação funciona com método ou na base da memória?</div>
+    <div class="quad-badge" style="background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.2);color:#3b82f6"><div class="dot" style="background:#3b82f6"></div>Peso 30% no score total</div>
+    <div id="fields-exec"></div>
+    <div class="nav">
+      <button class="btn btn-ghost" onclick="goTo('screen-1')">← Voltar</button>
+      <span class="step-count">2 de 4</span>
+      <button class="btn btn-primary" onclick="goTo('screen-3')">Próximo →</button>
+    </div>
+  </div>
+
+  <!-- Q3 — Pessoas -->
+  <div class="screen" id="screen-3">
+    <div class="step-label">Quadrante 3 de 4</div>
+    <div class="step-title">Pessoas & Liderança</div>
+    <div class="step-desc">O time tem clareza de papel? A liderança cobra e desenvolve? Ou tudo depende do dono?</div>
+    <div class="quad-badge" style="background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);color:#8b5cf6"><div class="dot" style="background:#8b5cf6"></div>Peso 25% no score total</div>
+    <div id="fields-pess"></div>
+    <div class="nav">
+      <button class="btn btn-ghost" onclick="goTo('screen-2')">← Voltar</button>
+      <span class="step-count">3 de 4</span>
+      <button class="btn btn-primary" onclick="goTo('screen-4')">Próximo →</button>
+    </div>
+  </div>
+
+  <!-- Q4 — Estratégia -->
+  <div class="screen" id="screen-4">
+    <div class="step-label">Quadrante 4 de 4</div>
+    <div class="step-title">Estratégia & Direção</div>
+    <div class="step-desc">A empresa sabe para onde vai? Decisões difíceis são tomadas ou adiadas?</div>
+    <div class="quad-badge" style="background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2);color:#F59E0B"><div class="dot" style="background:#F59E0B"></div>Peso 20% no score total</div>
+    <div id="fields-estr"></div>
+    <div class="nav">
+      <button class="btn btn-ghost" onclick="goTo('screen-3')">← Voltar</button>
+      <span class="step-count">4 de 4</span>
+      <button class="btn btn-primary" onclick="calcAndShow()">Ver resultado →</button>
+    </div>
+  </div>
+
+  <!-- RESULTADO -->
+  <div class="screen" id="screen-result">
+    <div class="result">
+      <div class="result-header">
+        <div style="font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;color:var(--dim);text-transform:uppercase;margin-bottom:20px">Sua Rota Empresarial</div>
+        <div class="result-score-ring">
+          <canvas id="ringCanvas" width="150" height="150"></canvas>
+          <div class="score-label">
+            <div class="score-num" id="totalScore">—</div>
+            <div class="score-sub">/ 100</div>
+          </div>
+        </div>
+        <div class="level-badge" id="levelBadge">—</div>
+        <div class="result-name" id="levelName">—</div>
+      </div>
+
+      <div class="wheel-section">
+        <div class="wheel-title">Rota Empresarial — 4 Quadrantes</div>
+        <div class="wheel-canvas-wrap">
+          <canvas id="wheelCanvas" width="640" height="640"></canvas>
+        </div>
+      </div>
+
+      <div id="quadBlocks"></div>
+
+      <div class="divider"></div>
+
+      <div class="priority-section">
+        <div class="priority-title">Prioridades de atuação</div>
+        <div class="priority-list" id="priorityList"></div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="panorama-section">
+        <div class="panorama-label">Panorama de atuação prioritária</div>
+        <div class="panorama-card" id="panoramaCard"></div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="result-cta">
+        <h3>Próximo passo: Fase 1 do APM</h3>
+        <p>Seu diagnóstico está mapeado. A Fase 1 do programa parte exatamente desse ponto — transformando os gaps identificados em plano de ação com prazo e dono.</p>
+        <button class="btn-cta" onclick="window.location.reload()">Refazer diagnóstico</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── Supabase config ──
+const SUPABASE_URL = 'SUA_URL_SUPABASE'
+const SUPABASE_ANON_KEY = 'SUA_ANON_KEY_SUPABASE'
+const SUPABASE_CONFIGURED = !SUPABASE_URL.startsWith('SUA')
+let _sbClient = null
+if (SUPABASE_CONFIGURED) {
+  _sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+}
+
+// ── URL params ──
+const _params = new URLSearchParams(location.search)
+const _nome = _params.get('nome') || ''
+document.addEventListener('DOMContentLoaded', () => {
+  if (_nome) {
+    document.getElementById('nomeTag').style.display = 'block'
+    document.getElementById('nomeTagText').textContent = _nome
+  }
+})
+
+// ── Save result to Supabase ──
+async function saveResult(total, results) {
+  if (!SUPABASE_CONFIGURED || !_sbClient) return
+  try {
+    await _sbClient.from('diagnostico_resultados').insert({
+      nome: _nome || 'Anônimo',
+      score_total: total,
+      score_fin:  results.find(r => r.id === 'fin').score,
+      score_exec: results.find(r => r.id === 'exec').score,
+      score_pess: results.find(r => r.id === 'pess').score,
+      score_estr: results.find(r => r.id === 'estr').score,
+      nivel: levelInfo(total).name
+    })
+  } catch(e) { console.warn('Supabase save error:', e) }
+}
+
+// ── Quadrant definitions ──
+const QUADS = [
+  {
+    id: 'fin', label: 'Financeiro & Resultado', color: '#10B981', weight: 0.25, weightLabel: '25%',
+    items: [
+      { id:'fin1', micro:'Margem % e Preço',  macro:'Controle de margens e precificação',      q:'Sabemos onde ganhamos e onde perdemos dinheiro?' },
+      { id:'fin2', micro:'Caixa',             macro:'Gestão de caixa e previsibilidade',        q:'O caixa é controlado ou só reagimos ao saldo?' },
+      { id:'fin3', micro:'Prospecção',        macro:'Controle de resultado e meios de aquisição', q:'Resultado é acompanhado pelos meios ou vira surpresa no final do mês?' },
+    ]
+  },
+  {
+    id: 'exec', label: 'Execução & Processos', color: '#3b82f6', weight: 0.30, weightLabel: '30%',
+    items: [
+      { id:'exec1', micro:'Gestão',           macro:'Rotina de gestão funcionando',             q:'Reuniões 1:1, rituais e acompanhamento acontecem de verdade? Tem método ou é no flow?' },
+      { id:'exec2', micro:'Follow-up interno',macro:'Disciplina na execução e acompanhamento',  q:'O que é combinado é acompanhado até o fim?' },
+      { id:'exec3', micro:'Processos',        macro:'Processos claros e documentados',           q:'As pessoas sabem como fazer sem depender do dono?' },
+    ]
+  },
+  {
+    id: 'pess', label: 'Pessoas & Liderança', color: '#8b5cf6', weight: 0.25, weightLabel: '25%',
+    items: [
+      { id:'pess1', micro:'Papéis',           macro:'Clareza de papéis e responsabilidades',    q:'Todo mundo sabe exatamente o que é de sua responsabilidade?' },
+      { id:'pess2', micro:'Liderança',        macro:'Qualidade da liderança (donos, gerentes e líderes)', q:'Os líderes puxam o resultado ou só repassam problema?' },
+      { id:'pess3', micro:'Desenvolvimento', macro:'Capacidade de cobrança, feedback e desenvolvimento', q:'A liderança cobra, desenvolve e corrige de forma constante e assertiva?' },
+    ]
+  },
+  {
+    id: 'estr', label: 'Estratégia & Direção', color: '#F59E0B', weight: 0.20, weightLabel: '20%',
+    items: [
+      { id:'estr1', micro:'Prioridades',      macro:'Visão clara de futuro e prioridades',      q:'Está claro onde queremos chegar e o que é prioridade agora?' },
+      { id:'estr2', micro:'Sócios',           macro:'Alinhamento entre a equipe',               q:'Quando um decide, os outros sustentam?' },
+      { id:'estr3', micro:'Decisões',         macro:'Capacidade de tomar decisões difíceis',    q:'Conseguimos dizer não, cortar, mudar e ajustar quando precisa?' },
+    ]
+  },
+]
+
+// ── Build form fields ──
+QUADS.forEach(q => {
+  const wrap = document.getElementById('fields-' + q.id)
+  if (!wrap) return
+  wrap.innerHTML = q.items.map(it => `
+    <div class="field-block">
+      <div class="field-macro">${it.macro}</div>
+      <div class="field-micro" style="background:${q.color}18;color:${q.color};border:1px solid ${q.color}30">${it.micro}</div>
+      <div class="field-question">${it.q}</div>
+      <div class="slider-row">
+        <input type="range" id="${it.id}" min="0" max="10" step="0.5" value="5"
+          oninput="updateSlider('${it.id}','${it.id}Val','')">
+        <div class="slider-val" id="${it.id}Val" style="color:${q.color}">5</div>
+      </div>
+      <div class="slider-labels"><span>0</span><span>5</span><span>10</span></div>
+    </div>
+  `).join('')
+})
+
+// ── Nav ──
+const SCREENS = ['screen-intro','screen-1','screen-2','screen-3','screen-4','screen-result']
+const PROGRESS = { 'screen-intro':0,'screen-1':20,'screen-2':40,'screen-3':60,'screen-4':80,'screen-result':100 }
+const STEP_NUM  = { 'screen-1':1,'screen-2':2,'screen-3':3,'screen-4':4 }
+
+function goTo(id) {
+  SCREENS.forEach(s => document.getElementById(s).classList.remove('active'))
+  document.getElementById(id).classList.add('active')
+  document.getElementById('progressBar').style.width = PROGRESS[id] + '%'
+  const si = document.getElementById('stepIndicator')
+  if (STEP_NUM[id]) { si.style.display='block'; document.getElementById('stepCurrent').textContent=STEP_NUM[id] }
+  else si.style.display='none'
+  window.scrollTo({top:0,behavior:'smooth'})
+}
+
+function updateSlider(id, valId, suffix) {
+  const v = parseFloat(document.getElementById(id).value)
+  document.getElementById(valId).textContent = v + suffix
+}
+
+function getVal(id) { return parseFloat(document.getElementById(id)?.value) || 0 }
+
+// ── Calc ──
+function calcAndShow() {
+  const results = QUADS.map(q => {
+    const vals = q.items.map(it => getVal(it.id))
+    const avg = vals.reduce((a,b)=>a+b,0) / vals.length
+    return {
+      ...q,
+      score: Math.round(avg * 10),
+      itemScores: vals.map(v => Math.round(v * 10))
+    }
+  })
+  const total = Math.round(results.reduce((s, r) => s + r.score * r.weight, 0))
+  showResult(results, total)
+  saveResult(total, results)
+  goTo('screen-result')
+}
+
+// ── Level ──
+function levelInfo(s) {
+  if (s>=81) return { n:'Nível 5', name:'Alta Performance', color:'#22c55e' }
+  if (s>=61) return { n:'Nível 4', name:'Escala',           color:'#10B981' }
+  if (s>=41) return { n:'Nível 3', name:'Operação',         color:'#eab308' }
+  if (s>=21) return { n:'Nível 2', name:'Estruturação',     color:'#f97316' }
+  return            { n:'Nível 1', name:'Diagnóstico',       color:'#ef4444' }
+}
+
+// ── Render result ──
+function showResult(results, total) {
+  const lv = levelInfo(total)
+
+  document.getElementById('totalScore').textContent = total
+  document.getElementById('totalScore').style.color = lv.color
+  drawRing(total, lv.color)
+
+  const badge = document.getElementById('levelBadge')
+  badge.textContent = lv.n
+  badge.style.cssText += `;background:${lv.color}22;border:1px solid ${lv.color}44;color:${lv.color}`
+  document.getElementById('levelName').textContent = lv.name
+
+  setTimeout(() => drawWheel(results, total), 80)
+
+  // Quad blocks
+  const qb = document.getElementById('quadBlocks')
+  qb.innerHTML = ''
+  results.forEach((r, ri) => {
+    const block = document.createElement('div')
+    block.className = 'quad-block'
+    block.innerHTML = `
+      <div class="qb-header" style="background:${r.color}10;border-bottom:1px solid ${r.color}20">
+        <div class="qb-header-left">
+          <div class="qb-label" style="color:${r.color}">${r.label}</div>
+          <div class="qb-weight">Peso ${r.weightLabel}</div>
+        </div>
+        <div class="qb-score" style="color:${r.color};text-shadow:0 0 20px ${r.color}60">${r.score}</div>
+      </div>
+      <div class="qb-items">
+        ${r.items.map((it, i) => `
+          <div class="qb-item" style="background:${r.color}04">
+            <div class="qb-item-score" style="color:${r.color};text-shadow:0 0 12px ${r.color}50">${r.itemScores[i]}</div>
+            <div class="qb-item-micro" style="background:${r.color}18;color:${r.color};border:1px solid ${r.color}30">${it.micro}</div>
+            <div class="qb-item-macro">${it.macro}</div>
+            <div class="qb-item-bar">
+              <div class="qb-item-bar-fill" data-pct="${r.itemScores[i]}" style="background:linear-gradient(90deg,${r.color}80,${r.color})"></div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `
+    qb.appendChild(block)
+    // stagger animation
+    setTimeout(() => {
+      block.classList.add('visible')
+      // animate bars after block visible
+      setTimeout(() => {
+        block.querySelectorAll('.qb-item-bar-fill').forEach(bar => {
+          bar.style.width = bar.dataset.pct + '%'
+        })
+      }, 100)
+    }, 100 + ri * 120)
+  })
+
+  // Priorities
+  const sorted = [...results].sort((a,b) => a.score - b.score)
+  const pl = document.getElementById('priorityList')
+  pl.innerHTML = ''
+  sorted.forEach((r, i) => {
+    const item = document.createElement('div')
+    item.className = 'priority-item'
+    item.style.borderLeft = `3px solid ${r.color}`
+    item.innerHTML = `
+      <div class="priority-num" style="color:${r.color}">${i+1}</div>
+      <div class="priority-text">${r.label}</div>
+      <div class="priority-score" style="color:${r.color}">${r.score}</div>
+    `
+    pl.appendChild(item)
+  })
+
+  renderPanorama(sorted)
+}
+
+// ── Ring ──
+function drawRing(score, color) {
+  const c = document.getElementById('ringCanvas'), ctx = c.getContext('2d')
+  const cx=75, cy=75, r=60
+  ctx.clearRect(0,0,150,150)
+  // glow
+  ctx.shadowBlur=0; ctx.shadowColor='transparent'
+  // track
+  ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2)
+  ctx.strokeStyle='rgba(255,255,255,.06)'; ctx.lineWidth=10; ctx.stroke()
+  // fill
+  ctx.beginPath(); ctx.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+(score/100)*Math.PI*2)
+  ctx.strokeStyle=color; ctx.lineWidth=10; ctx.lineCap='round'
+  ctx.shadowBlur=16; ctx.shadowColor=color+'99'
+  ctx.stroke()
+  ctx.shadowBlur=0
+}
+
+// ── Wheel ──
+function drawWheel(results, total) {
+  const canvas = document.getElementById('wheelCanvas'), ctx = canvas.getContext('2d')
+  const W=640, H=640, cx=320, cy=320
+  const RO=308, RI=262, RM=215, RC=38  // outer band / micro band / score area / center hole
+  ctx.clearRect(0,0,W,H)
+
+  // Build 12 slices
+  const slices = []
+  results.forEach((r, qi) => {
+    r.items.forEach((it, ii) => {
+      const sa = -Math.PI/2 + (qi*3+ii) * (Math.PI*2/12)
+      const ea = sa + Math.PI*2/12
+      slices.push({ r, it, score: r.itemScores[ii], sa, ea, mid: (sa+ea)/2 })
+    })
+  })
+
+  // ── 1. Concentric scale rings (inside score area) ──
+  for (let i=1; i<=10; i++) {
+    const rr = RC + (RM-RC)*i/10
+    ctx.beginPath(); ctx.arc(cx,cy,rr,0,Math.PI*2)
+    ctx.strokeStyle = (i===5||i===10) ? 'rgba(255,255,255,.18)' : 'rgba(255,255,255,.06)'
+    ctx.lineWidth = i===10 ? 1.5 : 0.7
+    ctx.stroke()
+  }
+
+  // ── 2. Filled score areas per slice ──
+  slices.forEach(sl => {
+    const g = 0.018
+    const sa=sl.sa+g, ea=sl.ea-g
+    const rScore = RC + (RM-RC)*Math.max(sl.score,2)/100
+    const grad = ctx.createRadialGradient(cx,cy,RC,cx,cy,rScore)
+    grad.addColorStop(0, sl.r.color+'15')
+    grad.addColorStop(1, sl.r.color+'70')
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,rScore,sa,ea); ctx.closePath()
+    ctx.fillStyle=grad; ctx.fill()
+    // arc edge glow
+    ctx.beginPath(); ctx.arc(cx,cy,rScore,sa,ea)
+    ctx.strokeStyle=sl.r.color; ctx.lineWidth=2.5; ctx.lineCap='round'
+    ctx.shadowBlur=10; ctx.shadowColor=sl.r.color+'88'; ctx.stroke()
+    ctx.shadowBlur=0
+  })
+
+  // ── 3. Micro band backgrounds ──
+  slices.forEach(sl => {
+    const g=0.012
+    ctx.beginPath()
+    ctx.arc(cx,cy,RI,sl.sa+g,sl.ea-g)
+    ctx.arc(cx,cy,RM,sl.ea-g,sl.sa+g,true)
+    ctx.closePath()
+    ctx.fillStyle = sl.r.color+'14'
+    ctx.fill()
+  })
+
+  // ── 4. Outer band per quadrant ──
+  results.forEach((r, qi) => {
+    const sa = -Math.PI/2 + qi*Math.PI/2 + 0.012
+    const ea = sa + Math.PI/2 - 0.024
+    ctx.beginPath()
+    ctx.arc(cx,cy,RO,sa,ea)
+    ctx.arc(cx,cy,RI,ea,sa,true)
+    ctx.closePath()
+    ctx.fillStyle = r.color+'ee'
+    ctx.fill()
+  })
+
+  // ── 5. Radial dividers ──
+  // Quadrant dividers (thick, span full radius)
+  for (let q=0; q<4; q++) {
+    const a = -Math.PI/2 + q*Math.PI/2
+    ctx.beginPath()
+    ctx.moveTo(cx+Math.cos(a)*RC, cy+Math.sin(a)*RC)
+    ctx.lineTo(cx+Math.cos(a)*RO, cy+Math.sin(a)*RO)
+    ctx.strokeStyle='#0c1221'; ctx.lineWidth=3; ctx.stroke()
+  }
+  // Micro dividers (thin, only inside score+micro band)
+  slices.forEach((sl, i) => {
+    if (i%3 !== 0) {
+      ctx.beginPath()
+      ctx.moveTo(cx+Math.cos(sl.sa)*RC, cy+Math.sin(sl.sa)*RC)
+      ctx.lineTo(cx+Math.cos(sl.sa)*RI, cy+Math.sin(sl.sa)*RI)
+      ctx.strokeStyle='rgba(0,0,0,.7)'; ctx.lineWidth=1; ctx.stroke()
+    }
+  })
+
+  // ── 6. Micro labels (radial, inside micro band) ──
+  slices.forEach(sl => {
+    const mid = sl.mid
+    const lr = (RM+RI)/2 + 2
+    const lx = cx+Math.cos(mid)*lr, ly = cy+Math.sin(mid)*lr
+    const isBottom = Math.sin(mid) > 0
+    ctx.save()
+    ctx.translate(lx, ly)
+    ctx.rotate(isBottom ? mid - Math.PI/2 : mid + Math.PI/2)
+    ctx.font = '700 11px Inter, sans-serif'
+    ctx.fillStyle = '#ffffff'
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
+    ctx.fillText(sl.it.micro.toUpperCase(), 0, 0)
+    ctx.restore()
+
+  })
+
+  // ── 7. Macro labels (curved text in outer band) ──
+  results.forEach((r, qi) => {
+    const bandMid = -Math.PI/2 + qi*Math.PI/2 + Math.PI/4
+    const arcR = (RI+RO)/2
+    const isBottom = Math.sin(bandMid) > 0
+    arcText(ctx, r.label.toUpperCase(), cx, cy, arcR,
+      -Math.PI/2 + qi*Math.PI/2 + 0.06,
+      -Math.PI/2 + (qi+1)*Math.PI/2 - 0.06,
+      isBottom)
+  })
+
+  // ── 8. Center circle ──
+  ctx.beginPath(); ctx.arc(cx,cy,RC,0,Math.PI*2)
+  const cg = ctx.createRadialGradient(cx,cy,0,cx,cy,RC)
+  cg.addColorStop(0,'#1a2540'); cg.addColorStop(1,'#0c1221')
+  ctx.fillStyle=cg; ctx.fill()
+  ctx.strokeStyle='rgba(255,255,255,.14)'; ctx.lineWidth=1.5; ctx.stroke()
+  ctx.font='bold 28px Rajdhani,sans-serif'; ctx.fillStyle='#e8eaf0'
+  ctx.textAlign='center'; ctx.textBaseline='middle'
+  ctx.fillText(total, cx, cy-7)
+  ctx.font='500 11px Inter,sans-serif'; ctx.fillStyle='#4a5a72'
+  ctx.fillText('SCORE', cx, cy+12)
+}
+
+// ── Panorama content per quadrant ──
+const PANORAMA = {
+  fin: {
+    icon: '₿',
+    headline: 'Sua principal brecha está no financeiro',
+    diag: 'Empresa que não sabe exatamente onde ganha e onde perde não tem controle — tem ilusão de controle. Margem apertada, caixa imprevisível e precificação no feeling são sintomas. A causa é a ausência de método financeiro. Enquanto isso não mudar, crescer só aumenta o risco.',
+    sintomas: [
+      'Mês bom financeiramente não explica por quê',
+      'Preço definido pelo concorrente ou por intuição',
+      'Caixa aperta no final do mês sem aviso prévio',
+      'DRE existe mas não orienta nenhuma decisão',
+    ],
+    apm: 'O APM trabalha margem real por tipo de serviço, modelo de precificação que cobre custo e gera resultado, e rotina de caixa que funciona sem você olhar todo dia. Você vai saber exatamente onde está ganhando e onde está sangrand — e o que fazer em cada caso.'
+  },
+  exec: {
+    icon: '⚙',
+    headline: 'Sua principal brecha está na execução',
+    diag: 'Operação que funciona na memória do dono não é uma operação — é um risco. Toda ausência vira crise. Todo crescimento aumenta o caos. O problema não é as pessoas: é a falta de método, ritual e acompanhamento. O que não tem processo, depende de sorte.',
+    sintomas: [
+      'O mesmo erro acontece mais de uma vez sem ser corrigido',
+      'O que é combinado raramente é entregue como prometido',
+      'Você precisa checar tudo para ter resultado',
+      'Crescer significa mais dor de cabeça, não mais resultado',
+    ],
+    apm: 'No APM você constrói as rotinas de gestão que fazem a operação funcionar sem você estar em cima. Rituais de acompanhamento, follow-up estruturado, processos documentados e cobrados. Na prática, não no teórico.'
+  },
+  pess: {
+    icon: '◈',
+    headline: 'Sua principal brecha está em pessoas e liderança',
+    diag: 'Você pode ter o melhor processo do mundo — se a liderança não cobra, não desenvolve e não dá clareza de papel, o time anda no piloto automático. A empresa cresce quando as pessoas crescem. E isso não acontece por acidente: é responsabilidade de quem lidera.',
+    sintomas: [
+      'Líderes intermediários passam o problema em vez de resolver',
+      'Todo mundo sabe "mais ou menos" o que é seu papel',
+      'Feedback só existe quando algo dá muito errado',
+      'Time acomodado ou rotatividade constante sem causa aparente',
+    ],
+    apm: 'O APM trabalha clareza de papel, protocolo de cobrança e feedback estruturado. Você aprende a liderar e a desenvolver liderança intermediária — não na teoria, mas com método, cadência e critério objetivo de desempenho.'
+  },
+  estr: {
+    icon: '◎',
+    headline: 'Sua principal brecha está na estratégia',
+    diag: 'Empresa sem direção clara opera no urgente. Toda semana é apagar incêndio. Decisões difíceis são adiadas até virarem crise. Isso não é má sorte — é ausência de método estratégico. O dono decide por feeling e o time segue sem entender o porquê.',
+    sintomas: [
+      'Prioridades mudam de semana em semana sem critério',
+      'Decisões difíceis ficam na gaveta por meses',
+      'Sócios ou líderes não estão alinhados no que importa',
+      'A empresa cresce mas ninguém sabe se está indo na direção certa',
+    ],
+    apm: 'No APM você define visão, prioridades e um critério objetivo para tomar decisão. Sai do achismo estratégico e entra numa rotina onde cada semana há clareza sobre o que move o negócio — e o que pode esperar.'
+  }
+}
+
+function renderPanorama(sorted) {
+  const worst = sorted[0]
+  const p = PANORAMA[worst.id]
+  const color = worst.color
+  const card = document.getElementById('panoramaCard')
+  if (!card || !p) return
+
+  const others = sorted.slice(1).filter(r => r.score < 60)
+
+  card.style.borderColor = color + '30'
+  card.innerHTML = `
+    <div class="pan-header" style="background:${color}08">
+      <div class="pan-icon" style="background:${color}18;color:${color}">${p.icon}</div>
+      <div>
+        <div class="pan-headline" style="color:${color}">${p.headline}</div>
+        <div class="pan-diag">${p.diag}</div>
+      </div>
+    </div>
+    <div class="pan-sintomas">
+      <div class="pan-sint-title">Sinais que você provavelmente reconhece</div>
+      <div class="pan-sint-list">
+        ${p.sintomas.map(s => `
+          <div class="pan-sint-item">
+            <div class="pan-sint-dot" style="background:${color}"></div>
+            <span>${s}</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+    <div class="pan-apm">
+      <div class="pan-apm-badge">Como o APM resolve isso</div>
+      <div class="pan-apm-text">${p.apm}</div>
+    </div>
+    ${others.length > 0 ? `
+    <div class="pan-also">
+      <div class="pan-also-label">Áreas que também precisam de atenção</div>
+      ${others.map(r => `
+        <div class="pan-also-row">
+          <div class="pan-also-dot" style="background:${r.color}"></div>
+          <span>${r.label} — score ${r.score}</span>
+        </div>
+      `).join('')}
+    </div>` : ''}
+  `
+
+  setTimeout(() => card.classList.add('visible'), 80)
+}
+
+// ── Curved arc text ──
+function arcText(ctx, text, cx, cy, radius, startA, endA, isBottom) {
+  ctx.save()
+  ctx.font = 'bold 13px Inter, sans-serif'
+  ctx.fillStyle = '#fff'
+  ctx.textBaseline = 'middle'
+  ctx.textAlign = 'center'
+
+  const chars = text.split('')
+  const widths = chars.map(c => ctx.measureText(c).width)
+  const totalAngle = widths.reduce((a,b)=>a+b,0) / radius
+  const arcMid = (startA + endA) / 2
+
+  if (isBottom) {
+    // Counter-clockwise: start from right end of arc going left
+    // rotation = angle - π/2 → char "up" faces screen-top (readable from standard view)
+    let angle = arcMid + totalAngle / 2
+    chars.forEach((ch, i) => {
+      const hw = widths[i] / 2 / radius
+      angle -= hw
+      ctx.save()
+      ctx.translate(cx + Math.cos(angle)*radius, cy + Math.sin(angle)*radius)
+      ctx.rotate(angle - Math.PI/2)
+      ctx.fillText(ch, 0, 0)
+      ctx.restore()
+      angle -= hw
+    })
+  } else {
+    // Clockwise: start from left end of arc going right
+    // rotation = angle + π/2 → char "up" faces outward (readable from outside)
+    let angle = arcMid - totalAngle / 2
+    chars.forEach((ch, i) => {
+      const hw = widths[i] / 2 / radius
+      angle += hw
+      ctx.save()
+      ctx.translate(cx + Math.cos(angle)*radius, cy + Math.sin(angle)*radius)
+      ctx.rotate(angle + Math.PI/2)
+      ctx.fillText(ch, 0, 0)
+      ctx.restore()
+      angle += hw
+    })
+  }
+
+  ctx.restore()
+}
+</script>
+</body>
+</html>
