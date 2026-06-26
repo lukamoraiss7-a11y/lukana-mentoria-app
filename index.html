@@ -10,11 +10,9 @@
 :root {
   --navy:#0F0F0F;--navy-light:#1A1A1A;--navy-mid:#242424;--navy-deep:#0F0F0F;
   --accent:#C9A84C;--accent-light:#E8C97A;
-  --gold-gradient:#C9A84C;
-  --gold-text:#C9A84C;
+  --gold-gradient:#C9A84C;--gold-text:#C9A84C;
   --text-primary:#E8E8E8;--text-secondary:#AAAAAA;--text-muted:#888888;
   --verde:#22c55e;--vermelho:#ef4444;
-  --p-processos:#3B82F6;--p-vendas:#10B981;--p-lideranca:#8B5CF6;--p-digital:#F59E0B;--p-financeiro:#059669;
   --sidebar-w:220px;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -29,12 +27,10 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
 .sb-icon{width:34px;height:34px;background:#C9A84C;border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-weight:700;font-size:17px;color:var(--navy);flex-shrink:0;}
 .sb-name{font-family:'Inter',sans-serif;font-weight:700;font-size:16px;letter-spacing:2px;text-transform:uppercase;color:var(--text-primary);}
 .sb-sub{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-top:2px;}
-
 .sb-user{padding:13px 20px;border-bottom:1px solid #222;display:flex;align-items:center;gap:10px;}
 .u-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#1a2844,#2a3a5a);border:2px solid rgba(200,146,42,.3);display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-weight:700;font-size:16px;color:var(--accent-light);flex-shrink:0;}
 .u-name{font-size:13px;font-weight:600;color:var(--text-primary);}
 .u-role{font-size:10px;color:var(--text-muted);}
-
 .sb-nav{flex:1;padding:13px 10px;overflow-y:auto;}
 .nav-sec{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);padding:0 8px;margin-bottom:5px;margin-top:13px;}
 .nav-sec:first-child{margin-top:0;}
@@ -44,13 +40,16 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
 .nav-it.on::before{content:'';position:absolute;left:0;top:25%;height:50%;width:3px;background:var(--gold-gradient);border-radius:0 2px 2px 0;}
 .nav-ic{width:15px;height:15px;flex-shrink:0;}
 .nav-bg{margin-left:auto;font-size:10px;font-weight:700;background:rgba(200,146,42,.12);color:var(--accent);padding:1px 6px;border-radius:4px;}
-
 .sb-foot{padding:13px 20px;border-top:1px solid #222;}
 .prow{display:flex;justify-content:space-between;font-size:10px;color:var(--text-muted);margin-bottom:7px;}
 .pval{color:var(--accent-light);}
 .ptrk{height:3px;background:rgba(255,255,255,.06);border-radius:2px;margin-bottom:5px;}
-.pfil{height:100%;background:var(--gold-gradient);border-radius:2px;width:8%;}
+.pfil{height:100%;background:var(--gold-gradient);border-radius:2px;width:0%;}
 .psub{font-size:9px;color:var(--text-muted);}
+.sb-lock{padding:0 20px 14px;display:flex;align-items:center;}
+.lock-btn{background:none;border:none;color:var(--text-muted);font-family:'Inter',sans-serif;font-size:11px;cursor:pointer;display:flex;align-items:center;gap:6px;padding:0;}
+.lock-btn:hover{color:var(--text-secondary);}
+.lock-btn.active{color:var(--accent);}
 
 /* Main */
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
@@ -59,52 +58,48 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
 .tbc em{color:var(--text-secondary);font-style:normal;}
 .tbc .s{margin:0 6px;}
 .tbr{display:flex;align-items:center;gap:10px;}
-
 .chip{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;border-radius:4px;font-family:'Inter',sans-serif;}
 .cg{background:rgba(200,146,42,.08);border:1px solid rgba(200,146,42,.22);color:var(--accent-light);}
 .bg{background:transparent;border:1px solid rgba(255,255,255,.1);color:var(--text-secondary);padding:7px 14px;border-radius:4px;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;font-family:inherit;}
 .bg:hover{border-color:rgba(255,255,255,.2);color:var(--text-primary);}
 .bgo{background:var(--gold-gradient);color:var(--navy);border:none;padding:7px 16px;border-radius:4px;font-size:12px;font-weight:700;font-family:'Inter',sans-serif;letter-spacing:1px;text-transform:uppercase;cursor:pointer;}
-
 .content{flex:1;overflow-y:auto;padding:26px;}
 .view{display:none;}.view.active{display:block;}
 
 /* Cards Grid */
 .cgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;}
-
 .mc{background:var(--navy-light);border:1px solid #333;border-radius:6px;overflow:hidden;cursor:pointer;transition:transform .2s,border-color .2s,box-shadow .2s;}
 .mc:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.12);box-shadow:0 12px 36px rgba(0,0,0,.28);}
 .mc.lk{opacity:.5;}.mc.lk:hover{opacity:.72;}
-
 .ct{height:98px;position:relative;overflow:hidden;display:flex;align-items:flex-end;padding:11px 14px;}
-.ct.processos{background:linear-gradient(135deg,#0c1e3a,#1a3456 60%,#0d2040);}
+.ct.visao{background:linear-gradient(135deg,#1e1503,#2e2105 60%,#1a1202);}
+.ct.lucro{background:linear-gradient(135deg,#0a1e14,#0f2c1e 60%,#091a10);}
+.ct.processo{background:linear-gradient(135deg,#0c1e3a,#1a3456 60%,#0d2040);}
+.ct.pessoas{background:linear-gradient(135deg,#130e22,#231440 60%,#160f28);}
 .ct.vendas{background:linear-gradient(135deg,#0a1e18,#103326 60%,#0c2018);}
-.ct.lideranca{background:linear-gradient(135deg,#130e22,#231440 60%,#160f28);}
 .ct.digital{background:linear-gradient(135deg,#1e1505,#2e2008 60%,#1a1204);}
-.ct.financeiro{background:linear-gradient(135deg,#0a1e14,#0f2c1e 60%,#091a10);}
 .ct::before{content:'';position:absolute;top:-30px;right:-20px;width:130px;height:130px;border-radius:50%;opacity:.17;filter:blur(32px);}
-.ct.processos::before{background:var(--p-processos);}.ct.vendas::before{background:var(--p-vendas);}
-.ct.lideranca::before{background:var(--p-lideranca);}.ct.digital::before{background:var(--p-digital);}
-.ct.financeiro::before{background:var(--p-financeiro);}
+.ct.visao::before{background:#C9A84C;}.ct.lucro::before{background:#059669;}
+.ct.processo::before{background:#3B82F6;}.ct.pessoas::before{background:#8B5CF6;}
+.ct.vendas::before{background:#10B981;}.ct.digital::before{background:#F59E0B;}
 .ct.done::after{content:'✓';position:absolute;inset:0;background:rgba(34,197,94,.07);display:flex;align-items:center;justify-content:center;font-size:40px;color:rgba(34,197,94,.22);}
 .cn{font-family:'Inter',sans-serif;font-size:46px;font-weight:700;line-height:1;opacity:.09;position:absolute;right:12px;top:10px;color:#fff;}
 .ctm{position:relative;z-index:1;display:flex;align-items:center;gap:8px;}
 .cpb{width:33px;height:33px;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;}
 .cpa{width:0;height:0;border-style:solid;border-width:6px 0 6px 10px;border-color:transparent transparent transparent rgba(255,255,255,.8);margin-left:3px;}
 .cpp{font-family:'Inter',sans-serif;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;border-radius:4px;border:1px solid;}
-.processos .cpp{background:rgba(59,130,246,.15);border-color:rgba(59,130,246,.3);color:#93C5FD;}
+.visao .cpp{background:rgba(201,168,76,.15);border-color:rgba(201,168,76,.3);color:#E8C97A;}
+.lucro .cpp{background:rgba(5,150,105,.15);border-color:rgba(5,150,105,.3);color:#6EE7B7;}
+.processo .cpp{background:rgba(59,130,246,.15);border-color:rgba(59,130,246,.3);color:#93C5FD;}
+.pessoas .cpp{background:rgba(139,92,246,.15);border-color:rgba(139,92,246,.3);color:#C4B5FD;}
 .vendas .cpp{background:rgba(16,185,129,.15);border-color:rgba(16,185,129,.3);color:#6EE7B7;}
-.lideranca .cpp{background:rgba(139,92,246,.15);border-color:rgba(139,92,246,.3);color:#C4B5FD;}
 .digital .cpp{background:rgba(245,158,11,.15);border-color:rgba(245,158,11,.3);color:#FCD34D;}
-.financeiro .cpp{background:rgba(5,150,105,.15);border-color:rgba(5,150,105,.3);color:#6EE7B7;}
-
 .cb{padding:15px;}
 .cw{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
 .ctt{font-family:'Inter',sans-serif;font-size:17px;font-weight:700;letter-spacing:.3px;color:var(--text-primary);line-height:1.2;margin-bottom:6px;}
 .cd{font-size:11.5px;color:var(--text-muted);line-height:1.55;margin-bottom:11px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 .cf{display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid #222;}
 .cdur{font-size:10px;color:var(--text-muted);display:flex;align-items:center;gap:4px;}
-
 .sb{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:4px;font-family:'Inter',sans-serif;}
 .sd{background:rgba(34,197,94,.1);color:#22c55e;border:1px solid rgba(34,197,94,.2);}
 .sc{background:rgba(200,146,42,.1);color:var(--accent-light);border:1px solid rgba(200,146,42,.3);}
@@ -121,12 +116,10 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
 .hst{display:flex;gap:34px;flex-wrap:wrap;}
 .hsv{font-family:'Inter',sans-serif;font-size:28px;font-weight:700;color:var(--text-primary);line-height:1;}
 .hsl{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-top:3px;}
-
 .sr{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:13px;}
 .st{font-family:'Inter',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);}
 .sl2{font-size:11px;color:var(--accent);cursor:pointer;font-weight:500;}
 .sl2:hover{color:var(--accent-light);}
-
 .phr{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-bottom:28px;}
 .pc{background:var(--navy-light);border:1px solid #333;border-radius:4px;padding:17px;position:relative;overflow:hidden;}
 .pc.on{border-color:rgba(200,146,42,.22);background:linear-gradient(160deg,rgba(200,146,42,.05),var(--navy-light));}
@@ -139,7 +132,6 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
 .ptr{height:3px;background:rgba(255,255,255,.06);border-radius:2px;margin-bottom:5px;}
 .pf{height:100%;background:var(--gold-gradient);border-radius:2px;}
 .pm{font-size:10px;color:var(--text-muted);}
-
 .cc{background:#242424;border:1px solid rgba(200,146,42,.2);border-radius:6px;padding:19px 22px;display:flex;align-items:center;gap:17px;margin-bottom:28px;cursor:pointer;transition:border-color .2s,transform .2s;position:relative;overflow:hidden;}
 .cc::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold-gradient);}
 .cc:hover{border-color:rgba(200,146,42,.38);transform:translateY(-2px);}
@@ -167,14 +159,12 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
 .do{font-size:14px;color:var(--text-secondary);line-height:1.65;max-width:680px;margin-bottom:17px;}
 .dm{display:flex;gap:9px;flex-wrap:wrap;align-items:center;}
 .mt{font-size:11px;color:var(--text-muted);background:rgba(255,255,255,.04);border:1px solid #333;padding:5px 12px;border-radius:6px;}
-
 .va{background:var(--navy-mid);border:1px solid #333;border-radius:6px;height:310px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:13px;margin-bottom:20px;position:relative;overflow:hidden;cursor:pointer;}
 .va::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50%,rgba(200,146,42,.04),transparent 70%);}
 .vpr{width:66px;height:66px;border-radius:50%;background:var(--gold-gradient);display:flex;align-items:center;justify-content:center;box-shadow:0 0 34px rgba(200,146,42,.2);transition:transform .2s;}
 .va:hover .vpr{transform:scale(1.08);}
 .vpa{width:0;height:0;border-style:solid;border-width:11px 0 11px 19px;border-color:transparent transparent transparent var(--navy);margin-left:5px;}
 .vl{font-family:'Inter',sans-serif;font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:rgba(232,234,240,.35);}
-
 .dg{display:grid;grid-template-columns:1fr 295px;gap:17px;margin-bottom:17px;}
 .xc{background:var(--navy-light);border:1px solid #333;border-radius:4px;padding:19px;margin-bottom:13px;}
 .xt{font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:13px;padding-bottom:9px;border-bottom:1px solid #222;}
@@ -200,9 +190,16 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
 .cxn{font-size:11.5px;color:var(--text-muted);line-height:1.7;font-style:italic;margin-top:11px;padding-top:11px;border-top:1px solid rgba(200,146,42,.1);}
 .mnv{display:flex;justify-content:space-between;margin-top:20px;padding-top:16px;border-top:1px solid #222;}
 
+/* Marco de Progressão */
+.marco{background:rgba(201,168,76,.04);border:1px solid rgba(201,168,76,.16);border-left:3px solid var(--accent);border-radius:4px;padding:14px 16px;margin-top:13px;}
+.marco-label{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:6px;}
+.marco-text{font-size:12.5px;color:var(--text-secondary);line-height:1.7;}
+
 /* Pilares */
 .plc{background:var(--navy-light);border:1px solid #333;border-left:3px solid var(--accent);border-radius:6px;padding:22px;margin-bottom:13px;}
-.plnum{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);font-weight:700;font-family:'Inter',sans-serif;margin-bottom:5px;}
+.plphase{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);padding:3px 8px;background:rgba(201,168,76,.08);border-radius:4px;display:inline-block;margin-bottom:6px;}
+.plpeso{font-size:11px;color:var(--text-muted);margin-bottom:9px;}
+.plpeso strong{color:var(--accent-light);}
 .plname{font-family:'Inter',sans-serif;font-size:22px;font-weight:700;margin-bottom:3px;}
 .plsub{font-size:12px;color:var(--text-muted);margin-bottom:13px;}
 .plg{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;}
@@ -218,12 +215,58 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
 .ff{display:flex;align-items:center;justify-content:space-between;padding-top:7px;border-top:1px solid #222;}
 .fsz{font-size:10px;color:var(--text-muted);}
 .fbx{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 6px;border-radius:4px;font-family:'Inter',sans-serif;margin-left:5px;}
-.bxl{background:rgba(34,197,94,.1);color:#22c55e;}.bxp{background:rgba(239,68,68,.1);color:#ef4444;}
+.bxl{background:rgba(34,197,94,.1);color:#22c55e;}
+.bxp{background:rgba(239,68,68,.1);color:#ef4444;}
+.bxv{background:rgba(59,130,246,.1);color:#93C5FD;}
+.bxlnk{background:rgba(200,146,42,.1);color:var(--accent);}
 .bdl{display:inline-flex;align-items:center;gap:5px;background:rgba(200,146,42,.08);border:1px solid rgba(200,146,42,.2);color:var(--accent-light);padding:5px 12px;border-radius:6px;font-size:10px;font-weight:700;font-family:'Inter',sans-serif;letter-spacing:1px;text-transform:uppercase;text-decoration:none;}
 .bdl:hover{background:rgba(200,146,42,.14);}
 .mh{display:flex;align-items:center;gap:9px;margin-bottom:11px;}
 .mtg{font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;background:var(--gold-gradient);color:var(--navy);padding:2px 8px;border-radius:4px;}
 .mtn{font-family:'Inter',sans-serif;font-size:16px;font-weight:700;}
+
+/* Admin */
+.adm-login{background:var(--navy-light);border:1px solid rgba(200,146,42,.2);border-radius:6px;padding:32px;max-width:360px;margin:60px auto;}
+.adm-login-title{font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:20px;}
+.adm-input{width:100%;background:var(--navy-mid);border:1px solid #333;border-radius:4px;padding:10px 14px;color:var(--text-primary);font-family:'Inter',sans-serif;font-size:13px;outline:none;margin-bottom:10px;}
+.adm-input:focus{border-color:var(--accent);}
+.adm-btn{background:var(--accent);color:#0F0F0F;font-family:'Inter',sans-serif;font-size:12px;font-weight:700;border:none;border-radius:4px;padding:10px 20px;cursor:pointer;letter-spacing:.5px;text-transform:uppercase;width:100%;}
+.adm-btn:hover{opacity:.9;}
+.adm-err{font-size:11px;color:var(--vermelho);margin-top:8px;}
+.adm-tabs{display:flex;gap:0;margin-bottom:20px;border-bottom:1px solid #333;}
+.adm-tab{font-size:12px;font-weight:500;color:var(--text-muted);padding:10px 16px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s;}
+.adm-tab.on{color:var(--accent);border-bottom-color:var(--accent);}
+.adm-tab:hover{color:var(--text-secondary);}
+.adm-section{display:none;}
+.adm-section.on{display:block;}
+.adm-form{background:var(--navy-light);border:1px solid #333;border-radius:4px;padding:18px;margin-bottom:20px;}
+.adm-form-title{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px;}
+.adm-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.adm-select{width:100%;background:var(--navy-mid);border:1px solid #333;border-radius:4px;padding:10px 14px;color:var(--text-primary);font-family:'Inter',sans-serif;font-size:13px;outline:none;cursor:pointer;margin-bottom:10px;}
+.adm-select:focus{border-color:var(--accent);}
+.adm-add-btn{background:var(--accent);color:#0F0F0F;font-family:'Inter',sans-serif;font-size:11px;font-weight:700;border:none;border-radius:4px;padding:9px 18px;cursor:pointer;letter-spacing:.5px;text-transform:uppercase;}
+.adm-add-btn:hover{opacity:.9;}
+.adm-list{display:flex;flex-direction:column;gap:8px;}
+.adm-item{background:var(--navy-light);border:1px solid #333;border-radius:4px;padding:12px 14px;display:flex;align-items:flex-start;gap:10px;}
+.adm-item-info{flex:1;}
+.adm-item-name{font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:3px;}
+.adm-item-meta{font-size:11px;color:var(--text-muted);}
+.adm-del{background:none;border:1px solid #333;color:#555;cursor:pointer;padding:4px 9px;border-radius:4px;font-size:11px;font-family:'Inter',sans-serif;flex-shrink:0;}
+.adm-del:hover{border-color:var(--vermelho);color:var(--vermelho);}
+.adm-empty{font-size:12px;color:var(--text-muted);text-align:center;padding:24px;border:1px dashed #333;border-radius:4px;}
+.adm-section-head{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px;}
+/* Admin content blocks in fase view */
+.adm-block{background:rgba(201,168,76,.03);border:1px solid rgba(201,168,76,.15);border-radius:4px;padding:16px;margin-bottom:13px;}
+.adm-block-title{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:11px;display:flex;align-items:center;gap:6px;}
+.adm-video-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.adm-video-row:last-child{border-bottom:none;}
+.adm-video-play{width:28px;height:28px;border-radius:50%;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.adm-link-row{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.adm-link-row:last-child{border-bottom:none;}
+.adm-comment-row{padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12.5px;color:var(--text-secondary);line-height:1.65;}
+.adm-comment-row:last-child{border-bottom:none;}
+.adm-a{color:var(--accent-light);text-decoration:none;font-size:13px;}
+.adm-a:hover{text-decoration:underline;}
 </style>
 </head>
 <body>
@@ -241,24 +284,31 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
     </div>
     <nav class="sb-nav">
       <div class="nav-sec">Principal</div>
-      <div class="nav-it" onclick="sv('dashboard')"><svg class="nav-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg>Dashboard</div>
-      <div class="nav-it" onclick="sv('trilha')"><svg class="nav-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><polygon points="6.5,5.5 11.5,8 6.5,10.5" fill="currentColor" stroke="none"/></svg>Trilha de Aulas<span class="nav-bg">12</span></div>
-      <div class="nav-it" onclick="sv('pilares')"><svg class="nav-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.5L14 5v6l-6 3.5L2 11V5L8 1.5z"/></svg>5 Pilares</div>
+      <div class="nav-it" id="nav-dashboard" onclick="sv('dashboard')"><svg class="nav-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg>Dashboard</div>
+      <div class="nav-it" id="nav-trilha" onclick="sv('trilha')"><svg class="nav-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><polygon points="6.5,5.5 11.5,8 6.5,10.5" fill="currentColor" stroke="none"/></svg>Trilha de Aulas<span class="nav-bg">8</span></div>
+      <div class="nav-it" id="nav-pilares" onclick="sv('pilares')"><svg class="nav-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.5L14 5v6l-6 3.5L2 11V5L8 1.5z"/></svg>5 Pilares</div>
       <div class="nav-sec">Recursos</div>
-      <div class="nav-it" onclick="sv('materiais')"><svg class="nav-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 1h6l4 4v9a1 1 0 01-1 1H4a1 1 0 01-1-1V2a1 1 0 011-1z"/><polyline points="10,1 10,5 14,5"/><line x1="8" y1="7.5" x2="8" y2="12.5"/><line x1="5" y1="10" x2="11" y2="10"/></svg>Materiais<span class="nav-bg" style="background:rgba(200,146,42,.1);color:var(--accent);">8</span></div>
+      <div class="nav-it" id="nav-materiais" onclick="sv('materiais')"><svg class="nav-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 1h6l4 4v9a1 1 0 01-1 1H4a1 1 0 01-1-1V2a1 1 0 011-1z"/><polyline points="10,1 10,5 14,5"/></svg>Materiais<span class="nav-bg" style="background:rgba(200,146,42,.1);color:var(--accent);" id="mat-count">8</span></div>
       <div class="nav-it"><svg class="nav-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12.5V14l1.5-.5L6 12H12a1 1 0 001-1V4a1 1 0 00-1-1H4a1 1 0 00-1 1v7a1 1 0 001 1z" stroke-linejoin="round"/></svg>Suporte</div>
+      <div class="nav-it" id="nav-admin" style="display:none;" onclick="sv('admin')"><svg class="nav-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="7" width="10" height="8" rx="1"/><path d="M5 7V5a3 3 0 016 0v2"/></svg>Admin</div>
     </nav>
+    <div class="sb-lock">
+      <button class="lock-btn" id="lock-btn" onclick="toggleAdmin()">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="7" width="10" height="8" rx="1"/><path d="M5 7V5a3 3 0 016 0v2"/></svg>
+        <span id="lock-label">Acesso Admin</span>
+      </button>
+    </div>
     <div class="sb-foot">
-      <div class="prow">Progresso<span class="pval">8%</span></div>
+      <div class="prow">Progresso<span class="pval">0%</span></div>
       <div class="ptrk"><div class="pfil"></div></div>
-      <div class="psub">1 de 12 módulos concluídos</div>
+      <div class="psub">0 de 6 fases concluídas</div>
     </div>
   </aside>
   <main class="main">
     <div class="topbar">
       <div class="tbc">Marcenaria Alta Performance<span class="s">›</span><em id="tbc">Dashboard</em></div>
       <div class="tbr">
-        <span class="chip cg">12 Módulos · 5 Pilares</span>
+        <span class="chip cg">6 Fases · 5 Pilares · 2 Bônus</span>
         <button class="bg" onclick="sv('materiais')">Materiais</button>
         <button class="bgo" onclick="sv('trilha')">Continuar Trilha →</button>
       </div>
@@ -269,27 +319,27 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
         <div class="hero">
           <div class="he">Área de Membros · Marcenaria Alta Performance</div>
           <div class="hh">Do plano <span class="tg">à realidade.</span></div>
-          <div class="hs">12 módulos, 3 fases, cada aula com entregável concreto e ferramenta aplicável. Sem teoria de livro — só o que muda a operação de uma marcenaria de verdade.</div>
+          <div class="hs">6 fases, 5 pilares, cada aula com entregável concreto e ferramenta aplicável. Sem teoria de livro — só o que muda a operação de uma marcenaria de verdade.</div>
           <div class="hst">
-            <div><div class="hsv">12</div><div class="hsl">Aulas</div></div>
+            <div><div class="hsv">6</div><div class="hsl">Fases</div></div>
             <div><div class="hsv">5</div><div class="hsl">Pilares</div></div>
-            <div><div class="hsv">~80h</div><div class="hsl">Prática Real</div></div>
-            <div><div class="hsv">8</div><div class="hsl">Planilhas</div></div>
+            <div><div class="hsv">~60h</div><div class="hsl">Prática Real</div></div>
+            <div><div class="hsv">8</div><div class="hsl">Ferramentas</div></div>
           </div>
         </div>
-        <div class="sr"><div class="st">Fases do Programa</div></div>
+        <div class="sr"><div class="st">Blocos do Programa</div></div>
         <div class="phr" style="margin-bottom:26px;">
-          <div class="pc on"><div class="pt">Fase 1 · Semanas 1–4</div><div class="pn">Diagnóstico e Base</div><div class="pd">Mapear com honestidade antes de qualquer mudança.</div><div class="ptr"><div class="pf" style="width:25%"></div></div><div class="pm">1 de 4 módulos · 25%</div></div>
-          <div class="pc"><div class="pt off">Fase 2 · Semanas 5–8</div><div class="pn off">Sistemas e Processos</div><div class="pd">Construir a máquina que funciona sem improviso.</div><div class="ptr"><div class="pf" style="width:0%"></div></div><div class="pm">0 de 4 módulos</div></div>
-          <div class="pc"><div class="pt off">Fase 3 · Semanas 9–12</div><div class="pn off">Crescimento e Escala</div><div class="pd">Crescer sem quebrar o que já funciona.</div><div class="ptr"><div class="pf" style="width:0%"></div></div><div class="pm">0 de 4 módulos</div></div>
+          <div class="pc on"><div class="pt">Bloco 1 · Fases 1–2</div><div class="pn">Fundamentos & Rentabilidade</div><div class="pd">Base empresarial, jurídico, contabilidade e precificação.</div><div class="ptr"><div class="pf" style="width:0%"></div></div><div class="pm">0 de 2 fases</div></div>
+          <div class="pc"><div class="pt off">Bloco 2 · Fases 3–4</div><div class="pn off">Comercial & Operação</div><div class="pd">Máquina de vendas e fábrica funcionando com método.</div><div class="ptr"><div class="pf" style="width:0%"></div></div><div class="pm">0 de 2 fases</div></div>
+          <div class="pc"><div class="pt off">Bloco 3 · Fases 5–6 + Bônus</div><div class="pn off">Liderança & Escala</div><div class="pd">Time, crescimento e automação inteligente.</div><div class="ptr"><div class="pf" style="width:0%"></div></div><div class="pm">0 de 4 fases</div></div>
         </div>
         <div class="sr"><div class="st">Continue de Onde Parou</div></div>
-        <div class="cc" onclick="smd(1)">
+        <div class="cc" onclick="smd(0)">
           <div class="ccp"><div class="ccpa"></div></div>
           <div class="cci">
-            <div class="ccl">Fase 1 · Semana 2 · Processos</div>
-            <div class="cct">M02 — Mapeamento do Fluxo Produtivo</div>
-            <div class="ccs">Entender onde o produto passa, onde ele para e onde ele se perde.</div>
+            <div class="ccl">Fase 1 · Visão</div>
+            <div class="cct">Fundamentos</div>
+            <div class="ccs">Você para de pensar como marceneiro e começa a pensar como empresário.</div>
           </div>
           <button class="bgo">Iniciar Aula →</button>
         </div>
@@ -298,9 +348,9 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
       </div>
 
       <div class="view" id="view-trilha">
-        <div class="pb"><div class="pbh"><div class="pnb">1</div><div><div class="pbn">Diagnóstico e Base</div><div class="pbm">Semanas 1–4 · 4 Módulos</div></div></div><div class="cgrid" id="cp1"></div></div>
-        <div class="pb"><div class="pbh"><div class="pnb">2</div><div><div class="pbn">Sistemas e Processos</div><div class="pbm">Semanas 5–8 · 4 Módulos</div></div></div><div class="cgrid" id="cp2"></div></div>
-        <div class="pb"><div class="pbh"><div class="pnb">3</div><div><div class="pbn">Crescimento e Escala</div><div class="pbm">Semanas 9–12 · 4 Módulos</div></div></div><div class="cgrid" id="cp3"></div></div>
+        <div class="pb"><div class="pbh"><div class="pnb">1</div><div><div class="pbn">Fundamentos & Rentabilidade</div><div class="pbm">Bloco 1 · Fases 1–2 · Base empresarial e financeira</div></div></div><div class="cgrid" id="cp1"></div></div>
+        <div class="pb"><div class="pbh"><div class="pnb">2</div><div><div class="pbn">Máquina Comercial & Operação</div><div class="pbm">Bloco 2 · Fases 3–4 · Vendas e produção com método</div></div></div><div class="cgrid" id="cp2"></div></div>
+        <div class="pb"><div class="pbh"><div class="pnb">3</div><div><div class="pbn">Liderança, Escala & Bônus</div><div class="pbm">Bloco 3 · Fases 5–6 + 2 Bônus · Alta performance</div></div></div><div class="cgrid" id="cp3"></div></div>
       </div>
 
       <div class="view" id="view-module"><div id="mc"></div></div>
@@ -311,8 +361,125 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
       </div>
 
       <div class="view" id="view-materiais">
-        <div style="margin-bottom:21px;"><div style="font-family:'Inter',sans-serif;font-size:24px;font-weight:700;margin-bottom:5px;">Materiais & Planilhas</div><div style="font-size:13px;color:var(--text-secondary);">Ferramentas práticas por módulo. Baixe, preencha e aplique na sua operação.</div></div>
+        <div style="margin-bottom:21px;"><div style="font-family:'Inter',sans-serif;font-size:24px;font-weight:700;margin-bottom:5px;">Materiais & Planilhas</div><div style="font-size:13px;color:var(--text-secondary);">Ferramentas práticas por fase. Baixe, preencha e aplique na sua operação.</div></div>
         <div id="mat"></div>
+      </div>
+
+      <div class="view" id="view-admin">
+        <div id="adm-login-area" style="display:none;">
+          <div class="adm-login">
+            <div class="adm-login-title">Acesso Administrador</div>
+            <input type="password" class="adm-input" id="adm-pwd" placeholder="Senha" onkeydown="if(event.key==='Enter')doLogin()">
+            <button class="adm-btn" onclick="doLogin()">Entrar</button>
+            <div class="adm-err" id="adm-err" style="display:none;">Senha incorreta.</div>
+          </div>
+        </div>
+        <div id="adm-panel-area" style="display:none;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+            <div style="font-family:'Inter',sans-serif;font-size:24px;font-weight:700;">Painel Admin</div>
+            <button class="bg" onclick="adminLogout()">Sair do Admin</button>
+          </div>
+          <div class="adm-tabs">
+            <div class="adm-tab on" onclick="admTab('materiais',this)">Materiais</div>
+            <div class="adm-tab" onclick="admTab('videos',this)">Vídeos</div>
+            <div class="adm-tab" onclick="admTab('links',this)">Links</div>
+            <div class="adm-tab" onclick="admTab('comentarios',this)">Comentários</div>
+          </div>
+
+          <div class="adm-section on" id="adm-materiais">
+            <div class="adm-form">
+              <div class="adm-form-title">Adicionar Material</div>
+              <input type="text" class="adm-input" id="am-name" placeholder="Nome do arquivo ou material">
+              <input type="text" class="adm-input" id="am-url" placeholder="URL (Google Drive, Dropbox, OneDrive...)">
+              <input type="text" class="adm-input" id="am-desc" placeholder="Descrição breve">
+              <div class="adm-row" style="margin-bottom:10px;">
+                <select class="adm-select" id="am-type" style="margin-bottom:0;">
+                  <option value="xlsx">XLSX — Planilha</option>
+                  <option value="pdf">PDF — Documento</option>
+                  <option value="link">Link — Recurso</option>
+                  <option value="video">Vídeo</option>
+                </select>
+                <select class="adm-select" id="am-fase" style="margin-bottom:0;">
+                  <option value="">Geral (todas as fases)</option>
+                  <option value="0">Fase 1 — Fundamentos</option>
+                  <option value="1">Fase 2 — Rentabilidade</option>
+                  <option value="2">Fase 3 — Máquina Comercial</option>
+                  <option value="3">Fase 4 — Operação</option>
+                  <option value="4">Fase 5 — Liderança</option>
+                  <option value="5">Fase 6 — Escala</option>
+                  <option value="6">Bônus 1 — Marketing</option>
+                  <option value="7">Bônus 2 — IA</option>
+                </select>
+              </div>
+              <button class="adm-add-btn" onclick="admAddMaterial()">Adicionar Material</button>
+            </div>
+            <div class="adm-section-head">Materiais Adicionados</div>
+            <div class="adm-list" id="adm-mat-list"></div>
+          </div>
+
+          <div class="adm-section" id="adm-videos">
+            <div class="adm-form">
+              <div class="adm-form-title">Adicionar Vídeo</div>
+              <input type="text" class="adm-input" id="av-title" placeholder="Título do vídeo">
+              <input type="text" class="adm-input" id="av-url" placeholder="URL (YouTube, Vimeo, Loom...)">
+              <select class="adm-select" id="av-fase">
+                <option value="0">Fase 1 — Fundamentos</option>
+                <option value="1">Fase 2 — Rentabilidade</option>
+                <option value="2">Fase 3 — Máquina Comercial</option>
+                <option value="3">Fase 4 — Operação</option>
+                <option value="4">Fase 5 — Liderança</option>
+                <option value="5">Fase 6 — Escala</option>
+                <option value="6">Bônus 1 — Marketing</option>
+                <option value="7">Bônus 2 — IA</option>
+              </select>
+              <button class="adm-add-btn" onclick="admAddVideo()">Adicionar Vídeo</button>
+            </div>
+            <div class="adm-section-head">Vídeos Adicionados</div>
+            <div class="adm-list" id="adm-vid-list"></div>
+          </div>
+
+          <div class="adm-section" id="adm-links">
+            <div class="adm-form">
+              <div class="adm-form-title">Adicionar Link</div>
+              <input type="text" class="adm-input" id="al-title" placeholder="Título do link">
+              <input type="text" class="adm-input" id="al-url" placeholder="URL">
+              <input type="text" class="adm-input" id="al-desc" placeholder="Descrição (opcional)">
+              <select class="adm-select" id="al-fase">
+                <option value="0">Fase 1 — Fundamentos</option>
+                <option value="1">Fase 2 — Rentabilidade</option>
+                <option value="2">Fase 3 — Máquina Comercial</option>
+                <option value="3">Fase 4 — Operação</option>
+                <option value="4">Fase 5 — Liderança</option>
+                <option value="5">Fase 6 — Escala</option>
+                <option value="6">Bônus 1 — Marketing</option>
+                <option value="7">Bônus 2 — IA</option>
+              </select>
+              <button class="adm-add-btn" onclick="admAddLink()">Adicionar Link</button>
+            </div>
+            <div class="adm-section-head">Links Adicionados</div>
+            <div class="adm-list" id="adm-lnk-list"></div>
+          </div>
+
+          <div class="adm-section" id="adm-comentarios">
+            <div class="adm-form">
+              <div class="adm-form-title">Adicionar Comentário / Nota do Instrutor</div>
+              <textarea class="adm-input" id="ac-text" placeholder="Texto do comentário ou nota para esta fase" style="height:90px;resize:vertical;margin-bottom:10px;"></textarea>
+              <select class="adm-select" id="ac-fase">
+                <option value="0">Fase 1 — Fundamentos</option>
+                <option value="1">Fase 2 — Rentabilidade</option>
+                <option value="2">Fase 3 — Máquina Comercial</option>
+                <option value="3">Fase 4 — Operação</option>
+                <option value="4">Fase 5 — Liderança</option>
+                <option value="5">Fase 6 — Escala</option>
+                <option value="6">Bônus 1 — Marketing</option>
+                <option value="7">Bônus 2 — IA</option>
+              </select>
+              <button class="adm-add-btn" onclick="admAddComment()">Adicionar Comentário</button>
+            </div>
+            <div class="adm-section-head">Comentários Adicionados</div>
+            <div class="adm-list" id="adm-cmt-list"></div>
+          </div>
+        </div>
       </div>
 
     </div>
@@ -320,113 +487,97 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
 </div>
 <script>
 const F=[
-  {id:"d",name:"Diagnóstico Financeiro",file:"diagnostico_financeiro_pro.xlsx",type:"xlsx",desc:"Mapeamento completo do financeiro: custos, margem e estrutura.",mods:[0,9],sz:"21 KB"},
-  {id:"p",name:"Precificação v2",file:"precificacao_pro.xlsx",type:"xlsx",desc:"Calculadora de preço por m² + complexidade + variáveis.",mods:[2],sz:"12 KB"},
-  {id:"c",name:"CRM Simplificado",file:"crm_simplificado_pro.xlsx",type:"xlsx",desc:"Gestão de leads, funil comercial e acompanhamento por origem.",mods:[2,10],sz:"11 KB"},
-  {id:"pcp",name:"PCP Simplificado",file:"pcp_simplificado_pro.xlsx",type:"xlsx",desc:"Controle de projetos, etapas e cronograma 60 dias úteis.",mods:[5],sz:"12 KB"},
-  {id:"k",name:"Painel de Indicadores",file:"painel_indicadores_pro.xlsx",type:"xlsx",desc:"KPI 25/50/75/100 + aderência ao cronograma + comercial.",mods:[7],sz:"13 KB"},
-  {id:"e",name:"Controle de Estoque",file:"controle_estoque_pro.xlsx",type:"xlsx",desc:"Gestão de material: entrada, saída e estoque mínimo por item.",mods:[4,7],sz:"14 KB"},
-  {id:"f",name:"FAB — Maquinário",file:"FAB-mach.pdf",type:"pdf",desc:"Referência técnica de maquinário para marcenaria.",mods:[4],sz:"138 KB"},
+  {id:"d",name:"Diagnóstico Financeiro",file:"diagnostico_financeiro_pro.xlsx",type:"xlsx",desc:"Mapeamento completo do financeiro: custos, margem e estrutura.",mods:[1],sz:"21 KB"},
+  {id:"p",name:"Precificação v2",file:"precificacao_pro.xlsx",type:"xlsx",desc:"Calculadora de preço por m² + complexidade + variáveis.",mods:[1],sz:"12 KB"},
+  {id:"c",name:"CRM Simplificado",file:"crm_simplificado_pro.xlsx",type:"xlsx",desc:"Gestão de leads, funil comercial e acompanhamento por origem.",mods:[2],sz:"11 KB"},
+  {id:"pcp",name:"PCP Simplificado",file:"pcp_simplificado_pro.xlsx",type:"xlsx",desc:"Controle de projetos, etapas e cronograma 60 dias úteis.",mods:[3],sz:"12 KB"},
+  {id:"k",name:"Painel de Indicadores",file:"painel_indicadores_pro.xlsx",type:"xlsx",desc:"KPI 25/50/75/100 + aderência ao cronograma + comercial.",mods:[3],sz:"13 KB"},
+  {id:"e",name:"Controle de Estoque",file:"controle_estoque_pro.xlsx",type:"xlsx",desc:"Gestão de material: entrada, saída e estoque mínimo por item.",mods:[3],sz:"14 KB"},
+  {id:"f",name:"FAB — Maquinário",file:"FAB-mach.pdf",type:"pdf",desc:"Referência técnica de maquinário para marcenaria.",mods:[3],sz:"138 KB"},
   {id:"r",name:"Projeto Mentoria",file:"Projeto_Mentoria_Marceneiros.pdf",type:"pdf",desc:"Documento de estrutura e visão geral da mentoria.",mods:[],sz:"6 KB"}
 ];
 
 const M=[
-  {id:0,w:1,ph:1,p:"Processos",s:"completed",dur:"2h aula + 3h prática",
-   t:"Raio-X da Empresa",
-   o:"Mapear com precisão o estado real do negócio — financeiro, operacional e comercial. Antes de qualquer mudança: entender o que existe, o que funciona e o que está gerando dano.",
-   tp:["Faturamento e margem dos últimos 12 meses","Estrutura de custos: fixo, variável, pessoal","Pipeline comercial: quantos leads, conversão, ticket","Headcount real vs capacidade instalada","Gargalos aparentes vs gargalos reais"],
-   d:"Diagnóstico empresarial em uma página: números reais, pontos críticos e prioridade de intervenção.",
-   ck:["Preencher planilha de Diagnóstico Financeiro com dados dos últimos 12 meses","Mapear estrutura de custos: fixo, variável, pessoal — com números reais","Calcular produtividade por pessoa (faturamento ÷ headcount)","Identificar os 3 gargalos mais críticos por categoria","Escrever diagnóstico em 1 página para apresentar à equipe de gestão"],
-   cx:{tl:"Benchmarks — Marcenaria Sob Medida Premium",it:[{k:"Margem bruta saudável",v:"30–45%"},{k:"Margem líquida pós-overhead",v:"10–18%"},{k:"Produtividade/pessoa (benchmark)",v:"R$ 220–350k/ano"},{k:"MO direta sobre receita",v:"18–28%"}],nt:"Produtividade abaixo de R$ 200k/pessoa/ano é sinal amarelo. O diagnóstico real começa pelos números que ninguém quer olhar — não pelo que parece urgente."}},
-  {id:1,w:2,ph:1,p:"Processos",s:"current",dur:"2h aula + 4h prática",
-   t:"Mapeamento do Fluxo Produtivo",
-   o:"Entender onde o produto passa, onde ele para e onde ele se perde. Identificar gargalos ocultos antes de propor qualquer intervenção.",
-   tp:["VSM simplificado: da chapa ao móvel instalado","Identificação de gargalos por etapa","Medição de tempo padrão por operação","Cálculo de capacidade real vs capacidade teórica","Custo do retrabalho: o que está sendo absorvido em silêncio"],
-   d:"Mapa do fluxo produtivo + planilha de capacidade real por etapa.",
-   ck:["Andar pelo chão de fábrica e cronometrar tempo em cada etapa — sem interromper","Desenhar o VSM atual no papel: da chapa ao móvel instalado","Identificar os 3 pontos onde o produto 'para' mais tempo","Calcular capacidade real vs capacidade teórica por etapa","Quantificar o custo do retrabalho no último mês (horas × custo-hora)"],
-   cx:{tl:"Fluxo Completo da Operação — 8 Etapas Macro",it:[{k:"1",v:"Comercial fecha"},{k:"2",v:"PCP valida entrada"},{k:"3",v:"Projetos libera técnico"},{k:"4",v:"Produção executa"},{k:"5",v:"PCP controla qualidade e prazo"},{k:"6",v:"Logística envia"},{k:"7",v:"Montagem executa"},{k:"8",v:"Cliente recebe"}],nt:"O jogo é previsibilidade, não velocidade. Gargalo real raramente está onde parece — o VSM revela onde o produto para, não só onde ele anda."}},
-  {id:2,w:3,ph:1,p:"Vendas",s:"available",dur:"2h aula + 3h prática",
-   t:"Processo Comercial e Precificação",
-   o:"Estruturar o funil de vendas por etapas e travar a metodologia de precificação. Eliminar a dependência de talento pessoal no processo comercial.",
-   tp:["Funil comercial: etapas, critérios de avanço, responsáveis","Metodologia de precificação v2: preço por m² + complexidade + variáveis","Cálculo de margem por projeto: identificar projetos que não valem","Qualificação de lead: critério de entrada para proposta","Tempo médio de ciclo comercial e onde há desperdício"],
-   d:"Funil comercial mapeado + calculadora de margem por projeto.",
-   ck:["Desenhar o funil atual: onde entram os leads, onde perdem, quem decide","Calcular taxa de conversão orçamento → venda do último trimestre","Preencher calculadora de margem com 3 obras recentes — ver o resultado","Definir critério de qualificação: quem entra em proposta e quem não entra","Mapear o tempo médio do ciclo: primeiro contato → assinatura de contrato"],
-   cx:{tl:"Funil Comercial — 5 Etapas Padrão",it:[{k:"1",v:"Lead — qualquer contato que demonstrou interesse"},{k:"2",v:"Qualificação — tem arquiteto? Obra em andamento? Não busca preço?"},{k:"3",v:"Reunião — apresentação presencial ou videochamada"},{k:"4",v:"Follow-up — proposta enviada, prazo de retorno definido"},{k:"5",v:"Fechamento — contrato assinado, entrada no PCP"}],nt:"Regra crítica: não prometer prazo sem o PCP ter validado a capacidade. Vendedor que promete sem produção valida está vendendo com o dinheiro do cliente."}},
-  {id:3,w:4,ph:1,p:"Liderança",s:"available",dur:"2h aula + 2h prática",
-   t:"Diagnóstico de Time e Liderança",
-   o:"Avaliar a estrutura humana atual: quem executa, quem lidera e quem não serve ao sistema.",
-   tp:["Organograma real vs organograma desejado","Avaliação de performance atual por colaborador","Lacunas de liderança intermediária","Identificação de pessoas-chave e de riscos de dependência","Primeira versão da estrutura de liderança ideal"],
-   d:"Mapa de equipe atual + estrutura de liderança proposta + plano de transição.",
-   ck:["Preencher mapa de equipe atual: nome, função real, função no organograma","Avaliar cada pessoa em 3 critérios: entrega, atitude, potencial (1–5)","Identificar lacunas de liderança intermediária — quem decide quando você não está","Definir estrutura ideal: quem lidera quem, com KPI de cada posição","Esboçar plano de transição para a estrutura desejada (90 dias)"],
-   cx:{tl:"Cadência de Reunião — Mínimo Viável",it:[{k:"Daily 15min",v:"Encarregado + Gerente — bloqueios do dia"},{k:"Weekly 60min",v:"Gerência + CEO — status de obras, desvios, próxima semana"},{k:"Monthly half-day",v:"CEO + Gerência — KPI, margem, decisões estruturais"},{k:"1:1 quinzenal",v:"CEO com cada gerente direto — pessoa, não tarefa"}],nt:"Gerente não é terminal — é camada que forma a próxima camada. Sem sucessor definido, o CEO nunca sai da operação."}},
-  {id:4,w:5,ph:2,p:"Processos",s:"locked",dur:"2h aula + 5h prática",
-   t:"Layout e Logística de Fábrica",
-   o:"Redesenhar o espaço físico orientado a fluxo, não a hábito. Onde o produto anda define onde o tempo se perde.",
-   tp:["Princípios de layout produtivo para marcenaria","Análise do fluxo atual vs fluxo otimizado","Definição de zonas: corte, usinagem, montagem, acabamento, expedição","Sinalização e organização visual (5S aplicado)","Plano de implementação de layout sem parar a produção"],
-   d:"Proposta de layout otimizado + plano de reorganização faseado.",
-   ck:["Fotografar o layout atual e marcar no papel o fluxo real de cada produto","Medir distâncias que o produto percorre da entrada até a expedição","Identificar zonas sem definição clara e zonas com conflito de uso","Propor rearranjo de layout sem parar a produção — planejar em 3 fases","Implementar sinalização visual nas zonas já definidas"],
-   cx:{tl:"Zonas Funcionais — Fábrica Organizada por Fluxo",it:[{k:"Zona 1",v:"Recebimento e estoque de material"},{k:"Zona 2",v:"Corte e usinagem (máquinas pesadas)"},{k:"Zona 3",v:"Pré-montagem e regulagem"},{k:"Zona 4",v:"Acabamento e pintura"},{k:"Zona 5",v:"Embalagem e expedição"}],nt:"5S aplicado não é limpeza — é organização que elimina decisão. Quando cada coisa tem um lugar definido, o operador não pensa onde está o material: ele executa."}},
-  {id:5,w:6,ph:2,p:"Processos",s:"locked",dur:"2h aula + 4h prática",
-   t:"PCP e Controle de Produção",
-   o:"Implementar planejamento e controle que permita prometer prazo e cumprir. PCP não é planilha — é sistema de decisão.",
-   tp:["Estrutura básica de PCP: O que, quando, quanto, quem","Sequenciamento de produção por projeto e por máquina","Controle de prazo por etapa com alerta de desvio","Integração com ClickUp: da venda ao chão de fábrica","Como comunicar atraso para o cliente sem perder credibilidade"],
-   d:"Modelo de PCP no ClickUp + fluxo de comunicação de prazo.",
-   ck:["Configurar o PCP no ClickUp: estrutura de projeto → ambiente → etapas","Publicar cronograma-alvo dos 3 projetos mais próximos de entrar em produção","Definir quem é o PCP — mesmo que provisório — e documentar as regras de ouro","Criar rotina semanal: segunda revisão, quarta check, sexta relatório","Mapear prazo de cada fornecedor-chave e alimentar no cronograma pré-25%"],
-   cx:{tl:"Ciclo End-to-End — 60 Dias Úteis Padrão",it:[{k:"Pré-25% (material)",v:"~10–15 dias úteis — dominado pelo fornecedor"},{k:"Miolo fábrica 25%→75%",v:"15d média / 20d teto absoluto"},{k:"Pós-75% + logística",v:"~5–10 dias úteis"},{k:"Obra (in loco → limpo)",v:"~15–20 dias úteis"},{k:"Total end-to-end",v:"~60 dias úteis"}],nt:"Regras de ouro do PCP: se travou → comunica na hora. Se atrasou sem avisar → erro grave. Sem projeto aprovado, não entra em produção."}},
-  {id:6,w:7,ph:2,p:"Liderança",s:"locked",dur:"2h aula + 6h prática",
-   t:"Playbooks e Padrão de Execução",
-   o:"Documentar como as coisas devem ser feitas para que o padrão não dependa de uma pessoa.",
-   tp:["O que documentar primeiro: identificar os processos críticos","Estrutura de um POP funcional (sem burocracia)","Playbook de fábrica: operação de máquinas, etapas, conferência","Playbook de escritório: atendimento, proposta, follow-up, pós-venda","Treinamento a partir de playbook: como usar o documento na prática"],
-   d:"Dois playbooks completos: Fábrica (versão inicial) e Comercial.",
-   ck:["Listar os 5 processos mais críticos que dependem de uma pessoa específica","Escolher 1 processo para documentar como POP nesta semana","Escrever o playbook de fábrica: nível 1 (operação de máquinas e etapas de corte)","Escrever o playbook comercial: nível 1 (atendimento inicial e qualificação de lead)","Testar o playbook com outra pessoa — ela consegue executar sem perguntar?"],
-   cx:{tl:"Delegação com Régua — Não com Fé",it:[{k:"Resultado esperado",v:"Definir exatamente o que é sucesso"},{k:"Prazo",v:"Data específica, não 'logo que possível'"},{k:"Forma de reporte",v:"Como, quando e com qual frequência"},{k:"Limite de autonomia",v:"Até onde decide sozinho sem escalar"},{k:"Consequência por desvio",v:"O que acontece se não entregar"}],nt:"Sem todos esses cinco elementos, delegação vira abdicação. Playbook é o documento que torna a delegação possível — sem ele, cada tarefa é refundada do zero."}},
-  {id:7,w:8,ph:2,p:"Processos",s:"locked",dur:"2h aula + 3h prática",
-   t:"KPIs e Painel de Indicadores",
-   o:"Definir o que medir, como medir e como usar o dado para decidir — não para reportar.",
-   tp:["KPI 25/50/75/100: critérios objetivos por etapa de fábrica e obra","KPI de Aderência ao Cronograma: desvio % real vs % planejado","Indicadores comerciais: conversão, ticket, ciclo, CAC por origem","Indicadores financeiros: margem, inadimplência, fluxo de caixa","Ritual de revisão: semanal tático, mensal estratégico"],
-   d:"Painel de indicadores operacional + ritual de revisão semanal/mensal.",
-   ck:["Configurar o KPI 25/50/75/100 para todos os projetos ativos no ClickUp","Criar o campo 'cronograma-alvo' por projeto e alimentar com as datas","Publicar o primeiro relatório diário 17h30 com % real e % planejado","Definir ritual de revisão: semanal tático (60min) e mensal estratégico (half-day)","Identificar qual KPI vai pro painel de indicadores — decidir frequência de leitura"],
-   cx:{tl:"KPI 25/50/75/100 — Critérios Objetivos",it:[{k:"Fábrica 25%",v:"Material em fábrica"},{k:"Fábrica 50%",v:"Corte executado"},{k:"Fábrica 75%",v:"Pré-montagem finalizada"},{k:"Fábrica 100%",v:"Móveis embalados para envio"},{k:"Obra 25%",v:"Móveis in loco"},{k:"Obra 50%",v:"Montagem realizada"},{k:"Obra 75%",v:"Acabamentos e regulagens feitas"},{k:"Obra 100%",v:"Limpeza concluída e embalagem retirada"}],nt:"Desvio = % real − % planejado. Verde ≥ 0 | Amarelo −1 a −10 | Laranja −11 a −25 | Vermelho < −25. Um ambiente em laranja derruba o projeto inteiro."}},
-  {id:8,w:9,ph:3,p:"Liderança",s:"locked",dur:"2h aula + 2h prática",
-   t:"Remuneração Variável e Performance",
-   o:"Construir um modelo de recompensa que alinhe o time ao resultado da empresa. Obra em atraso precisa doer no bolso da equipe, não só no caixa da empresa.",
-   tp:["Princípios de remuneração variável que funcionam na prática","Cenário C: curva simétrica de prazo sobre base de produção","Como definir meta individual auditável por função","Evitar armadilhas: metas conflitantes, metas impossíveis, injustiça percebida","Comunicação do modelo para o time: como apresentar sem gerar resistência"],
-   d:"Modelo de remuneração variável por função + critérios de pagamento.",
-   ck:["Rodar simulação do Cenário C para as 3 últimas obras: quanto cada pessoa receberia?","Definir quem mede o dia de entrega oficial — PCP ou Gerente?","Escrever a política em 1 página: base, regra de antecedência, regra de atraso, qualidade","Definir cronograma de comunicação para o time — dar pelo menos 2 semanas de aviso","Registrar ciência por assinatura antes de implementar"],
-   cx:{tl:"Cenário C — Curva Simétrica (Recomendado)",it:[{k:"Base marceneiro",v:"5% sobre valor de venda da obra"},{k:"Base montador",v:"3% sobre valor de venda da obra"},{k:"Antecedência",v:"+0,5% a cada 2 dias adiantado, teto +2%"},{k:"Atraso",v:"−0,5% a cada 2 dias atrasado, piso 0% (zera em 20 dias)"},{k:"Pagamento",v:"Quando cliente quitar integralmente — não na entrega física"},{k:"Qualidade",v:"Perde variável se houver retrabalho relevante em 30 dias"}],nt:"Obra R$50k, prazo cumprido → marceneiro R$2.500. 8 dias adiantado → R$3.500. 10 dias atraso → R$1.250. 20 dias atraso → R$0. O risco fica compartilhado."}},
-  {id:9,w:10,ph:3,p:"Financeiro",s:"locked",dur:"2h aula + 5h prática",
-   t:"Financeiro Estruturado",
-   o:"Organizar o financeiro com precisão de gestão — não de contador. DRE mensal sem abertura por projeto é ilusão de controle.",
-   tp:["DRE gerencial por projeto: margem real de cada obra","Separação definitiva Pessoal/PJ — não só no papel","Fluxo de caixa projetado 90 dias alinhado ao ciclo de entrega","Custo-hora real: salário + encargo + rateio ÷ horas produtivas reais","Crédito: critério para uso — expansão de capacidade, não cobertura de ineficiência"],
-   d:"DRE gerencial simplificado + modelo de fluxo de caixa 90 dias.",
-   ck:["Escolher 5 obras recentes representativas e puxar os números reais de cada uma","Calcular custo-hora real: (folha total ÷ horas produtivas reais do mês)","Preencher DRE gerencial para as 5 obras — descobrir a margem real de cada uma","Comparar com o orçamento cloud: onde a MO está sendo inchada?","Projetar fluxo de caixa dos próximos 90 dias com os projetos em carteira"],
-   cx:{tl:"Roadmap de Intervenção Financeira — 4 Fases",it:[{k:"Fase 1 (4–6 sem)",v:"Escolher 5 obras e reconstruir custo real vs orçado"},{k:"Fase 2 (6–10 sem)",v:"Revisar custo-hora, separar overhead da MO direta"},{k:"Fase 3 (paralela)",v:"Código único por obra + apontamento de hora real"},{k:"Fase 4 (14ª sem+)",v:"Margem bruta por obra — mediana e dispersão"}],nt:"Sem margem apurada por projeto: impossível saber qual cliente é rentável, qual vendedor está destruindo valor, qual produto deve ter mix maior."}},
-  {id:10,w:11,ph:3,p:"Digital",s:"locked",dur:"2h aula + 3h prática",
-   t:"Digital, Posicionamento e Demanda",
-   o:"Transformar o Instagram e as ferramentas digitais em canal previsível de reuniões qualificadas. KPI real: custo por reunião qualificada — não views, não seguidores.",
-   tp:["Posicionamento de marca para público A/B+: o que comunicar e o que evitar","Três pilares de conteúdo: Repertório, Processo, Educação técnica","Calendário editorial 4 semanas: Reels, Stories, frequência realista","Tráfego pago local: segmentação por renda e por interesse (pago vs orgânico)","KPIs por origem: CPL, CAC, taxa de conversão, ciclo médio, desconto médio"],
-   d:"Calendário editorial 4 semanas + estrutura de campanha paga localizada.",
-   ck:["Classificar todos os leads dos últimos 3 meses por origem: pago vs orgânico","Calcular taxa de conversão separado por canal — qual converte mais?","Criar calendário editorial 4 semanas: definir 3 Reels + 3 Stories por semana","Definir o KPI real: custo por reunião qualificada — não likes nem alcance","Configurar UTMs ou registro manual para rastrear origem de cada lead novo"],
-   cx:{tl:"KPI Comercial — Separado por Origem (Obrigatório)",it:[{k:"Alerta: Orgânico > 70%",v:"Escala travada — cresce só com rede e tempo"},{k:"Alerta: Pago > 60%",v:"Negócio vira refém da mídia — CAC sobe, margem cai"},{k:"Alerta: LTV < CAC × 2",v:"Operação paga mídia para perder dinheiro"},{k:"Desconto pago",v:"Teto máximo = 50% do desconto do orgânico"}],nt:"Todo lead classificado na origem no primeiro contato. Sem isso, o dado é lixo e a decisão de investimento em mídia se torna aleatória."}},
-  {id:11,w:12,ph:3,p:"Processos",s:"locked",dur:"2h aula + 4h prática",
-   t:"Plano Estratégico 12 Meses",
-   o:"Sair da mentoria com um plano de ação concreto, metas definidas e prioridades claras. Não uma lista de intenções — um plano com responsável e prazo.",
-   tp:["Revisão dos 5 pilares: o que foi implementado, o que falta","Definição de metas 12 meses: faturamento, margem, produtividade/pessoa","Priorização das iniciativas: sequência correta importa mais que velocidade","Transição operador → CEO estratégico: o que bloquear na agenda","Ritual de gestão contínua: como não perder o que foi construído"],
-   d:"Plano estratégico 12 meses: metas, iniciativas priorizadas, responsáveis, prazo.",
-   ck:["Revisar os 5 pilares: o que foi implementado de fato, o que ficou pela metade","Definir 3 metas numéricas para 12 meses: faturamento, margem por obra, produtividade","Priorizar as iniciativas restantes — sequência, responsável e prazo para cada uma","Bloquear 2h semanais na agenda para pensar estrategicamente — sem operação nesse tempo","Escrever o plano estratégico final e apresentar para a equipe de gestão"],
-   cx:{tl:"Intenções Estratégicas — 6 Frentes",it:[{k:"1",v:"Organização por processo — não por pessoa"},{k:"2",v:"Cultura de KPI + variável atrelada a resultado"},{k:"3",v:"Controle de margem e precificação calibrada"},{k:"4",v:"Liderança intermediária estruturada"},{k:"5",v:"Transição operador → CEO estratégico"},{k:"6",v:"Modelo replicável e escalável"}],nt:"Gestão é matemática com gente no meio. Plano sem responsável é desejo. Meta sem prazo é intenção. Prioridade sem sequência é caos organizado."}}
+  {id:0,ph:1,p:"Visão",s:"current",dur:"3h aula + 4h prática",
+   t:"Fase 1 — Fundamentos",
+   o:"Você para de pensar como marceneiro e começa a pensar como empresário.",
+   tp:["Marceneiro × empreendedor × empresário","Por que empresas quebram mesmo vendendo muito","A verdadeira função do dono","Como sair da operação sem a empresa parar","Mentalidade de crescimento","Quem trabalha para quem","Construindo uma empresa que funciona sem você","Contabilidade básica — o que todo dono precisa entender","Como ler balancete e DRE sem depender do contador","Pró-labore, distribuição de lucro e retirada: impacto fiscal","Contratos com cliente final, fornecedores e CLT × PJ × autônomo","Apresentação de orçamento: layout, o que entra, o que não entra, como apresentar o preço"],
+   d:"Mapa da Realidade. Contratos padrão (cliente, prestador, CLT). Modelo de Proposta Comercial.",
+   ck:["Entregar Mapa da Realidade preenchido","Nomear quais decisões você pode delegar hoje","Revisar contrato padrão com cliente final","Adaptar modelo de proposta comercial para sua operação","Apresentar 1 proposta nova no layout correto"],
+   marco:"Mapa da Realidade entregue. Aluno nomeia quais decisões pode delegar hoje e quais dependem de processo para serem delegadas. Tem contrato padrão de cliente revisado e proposta comercial no layout correto."
+  },
+  {id:1,ph:1,p:"Lucro",s:"locked",dur:"3h aula + 5h prática",
+   t:"Fase 2 — Rentabilidade",
+   o:"Você aprende a transformar faturamento em lucro.",
+   tp:["Faturamento não paga boleto","Lucro, caixa e patrimônio","Quanto realmente sobra","Margem de contribuição","Custos fixos e variáveis","Precificação estruturada","Desconto inteligente","Quando dizer não para uma venda","Como criar uma empresa que gera riqueza","Fluxo de caixa e capital de giro","Planejamento tributário básico","Compras inteligentes"],
+   d:"Calculadora de Margem. Planilha de Precificação. DRE Simplificado. Fluxo de Caixa. Meta de Lucro.",
+   ck:["Apurar margem bruta real de ao menos 3 obras recentes","Fechar DRE do último mês","Calcular o preço mínimo de uma obra padrão","Identificar onde está o maior vazamento de margem","Definir política de desconto máximo por categoria"],
+   marco:"Aluno apurou margem bruta real de ao menos 3 obras recentes. Tem DRE do último mês fechado. Sabe o preço mínimo de uma obra padrão."
+  },
+  {id:2,ph:2,p:"Vendas",s:"locked",dur:"3h aula + 4h prática",
+   t:"Fase 3 — Máquina Comercial",
+   o:"Sua empresa aprende a vender de forma previsível.",
+   tp:["Por que clientes compram confiança, não marcenaria","Posicionamento e autoridade","Branding e valor percebido","ICP — Perfil de Cliente Ideal","Vender para arquitetos e clientes finais","Experiência do cliente como diferencial","Funil comercial e CRM","Prospecção, atendimento e qualificação","Briefing, apresentação e fechamento","Pós-venda e indicações","KPIs comerciais por origem","Protocolo de comunicação com o cliente","Como apresentar o processo como garantia de entrega","Comunicar impacto de prazo sem tom acusatório","Conduta quando o cliente pressiona para ceder"],
+   d:"Playbook Comercial. Scripts de Atendimento. Checklist de Briefing. KPIs Comerciais. ICP definido.",
+   ck:["Definir seu ICP com clareza","Estruturar funil com etapas e critério de avanço","Levantar taxa de conversão e ticket médio por origem","Escrever processo de atendimento em 1 página","Ativar KPI comercial separado: pago vs orgânico"],
+   marco:"Funil ativo com 1 mês de dados por origem. Aluno sabe sua taxa de conversão e ticket médio. Tem processo de atendimento escrito."
+  },
+  {id:3,ph:2,p:"Processo",s:"locked",dur:"3h aula + 5h prática",
+   t:"Fase 4 — Operação",
+   o:"A fábrica passa a funcionar com método e padrão.",
+   tp:["Fluxo produtivo do caderno à entrega","KPI 25/50/75/100 por ambiente","Cronograma-alvo: ciclo de 60 dias úteis","Planejamento e PCP","Compras, estoque e fornecedores","Caderno técnico como documento de produção","Eliminação de retrabalho","Padronização de processos","Assistência técnica como termômetro","SLA interno de comunicação","Fluxo obrigatório de gestão de alterações","Comunicação proativa de prazos"],
+   d:"Fluxograma Produtivo. Checklist por Etapa. Kanban de Produção. Cronograma Mestre. KPI 25/50/75/100.",
+   ck:["Documentar fluxograma produtivo do caderno à entrega","Implantar KPI 25/50/75/100 em ao menos 2 projetos ativos","Publicar cronograma-alvo antes de iniciar produção","Escrever SLA interno de resposta entre departamentos","Definir fluxo de aprovação para alterações de cliente"],
+   cx:{tl:"KPI 25/50/75/100 — Critérios Objetivos",it:[{k:"Fábrica 25%",v:"Material em fábrica"},{k:"Fábrica 50%",v:"Corte executado"},{k:"Fábrica 75%",v:"Pré-montagem finalizada"},{k:"Fábrica 100%",v:"Móveis embalados para envio"},{k:"Obra 25%",v:"Móveis in loco"},{k:"Obra 50%",v:"Montagem realizada"},{k:"Obra 75%",v:"Acabamentos e regulagens feitas"},{k:"Obra 100%",v:"Limpeza concluída e embalagem retirada"}],nt:"Desvio = % real − % planejado. Verde ≥ 0 | Amarelo −1 a −10 | Laranja −11 a −25 | Vermelho < −25. Um ambiente em laranja derruba o projeto inteiro."},
+   marco:"Fluxograma documentado. KPI 25/50/75/100 rodando em ao menos 2 projetos ativos. Cronograma-alvo publicado antes de iniciar a produção."
+  },
+  {id:4,ph:3,p:"Pessoas",s:"locked",dur:"3h aula + 4h prática",
+   t:"Fase 5 — Liderança",
+   o:"Você deixa de ser o gargalo e começa a construir líderes.",
+   tp:["Como contratar certo","Como demitir com método","Cultura e valores na marcenaria","Treinamento e desenvolvimento","Feedback como ferramenta de gestão","Remuneração variável atrelada a resultado","Plano de carreira","Avaliação de desempenho","Cadência de reunião mínima viável","Como criar gestores","Liderança em empresa familiar","Indicadores de KPI por função","Método CORTE — ferramenta oficial de feedback","Escada disciplinar: conversa → advertência → desligamento"],
+   d:"One-on-One. PDI. Avaliação de Desempenho. Regulamento de Variável. Checklist de Onboarding. Formulário CORTE. SLA Interno.",
+   ck:["Definir líder intermediário com KPI objetivo","Escrever regulamento de variável em 1 página","Iniciar cadência de reunião (semanal tático)","Aplicar Formulário CORTE em 1 situação real","Publicar checklist de onboarding para nova contratação"],
+   cx:{tl:"Método CORTE — Escada Disciplinar",it:[{k:"Degrau 1",v:"Conversa direta — verbal, informal, imediata"},{k:"Degrau 2",v:"Conversa com registro — formulário CORTE assinado"},{k:"Degrau 3",v:"Advertência formal documentada"},{k:"Degrau 4",v:"Suspensão"},{k:"Degrau 5",v:"Desligamento"}],nt:"Feedback sempre registrado a partir do degrau 2. Dono aprova CORTE a partir do degrau 3. Decisão final em desligamento é do CEO."},
+   marco:"Ao menos 1 líder intermediário com KPI definido. Regulamento de variável escrito e comunicado. Cadência de reunião rodando há 30+ dias."
+  },
+  {id:5,ph:3,p:"Visão",s:"locked",dur:"3h aula + 5h prática",
+   t:"Fase 6 — Escala",
+   o:"Você prepara a marcenaria para crescer sem perder qualidade.",
+   tp:["Processos como ativo da empresa","Indicadores e gestão por número","Metas e OKRs","Plano de 90 dias como unidade de execução","Tomada de decisão com dado","Tecnologia, automação e IA","Expansão: filiais, franquias, novos mercados","Como crescer sem perder qualidade","Os próximos 5 anos","Protocolo de contingência: ponto único de falha","Backup operacional — 70% de eficiência em ausência","Revisão periódica de processos (6 meses)","Integração e treinamento de novos membros"],
+   d:"Painel Executivo. Scorecard Estratégico. Plano de 90 dias. Plano Estratégico 3–5 anos. Mapa de Expansão.",
+   ck:["Construir Scorecard Estratégico com 5–8 indicadores","Escrever Plano de 90 dias com responsáveis e prazos","Mapear ponto único de falha e criar plano de contingência","Definir protocolo de revisão de processos (a cada 6 meses)","Apresentar Plano Estratégico para a equipe de gestão"],
+   marco:"Plano Estratégico Completo: situação atual (diagnóstico entrada vs. saída), metas 12 meses, plano de 90 dias com responsáveis e indicadores, mapa de expansão com premissas."
+  },
+  {id:6,ph:3,p:"Digital",s:"locked",dur:"2h aula + 3h prática",
+   t:"Bônus 1 — Marketing para Marcenarias",
+   o:"Como o marketing digital gera reuniões qualificadas, não seguidores.",
+   tp:["Instagram: o que postar e qual o objetivo real","Google Meu Negócio e avaliações como ativo","Relacionamento com arquitetos","Produção de conteúdo com autoridade","Tráfego pago: CAC, não clique","WhatsApp como canal de vendas","Programa de indicações como sistema"],
+   d:"Calendário editorial 4 semanas. Estrutura de campanha paga localizada.",
+   ck:["Criar calendário editorial 4 semanas (3 Reels + 3 Stories)","Configurar Google Meu Negócio com fotos e avaliações","Definir KPI: custo por reunião qualificada","Criar protocolo de relacionamento com arquitetos","Estruturar programa de indicações com incentivo claro"],
+   marco:"Calendário editorial ativo. Pelo menos 1 canal digital com KPI definido e monitorado."
+  },
+  {id:7,ph:3,p:"Digital",s:"locked",dur:"2h aula + 3h prática",
+   t:"Bônus 2 — IA Aplicada à Marcenaria",
+   o:"Automação inteligente: o que delegar para a máquina e o que só você pode fazer.",
+   tp:["ChatGPT e Claude na prática","Automação de orçamentos e relatórios","Agente de orçamentos por m² e complexidade","CRM com IA: qualificação de leads no WhatsApp","IA no ARESTA","O que automatizar e o que não automatizar"],
+   d:"Mapa de automações prioritárias. Configuração do agente de orçamentos.",
+   ck:["Identificar 3 tarefas repetitivas que podem ser automatizadas","Testar o agente de orçamentos com 2 obras reais","Configurar CRM com qualificação de lead via WhatsApp","Criar 1 prompt personalizado para relatório semanal"],
+   marco:"Ao menos 1 automação ativa na operação. Aluno sabe distinguir o que vale automatizar do que não vale."
+  }
 ];
 
 const PIL=[
-  {n:"Pilar 1",ic:"⚙️",nm:"Processos",sb:"Fábrica, fluxo, layout, maquinário, proficiência de equipe",tp:["Mapeamento do fluxo produtivo (VSM simplificado)","Layout orientado a fluxo — não a costume","Tempo padrão por operação e por colaborador","POP (Procedimento Operacional Padrão) por função","Controle de retrabalho e custo de não-qualidade","Logística interna: onde corta, onde monta, onde sai","Proficiência: mapeamento de gap e plano de capacitação","Manutenção preventiva de maquinário"]},
-  {n:"Pilar 2",ic:"💰",nm:"Vendas",sb:"Precificação, processo comercial, funil, persuasão e desperdício",tp:["Processo comercial em etapas definidas (não depende de talento pessoal)","Metodologia de precificação travada — aplicação consistente da v2","Funil com critério de entrada: nem todo lead vira proposta","Gestão do tempo de vendas: onde está o desperdício real","Quebra de objeção: por que ela ocorre e o que isso revela","Scripts de abordagem, pitch e follow-up estruturados","Agilidade na entrega de proposta sem perder precisão","KPIs comerciais: taxa de conversão, tempo de ciclo, ticket médio"]},
-  {n:"Pilar 3",ic:"👥",nm:"Liderança e Time",sb:"Comunicação, contratação, avaliação, reuniões, playbooks, gestão de crise",tp:["Estrutura de liderança intermediária (gerente + coordenadores)","Processo de contratação por perfil — não por urgência","Quando e como demitir: critério, documentação, comunicação","Reuniões de alinhamento: pauta fixa, encaminhamento obrigatório","Avaliação de desempenho que gera decisão — não conversa","Remuneração variável atrelada a KPI auditável","Playbooks de fábrica e escritório: documentar para replicar","Gestão de crise: diferenciar falha de processo de erro humano"]},
-  {n:"Pilar 4",ic:"📱",nm:"Digital e Ferramentas",sb:"Instagram, IA, automação e otimização de tempo",tp:["Instagram com estratégia de conversão — não de curtidas","Três pilares de conteúdo: Repertório / Processo / Educação técnica","Tráfego pago localizado: Campo Grande + arquitetos/designers","KPI real: custo por reunião qualificada — não alcance ou views","IA no processo comercial: agente de orçamento e automações","ClickUp como sistema de gestão operacional real","Ferramentas de produtividade: o que eliminar antes de automatizar","Stack mínima viável para uma marcenaria organizada"]},
-  {n:"Pilar 5",ic:"📊",nm:"Organização Financeira",sb:"Pessoal/PJ, custo fixo, custo variável, crédito, DRE gerencial",tp:["Separação real Pessoal/PJ — não só no papel","DRE gerencial por projeto: saber a margem de cada obra","Fluxo de caixa projetado 90 dias (alinhado ao ciclo de entrega)","Custo fixo vs variável: identificar onde está o peso real","Precificação com margem mínima garantida de 34%+","Crédito: critério para uso — expansão de capacidade, não cobertura de ineficiência","Ponto de equilíbrio dinâmico por capacidade instalada","Tributação: Simples vs Presumido vs Real — análise aplicada"]}
+  {peso:"30%",fase:"Fase 4 — Operação",nm:"Processos",sb:"Fluxo produtivo, KPI 25/50/75/100, PCP, estoque, cronograma",tp:["Mapeamento do fluxo produtivo completo (caderno à entrega)","KPI 25/50/75/100 por ambiente — critérios objetivos","Cronograma-alvo: ciclo de 60 dias úteis end-to-end","PCP e planejamento de produção","Compras, estoque mínimo e gestão de fornecedores","Eliminação de retrabalho e padronização de POPs","SLA interno de comunicação entre departamentos","Assistência técnica como termômetro de qualidade"]},
+  {peso:"25%",fase:"Fase 2 — Rentabilidade",nm:"Financeiro",sb:"Margem por obra, DRE gerencial, fluxo de caixa, precificação",tp:["DRE gerencial por projeto: margem real de cada obra","Separação real Pessoal/PJ — não só no papel","Fluxo de caixa projetado 90 dias","Margem de contribuição e ponto de equilíbrio","Precificação estruturada: custo + overhead + margem mínima","Desconto inteligente: quando e quanto ceder","Compras e capital de giro","Planejamento tributário básico"]},
+  {peso:"20%",fase:"Fase 5 — Liderança",nm:"Liderança",sb:"Equipe, contratação, demissão, variável, feedback, onboarding",tp:["Estrutura de liderança intermediária","Processo de contratação por perfil — não por urgência","Como demitir com método e documentação","Remuneração variável atrelada a KPI auditável","Método CORTE: feedback estruturado e escada disciplinar","Avaliação de desempenho que gera decisão","Cadência de reunião mínima viável","Liderança em empresa familiar: o que muda"]},
+  {peso:"15%",fase:"Fase 3 — Máquina Comercial",nm:"Vendas",sb:"Funil, ICP, CRM, briefing, conversão, ticket médio",tp:["Processo comercial em etapas definidas","ICP — Perfil de Cliente Ideal","Funil comercial com critério de entrada","Scripts de abordagem, pitch e follow-up","KPIs comerciais por origem: pago vs orgânico","Taxa de conversão e ciclo médio","Briefing estruturado e apresentação de proposta","Pós-venda e geração de indicações"]},
+  {peso:"10%",fase:"Fase 6 + Bônus",nm:"Digital & IA",sb:"Instagram, Google, tráfego pago, automação e IA",tp:["Instagram com estratégia de conversão — não de curtidas","Google Meu Negócio como ativo de reputação","Tráfego pago local: CAC por reunião qualificada","Automação de orçamentos com IA","CRM com qualificação de lead via WhatsApp","O que automatizar e o que não automatizar","Calendário editorial: Repertório, Processo, Educação","Stack mínima viável para marcenaria organizada"]}
 ];
 
-const PC={Processos:"processos",Vendas:"vendas","Liderança":"lideranca",Financeiro:"financeiro",Digital:"digital"};
-const PK={Processos:"#3B82F6",Vendas:"#10B981","Liderança":"#8B5CF6",Financeiro:"#059669",Digital:"#F59E0B"};
+const PK={"Visão":"#C9A84C","Lucro":"#059669","Vendas":"#10B981","Processo":"#3B82F6","Pessoas":"#8B5CF6","Digital":"#F59E0B"};
+const PC={"Visão":"visao","Lucro":"lucro","Vendas":"vendas","Processo":"processo","Pessoas":"pessoas","Digital":"digital"};
+
+function flabel(m){return m.id<6?'F'+(m.id+1):'B'+(m.id-5);}
 
 function badge(s){
   if(s==='completed')return'<span class="sb sd">Concluído</span>';
@@ -437,86 +588,313 @@ function badge(s){
 function pstyle(p){const c=PK[p]||'#888';return`background:${c}16;border:1px solid ${c}38;color:${c};`;}
 
 function card(m){
-  const cls=PC[m.p]||'processos';
-  const n=String(m.id+1).padStart(2,'0');
+  const cls=PC[m.p]||'visao';
+  const lbl=flabel(m);
   const obj=m.o.length>105?m.o.slice(0,102)+'...':m.o;
   return`<div class="mc${m.s==='locked'?' lk':''}" onclick="smd(${m.id})">
     <div class="ct ${cls}${m.s==='completed'?' done':''}">
-      <div class="cn">${n}</div>
-      <div class="ctm"><div class="cpb"><div class="cpa"></div></div><div class="cpp">F${m.ph}·S${m.w}</div></div>
+      <div class="cn">${lbl}</div>
+      <div class="ctm"><div class="cpb"><div class="cpa"></div></div><div class="cpp">${m.p}</div></div>
     </div>
     <div class="cb">
-      <div class="cw">Semana ${m.w} · ${m.p}</div>
-      <div class="ctt">M${n} — ${m.t}</div>
+      <div class="cw">${m.id<6?'Fase '+(m.id+1):m.t.split('—')[0].trim()} · ${m.p}</div>
+      <div class="ctt">${m.t}</div>
       <div class="cd">${obj}</div>
-      <div class="cf"><div class="cdur"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.4"><circle cx="8" cy="8" r="6"/><polyline points="8,5 8,8 10.5,9.5"/></svg>${m.dur||'~2h + prática'}</div>${badge(m.s)}</div>
+      <div class="cf"><div class="cdur"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.4"><circle cx="8" cy="8" r="6"/><polyline points="8,5 8,8 10.5,9.5"/></svg>${m.dur}</div>${badge(m.s)}</div>
     </div>
   </div>`;
 }
 
-function fileIc(t,c){const e=t==='xlsx'?'<line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/>':'';return`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/>${e}</svg>`;}
+function fileIc(t,c){
+  const e=t==='xlsx'?'<line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/>':'';
+  return`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/>${e}</svg>`;
+}
 
-function fcrd(f){const x=f.type==='xlsx';const c=x?'#22c55e':'#ef4444';
-return`<div class="fc"><div class="fh"><div style="flex-shrink:0;margin-top:2px;">${fileIc(f.type,c)}</div><div><div class="fn">${f.name}<span class="fbx ${x?'bxl':'bxp'}">${f.type.toUpperCase()}</span></div><div class="fdesc">${f.desc}</div></div></div><div class="ff"><span class="fsz">${f.sz}</span><a href="files/${f.file}" download class="bdl"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v8M4 10l4 4 4-4"/><path d="M2 14h12"/></svg>Baixar</a></div></div>`;}
+function fbxCls(t){return t==='xlsx'?'bxl':t==='pdf'?'bxp':t==='video'?'bxv':'bxlnk';}
+
+function fcrd(f,showDel){
+  const x=f.type==='xlsx',isPdf=f.type==='pdf';
+  const c=x?'#22c55e':isPdf?'#ef4444':f.type==='video'?'#93C5FD':'#C9A84C';
+  const dlBtn=f.file
+    ?`<a href="files/${f.file}" download class="bdl"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v8M4 10l4 4 4-4"/><path d="M2 14h12"/></svg>Baixar</a>`
+    :f.url
+    ?`<a href="${f.url}" target="_blank" rel="noopener" class="bdl"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2.5h5.5v5.5"/><path d="M13.5 2.5L7 9"/><path d="M6.5 4H3a1 1 0 00-1 1v8a1 1 0 001 1h8a1 1 0 001-1v-3.5"/></svg>Acessar</a>`
+    :'';
+  const delBtn=showDel?`<button class="adm-del" style="margin-left:8px;" onclick="event.stopPropagation();admDelMatSec('${f._id}')">Remover</button>`:'';
+  return`<div class="fc"><div class="fh"><div style="flex-shrink:0;margin-top:2px;">${fileIc(f.type,c)}</div><div><div class="fn">${f.name}<span class="fbx ${fbxCls(f.type)}">${f.type.toUpperCase()}</span></div><div class="fdesc">${f.desc||''}</div></div></div><div class="ff"><span class="fsz">${f.sz||''}</span><div style="display:flex;align-items:center;">${dlBtn}${delBtn}</div></div></div>`;
+}
 
 function init(){
   document.getElementById('dash-cards').innerHTML=M.filter(m=>m.s!=='completed').slice(0,3).map(card).join('');
   [1,2,3].forEach(p=>{document.getElementById('cp'+p).innerHTML=M.filter(m=>m.ph===p).map(card).join('');});
-  document.getElementById('pilares').innerHTML=PIL.map(p=>`<div class="plc"><div class="plnum">${p.n}</div><div class="plname">${p.ic} ${p.nm}</div><div class="plsub">${p.sb}</div><div class="plg">${p.tp.map(t=>`<div class="plt">${t}</div>`).join('')}</div></div>`).join('');
-  const bm={};F.filter(f=>f.mods.length).forEach(f=>f.mods.forEach(id=>{(bm[id]=bm[id]||[]).push(f);}));
+  document.getElementById('pilares').innerHTML=PIL.map(p=>`<div class="plc">
+    <div class="plphase">${p.fase}</div>
+    <div class="plpeso">Peso no diagnóstico: <strong>${p.peso}</strong></div>
+    <div class="plname">${p.nm}</div>
+    <div class="plsub">${p.sb}</div>
+    <div class="plg">${p.tp.map(t=>`<div class="plt">${t}</div>`).join('')}</div>
+  </div>`).join('');
+  renderMat();
+}
+
+function renderMat(){
+  const adm=getAdminData();
+  const admMats=adm.materials||[];
+  const bm={};
+  F.filter(f=>f.mods.length).forEach(f=>f.mods.forEach(id=>{(bm[id]=bm[id]||[]).push(f);}));
+  admMats.filter(f=>f.faseId!==''&&f.faseId!==null&&f.faseId!==undefined).forEach(f=>{
+    const id=parseInt(f.faseId);if(!isNaN(id)){(bm[id]=bm[id]||[]).push({...f,_isAdm:true});}
+  });
   const gn=F.filter(f=>!f.mods.length);
+  const gnAdm=admMats.filter(f=>f.faseId===''||f.faseId===null||f.faseId===undefined);
   let h='';
-  Object.keys(bm).map(Number).sort((a,b)=>a-b).forEach(id=>{h+=`<div style="margin-bottom:26px;"><div class="mh"><span class="mtg">M${String(id+1).padStart(2,'0')}</span><span class="mtn">${M[id].t}</span></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;">${bm[id].map(fcrd).join('')}</div></div>`;});
-  if(gn.length)h+=`<div style="margin-bottom:26px;"><div class="mh"><span style="font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);border:1px solid rgba(255,255,255,.08);padding:2px 8px;border-radius:4px;">GERAL</span><span class="mtn" style="margin-left:9px;">Documentos Gerais</span></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;">${gn.map(fcrd).join('')}</div></div>`;
-  document.getElementById('mat').innerHTML=h;
+  Object.keys(bm).map(Number).sort((a,b)=>a-b).forEach(id=>{
+    const mi=M[id];if(!mi)return;
+    const lbl=mi.id<6?'F'+(mi.id+1):'B'+(mi.id-5);
+    h+=`<div style="margin-bottom:26px;"><div class="mh"><span class="mtg">${lbl}</span><span class="mtn">${mi.t}</span></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;">${bm[id].map(f=>fcrd(f,isAdmin()&&!!f._isAdm)).join('')}</div></div>`;
+  });
+  if(gn.length||gnAdm.length){
+    h+=`<div style="margin-bottom:26px;"><div class="mh"><span style="font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);border:1px solid rgba(255,255,255,.08);padding:2px 8px;border-radius:4px;">GERAL</span><span class="mtn" style="margin-left:9px;">Documentos Gerais</span></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;">${[...gn,...gnAdm].map(f=>fcrd(f,isAdmin()&&!!f._isAdm)).join('')}</div></div>`;
+  }
+  document.getElementById('mat').innerHTML=h||'<p style="color:var(--text-muted);font-size:13px;">Nenhum material disponível.</p>';
+  // update count
+  const total=F.length+(adm.materials||[]).length;
+  document.getElementById('mat-count').textContent=total;
 }
 
 function smd(id){
-  const m=M[id];const n=String(m.id+1).padStart(2,'0');
-  const phn=['','Diagnóstico e Base','Sistemas e Processos','Crescimento e Escala'][m.ph];
+  const m=M[id];
+  const lbl=flabel(m);
+  const bloco=['','Fundamentos & Rentabilidade','Máquina Comercial & Operação','Liderança, Escala & Bônus'][m.ph];
   const mf=F.filter(f=>f.mods.includes(m.id));
-  const fh=mf.length?`<div class="xc" style="margin-bottom:13px;"><div class="xt">Materiais deste Módulo</div>${mf.map(f=>{const x=f.type==='xlsx';const c=x?'#22c55e':'#ef4444';return`<div style="display:flex;align-items:center;gap:9px;padding:8px 9px;background:var(--navy-mid);border-radius:4px;margin-bottom:5px;">${fileIc(f.type,c)}<div style="flex:1;"><div style="font-size:13px;font-weight:500;">${f.name}</div><div style="font-size:10px;color:var(--text-muted);">${f.desc}</div></div><a href="files/${f.file}" download class="bdl"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v8M4 10l4 4 4-4"/><path d="M2 14h12"/></svg>Baixar</a></div>`;}).join('')}</div>`:'';
+  const adm=getAdminData();
+  const admMatsForPhase=(adm.materials||[]).filter(f=>parseInt(f.faseId)===m.id);
+  const allMats=[...mf,...admMatsForPhase];
+  const fh=allMats.length?`<div class="xc" style="margin-bottom:13px;"><div class="xt">Materiais desta Fase</div>${allMats.map(f=>{
+    const x=f.type==='xlsx';const c=x?'#22c55e':f.type==='pdf'?'#ef4444':'#C9A84C';
+    const dlBtn=f.file?`<a href="files/${f.file}" download class="bdl" style="padding:4px 10px;font-size:9px;">Baixar</a>`:f.url?`<a href="${f.url}" target="_blank" class="bdl" style="padding:4px 10px;font-size:9px;">Acessar</a>`:'';
+    return`<div style="display:flex;align-items:center;gap:9px;padding:8px 9px;background:var(--navy-mid);border-radius:4px;margin-bottom:5px;">${fileIc(f.type,c)}<div style="flex:1;"><div style="font-size:13px;font-weight:500;">${f.name}</div><div style="font-size:10px;color:var(--text-muted);">${f.desc||''}</div></div>${dlBtn}</div>`;
+  }).join('')}</div>`:'';
+
+  const admVideos=(adm.videos||[]).filter(v=>parseInt(v.faseId)===m.id);
+  const admLinks=(adm.links||[]).filter(l=>parseInt(l.faseId)===m.id);
+  const admComments=(adm.comments||[]).filter(c=>parseInt(c.faseId)===m.id);
+
+  const videosHtml=admVideos.length?`<div class="adm-block"><div class="adm-block-title"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><polygon points="6.5,5.5 11.5,8 6.5,10.5" fill="currentColor" stroke="none"/></svg>Vídeos</div>${admVideos.map(v=>`<div class="adm-video-row"><div class="adm-video-play"><svg width="9" height="9" viewBox="0 0 16 16"><polygon points="4,2 14,8 4,14" fill="#C9A84C"/></svg></div><a href="${v.url}" target="_blank" rel="noopener" class="adm-a">${v.title}</a></div>`).join('')}</div>`:'';
+
+  const linksHtml=admLinks.length?`<div class="adm-block"><div class="adm-block-title"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 6H12a4 4 0 010 8h-2"/><path d="M6 10H4a4 4 0 010-8h2"/><line x1="6" y1="8" x2="10" y2="8"/></svg>Links</div>${admLinks.map(l=>`<div class="adm-link-row"><a href="${l.url}" target="_blank" rel="noopener" class="adm-a">${l.title}</a>${l.desc?`<span style="font-size:11px;color:var(--text-muted);margin-left:8px;">${l.desc}</span>`:''}</div>`).join('')}</div>`:'';
+
+  const commentsHtml=admComments.length?`<div class="adm-block"><div class="adm-block-title"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12.5V14l1.5-.5L6 12H12a1 1 0 001-1V4a1 1 0 00-1-1H4a1 1 0 00-1 1v7a1 1 0 001 1z"/></svg>Notas do Instrutor</div>${admComments.map(c=>`<div class="adm-comment-row">${c.text}</div>`).join('')}</div>`:'';
+
   const prev=id>0?id-1:null;const next=id<M.length-1?id+1:null;
   document.getElementById('mc').innerHTML=`
     <div class="dh">
       <div class="dbc" onclick="sv('trilha')"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="10,2 4,8 10,14"/></svg>Trilha de Aulas</div>
       <div class="dpb" style="${pstyle(m.p)}">${m.p}</div>
-      <div class="dtt">M${n} — ${m.t}</div>
+      <div class="dtt">${m.t}</div>
       <div class="do">${m.o}</div>
-      <div class="dm"><div class="mt">Fase ${m.ph} · Semana ${m.w}</div><div class="mt">${m.dur||'~2h aula + prática'}</div>${badge(m.s)}</div>
+      <div class="dm"><div class="mt">${bloco}</div><div class="mt">${m.dur}</div>${badge(m.s)}</div>
     </div>
+    ${videosHtml}
     <div class="va">
       <div class="vpr"><div class="vpa"></div></div>
-      <div class="vl">M${n} · ${m.t}</div>
+      <div class="vl">${lbl} · ${m.t}</div>
     </div>
     <div class="dg">
       <div>
-        <div class="xc"><div class="xt">Tópicos da Aula</div>${m.tp.map(t=>`<div class="ti"><div class="td"></div><div class="tt">${t}</div></div>`).join('')}</div>
+        <div class="xc"><div class="xt">Conteúdo da Fase</div>${m.tp.map(t=>`<div class="ti"><div class="td"></div><div class="tt">${t}</div></div>`).join('')}</div>
       </div>
       <div>
-        <div class="dc2"><div class="dl">Entregável ao Final</div><div class="dxt">${m.d}</div></div>
-        <div class="xc"><div class="xt">Sobre o Módulo</div><div style="font-size:12px;color:var(--text-secondary);line-height:1.7;"><div style="margin-bottom:5px;"><strong style="color:var(--text-primary)">Pilar:</strong> ${m.p}</div><div style="margin-bottom:5px;"><strong style="color:var(--text-primary)">Fase:</strong> ${phn}</div><div><strong style="color:var(--text-primary)">Status:</strong> ${m.s==='completed'?'Concluído ✓':m.s==='current'?'Em andamento':m.s==='available'?'Disponível':'Bloqueado'}</div></div></div>
+        <div class="dc2"><div class="dl">Entregáveis ao Final</div><div class="dxt">${m.d}</div></div>
+        <div class="xc"><div class="xt">Sobre a Fase</div><div style="font-size:12px;color:var(--text-secondary);line-height:1.7;">
+          <div style="margin-bottom:5px;"><strong style="color:var(--text-primary)">Pilar:</strong> ${m.p}</div>
+          <div style="margin-bottom:5px;"><strong style="color:var(--text-primary)">Bloco:</strong> ${bloco}</div>
+          <div><strong style="color:var(--text-primary)">Status:</strong> ${m.s==='completed'?'Concluída ✓':m.s==='current'?'Em andamento':m.s==='available'?'Disponível':'Bloqueada'}</div>
+        </div></div>
       </div>
     </div>
     ${m.ck?`<div class="chk"><div class="xt">Checklist de Implementação</div><div class="chi">Faça isso <strong style="color:var(--text-secondary)">depois</strong> da aula. Sem executar, não adianta assistir.</div>${m.ck.map(i=>`<label class="chit"><input type="checkbox"><span>${i}</span></label>`).join('')}</div>`:''}
     ${m.cx?`<div class="ctx"><div class="cxt">${m.cx.tl}</div>${m.cx.it.map(i=>`<div class="cxr"><span class="cxk">${i.k}</span><span class="cxv">${i.v}</span></div>`).join('')}<div class="cxn">${m.cx.nt}</div></div>`:''}
+    ${m.marco?`<div class="marco"><div class="marco-label">Marco de Progressão</div><div class="marco-text">${m.marco}</div></div>`:''}
     ${fh}
+    ${linksHtml}${commentsHtml}
     <div class="mnv">
-      ${prev!==null?`<button class="bg" onclick="smd(${prev})">← M${String(prev+1).padStart(2,'0')} ${M[prev].t}</button>`:'<div></div>'}
-      ${next!==null?`<button class="bgo" onclick="smd(${next})">M${String(next+1).padStart(2,'0')} ${M[next].t} →</button>`:'<div></div>'}
+      ${prev!==null?`<button class="bg" onclick="smd(${prev})">← ${M[prev].t}</button>`:'<div></div>'}
+      ${next!==null?`<button class="bgo" onclick="smd(${next})">${M[next].t} →</button>`:'<div></div>'}
     </div>`;
   sv('module');
 }
 
-const VL={dashboard:'Dashboard',trilha:'Trilha de Aulas',module:'Módulo',pilares:'5 Pilares',materiais:'Materiais'};
+const VL={dashboard:'Dashboard',trilha:'Trilha de Aulas',module:'Fase',pilares:'5 Pilares',materiais:'Materiais',admin:'Admin'};
 function sv(name){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.querySelectorAll('.nav-it').forEach(n=>n.classList.remove('on'));
-  document.getElementById('view-'+name).classList.add('active');
-  const map={dashboard:0,trilha:1,pilares:2,materiais:4};
-  if(map[name]!==undefined)document.querySelectorAll('.nav-it')[map[name]]?.classList.add('on');
+  const el=document.getElementById('view-'+name);
+  if(el)el.classList.add('active');
+  const navIds={dashboard:'nav-dashboard',trilha:'nav-trilha',pilares:'nav-pilares',materiais:'nav-materiais',admin:'nav-admin'};
+  if(navIds[name])document.getElementById(navIds[name])?.classList.add('on');
+  if(name==='admin'){
+    if(isAdmin()){
+      document.getElementById('adm-login-area').style.display='none';
+      document.getElementById('adm-panel-area').style.display='block';
+      renderAdminLists();
+    } else {
+      document.getElementById('adm-login-area').style.display='block';
+      document.getElementById('adm-panel-area').style.display='none';
+    }
+  }
   document.getElementById('tbc').textContent=VL[name]||name;
   document.querySelector('.content').scrollTop=0;
+}
+
+/* ---- ADMIN ---- */
+const ADM_PASS='apm2026';
+function isAdmin(){return localStorage.getItem('apm_admin_auth')==='1';}
+function getAdminData(){try{return JSON.parse(localStorage.getItem('apm_admin_data')||'{}');}catch(e){return {};}}
+function saveAdminData(d){localStorage.setItem('apm_admin_data',JSON.stringify(d));}
+
+function toggleAdmin(){
+  if(isAdmin()){if(confirm('Sair do modo admin?'))adminLogout();}
+  else sv('admin');
+}
+
+function doLogin(){
+  const pwd=document.getElementById('adm-pwd').value;
+  if(pwd===ADM_PASS){
+    localStorage.setItem('apm_admin_auth','1');
+    document.getElementById('adm-err').style.display='none';
+    document.getElementById('adm-pwd').value='';
+    document.getElementById('lock-btn').classList.add('active');
+    document.getElementById('lock-label').textContent='Admin Ativo';
+    document.getElementById('nav-admin').style.display='flex';
+    document.getElementById('adm-login-area').style.display='none';
+    document.getElementById('adm-panel-area').style.display='block';
+    renderAdminLists();
+  } else {
+    document.getElementById('adm-err').style.display='block';
+  }
+}
+
+function adminLogout(){
+  localStorage.removeItem('apm_admin_auth');
+  document.getElementById('lock-btn').classList.remove('active');
+  document.getElementById('lock-label').textContent='Acesso Admin';
+  document.getElementById('nav-admin').style.display='none';
+  sv('dashboard');
+}
+
+function admTab(name,el){
+  document.querySelectorAll('.adm-tab').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+  document.querySelectorAll('.adm-section').forEach(s=>s.classList.remove('on'));
+  document.getElementById('adm-'+name).classList.add('on');
+}
+
+function uid(){return Math.random().toString(36).slice(2,10);}
+
+function admAddMaterial(){
+  const name=document.getElementById('am-name').value.trim();
+  const url=document.getElementById('am-url').value.trim();
+  const desc=document.getElementById('am-desc').value.trim();
+  const type=document.getElementById('am-type').value;
+  const faseId=document.getElementById('am-fase').value;
+  if(!name||!url){alert('Nome e URL são obrigatórios.');return;}
+  const d=getAdminData();d.materials=d.materials||[];
+  d.materials.push({_id:uid(),name,url,desc,type,faseId,sz:'',addedAt:new Date().toISOString()});
+  saveAdminData(d);
+  document.getElementById('am-name').value='';
+  document.getElementById('am-url').value='';
+  document.getElementById('am-desc').value='';
+  renderAdminLists();renderMat();
+}
+
+function admAddVideo(){
+  const title=document.getElementById('av-title').value.trim();
+  const url=document.getElementById('av-url').value.trim();
+  const faseId=document.getElementById('av-fase').value;
+  if(!title||!url){alert('Título e URL são obrigatórios.');return;}
+  const d=getAdminData();d.videos=d.videos||[];
+  d.videos.push({_id:uid(),title,url,faseId,addedAt:new Date().toISOString()});
+  saveAdminData(d);
+  document.getElementById('av-title').value='';
+  document.getElementById('av-url').value='';
+  renderAdminLists();
+}
+
+function admAddLink(){
+  const title=document.getElementById('al-title').value.trim();
+  const url=document.getElementById('al-url').value.trim();
+  const desc=document.getElementById('al-desc').value.trim();
+  const faseId=document.getElementById('al-fase').value;
+  if(!title||!url){alert('Título e URL são obrigatórios.');return;}
+  const d=getAdminData();d.links=d.links||[];
+  d.links.push({_id:uid(),title,url,desc,faseId,addedAt:new Date().toISOString()});
+  saveAdminData(d);
+  document.getElementById('al-title').value='';
+  document.getElementById('al-url').value='';
+  document.getElementById('al-desc').value='';
+  renderAdminLists();
+}
+
+function admAddComment(){
+  const text=document.getElementById('ac-text').value.trim();
+  const faseId=document.getElementById('ac-fase').value;
+  if(!text){alert('Texto é obrigatório.');return;}
+  const d=getAdminData();d.comments=d.comments||[];
+  d.comments.push({_id:uid(),text,faseId,addedAt:new Date().toISOString()});
+  saveAdminData(d);
+  document.getElementById('ac-text').value='';
+  renderAdminLists();
+}
+
+function admDel(type,id){
+  const d=getAdminData();
+  d[type]=(d[type]||[]).filter(i=>i._id!==id);
+  saveAdminData(d);renderAdminLists();renderMat();
+}
+
+function admDelMatSec(id){
+  const d=getAdminData();
+  d.materials=(d.materials||[]).filter(i=>i._id!==id);
+  saveAdminData(d);renderMat();
+}
+
+function faseLabel(fid){
+  if(fid===''||fid===null||fid===undefined)return'Geral';
+  const i=parseInt(fid);const m=M[i];
+  if(!m)return'Fase '+(i+1);
+  return m.t;
+}
+
+function renderAdminLists(){
+  const d=getAdminData();
+  const mats=d.materials||[];
+  const vids=d.videos||[];
+  const lnks=d.links||[];
+  const cmts=d.comments||[];
+
+  document.getElementById('adm-mat-list').innerHTML=mats.length
+    ?mats.map(f=>`<div class="adm-item"><div class="adm-item-info"><div class="adm-item-name">${f.name} <span class="fbx ${fbxCls(f.type)}">${f.type.toUpperCase()}</span></div><div class="adm-item-meta">${faseLabel(f.faseId)}${f.desc?' · '+f.desc:''}</div></div><button class="adm-del" onclick="admDel('materials','${f._id}')">✕</button></div>`).join('')
+    :`<div class="adm-empty">Nenhum material adicionado ainda.</div>`;
+
+  document.getElementById('adm-vid-list').innerHTML=vids.length
+    ?vids.map(v=>`<div class="adm-item"><div class="adm-item-info"><div class="adm-item-name">${v.title}</div><div class="adm-item-meta">${faseLabel(v.faseId)}</div></div><button class="adm-del" onclick="admDel('videos','${v._id}')">✕</button></div>`).join('')
+    :`<div class="adm-empty">Nenhum vídeo adicionado ainda.</div>`;
+
+  document.getElementById('adm-lnk-list').innerHTML=lnks.length
+    ?lnks.map(l=>`<div class="adm-item"><div class="adm-item-info"><div class="adm-item-name">${l.title}</div><div class="adm-item-meta">${faseLabel(l.faseId)}${l.desc?' · '+l.desc:''}</div></div><button class="adm-del" onclick="admDel('links','${l._id}')">✕</button></div>`).join('')
+    :`<div class="adm-empty">Nenhum link adicionado ainda.</div>`;
+
+  document.getElementById('adm-cmt-list').innerHTML=cmts.length
+    ?cmts.map(c=>`<div class="adm-item"><div class="adm-item-info"><div class="adm-item-meta" style="margin-bottom:4px;">${faseLabel(c.faseId)}</div><div style="font-size:12px;color:var(--text-secondary);">${c.text}</div></div><button class="adm-del" onclick="admDel('comments','${c._id}')">✕</button></div>`).join('')
+    :`<div class="adm-empty">Nenhum comentário adicionado ainda.</div>`;
+}
+
+// Restore admin state on load
+if(isAdmin()){
+  document.getElementById('lock-btn').classList.add('active');
+  document.getElementById('lock-label').textContent='Admin Ativo';
+  document.getElementById('nav-admin').style.display='flex';
 }
 
 init();sv('dashboard');
