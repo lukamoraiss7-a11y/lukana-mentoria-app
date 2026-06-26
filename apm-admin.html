@@ -82,10 +82,59 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
 .empty p strong { color: var(--text); }
 .loading-msg { padding: 40px; text-align: center; color: var(--muted); font-size: 13px; }
 
-/* ── Config banner ── */
-.config-banner { background: rgba(239,68,68,.06); border: 1px solid rgba(239,68,68,.18); border-radius: 12px; padding: 16px 20px; margin-bottom: 28px; display: none; }
-.config-banner p { font-size: 12px; color: #fca5a5; line-height: 1.7; }
-.config-banner code { background: rgba(239,68,68,.12); padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 11px; }
+/* ── Row clickable ── */
+.t-row { cursor: pointer; }
+
+/* ── Drawer ── */
+.drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 200; opacity: 0; pointer-events: none; transition: opacity .25s; }
+.drawer-overlay.open { opacity: 1; pointer-events: all; }
+.drawer { position: fixed; top: 0; right: 0; bottom: 0; width: 480px; max-width: 100vw; background: #0e1628; border-left: 1px solid var(--border); z-index: 201; transform: translateX(100%); transition: transform .28s cubic-bezier(.4,0,.2,1); overflow-y: auto; display: flex; flex-direction: column; }
+.drawer.open { transform: translateX(0); }
+.drawer-header { padding: 22px 24px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; justify-content: space-between; flex-shrink: 0; }
+.drawer-nome { font-family: 'Rajdhani',sans-serif; font-size: 22px; font-weight: 700; letter-spacing: 1px; }
+.drawer-meta { font-size: 11px; color: var(--muted); margin-top: 3px; }
+.drawer-close { background: transparent; border: 1px solid var(--border); color: var(--muted); border-radius: 8px; padding: 7px 12px; cursor: pointer; font-size: 13px; font-family: inherit; transition: all .15s; flex-shrink: 0; }
+.drawer-close:hover { border-color: rgba(255,255,255,.2); color: var(--text); }
+.drawer-body { padding: 24px; flex: 1; }
+
+/* Score total */
+.d-score-row { display: flex; align-items: center; gap: 20px; margin-bottom: 28px; }
+.d-score-num { font-family: 'Rajdhani',sans-serif; font-size: 64px; font-weight: 700; line-height: 1; }
+.d-level-info {}
+.d-level-n { font-family: 'Rajdhani',sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
+.d-level-name { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+/* Quadrant bars */
+.d-section-title { font-family: 'Rajdhani',sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 3px; color: var(--dim); text-transform: uppercase; margin-bottom: 14px; }
+.d-quads { margin-bottom: 28px; display: flex; flex-direction: column; gap: 10px; }
+.d-quad { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
+.d-quad-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.d-quad-label { font-size: 13px; font-weight: 600; }
+.d-quad-score { font-family: 'Rajdhani',sans-serif; font-size: 20px; font-weight: 700; }
+.d-bar-track { height: 5px; background: rgba(255,255,255,.06); border-radius: 3px; }
+.d-bar-fill { height: 100%; border-radius: 3px; transition: width .6s ease; }
+
+/* Priorities */
+.d-priorities { margin-bottom: 28px; }
+.d-pri-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,.04); }
+.d-pri-item:last-child { border-bottom: none; }
+.d-pri-num { font-family: 'Rajdhani',sans-serif; font-size: 18px; font-weight: 700; width: 24px; flex-shrink: 0; }
+.d-pri-label { font-size: 13px; flex: 1; }
+.d-pri-score { font-family: 'Rajdhani',sans-serif; font-size: 14px; font-weight: 700; }
+
+/* Panorama */
+.d-panorama { background: var(--surface); border-radius: 14px; overflow: hidden; margin-bottom: 8px; }
+.d-pan-header { padding: 18px 20px; }
+.d-pan-icon { font-size: 22px; margin-bottom: 8px; }
+.d-pan-headline { font-family: 'Rajdhani',sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+.d-pan-diag { font-size: 12px; color: var(--muted); line-height: 1.65; }
+.d-pan-sintomas { padding: 16px 20px; border-top: 1px solid var(--border); }
+.d-pan-sint-title { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--dim); margin-bottom: 10px; }
+.d-sint-item { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 7px; font-size: 12px; color: var(--muted); line-height: 1.5; }
+.d-sint-dot { width: 6px; height: 6px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+.d-pan-apm { padding: 16px 20px; border-top: 1px solid var(--border); }
+.d-pan-apm-badge { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--dim); margin-bottom: 8px; }
+.d-pan-apm-text { font-size: 12px; color: var(--muted); line-height: 1.65; }
 </style>
 </head>
 <body>
@@ -180,6 +229,19 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
   </div>
 </div>
 
+<!-- ── Drawer de detalhe ── -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="fecharDetalhe()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-header">
+    <div>
+      <div class="drawer-nome" id="dNome"></div>
+      <div class="drawer-meta" id="dMeta"></div>
+    </div>
+    <button class="drawer-close" onclick="fecharDetalhe()">✕ Fechar</button>
+  </div>
+  <div class="drawer-body" id="drawerBody"></div>
+</div>
+
 <script>
 const API_BASE = 'https://lukana-orcamentos.onrender.com'
 const ADMIN_PWD = 'apm2026'
@@ -250,17 +312,20 @@ function levelColor(s) {
   return '#ef4444'
 }
 
+let _rows = []
+
 function renderTabela(rows) {
+  _rows = rows
   const body = document.getElementById('tableBody')
   if (!rows.length) {
     body.innerHTML = `<div class="empty"><p>Nenhum diagnóstico registrado ainda.<br><strong>Gere um link acima e envie para seu mentorado.</strong></p></div>`
     return
   }
-  body.innerHTML = rows.map(r => {
+  body.innerHTML = rows.map((r, idx) => {
     const c = levelColor(r.score_total)
     const data = new Date(r.criado_em).toLocaleDateString('pt-BR')
     const hora = new Date(r.criado_em).toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' })
-    return `<div class="t-row">
+    return `<div class="t-row" onclick="abrirDetalhe(${idx})">
       <div class="td td-name">${r.nome}<span>${data} às ${hora}</span></div>
       <div class="td"><span style="font-size:11px;color:var(--dim)">${data}</span></div>
       <div class="td"><span class="pill" style="background:#10B98118;color:#10B981">${r.score_fin ?? '—'}</span></div>
@@ -270,6 +335,140 @@ function renderTabela(rows) {
       <div class="td"><span class="pill" style="background:${c}18;color:${c};font-size:15px">${r.score_total ?? '—'}</span></div>
     </div>`
   }).join('')
+}
+
+// ── Drawer ──
+const QUADS_META = [
+  { id:'fin',  label:'Financeiro & Resultado', color:'#10B981', key:'score_fin' },
+  { id:'exec', label:'Execução & Processos',   color:'#3b82f6', key:'score_exec' },
+  { id:'pess', label:'Pessoas & Liderança',    color:'#8b5cf6', key:'score_pess' },
+  { id:'estr', label:'Estratégia & Direção',   color:'#F59E0B', key:'score_estr' },
+]
+
+const PANORAMA = {
+  fin: {
+    icon: '₿',
+    headline: 'Brecha principal: Financeiro & Resultado',
+    diag: 'Empresa que não sabe exatamente onde ganha e onde perde não tem controle — tem ilusão de controle. Margem apertada, caixa imprevisível e precificação no feeling são sintomas. A causa é a ausência de método financeiro.',
+    sintomas: ['Mês bom financeiramente não explica por quê','Preço definido pelo concorrente ou por intuição','Caixa aperta no final do mês sem aviso prévio','DRE existe mas não orienta nenhuma decisão'],
+    apm: 'O APM trabalha margem real por tipo de serviço, modelo de precificação que cobre custo e gera resultado, e rotina de caixa que funciona sem olhar todo dia. Você vai saber exatamente onde está ganhando e onde está sangrando.'
+  },
+  exec: {
+    icon: '⚙',
+    headline: 'Brecha principal: Execução & Processos',
+    diag: 'Operação que funciona na memória do dono não é uma operação — é um risco. Toda ausência vira crise. Todo crescimento aumenta o caos. O problema não é as pessoas: é a falta de método, ritual e acompanhamento.',
+    sintomas: ['O mesmo erro acontece mais de uma vez sem ser corrigido','O que é combinado raramente é entregue como prometido','Você precisa checar tudo para ter resultado','Crescer significa mais dor de cabeça, não mais resultado'],
+    apm: 'No APM você constrói as rotinas de gestão que fazem a operação funcionar sem você estar em cima. Rituais de acompanhamento, follow-up estruturado, processos documentados e cobrados.'
+  },
+  pess: {
+    icon: '◈',
+    headline: 'Brecha principal: Pessoas & Liderança',
+    diag: 'Você pode ter o melhor processo do mundo — se a liderança não cobra, não desenvolve e não dá clareza de papel, o time anda no piloto automático. A empresa cresce quando as pessoas crescem.',
+    sintomas: ['Líderes intermediários passam o problema em vez de resolver','Todo mundo sabe "mais ou menos" o que é seu papel','Feedback só existe quando algo dá muito errado','Time acomodado ou rotatividade constante sem causa aparente'],
+    apm: 'O APM trabalha clareza de papel, protocolo de cobrança e feedback estruturado. Você aprende a liderar e a desenvolver liderança intermediária com método, cadência e critério objetivo de desempenho.'
+  },
+  estr: {
+    icon: '◎',
+    headline: 'Brecha principal: Estratégia & Direção',
+    diag: 'Empresa sem direção clara opera no urgente. Toda semana é apagar incêndio. Decisões difíceis são adiadas até virarem crise. Isso não é má sorte — é ausência de método estratégico.',
+    sintomas: ['Prioridades mudam de semana em semana sem critério','Decisões difíceis ficam na gaveta por meses','Sócios ou líderes não estão alinhados no que importa','A empresa cresce mas ninguém sabe se está indo na direção certa'],
+    apm: 'No APM você define visão, prioridades e um critério objetivo para tomar decisão. Sai do achismo estratégico e entra numa rotina onde cada semana há clareza sobre o que move o negócio.'
+  }
+}
+
+function levelInfo(s) {
+  if (s>=81) return { n:'Nível 5', name:'Alta Performance', color:'#22c55e' }
+  if (s>=61) return { n:'Nível 4', name:'Escala',           color:'#10B981' }
+  if (s>=41) return { n:'Nível 3', name:'Operação',         color:'#eab308' }
+  if (s>=21) return { n:'Nível 2', name:'Estruturação',     color:'#f97316' }
+  return            { n:'Nível 1', name:'Diagnóstico',       color:'#ef4444' }
+}
+
+function abrirDetalhe(idx) {
+  const r = _rows[idx]
+  if (!r) return
+  const lv = levelInfo(r.score_total)
+  const data = new Date(r.criado_em).toLocaleDateString('pt-BR')
+  const hora = new Date(r.criado_em).toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' })
+
+  document.getElementById('dNome').textContent = r.nome
+  document.getElementById('dMeta').innerHTML =
+    `${data} às ${hora} &nbsp;·&nbsp; <span style="color:${lv.color};font-weight:600">${lv.n} — ${lv.name}</span>`
+
+  // Prioridades (sorted lowest → highest)
+  const sorted = [...QUADS_META].map(q => ({ ...q, score: r[q.key] ?? 0 })).sort((a,b) => a.score - b.score)
+  const worst = sorted[0]
+  const pan = PANORAMA[worst.id]
+
+  document.getElementById('drawerBody').innerHTML = `
+    <!-- Score total -->
+    <div class="d-score-row">
+      <div class="d-score-num" style="color:${lv.color}">${r.score_total}</div>
+      <div class="d-level-info">
+        <div class="d-level-n" style="color:${lv.color}">${lv.n}</div>
+        <div class="d-level-name">${lv.name}</div>
+      </div>
+    </div>
+
+    <!-- Quadrant bars -->
+    <div class="d-section-title">Resultado por quadrante</div>
+    <div class="d-quads">
+      ${QUADS_META.map(q => `
+        <div class="d-quad">
+          <div class="d-quad-top">
+            <div class="d-quad-label" style="color:${q.color}">${q.label}</div>
+            <div class="d-quad-score" style="color:${q.color}">${r[q.key] ?? '—'}</div>
+          </div>
+          <div class="d-bar-track">
+            <div class="d-bar-fill" style="width:${r[q.key] ?? 0}%;background:${q.color}"></div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+
+    <!-- Prioridades -->
+    <div class="d-section-title">Prioridades de atuação</div>
+    <div class="d-priorities">
+      ${sorted.map((q, i) => `
+        <div class="d-pri-item">
+          <div class="d-pri-num" style="color:${q.color}">${i+1}</div>
+          <div class="d-pri-label">${q.label}</div>
+          <div class="d-pri-score" style="color:${q.color}">${q.score}</div>
+        </div>
+      `).join('')}
+    </div>
+
+    <!-- Panorama -->
+    <div class="d-section-title">Feedback enviado ao mentorado</div>
+    <div class="d-panorama" style="border:1px solid ${worst.color}22">
+      <div class="d-pan-header" style="background:${worst.color}08">
+        <div class="d-pan-icon">${pan.icon}</div>
+        <div class="d-pan-headline" style="color:${worst.color}">${pan.headline}</div>
+        <div class="d-pan-diag">${pan.diag}</div>
+      </div>
+      <div class="d-pan-sintomas">
+        <div class="d-pan-sint-title">Sinais reconhecidos</div>
+        ${pan.sintomas.map(s => `
+          <div class="d-sint-item">
+            <div class="d-sint-dot" style="background:${worst.color}"></div>
+            <span>${s}</span>
+          </div>
+        `).join('')}
+      </div>
+      <div class="d-pan-apm">
+        <div class="d-pan-apm-badge">Como o APM trabalha isso</div>
+        <div class="d-pan-apm-text">${pan.apm}</div>
+      </div>
+    </div>
+  `
+
+  document.getElementById('drawerOverlay').classList.add('open')
+  document.getElementById('drawer').classList.add('open')
+}
+
+function fecharDetalhe() {
+  document.getElementById('drawerOverlay').classList.remove('open')
+  document.getElementById('drawer').classList.remove('open')
 }
 
 function atualizarStats(rows) {
