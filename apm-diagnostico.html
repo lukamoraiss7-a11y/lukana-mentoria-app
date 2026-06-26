@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Diagnóstico ARESTA APM — Rota Empresarial</title>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
@@ -345,14 +344,8 @@
 </div>
 
 <script>
-// ── Supabase config ──
-const SUPABASE_URL = 'SUA_URL_SUPABASE'
-const SUPABASE_ANON_KEY = 'SUA_ANON_KEY_SUPABASE'
-const SUPABASE_CONFIGURED = !SUPABASE_URL.startsWith('SUA')
-let _sbClient = null
-if (SUPABASE_CONFIGURED) {
-  _sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-}
+// ── Backend config ──
+const API_BASE = 'https://lukana-orcamentos.onrender.com'
 
 // ── URL params ──
 const _params = new URLSearchParams(location.search)
@@ -364,20 +357,23 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 })
 
-// ── Save result to Supabase ──
+// ── Save result ──
 async function saveResult(total, results) {
-  if (!SUPABASE_CONFIGURED || !_sbClient) return
   try {
-    await _sbClient.from('diagnostico_resultados').insert({
-      nome: _nome || 'Anônimo',
-      score_total: total,
-      score_fin:  results.find(r => r.id === 'fin').score,
-      score_exec: results.find(r => r.id === 'exec').score,
-      score_pess: results.find(r => r.id === 'pess').score,
-      score_estr: results.find(r => r.id === 'estr').score,
-      nivel: levelInfo(total).name
+    await fetch(API_BASE + '/api/diagnostico', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        nome:        _nome || 'Anônimo',
+        score_total: total,
+        score_fin:   results.find(r => r.id === 'fin').score,
+        score_exec:  results.find(r => r.id === 'exec').score,
+        score_pess:  results.find(r => r.id === 'pess').score,
+        score_estr:  results.find(r => r.id === 'estr').score,
+        nivel:       levelInfo(total).name,
+      })
     })
-  } catch(e) { console.warn('Supabase save error:', e) }
+  } catch(e) { console.warn('save error:', e) }
 }
 
 // ── Quadrant definitions ──

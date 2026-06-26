@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>APM — Painel Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -122,11 +121,6 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
 
   <div class="content">
 
-    <!-- Config warning -->
-    <div class="config-banner" id="configBanner">
-      <p>⚠️ Supabase não configurado. Edite as constantes <code>SUPABASE_URL</code> e <code>SUPABASE_ANON_KEY</code> neste arquivo para ativar o salvamento de resultados. Veja o passo a passo no comentário no topo do script.</p>
-    </div>
-
     <!-- Gerar link -->
     <div class="section-label">Gerar link de diagnóstico</div>
     <div class="gen-card">
@@ -187,41 +181,9 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
 </div>
 
 <script>
-/*
-  ──────────────────────────────────────────────
-  CONFIGURAÇÃO SUPABASE
-  1. Acesse supabase.com e crie um projeto gratuito
-  2. Em SQL Editor, execute:
-
-  CREATE TABLE diagnostico_resultados (
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    criado_em TIMESTAMPTZ DEFAULT NOW(),
-    nome TEXT NOT NULL,
-    score_total INT,
-    score_fin INT,
-    score_exec INT,
-    score_pess INT,
-    score_estr INT,
-    nivel TEXT
-  );
-
-  ALTER TABLE diagnostico_resultados ENABLE ROW LEVEL SECURITY;
-  CREATE POLICY "insert_anon" ON diagnostico_resultados FOR INSERT TO anon WITH CHECK (true);
-  CREATE POLICY "select_anon" ON diagnostico_resultados FOR SELECT TO anon USING (true);
-
-  3. Copie a URL e a anon key em Settings > API
-  4. Substitua os valores abaixo
-  ──────────────────────────────────────────────
-*/
-
-const SUPABASE_URL = 'SUA_URL_SUPABASE'
-const SUPABASE_ANON_KEY = 'SUA_ANON_KEY_SUPABASE'
+const API_BASE = 'https://lukana-orcamentos.onrender.com'
 const ADMIN_PWD = 'apm2026'
-const DIAG_BASE_URL = location.origin + '/apm-diagnostico.html'
-
-const CONFIGURED = !SUPABASE_URL.startsWith('SUA')
-let sb = null
-if (CONFIGURED) sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+const DIAG_BASE_URL = 'https://mentoria-app-self.vercel.app/apm-diagnostico.html'
 
 // ── Auth ──
 function login() {
@@ -229,7 +191,6 @@ function login() {
   if (pwd === ADMIN_PWD) {
     document.getElementById('loginWrap').style.display = 'none'
     document.getElementById('dashWrap').style.display = 'block'
-    if (!CONFIGURED) document.getElementById('configBanner').style.display = 'block'
     carregarResultados()
   } else {
     const err = document.getElementById('loginErr')
@@ -262,22 +223,23 @@ function copiarLink() {
 
 // ── Load results ──
 async function carregarResultados() {
-  if (!CONFIGURED) {
-    document.getElementById('tableBody').innerHTML =
-      `<div class="empty"><p>Configure o Supabase para ver os resultados aqui.<br><strong>Veja o passo a passo no topo do script.</strong></p></div>`
-    atualizarStats([])
-    return
-  }
   document.getElementById('tableBody').innerHTML = `<div class="loading-msg">Carregando...</div>`
-  const { data, error } = await sb.from('diagnostico_resultados')
-    .select('*').order('criado_em', { ascending: false })
-  if (error) {
+  try {
+    const resp = await fetch(API_BASE + '/api/diagnostico', {
+      headers: { 'X-Admin-Key': 'apm-luka-2026' }
+    })
+    if (resp.status === 401 || resp.status === 403) {
+      document.getElementById('tableBody').innerHTML =
+        `<div class="empty"><p>Sessão expirada. Recarregue a página e entre novamente.</p></div>`
+      return
+    }
+    const rows = await resp.json()
+    renderTabela(Array.isArray(rows) ? rows : [])
+    atualizarStats(Array.isArray(rows) ? rows : [])
+  } catch(e) {
     document.getElementById('tableBody').innerHTML =
-      `<div class="empty"><p>Erro: ${error.message}</p></div>`
-    return
+      `<div class="empty"><p>Erro ao carregar: ${e.message}</p></div>`
   }
-  renderTabela(data || [])
-  atualizarStats(data || [])
 }
 
 function levelColor(s) {
