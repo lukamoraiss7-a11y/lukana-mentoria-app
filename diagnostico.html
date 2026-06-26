@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MAP — Diagnóstico Empresarial</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:#0F0F0F; --navy-l:#1A1A1A; --navy-m:#242424; --navy-d:#0F0F0F;
+  --accent:#C9A84C; --accent-l:#E8C97A;
+  --gold:#C9A84C;
+  --gold-t:#C9A84C;
+  --tp:#E8E8E8; --ts:#AAAAAA; --tm:#888888;
+  --g:#22c55e; --y:#eab308; --o:#f97316; --r:#ef4444;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{min-height:100vh;background:var(--navy);color:var(--tp);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;}
+.tg{background:var(--gold-t);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+
+/* HEADER */
+.hdr{background:var(--navy-d);border-bottom:1px solid rgba(255,255,255,.06);padding:0 32px;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;backdrop-filter:blur(10px);}
+.hdr-brand{display:flex;align-items:center;gap:12px;}
+.hdr-icon{width:38px;height:38px;background:var(--gold);border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-weight:700;font-size:19px;color:var(--navy);flex-shrink:0;}
+.hdr-name{font-family:'Inter',sans-serif;font-weight:700;font-size:17px;letter-spacing:2px;text-transform:uppercase;}
+.hdr-sub{font-size:10px;color:var(--tm);letter-spacing:1px;margin-top:2px;}
+.hdr-r{display:flex;align-items:center;gap:14px;}
+
+/* Score ring in header */
+.score-ring{position:relative;width:48px;height:48px;}
+.score-ring svg{width:48px;height:48px;transform:rotate(-90deg);}
+.sr-bg{fill:none;stroke:rgba(255,255,255,.06);stroke-width:3;}
+.sr-fill{fill:none;stroke-width:3;stroke-linecap:round;transition:stroke-dashoffset .5s ease,stroke .3s;}
+.score-ring .sr-label{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-weight:700;font-size:14px;}
+
+/* Level badge */
+.lvl-badge{display:flex;align-items:center;gap:8px;background:rgba(200,146,42,.08);border:1px solid rgba(200,146,42,.2);border-radius:4px;padding:5px 14px;}
+.lvl-n{font-family:'Inter',sans-serif;font-weight:700;font-size:13px;color:var(--accent-l);}
+.lvl-name{font-size:11px;color:var(--ts);}
+
+/* MAIN */
+.wrap{max-width:1320px;margin:0 auto;padding:28px 28px 60px;}
+
+/* LEVEL BAR */
+.lbar-wrap{margin-bottom:22px;}
+.lbar-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.lbar-title{font-size:11px;color:var(--ts);letter-spacing:.5px;}
+.lbar-score{font-family:'Inter',sans-serif;font-size:15px;font-weight:700;}
+.lbar{height:5px;background:rgba(255,255,255,.05);border-radius:3px;overflow:hidden;}
+.lbar-fill{height:100%;background:var(--gold);border-radius:3px;width:0%;transition:width .6s ease;}
+.lbar-labels{display:flex;justify-content:space-between;margin-top:7px;}
+.ll{font-size:9px;color:var(--tm);letter-spacing:.5px;transition:color .3s;}
+.ll.on{color:var(--accent-l);}
+
+/* TOP GRID */
+.top-grid{display:grid;grid-template-columns:420px 1fr;gap:18px;margin-bottom:18px;}
+
+/* PANEL */
+.panel{background:var(--navy-l);border:1px solid #333;border-radius:6px;padding:22px;}
+.ptitle{font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tm);margin-bottom:18px;}
+
+/* RADAR */
+.radar-wrap{height:290px;position:relative;}
+
+/* KPI GRID */
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.kc{background:var(--navy-m);border-radius:4px;padding:14px;text-align:center;position:relative;overflow:hidden;transition:border-color .3s;border:1px solid transparent;}
+.kc:hover{border-color:rgba(255,255,255,.08);}
+.kc.gold{background:rgba(200,146,42,.05);border-color:rgba(200,146,42,.14);}
+.gauge-wrap{width:76px;height:76px;position:relative;margin:0 auto 8px;}
+.gauge-wrap svg{width:76px;height:76px;}
+.gauge-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.gv{font-family:'Inter',sans-serif;font-weight:700;font-size:16px;line-height:1;}
+.gu{font-size:9px;color:var(--tm);margin-top:2px;}
+.gl{font-size:10px;color:var(--ts);}
+.gbm{font-size:9px;color:var(--tm);margin-top:3px;}
+.gbm span{color:var(--accent);}
+
+/* ACCELERATORS */
+.acc-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px;}
+.acc{background:var(--navy-l);border:1px solid #333;border-radius:6px;padding:18px;position:relative;overflow:hidden;transition:border-color .3s;}
+.acc:hover{border-color:rgba(255,255,255,.1);}
+.acc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.acc.a1::before{background:linear-gradient(90deg,#3B82F6,#60A5FA);}
+.acc.a2::before{background:linear-gradient(90deg,#10B981,#34D399);}
+.acc.a3::before{background:linear-gradient(90deg,#8B5CF6,#A78BFA);}
+.acc-ic{font-size:18px;margin-bottom:8px;}
+.acc-lbl{font-size:10px;font-weight:600;color:var(--tm);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;}
+.acc-val{font-family:'Inter',sans-serif;font-size:26px;font-weight:700;line-height:1;margin-bottom:5px;}
+.acc-desc{font-size:11px;color:var(--ts);line-height:1.6;}
+
+/* PHASE TABS */
+.phases{background:var(--navy-l);border:1px solid #333;border-radius:6px;overflow:hidden;}
+.ptabs{display:flex;border-bottom:1px solid rgba(255,255,255,.06);}
+.ptab{flex:1;padding:14px 16px;font-size:11px;font-weight:500;color:var(--tm);cursor:pointer;text-align:center;border:none;background:transparent;transition:all .2s;font-family:inherit;border-bottom:2px solid transparent;}
+.ptab:hover{color:var(--ts);background:rgba(255,255,255,.02);}
+.ptab.on{color:var(--accent-l);background:rgba(200,146,42,.05);border-bottom-color:var(--accent);}
+.ptab .tn{font-family:'Inter',sans-serif;font-weight:700;font-size:18px;display:block;margin-bottom:2px;}
+.pcontent{display:none;padding:26px;}
+.pcontent.on{display:block;}
+
+/* INPUT GRID */
+.ig{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
+.ig3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:22px;}
+.inp-block{}
+.inp-lbl{font-size:11px;font-weight:600;color:var(--ts);letter-spacing:.3px;margin-bottom:7px;display:flex;justify-content:space-between;align-items:center;}
+.inp-bm{font-size:10px;color:var(--tm);font-weight:400;}
+.inp-row{display:flex;align-items:center;gap:10px;}
+
+/* Number input */
+.inp-n{background:var(--navy-d);border:1px solid rgba(255,255,255,.08);border-radius:4px;color:var(--tp);font-size:15px;font-weight:600;font-family:'Inter',sans-serif;padding:10px 13px;width:130px;outline:none;transition:border-color .2s;}
+.inp-n:focus{border-color:rgba(200,146,42,.4);}
+.inp-n::placeholder{color:var(--tm);}
+
+/* Slider */
+.inp-s{flex:1;-webkit-appearance:none;height:3px;border-radius:2px;background:rgba(255,255,255,.08);outline:none;cursor:pointer;}
+.inp-s::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;background:var(--accent);cursor:pointer;transition:transform .15s;border:2px solid rgba(255,255,255,.25);}
+.inp-s::-webkit-slider-thumb:hover{transform:scale(1.25);}
+.inp-sv{font-family:'Inter',sans-serif;font-weight:700;font-size:15px;color:var(--tp);min-width:52px;text-align:right;}
+
+/* Score microbar */
+.sbar{height:3px;border-radius:2px;margin-top:7px;background:rgba(255,255,255,.05);overflow:hidden;}
+.sbar-f{height:100%;border-radius:2px;transition:width .4s ease,background .3s;}
+
+/* Derived box */
+.derived{background:var(--navy-d);border-radius:4px;padding:13px 16px;display:flex;justify-content:space-between;align-items:center;margin-top:18px;}
+.dv-lbl{font-size:11px;color:var(--tm);}
+.dv-val{font-family:'Inter',sans-serif;font-size:20px;font-weight:700;transition:color .3s;}
+
+/* TARGETS */
+.tgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.tcard{background:var(--navy-m);border-radius:4px;padding:18px;}
+.tcard-lbl{font-size:10px;color:var(--tm);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px;}
+.trow{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.tdot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.tdot.cur{background:var(--r);}
+.tdot.tgt{background:var(--accent);}
+.trow-lbl{font-size:10px;color:var(--tm);}
+.trow-val{font-family:'Inter',sans-serif;font-size:15px;font-weight:700;color:var(--ts);margin-left:auto;}
+.tarr{text-align:center;font-size:10px;color:var(--tm);margin:6px 0;}
+.tgt-inp{background:transparent;border:none;border-bottom:1px solid rgba(200,146,42,.25);color:var(--accent-l);font-family:'Inter',sans-serif;font-size:15px;font-weight:700;outline:none;width:100%;text-align:right;padding-bottom:3px;transition:border-color .2s;}
+.tgt-inp:focus{border-bottom-color:rgba(200,146,42,.6);}
+.tgt-inp::placeholder{color:rgba(200,146,42,.3);}
+.tdelta{text-align:center;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;margin-top:10px;transition:color .3s;}
+
+/* Section divider */
+.sdiv{height:1px;background:rgba(255,255,255,.04);margin:22px 0;}
+
+/* Pilar pills row */
+.pilar-row{display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap;}
+.pilar-pill{display:flex;align-items:center;gap:6px;background:var(--navy-m);border-radius:4px;padding:7px 12px;font-size:11px;color:var(--ts);}
+.pilar-pill .pp-score{font-family:'Inter',sans-serif;font-weight:700;font-size:14px;margin-left:4px;}
+.pilar-bar{width:60px;height:3px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden;}
+.pilar-bar-f{height:100%;border-radius:2px;transition:width .5s ease;}
+
+/* Responsive */
+@media(max-width:960px){
+  .top-grid{grid-template-columns:1fr;}
+  .kpi-grid{grid-template-columns:repeat(3,1fr);}
+  .acc-row{grid-template-columns:1fr;}
+  .ig{grid-template-columns:1fr;}
+  .tgrid{grid-template-columns:1fr 1fr;}
+}
+
+/* Pulse animation for active items */
+@keyframes pulse-gold{0%,100%{box-shadow:0 0 0 0 rgba(200,146,42,.0);}50%{box-shadow:0 0 0 6px rgba(200,146,42,.08);}}
+.pulse{animation:pulse-gold 2s infinite;}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-brand">
+    <div class="hdr-icon">M</div>
+    <div>
+      <div class="hdr-name">MAP <span style="color:var(--tm);font-size:11px;letter-spacing:1px;font-weight:400;">· Diagnóstico</span></div>
+      <div class="hdr-sub">Onde estou. Onde quero chegar.</div>
+    </div>
+  </div>
+  <div class="hdr-r">
+    <div class="lvl-badge">
+      <span class="lvl-n" id="lvlN">Nv 1</span>
+      <span class="lvl-name" id="lvlName">Diagnóstico</span>
+    </div>
+    <div class="score-ring">
+      <svg viewBox="0 0 48 48">
+        <circle class="sr-bg" cx="24" cy="24" r="21"/>
+        <circle class="sr-fill" id="hdrArc" cx="24" cy="24" r="21"
+          stroke="#C9A84C" stroke-dasharray="131.9" stroke-dashoffset="131.9"/>
+      </svg>
+      <div class="sr-label tg" id="hdrScore">0</div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- LEVEL PROGRESS BAR -->
+  <div class="lbar-wrap">
+    <div class="lbar-top">
+      <div class="lbar-title">Maturidade Operacional</div>
+      <div class="lbar-score"><span class="tg" id="scoreDisp">0</span><span style="color:var(--tm);font-size:11px;">/100</span></div>
+    </div>
+    <div class="lbar"><div class="lbar-fill" id="lbarFill"></div></div>
+    <div class="lbar-labels">
+      <span class="ll on" id="ll0">Diagnóstico</span>
+      <span class="ll" id="ll1">Estruturação</span>
+      <span class="ll" id="ll2">Operação</span>
+      <span class="ll" id="ll3">Escala</span>
+      <span class="ll" id="ll4">Alta Performance</span>
+    </div>
+  </div>
+
+  <!-- PILAR PILLS -->
+  <div class="pilar-row" id="pilarRow">
+    <div class="pilar-pill" id="pp-proc">
+      <span style="color:#3B82F6;">⬡</span> Processos
+      <div class="pilar-bar"><div class="pilar-bar-f" id="pb-proc" style="background:#3B82F6;width:0%"></div></div>
+      <span class="pp-score" id="ps-proc" style="color:#3B82F6;">0</span>
+    </div>
+    <div class="pilar-pill" id="pp-fin">
+      <span style="color:#10B981;">⬡</span> Financeiro
+      <div class="pilar-bar"><div class="pilar-bar-f" id="pb-fin" style="background:#10B981;width:0%"></div></div>
+      <span class="pp-score" id="ps-fin" style="color:#10B981;">0</span>
+    </div>
+    <div class="pilar-pill" id="pp-lid">
+      <span style="color:#8B5CF6;">⬡</span> Liderança
+      <div class="pilar-bar"><div class="pilar-bar-f" id="pb-lid" style="background:#8B5CF6;width:0%"></div></div>
+      <span class="pp-score" id="ps-lid" style="color:#8B5CF6;">0</span>
+    </div>
+    <div class="pilar-pill" id="pp-vnd">
+      <span style="color:#F59E0B;">⬡</span> Vendas
+      <div class="pilar-bar"><div class="pilar-bar-f" id="pb-vnd" style="background:#F59E0B;width:0%"></div></div>
+      <span class="pp-score" id="ps-vnd" style="color:#F59E0B;">0</span>
+    </div>
+    <div class="pilar-pill" id="pp-dig">
+      <span style="color:#EC4899;">⬡</span> Digital
+      <div class="pilar-bar"><div class="pilar-bar-f" id="pb-dig" style="background:#EC4899;width:0%"></div></div>
+      <span class="pp-score" id="ps-dig" style="color:#EC4899;">0</span>
+    </div>
+  </div>
+
+  <!-- TOP GRID: RADAR + KPIs -->
+  <div class="top-grid">
+    <div class="panel">
+      <div class="ptitle">Radar dos 5 Pilares — Atual vs Benchmark</div>
+      <div class="radar-wrap"><canvas id="radarChart"></canvas></div>
+    </div>
+    <div class="panel">
+      <div class="ptitle">Indicadores-Chave</div>
+      <div class="kpi-grid">
+
+        <div class="kc">
+          <div class="gauge-wrap">
+            <svg viewBox="0 0 76 76">
+              <circle cx="38" cy="38" r="32" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="5"/>
+              <circle id="gg-prod" cx="38" cy="38" r="32" fill="none" stroke="#3B82F6" stroke-width="5"
+                stroke-linecap="round" stroke-dasharray="201.1" stroke-dashoffset="201.1"
+                transform="rotate(-90 38 38)" style="transition:stroke-dashoffset .55s ease,stroke .3s;"/>
+            </svg>
+            <div class="gauge-inner">
+              <div class="gv" id="gv-prod">—</div>
+              <div class="gu">k/pessoa</div>
+            </div>
+          </div>
+          <div class="gl">Produtividade</div>
+          <div class="gbm">Bm: <span>R$ 220–350k</span></div>
+        </div>
+
+        <div class="kc">
+          <div class="gauge-wrap">
+            <svg viewBox="0 0 76 76">
+              <circle cx="38" cy="38" r="32" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="5"/>
+              <circle id="gg-marg" cx="38" cy="38" r="32" fill="none" stroke="#10B981" stroke-width="5"
+                stroke-linecap="round" stroke-dasharray="201.1" stroke-dashoffset="201.1"
+                transform="rotate(-90 38 38)" style="transition:stroke-dashoffset .55s ease,stroke .3s;"/>
+            </svg>
+            <div class="gauge-inner">
+              <div class="gv" id="gv-marg">—</div>
+              <div class="gu">%</div>
+            </div>
+          </div>
+          <div class="gl">Margem Bruta</div>
+          <div class="gbm">Bm: <span>30–45%</span></div>
+        </div>
+
+        <div class="kc">
+          <div class="gauge-wrap">
+            <svg viewBox="0 0 76 76">
+              <circle cx="38" cy="38" r="32" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="5"/>
+              <circle id="gg-ciclo" cx="38" cy="38" r="32" fill="none" stroke="#8B5CF6" stroke-width="5"
+                stroke-linecap="round" stroke-dasharray="201.1" stroke-dashoffset="201.1"
+                transform="rotate(-90 38 38)" style="transition:stroke-dashoffset .55s ease,stroke .3s;"/>
+            </svg>
+            <div class="gauge-inner">
+              <div class="gv" id="gv-ciclo">—</div>
+              <div class="gu">dias</div>
+            </div>
+          </div>
+          <div class="gl">Ciclo Entrega</div>
+          <div class="gbm">Bm: <span>≤ 60d</span></div>
+        </div>
+
+        <div class="kc">
+          <div class="gauge-wrap">
+            <svg viewBox="0 0 76 76">
+              <circle cx="38" cy="38" r="32" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="5"/>
+              <circle id="gg-conv" cx="38" cy="38" r="32" fill="none" stroke="#F59E0B" stroke-width="5"
+                stroke-linecap="round" stroke-dasharray="201.1" stroke-dashoffset="201.1"
+                transform="rotate(-90 38 38)" style="transition:stroke-dashoffset .55s ease,stroke .3s;"/>
+            </svg>
+            <div class="gauge-inner">
+              <div class="gv" id="gv-conv">—</div>
+              <div class="gu">%</div>
+            </div>
+          </div>
+          <div class="gl">Conversão</div>
+          <div class="gbm">Bm: <span>40–60%</span></div>
+        </div>
+
+        <div class="kc">
+          <div class="gauge-wrap">
+            <svg viewBox="0 0 76 76">
+              <circle cx="38" cy="38" r="32" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="5"/>
+              <circle id="gg-obra" cx="38" cy="38" r="32" fill="none" stroke="#059669" stroke-width="5"
+                stroke-linecap="round" stroke-dasharray="201.1" stroke-dashoffset="201.1"
+                transform="rotate(-90 38 38)" style="transition:stroke-dashoffset .55s ease,stroke .3s;"/>
+            </svg>
+            <div class="gauge-inner">
+              <div class="gv" id="gv-obra">—</div>
+              <div class="gu">%</div>
+            </div>
+          </div>
+          <div class="gl">Margem/Obra</div>
+          <div class="gbm">Bm: <span>30–40%</span></div>
+        </div>
+
+        <div class="kc gold pulse">
+          <div class="gauge-wrap">
+            <svg viewBox="0 0 76 76">
+              <circle cx="38" cy="38" r="32" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="5"/>
+              <circle id="gg-total" cx="38" cy="38" r="32" fill="none" stroke="#C9A84C" stroke-width="5"
+                stroke-linecap="round" stroke-dasharray="201.1" stroke-dashoffset="201.1"
+                transform="rotate(-90 38 38)" style="transition:stroke-dashoffset .55s ease;"/>
+            </svg>
+            <div class="gauge-inner">
+              <div class="gv tg" id="gv-total">0</div>
+              <div class="gu">/100</div>
+            </div>
+          </div>
+          <div class="gl" style="color:var(--accent-l);">Score Geral</div>
+          <div class="gbm">Meta: <span>80+</span></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ACCELERATORS -->
+  <div class="acc-row">
+    <div class="acc a1">
+      <div class="acc-ic">⚡</div>
+      <div class="acc-lbl">Acelerador de Produtividade</div>
+      <div class="acc-val" id="ac-prod" style="color:#60A5FA;">—</div>
+      <div class="acc-desc" id="ac-prod-d">Preencha faturamento e headcount para calcular o potencial.</div>
+    </div>
+    <div class="acc a2">
+      <div class="acc-ic">💰</div>
+      <div class="acc-lbl">Acelerador de Margem</div>
+      <div class="acc-val" id="ac-marg" style="color:#34D399;">—</div>
+      <div class="acc-desc" id="ac-marg-d">Preencha faturamento e margem bruta para calcular.</div>
+    </div>
+    <div class="acc a3">
+      <div class="acc-ic">🔄</div>
+      <div class="acc-lbl">Acelerador de Ciclo</div>
+      <div class="acc-val" id="ac-ciclo" style="color:#A78BFA;">—</div>
+      <div class="acc-desc" id="ac-ciclo-d">Preencha o ciclo atual para ver o potencial de escala.</div>
+    </div>
+  </div>
+
+  <!-- PHASE TABS -->
+  <div class="phases">
+    <div class="ptabs">
+      <button class="ptab on" onclick="setTab(0)">
+        <span class="tn">01</span>Diagnóstico e Base
+      </button>
+      <button class="ptab" onclick="setTab(1)">
+        <span class="tn">02</span>Sistemas e Processos
+      </button>
+      <button class="ptab" onclick="setTab(2)">
+        <span class="tn">03</span>Crescimento e Escala
+      </button>
+      <button class="ptab" onclick="setTab(3)">
+        <span class="tn">→</span>Onde quero chegar
+      </button>
+    </div>
+
+    <!-- TAB 1: DIAGNÓSTICO E BASE -->
+    <div class="pcontent on" id="t0">
+      <div class="ig" style="margin-bottom:22px;">
+        <div class="inp-block">
+          <div class="inp-lbl">Faturamento anual atual <span class="inp-bm">R$/ano</span></div>
+          <div class="inp-row">
+            <input type="number" class="inp-n" id="fat" placeholder="4000000" oninput="upd()">
+            <span style="font-size:11px;color:var(--tm);">R$/ano</span>
+          </div>
+        </div>
+        <div class="inp-block">
+          <div class="inp-lbl">Headcount total <span class="inp-bm">pessoas</span></div>
+          <div class="inp-row">
+            <input type="number" class="inp-n" id="head" placeholder="25" oninput="upd()">
+            <span style="font-size:11px;color:var(--tm);">pessoas</span>
+          </div>
+        </div>
+        <div class="inp-block">
+          <div class="inp-lbl">Margem bruta estimada <span class="inp-bm">Bm: 30–45%</span></div>
+          <div class="inp-row">
+            <input type="range" class="inp-s" id="marg" min="0" max="65" value="0" oninput="sl('marg','sv-marg','%');upd()">
+            <div class="inp-sv" id="sv-marg">0%</div>
+          </div>
+          <div class="sbar"><div class="sbar-f" id="sb-marg"></div></div>
+        </div>
+        <div class="inp-block">
+          <div class="inp-lbl">Taxa de conversão comercial <span class="inp-bm">Bm: 40–60%</span></div>
+          <div class="inp-row">
+            <input type="range" class="inp-s" id="conv" min="0" max="100" value="0" oninput="sl('conv','sv-conv','%');upd()">
+            <div class="inp-sv" id="sv-conv">0%</div>
+          </div>
+          <div class="sbar"><div class="sbar-f" id="sb-conv"></div></div>
+        </div>
+        <div class="inp-block">
+          <div class="inp-lbl">Ticket médio por projeto <span class="inp-bm">R$</span></div>
+          <div class="inp-row">
+            <input type="number" class="inp-n" id="ticket" placeholder="50000" oninput="upd()">
+            <span style="font-size:11px;color:var(--tm);">R$/projeto</span>
+          </div>
+        </div>
+        <div class="inp-block">
+          <div class="inp-lbl">Score da equipe <span class="inp-bm">Bm: 7+/10</span></div>
+          <div class="inp-row">
+            <input type="range" class="inp-s" id="stime" min="0" max="10" value="0" oninput="sl('stime','sv-stime','');upd()">
+            <div class="inp-sv" id="sv-stime">0</div>
+          </div>
+          <div class="sbar"><div class="sbar-f" id="sb-stime"></div></div>
+        </div>
+      </div>
+      <div class="derived">
+        <div class="dv-lbl">⚡ Produtividade calculada automaticamente (faturamento ÷ headcount)</div>
+        <div class="dv-val" id="prodCalc">—</div>
+      </div>
+    </div>
+
+    <!-- TAB 2: SISTEMAS E PROCESSOS -->
+    <div class="pcontent" id="t1">
+      <div class="ig">
+        <div class="inp-block">
+          <div class="inp-lbl">Ciclo de entrega atual <span class="inp-bm">Bm: ≤ 60 dias úteis</span></div>
+          <div class="inp-row">
+            <input type="number" class="inp-n" id="ciclo" placeholder="90" oninput="upd()">
+            <span style="font-size:11px;color:var(--tm);">dias úteis</span>
+          </div>
+        </div>
+        <div class="inp-block">
+          <div class="inp-lbl">Projetos com cronograma no ClickUp <span class="inp-bm">Bm: 70%+</span></div>
+          <div class="inp-row">
+            <input type="range" class="inp-s" id="cron" min="0" max="100" step="5" value="0" oninput="sl('cron','sv-cron','%');upd()">
+            <div class="inp-sv" id="sv-cron">0%</div>
+          </div>
+          <div class="sbar"><div class="sbar-f" id="sb-cron"></div></div>
+        </div>
+        <div class="inp-block">
+          <div class="inp-lbl">Processos documentados (playbooks) <span class="inp-bm">Bm: 50–80%</span></div>
+          <div class="inp-row">
+            <input type="range" class="inp-s" id="pdoc" min="0" max="100" step="5" value="0" oninput="sl('pdoc','sv-pdoc','%');upd()">
+            <div class="inp-sv" id="sv-pdoc">0%</div>
+          </div>
+          <div class="sbar"><div class="sbar-f" id="sb-pdoc"></div></div>
+        </div>
+        <div class="inp-block">
+          <div class="inp-lbl">Projetos com KPI 25/50/75/100 <span class="inp-bm">Bm: 70%+</span></div>
+          <div class="inp-row">
+            <input type="range" class="inp-s" id="pkpi" min="0" max="100" step="5" value="0" oninput="sl('pkpi','sv-pkpi','%');upd()">
+            <div class="inp-sv" id="sv-pkpi">0%</div>
+          </div>
+          <div class="sbar"><div class="sbar-f" id="sb-pkpi"></div></div>
+        </div>
+      </div>
+
+      <div class="sdiv"></div>
+
+      <div style="font-size:11px;color:var(--tm);margin-bottom:14px;letter-spacing:.3px;">Referência: Ciclo end-to-end padrão MAP — 60 dias úteis</div>
+      <div style="display:flex;gap:0;border-radius:4px;overflow:hidden;height:36px;">
+        <div style="flex:2.5;background:rgba(59,130,246,.15);display:flex;align-items:center;justify-content:center;font-size:10px;color:#93C5FD;font-weight:600;border-right:1px solid rgba(255,255,255,.04);">Pré-25%<br>10–15d</div>
+        <div style="flex:3;background:rgba(200,146,42,.12);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--accent-l);font-weight:700;border-right:1px solid rgba(255,255,255,.04);">Miolo Fábrica<br>15d / teto 20d</div>
+        <div style="flex:1.5;background:rgba(139,92,246,.12);display:flex;align-items:center;justify-content:center;font-size:10px;color:#C4B5FD;border-right:1px solid rgba(255,255,255,.04);">Pós-75%<br>5–10d</div>
+        <div style="flex:3.5;background:rgba(16,185,129,.1);display:flex;align-items:center;justify-content:center;font-size:10px;color:#6EE7B7;">Obra<br>15–20d</div>
+      </div>
+    </div>
+
+    <!-- TAB 3: CRESCIMENTO E ESCALA -->
+    <div class="pcontent" id="t2">
+      <div class="ig">
+        <div class="inp-block">
+          <div class="inp-lbl">Variável implementada no time <span class="inp-bm">% da equipe coberta</span></div>
+          <div class="inp-row">
+            <input type="range" class="inp-s" id="varimpl" min="0" max="100" step="5" value="0" oninput="sl('varimpl','sv-varimpl','%');upd()">
+            <div class="inp-sv" id="sv-varimpl">0%</div>
+          </div>
+          <div class="sbar"><div class="sbar-f" id="sb-varimpl"></div></div>
+        </div>
+        <div class="inp-block">
+          <div class="inp-lbl">Margem real apurada por obra <span class="inp-bm">Bm: 30–40%</span></div>
+          <div class="inp-row">
+            <input type="range" class="inp-s" id="mobra" min="0" max="65" step="1" value="0" oninput="sl('mobra','sv-mobra','%');upd()">
+            <div class="inp-sv" id="sv-mobra">0%</div>
+          </div>
+          <div class="sbar"><div class="sbar-f" id="sb-mobra"></div></div>
+        </div>
+        <div class="inp-block">
+          <div class="inp-lbl">Leads com origem classificada <span class="inp-bm">Bm: 70%+</span></div>
+          <div class="inp-row">
+            <input type="range" class="inp-s" id="leads" min="0" max="100" step="5" value="0" oninput="sl('leads','sv-leads','%');upd()">
+            <div class="inp-sv" id="sv-leads">0%</div>
+          </div>
+          <div class="sbar"><div class="sbar-f" id="sb-leads"></div></div>
+        </div>
+        <div class="inp-block">
+          <div class="inp-lbl">Custo por reunião qualificada <span class="inp-bm">R$ — quanto menor, melhor</span></div>
+          <div class="inp-row">
+            <input type="number" class="inp-n" id="cpq" placeholder="500" oninput="upd()">
+            <span style="font-size:11px;color:var(--tm);">R$/reunião</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sdiv"></div>
+
+      <div style="font-size:11px;color:var(--tm);margin-bottom:14px;">Cenário C — Referência de variável (Lukana)</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+        <div style="background:var(--navy-m);border-radius:4px;padding:12px;">
+          <div style="font-size:9px;color:var(--tm);letter-spacing:1px;margin-bottom:6px;">BASE MARCENEIRO</div>
+          <div style="font-family:'Inter',sans-serif;font-size:17px;font-weight:700;color:var(--accent-l);">5%</div>
+          <div style="font-size:10px;color:var(--ts);">sobre valor de venda da obra</div>
+        </div>
+        <div style="background:var(--navy-m);border-radius:4px;padding:12px;">
+          <div style="font-size:9px;color:var(--tm);letter-spacing:1px;margin-bottom:6px;">ANTECIPAÇÃO</div>
+          <div style="font-family:'Inter',sans-serif;font-size:17px;font-weight:700;color:var(--g);">+0,5%</div>
+          <div style="font-size:10px;color:var(--ts);">a cada 2 dias adiantado — teto +2%</div>
+        </div>
+        <div style="background:var(--navy-m);border-radius:4px;padding:12px;">
+          <div style="font-size:9px;color:var(--tm);letter-spacing:1px;margin-bottom:6px;">ATRASO</div>
+          <div style="font-family:'Inter',sans-serif;font-size:17px;font-weight:700;color:var(--r);">−0,5%</div>
+          <div style="font-size:10px;color:var(--ts);">a cada 2 dias — zera em 20 dias</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: ONDE QUERO CHEGAR -->
+    <div class="pcontent" id="t3">
+      <div style="font-size:11px;color:var(--tm);margin-bottom:20px;">Defina as metas para 12 meses. O delta é calculado automaticamente com base no que você preencheu.</div>
+      <div class="tgrid">
+
+        <div class="tcard">
+          <div class="tcard-lbl">Faturamento</div>
+          <div class="trow"><div class="tdot cur"></div><div class="trow-lbl">Atual</div><div class="trow-val" id="tc-fat">—</div></div>
+          <div class="tarr">↓ meta 12 meses</div>
+          <div class="trow" style="margin-bottom:4px;"><div class="tdot tgt"></div>
+            <input type="number" class="tgt-inp" id="tg-fat" placeholder="6.000.000" oninput="updTgt()">
+          </div>
+          <div class="tdelta" id="td-fat"></div>
+        </div>
+
+        <div class="tcard">
+          <div class="tcard-lbl">Margem Bruta</div>
+          <div class="trow"><div class="tdot cur"></div><div class="trow-lbl">Atual</div><div class="trow-val" id="tc-marg">—</div></div>
+          <div class="tarr">↓ meta 12 meses</div>
+          <div class="trow" style="margin-bottom:4px;"><div class="tdot tgt"></div>
+            <input type="number" class="tgt-inp" id="tg-marg" placeholder="35" oninput="updTgt()">
+            <span style="color:var(--accent-l);font-size:12px;margin-left:4px;">%</span>
+          </div>
+          <div class="tdelta" id="td-marg"></div>
+        </div>
+
+        <div class="tcard">
+          <div class="tcard-lbl">Produtividade / pessoa</div>
+          <div class="trow"><div class="tdot cur"></div><div class="trow-lbl">Atual</div><div class="trow-val" id="tc-prod">—</div></div>
+          <div class="tarr">↓ meta 12 meses</div>
+          <div class="trow" style="margin-bottom:4px;"><div class="tdot tgt"></div>
+            <input type="number" class="tgt-inp" id="tg-prod" placeholder="220000" oninput="updTgt()">
+          </div>
+          <div class="tdelta" id="td-prod"></div>
+        </div>
+
+        <div class="tcard">
+          <div class="tcard-lbl">Ciclo de Entrega</div>
+          <div class="trow"><div class="tdot cur"></div><div class="trow-lbl">Atual</div><div class="trow-val" id="tc-ciclo">—</div></div>
+          <div class="tarr">↓ meta 12 meses</div>
+          <div class="trow" style="margin-bottom:4px;"><div class="tdot tgt"></div>
+            <input type="number" class="tgt-inp" id="tg-ciclo" placeholder="60" oninput="updTgt()">
+            <span style="color:var(--accent-l);font-size:12px;margin-left:4px;">d</span>
+          </div>
+          <div class="tdelta" id="td-ciclo"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── BENCHMARKS ──
+const BM = {
+  prod:  { bom: 220000, exc: 350000 },
+  marg:  { bom: 30, exc: 45 },
+  conv:  { bom: 40, exc: 60 },
+  ciclo: { bom: 60, exc: 45, inv: true },
+  cron:  { bom: 70, exc: 100 },
+  pdoc:  { bom: 50, exc: 80 },
+  pkpi:  { bom: 70, exc: 100 },
+  varimpl: { bom: 60, exc: 100 },
+  mobra: { bom: 30, exc: 40 },
+  leads: { bom: 70, exc: 100 },
+  stime: { bom: 6, exc: 9 },
+};
+
+const LEVELS = [
+  { min: 0,  max: 20,  n: 'Nv 1', name: 'Diagnóstico' },
+  { min: 21, max: 40,  n: 'Nv 2', name: 'Estruturação' },
+  { min: 41, max: 60,  n: 'Nv 3', name: 'Operação' },
+  { min: 61, max: 80,  n: 'Nv 4', name: 'Escala' },
+  { min: 81, max: 100, n: 'Nv 5', name: 'Alta Performance' },
+];
+
+// ── HELPERS ──
+const $ = id => document.getElementById(id);
+const val = id => { const e=$(id); return e ? parseFloat(e.value)||0 : 0; };
+const setText = (id, t) => { const e=$(id); if(e) e.textContent=t; };
+const setStyle = (id, prop, v) => { const e=$(id); if(e) e.style[prop]=v; };
+
+function fmtR(n) {
+  if (!n || n===0) return '—';
+  if (n>=1000000) return 'R$\u00a0'+(n/1000000).toFixed(1).replace(/\.0$/,'')+'M';
+  if (n>=1000) return 'R$\u00a0'+(n/1000).toFixed(0)+'k';
+  return 'R$\u00a0'+Math.round(n);
+}
+
+function scoreM(v, bm) {
+  if (!v || v<=0) return 0;
+  if (bm.inv) {
+    const worst = bm.bom * 2.5;
+    if (v <= bm.exc) return 100;
+    if (v >= worst) return 0;
+    return Math.round(100 * (worst - v) / (worst - bm.exc));
+  }
+  if (v >= bm.exc) return 100;
+  return Math.round(100 * v / bm.exc);
+}
+
+function scoreColor(s) {
+  if (s >= 80) return '#22c55e';
+  if (s >= 60) return '#eab308';
+  if (s >= 35) return '#f97316';
+  return '#ef4444';
+}
+
+function avg(arr) {
+  const f = arr.filter(x => x > 0);
+  return f.length ? Math.round(f.reduce((a,b)=>a+b,0)/f.length) : 0;
+}
+
+function sl(sid, vid, suffix) {
+  const v = val(sid);
+  setText(vid, v + suffix);
+}
+
+function setGauge(id, pct, color) {
+  const e = $(id); if(!e) return;
+  const c = 201.1;
+  e.style.strokeDashoffset = c * (1 - Math.min(Math.max(pct,0),1));
+  if(color) e.style.stroke = color;
+}
+
+function setSbar(id, score) {
+  const e=$(id); if(!e) return;
+  e.style.width = score+'%';
+  e.style.background = scoreColor(score);
+}
+
+// ── RADAR CHART ──
+const radar = new Chart($('radarChart').getContext('2d'), {
+  type:'radar',
+  data:{
+    labels:['Processos','Vendas','Liderança','Financeiro','Digital'],
+    datasets:[
+      {
+        label:'Atual',
+        data:[0,0,0,0,0],
+        backgroundColor:'rgba(59,130,246,.1)',
+        borderColor:'#3B82F6',
+        borderWidth:2,
+        pointBackgroundColor:'#3B82F6',
+        pointRadius:4,
+        pointHoverRadius:6,
+      },
+      {
+        label:'Benchmark',
+        data:[80,80,80,80,80],
+        backgroundColor:'rgba(200,146,42,.04)',
+        borderColor:'rgba(200,146,42,.35)',
+        borderWidth:1.5,
+        borderDash:[5,5],
+        pointBackgroundColor:'rgba(200,146,42,.5)',
+        pointRadius:3,
+        pointHoverRadius:4,
+      }
+    ]
+  },
+  options:{
+    responsive:true,
+    maintainAspectRatio:false,
+    scales:{
+      r:{
+        min:0, max:100,
+        ticks:{display:false,stepSize:25},
+        grid:{color:'rgba(255,255,255,.06)',lineWidth:1},
+        angleLines:{color:'rgba(255,255,255,.05)'},
+        pointLabels:{color:'#8899b4',font:{size:11,family:'Inter'}},
+      }
+    },
+    plugins:{
+      legend:{display:false},
+      tooltip:{
+        backgroundColor:'rgba(8,16,26,.95)',
+        borderColor:'rgba(255,255,255,.08)',
+        borderWidth:1,
+        titleColor:'#e8eaf0',
+        bodyColor:'#8899b4',
+      }
+    },
+    animation:{duration:400,easing:'easeInOutQuart'},
+  }
+});
+
+// ── MAIN UPDATE ──
+function upd() {
+  const fat    = val('fat');
+  const head   = val('head');
+  const marg   = val('marg');
+  const conv   = val('conv');
+  const stime  = val('stime');
+  const ciclo  = val('ciclo');
+  const cron   = val('cron');
+  const pdoc   = val('pdoc');
+  const pkpi   = val('pkpi');
+  const varimpl= val('varimpl');
+  const mobra  = val('mobra');
+  const leads  = val('leads');
+  const cpq    = val('cpq');
+
+  const prod = head > 0 ? fat / head : 0;
+
+  // Individual scores
+  const sProd   = scoreM(prod, BM.prod);
+  const sMarg   = scoreM(marg, BM.marg);
+  const sConv   = scoreM(conv, BM.conv);
+  const sCiclo  = scoreM(ciclo, BM.ciclo);
+  const sCron   = scoreM(cron, BM.cron);
+  const sPdoc   = scoreM(pdoc, BM.pdoc);
+  const sPkpi   = scoreM(pkpi, BM.pkpi);
+  const sVar    = scoreM(varimpl, BM.varimpl);
+  const sMobra  = scoreM(mobra, BM.mobra);
+  const sLeads  = scoreM(leads, BM.leads);
+  const sTime   = scoreM(stime, BM.stime);
+  const sCpq    = cpq > 0 ? scoreM(2000/cpq, {bom:1,exc:2}) : 0;
+
+  // Pilares
+  const pProc = avg([sCiclo, sCron, sPdoc, sPkpi]);
+  const pFin  = avg([sMarg, sMobra, sProd]);
+  const pLid  = avg([sTime, sVar]);
+  const pVnd  = avg([sConv]);
+  const pDig  = avg([sLeads, sCpq]);
+
+  // Overall weighted
+  const total = Math.round(
+    pProc * 0.30 +
+    pFin  * 0.25 +
+    pLid  * 0.20 +
+    pVnd  * 0.15 +
+    pDig  * 0.10
+  );
+
+  // ── RADAR
+  radar.data.datasets[0].data = [pProc, pVnd, pLid, pFin, pDig];
+  radar.update();
+
+  // ── GAUGES
+  const prodPct = Math.min(prod/400000, 1);
+  setGauge('gg-prod', prodPct, scoreColor(sProd));
+  setText('gv-prod', prod > 0 ? Math.round(prod/1000)+'k' : '—');
+
+  setGauge('gg-marg', marg/65, scoreColor(sMarg));
+  setText('gv-marg', marg > 0 ? marg+'%' : '—');
+
+  const cicloPct = ciclo > 0 ? Math.max(0, 1-(ciclo-30)/90) : 0;
+  setGauge('gg-ciclo', cicloPct, scoreColor(sCiclo));
+  setText('gv-ciclo', ciclo > 0 ? ciclo+'d' : '—');
+
+  setGauge('gg-conv', conv/100, scoreColor(sConv));
+  setText('gv-conv', conv > 0 ? conv+'%' : '—');
+
+  setGauge('gg-obra', mobra/65, scoreColor(sMobra));
+  setText('gv-obra', mobra > 0 ? mobra+'%' : '—');
+
+  setGauge('gg-total', total/100, scoreColor(total));
+  setText('gv-total', total);
+
+  // ── HEADER SCORE RING
+  const arc = $('hdrArc');
+  if(arc){
+    arc.style.strokeDashoffset = 131.9 * (1 - total/100);
+    arc.style.stroke = scoreColor(total);
+  }
+  setText('hdrScore', total);
+  setText('scoreDisp', total);
+
+  // ── LEVEL BAR
+  setStyle('lbarFill', 'width', total+'%');
+
+  // ── LEVEL BADGE
+  const lv = LEVELS.find(l => total>=l.min && total<=l.max) || LEVELS[0];
+  setText('lvlN', lv.n);
+  setText('lvlName', lv.name);
+
+  // ── LEVEL LABELS
+  LEVELS.forEach((l,i) => {
+    const e = $('ll'+i);
+    if(e) e.classList.toggle('on', total>=l.min);
+  });
+
+  // ── PILAR PILLS
+  const pilares = [
+    ['proc', pProc, '#3B82F6'],
+    ['fin',  pFin,  '#10B981'],
+    ['lid',  pLid,  '#8B5CF6'],
+    ['vnd',  pVnd,  '#F59E0B'],
+    ['dig',  pDig,  '#EC4899'],
+  ];
+  pilares.forEach(([k,s,c]) => {
+    setStyle('pb-'+k,'width', s+'%');
+    setText('ps-'+k, s);
+  });
+
+  // ── SCORE BARS (sliders)
+  setSbar('sb-marg',  sMarg);
+  setSbar('sb-conv',  sConv);
+  setSbar('sb-stime', sTime);
+  setSbar('sb-cron',  sCron);
+  setSbar('sb-pdoc',  sPdoc);
+  setSbar('sb-pkpi',  sPkpi);
+  setSbar('sb-varimpl', sVar);
+  setSbar('sb-mobra', sMobra);
+  setSbar('sb-leads', sLeads);
+
+  // ── DERIVED: Produtividade
+  if(prod > 0) {
+    const color = scoreColor(sProd);
+    const el = $('prodCalc');
+    if(el){ el.textContent = fmtR(prod)+'/pessoa/ano'; el.style.color = color; }
+  } else {
+    setText('prodCalc','—');
+    setStyle('prodCalc','color','');
+  }
+
+  // ── ACCELERATORS
+  // Produtividade
+  if(fat>0 && head>0) {
+    if(prod < 220000) {
+      const gap = (220000 - prod) * head;
+      setText('ac-prod', '+'+fmtR(gap)+'/ano');
+      setText('ac-prod-d', `Produtividade atual: ${fmtR(prod)}/pessoa. No benchmark de R$\u00a0220k, com ${head} pessoas você teria mais ${fmtR(gap)} por ano — sem contratar ninguém.`);
+    } else {
+      setText('ac-prod', '✓ No benchmark');
+      setText('ac-prod-d', `Produtividade de ${fmtR(prod)}/pessoa. Foco agora: empurrar para R$\u00a0350k através de margem, não volume.`);
+    }
+  } else {
+    setText('ac-prod','—');
+    setText('ac-prod-d','Preencha faturamento e headcount.');
+  }
+
+  // Margem
+  if(fat>0 && marg>0) {
+    if(marg < 34) {
+      const impacto = ((34-marg)/100) * fat;
+      setText('ac-marg', '+'+fmtR(impacto)+'/ano');
+      setText('ac-marg-d', `Margem atual: ${marg}%. Chegar em 34% no mesmo faturamento de ${fmtR(fat)} vale +${fmtR(impacto)} no resultado direto.`);
+    } else {
+      setText('ac-marg', '✓ Margem saudável');
+      setText('ac-marg-d', `Margem de ${marg}% acima do piso de 34%. Meta: chegar em 40%+ com mix de produto.`);
+    }
+  } else {
+    setText('ac-marg','—');
+    setText('ac-marg-d','Preencha faturamento e margem bruta.');
+  }
+
+  // Ciclo
+  if(ciclo>0) {
+    if(ciclo > 60) {
+      const projAno = Math.round(220/ciclo);
+      const projBm  = Math.round(220/60);
+      const extra = projBm - projAno;
+      setText('ac-ciclo', `+${extra} projetos/ano`);
+      setText('ac-ciclo-d', `Ciclo atual: ${ciclo}d. No benchmark de 60d úteis, cabem ${projBm} projetos/ano — vs ${projAno} hoje. +${extra} projetos com o mesmo time, sem contratar.`);
+    } else {
+      setText('ac-ciclo', `✓ Ciclo no benchmark`);
+      setText('ac-ciclo-d', `Ciclo de ${ciclo}d — dentro do padrão MAP. Próxima meta: 45 dias úteis (Alta Performance).`);
+    }
+  } else {
+    setText('ac-ciclo','—');
+    setText('ac-ciclo-d','Preencha o ciclo atual para calcular o potencial de escala.');
+  }
+
+  // ── UPDATE TARGET DISPLAY
+  updTgt(fat, prod, marg, ciclo);
+}
+
+// ── TARGETS ──
+function updTgt(fat, prod, marg, ciclo) {
+  if(fat===undefined){
+    fat   = val('fat');
+    const h = val('head');
+    prod  = h > 0 ? fat/h : 0;
+    marg  = val('marg');
+    ciclo = val('ciclo');
+  }
+
+  setText('tc-fat',  fmtR(fat));
+  setText('tc-prod', prod>0 ? fmtR(prod) : '—');
+  setText('tc-marg', marg>0 ? marg+'%' : '—');
+  setText('tc-ciclo',ciclo>0 ? ciclo+'d' : '—');
+
+  const tFat  = val('tg-fat');
+  const tMarg = val('tg-marg');
+  const tProd = val('tg-prod');
+  const tCiclo= val('tg-ciclo');
+
+  function delta(id, cur, tgt, fmt, inverse=false) {
+    const e=$(id); if(!e) return;
+    if(!tgt || !cur) { e.textContent=''; return; }
+    const d = tgt - cur;
+    const good = inverse ? d<=0 : d>=0;
+    e.textContent = (d>=0?'+':'')+fmt(d);
+    e.style.color = good ? '#22c55e' : '#ef4444';
+  }
+
+  delta('td-fat',  fat,  tFat,  d => fmtR(Math.abs(d)) + (fat>0?' ('+Math.round(Math.abs(d)/fat*100)+'%)':''), false);
+  delta('td-marg', marg, tMarg, d => Math.abs(d).toFixed(1)+'pp', false);
+  delta('td-prod', prod, tProd, d => fmtR(Math.abs(d)) + (prod>0?' ('+Math.round(Math.abs(d)/prod*100)+'%)':''), false);
+  delta('td-ciclo',ciclo,tCiclo,d => Math.abs(d)+'d', true);
+}
+
+// ── TABS ──
+function setTab(n) {
+  document.querySelectorAll('.ptab').forEach((t,i)=>t.classList.toggle('on',i===n));
+  document.querySelectorAll('.pcontent').forEach((c,i)=>c.classList.toggle('on',i===n));
+}
+
+// ── INIT ──
+upd();
+</script>
+</body>
+</html>
