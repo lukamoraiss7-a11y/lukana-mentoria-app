@@ -198,13 +198,34 @@
   .btn-pdf:hover { background: rgba(200,146,42,.1); }
 
   @media print {
-    @page { margin: 14mm 12mm; }
+    /* margin 0 on @page removes Chrome's default header/footer (date/url/title)
+       and lets the dark background bleed full-page instead of showing white edges */
+    @page { size: A4; margin: 0; }
     * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-    body { background: var(--bg); }
+    html, body { background: var(--bg) !important; margin: 0; }
     .header, .progress-wrap, #stepIndicator, .pdf-actions, .btn-cta { display: none !important; }
     .screen:not(.active) { display: none !important; }
-    .container { padding-top: 8px; }
-    .print-header { display: block; text-align: center; margin-bottom: 28px; }
+    .container { padding: 14mm 12mm !important; max-width: 100%; }
+    .print-header { display: block; text-align: center; margin-bottom: 22px; }
+
+    /* Tighter spacing so content packs into fewer pages */
+    .result-header { margin-bottom: 24px; }
+    .wheel-section { margin-bottom: 24px; }
+    .wheel-canvas-wrap { max-width: 340px !important; }
+    .quad-block { margin-bottom: 10px; }
+    .qb-header { padding: 12px 16px 10px; }
+    .qb-items { }
+    .qb-item { padding: 12px 12px 10px; }
+    .priority-section, .panorama-section { margin-bottom: 20px; }
+    .priority-item { padding: 10px 16px; }
+    .divider { margin: 18px 0; }
+    .pan-header { padding: 16px 18px 14px; }
+    .pan-sintomas { padding: 12px 18px 14px; }
+    .pan-apm { padding: 14px 18px 16px; }
+    .pan-also { padding: 12px 18px 14px; }
+    .result-cta { padding: 18px; }
+    .result-cta h3 { font-size: 17px; }
+
     .result-header, .wheel-section, .quad-block, .panorama-card, .priority-item, .result-cta { break-inside: avoid; }
   }
 
