@@ -4,9 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Diagnóstico ARESTA APM — Rota Empresarial</title>
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<style>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"><style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
     --bg: #0c1221; --surface: #111929; --border: rgba(255,255,255,.07);
@@ -392,18 +390,14 @@
 </div>
 
 <script>
-// ── Supabase config ──
-const SUPABASE_URL = 'SUA_URL_SUPABASE'
-const SUPABASE_ANON_KEY = 'SUA_ANON_KEY_SUPABASE'
-const SUPABASE_CONFIGURED = !SUPABASE_URL.startsWith('SUA')
-let _sbClient = null
-if (SUPABASE_CONFIGURED) {
-  _sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-}
+// ── Backend config ──
+const API_BASE = 'https://lukana-orcamentos.onrender.com'
+const CRM_API_BASE = 'https://lukana-crm.vercel.app'
 
 // ── URL params ──
 const _params = new URLSearchParams(location.search)
 const _nome = _params.get('nome') || ''
+const _cid = _params.get('cid') || ''
 document.addEventListener('DOMContentLoaded', () => {
   if (_nome) {
     document.getElementById('nomeTag').style.display = 'block'
@@ -411,20 +405,35 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 })
 
-// ── Save result to Supabase ──
+// ── Save result ──
 async function saveResult(total, results) {
-  if (!SUPABASE_CONFIGURED || !_sbClient) return
+  const payload = {
+    nome:        _nome || 'Anônimo',
+    score_total: total,
+    score_fin:   results.find(r => r.id === 'fin').score,
+    score_exec:  results.find(r => r.id === 'exec').score,
+    score_pess:  results.find(r => r.id === 'pess').score,
+    score_estr:  results.find(r => r.id === 'estr').score,
+    nivel:       levelInfo(total).name,
+  }
   try {
-    await _sbClient.from('diagnostico_resultados').insert({
-      nome: _nome || 'Anônimo',
-      score_total: total,
-      score_fin:  results.find(r => r.id === 'fin').score,
-      score_exec: results.find(r => r.id === 'exec').score,
-      score_pess: results.find(r => r.id === 'pess').score,
-      score_estr: results.find(r => r.id === 'estr').score,
-      nivel: levelInfo(total).name
+    await fetch(API_BASE + '/api/diagnostico', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
     })
-  } catch(e) { console.warn('Supabase save error:', e) }
+  } catch(e) { console.warn('save error:', e) }
+
+  // Se veio do CRM (link com ?cid=), também grava vinculado ao contato lá.
+  if (_cid) {
+    try {
+      await fetch(CRM_API_BASE + '/api/diagnosticos/apm', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contactId: _cid, ...payload })
+      })
+    } catch(e) { console.warn('CRM save error:', e) }
+  }
 }
 
 // ── Quadrant definitions ──
