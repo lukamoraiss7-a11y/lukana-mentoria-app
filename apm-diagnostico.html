@@ -4,68 +4,74 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Diagnóstico ARESTA APM — Rota Empresarial</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --bg: #0F0F0F; --surface: #1A1A1A; --border: #333333;
-    --gold: #C9A84C; --gold-light: #E8C97A; --text: #E8E8E8;
-    --muted: #AAAAAA; --dim: #888888;
+    --bg: #0c1221; --surface: #111929; --border: rgba(255,255,255,.07);
+    --gold: #C8922A; --gold-light: #F0C060; --text: #e8eaf0;
+    --muted: #8899b4; --dim: #4a5a72;
   }
   body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; min-height: 100vh; }
 
   /* ── Header ── */
   .header {
-    background: #0F0F0F; border-bottom: 1px solid var(--border);
+    background: #08101a; border-bottom: 1px solid var(--border);
     padding: 0 32px; height: 62px;
     display: flex; align-items: center; justify-content: space-between;
     position: sticky; top: 0; z-index: 100;
   }
-  .logo-box { height: 28px; width: auto; flex-shrink: 0; display: block; }
+  .logo-box {
+    width: 38px; height: 38px;
+    background: linear-gradient(135deg, #C8922A, #F0C060);
+    border-radius: 10px; display: flex; align-items: center; justify-content: center;
+    font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 11px; color: #0c1221; letter-spacing: 1px;
+  }
   .header-brand { display: flex; align-items: center; gap: 12px; }
-  .header-title { font-family:'Inter',sans-serif; font-weight: 700; font-size: 16px; letter-spacing: 2px; text-transform: uppercase; }
+  .header-title { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 16px; letter-spacing: 2px; text-transform: uppercase; }
   .header-sub { font-size: 10px; color: var(--dim); letter-spacing: 1px; }
 
   .progress-wrap { background: rgba(255,255,255,.04); height: 3px; }
-  .progress-bar { height: 3px; background: #C9A84C; transition: width .4s ease; }
+  .progress-bar { height: 3px; background: linear-gradient(90deg, #C8922A, #F0C060); transition: width .4s ease; }
 
   .container { max-width: 680px; margin: 0 auto; padding: 48px 24px 80px; }
 
   /* ── Form ── */
-  .step-label { font-family:'Inter',sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 3px; color: var(--dim); text-transform: uppercase; margin-bottom: 8px; }
-  .step-title { font-family:'Inter',sans-serif; font-size: 32px; font-weight: 700; margin-bottom: 6px; }
+  .step-label { font-family: 'Rajdhani', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 3px; color: var(--dim); text-transform: uppercase; margin-bottom: 8px; }
+  .step-title { font-family: 'Rajdhani', sans-serif; font-size: 32px; font-weight: 700; margin-bottom: 6px; }
   .step-desc { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 28px; }
-  .quad-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 4px; font-size: 11px; font-weight: 700; letter-spacing: 1px; margin-bottom: 28px; text-transform: uppercase; }
+  .quad-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: 1px; margin-bottom: 28px; text-transform: uppercase; }
   .quad-badge .dot { width: 8px; height: 8px; border-radius: 50%; }
 
-  .field-block { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 22px 22px 20px; margin-bottom: 12px; transition: border-color .2s; }
+  .field-block { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px 22px 20px; margin-bottom: 12px; transition: border-color .2s; }
   .field-block:focus-within { border-color: rgba(200,146,42,.3); }
   .field-macro { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; line-height: 1.3; }
-  .field-micro { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 3px 9px; border-radius: 4px; margin-bottom: 10px; }
+  .field-micro { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 3px 9px; border-radius: 20px; margin-bottom: 10px; }
   .field-question { font-size: 12px; color: var(--muted); line-height: 1.55; margin-bottom: 18px; }
 
   input[type="range"] { -webkit-appearance: none; width: 100%; height: 6px; background: rgba(255,255,255,.08); border-radius: 3px; outline: none; }
-  input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: #C9A84C; cursor: pointer; box-shadow: 0 0 10px rgba(200,146,42,.4); }
+  input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: linear-gradient(135deg, #C8922A, #F0C060); cursor: pointer; box-shadow: 0 0 10px rgba(200,146,42,.4); }
   .slider-row { display: flex; align-items: center; gap: 16px; }
-  .slider-val { font-family:'Inter',sans-serif; font-size: 28px; font-weight: 700; min-width: 40px; text-align: right; }
+  .slider-val { font-family: 'Rajdhani', sans-serif; font-size: 28px; font-weight: 700; min-width: 40px; text-align: right; }
   .slider-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--dim); margin-top: 6px; }
 
   .nav { display: flex; justify-content: space-between; margin-top: 36px; align-items: center; }
-  .btn { font-family:'Inter',sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 1px; padding: 14px 28px; border-radius: 4px; border: none; cursor: pointer; text-transform: uppercase; transition: all .2s; }
+  .btn { font-family: 'Rajdhani', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 1px; padding: 14px 28px; border-radius: 10px; border: none; cursor: pointer; text-transform: uppercase; transition: all .2s; }
   .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--muted); }
   .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
-  .btn-primary { background: #C9A84C; color: #0F0F0F; }
+  .btn-primary { background: linear-gradient(135deg, #C8922A, #F0C060); color: #0c1221; }
   .btn-primary:hover { opacity: .9; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(200,146,42,.3); }
   .step-count { font-size: 12px; color: var(--dim); }
 
   /* ── Intro ── */
   .intro { text-align: center; padding: 40px 0; }
-  .intro .big-badge { display: block; margin: 0 auto 28px; max-width: 240px; height: auto; }
-  .intro h1 { font-family:'Inter',sans-serif; font-size: 40px; font-weight: 700; line-height: 1.1; margin-bottom: 16px; }
+  .intro .big-badge { width: 80px; height: 80px; background: linear-gradient(135deg, #C8922A, #F0C060); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 14px; color: #0c1221; letter-spacing: 1px; margin: 0 auto 28px; }
+  .intro h1 { font-family: 'Rajdhani', sans-serif; font-size: 40px; font-weight: 700; line-height: 1.1; margin-bottom: 16px; }
   .intro h1 span { color: var(--gold-light); }
   .intro p { font-size: 14px; color: var(--muted); line-height: 1.7; max-width: 480px; margin: 0 auto 36px; }
   .quadrants-preview { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 480px; margin: 0 auto 36px; }
-  .qp-card { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 16px; display: flex; align-items: center; gap: 12px; }
+  .qp-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 12px; }
   .qp-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
   .qp-name { font-size: 12px; font-weight: 600; color: var(--text); }
   .qp-weight { font-size: 10px; color: var(--dim); margin-top: 2px; }
@@ -78,22 +84,21 @@
   .result-score-ring { width: 150px; height: 150px; margin: 0 auto 20px; position: relative; }
   .result-score-ring canvas { display: block; }
   .score-label { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); text-align: center; }
-  .score-num { font-family:'Inter',sans-serif; font-size: 48px; font-weight: 700; line-height: 1; }
+  .score-num { font-family: 'Rajdhani', sans-serif; font-size: 48px; font-weight: 700; line-height: 1; }
   .score-sub { font-size: 10px; color: var(--dim); letter-spacing: 1px; }
-  .stage-name { font-family:'Inter',sans-serif; font-size: 30px; font-weight: 700; line-height: 1.1; margin-bottom: 8px; }
-  .stage-desc { font-size: 13px; color: var(--muted); line-height: 1.55; max-width: 340px; margin: 0 auto 20px; }
-  .stage-note { font-size: 11px; color: var(--dim); margin-top: 14px; padding: 8px 16px; background: rgba(255,255,255,.03); border: 1px solid #333; border-radius: 4px; max-width: 360px; margin-left: auto; margin-right: auto; }
+  .level-badge { display: inline-block; padding: 8px 20px; border-radius: 20px; font-family: 'Rajdhani', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-top: 12px; }
+  .result-name { font-size: 14px; color: var(--muted); margin-top: 6px; }
 
   /* ── Wheel ── */
   .wheel-section { margin-bottom: 44px; }
-  .wheel-title { font-family:'Inter',sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 3px; color: var(--dim); text-transform: uppercase; text-align: center; margin-bottom: 20px; }
+  .wheel-title { font-family: 'Rajdhani', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 3px; color: var(--dim); text-transform: uppercase; text-align: center; margin-bottom: 20px; }
   .wheel-canvas-wrap { max-width: 520px; margin: 0 auto; filter: drop-shadow(0 0 30px rgba(0,0,0,.5)); }
   .wheel-canvas-wrap canvas { display: block; width: 100% !important; height: auto !important; }
 
   /* ── Quad result block ── */
   .quad-block {
     margin-bottom: 16px;
-    border-radius: 6px;
+    border-radius: 16px;
     overflow: hidden;
     border: 1px solid var(--border);
     opacity: 0;
@@ -109,7 +114,7 @@
   .qb-header-left { }
   .qb-label { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; }
   .qb-weight { font-size: 10px; color: var(--dim); margin-top: 2px; }
-  .qb-score { font-family:'Inter',sans-serif; font-size: 36px; font-weight: 700; line-height: 1; }
+  .qb-score { font-family: 'Rajdhani', sans-serif; font-size: 36px; font-weight: 700; line-height: 1; }
 
   /* 3-column sub-items */
   .qb-items { display: grid; grid-template-columns: 1fr 1fr 1fr; }
@@ -124,14 +129,14 @@
   .qb-item:hover { background: rgba(255,255,255,.02); }
 
   .qb-item-score {
-    font-family:'Inter',sans-serif;
+    font-family: 'Rajdhani', sans-serif;
     font-size: 36px; font-weight: 700; line-height: 1;
     margin-bottom: 6px;
   }
   .qb-item-micro {
     display: inline-block;
     font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
-    padding: 3px 8px; border-radius: 4px; margin-bottom: 6px;
+    padding: 3px 8px; border-radius: 20px; margin-bottom: 6px;
   }
   .qb-item-macro { font-size: 11px; color: var(--muted); line-height: 1.4; }
 
@@ -141,30 +146,30 @@
 
   /* ── Priorities ── */
   .priority-section { margin-bottom: 32px; }
-  .priority-title { font-family:'Inter',sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 3px; color: var(--dim); text-transform: uppercase; margin-bottom: 16px; }
+  .priority-title { font-family: 'Rajdhani', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 3px; color: var(--dim); text-transform: uppercase; margin-bottom: 16px; }
   .priority-list { display: flex; flex-direction: column; gap: 8px; }
-  .priority-item { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 14px 18px; display: flex; align-items: center; gap: 14px; }
-  .priority-num { font-family:'Inter',sans-serif; font-size: 18px; font-weight: 700; width: 28px; text-align: center; flex-shrink: 0; }
+  .priority-item { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; display: flex; align-items: center; gap: 14px; }
+  .priority-num { font-family: 'Rajdhani', sans-serif; font-size: 18px; font-weight: 700; width: 28px; text-align: center; flex-shrink: 0; }
   .priority-text { font-size: 13px; color: var(--text); }
-  .priority-score { font-family:'Inter',sans-serif; font-size: 20px; font-weight: 700; margin-left: auto; flex-shrink: 0; }
+  .priority-score { font-family: 'Rajdhani', sans-serif; font-size: 20px; font-weight: 700; margin-left: auto; flex-shrink: 0; }
 
   .divider { height: 1px; background: var(--border); margin: 32px 0; }
 
-  .result-cta { background: linear-gradient(135deg, rgba(200,146,42,.1), rgba(240,192,96,.05)); border: 1px solid rgba(200,146,42,.2); border-radius: 6px; padding: 28px; text-align: center; }
-  .result-cta h3 { font-family:'Inter',sans-serif; font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+  .result-cta { background: linear-gradient(135deg, rgba(200,146,42,.1), rgba(240,192,96,.05)); border: 1px solid rgba(200,146,42,.2); border-radius: 16px; padding: 28px; text-align: center; }
+  .result-cta h3 { font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; margin-bottom: 8px; }
   .result-cta p { font-size: 13px; color: var(--muted); margin-bottom: 20px; line-height: 1.6; }
-  .btn-cta { background: #C9A84C; color: #0F0F0F; font-family:'Inter',sans-serif; font-size: 15px; font-weight: 700; letter-spacing: 1px; padding: 16px 36px; border-radius: 4px; border: none; cursor: pointer; text-transform: uppercase; }
+  .btn-cta { background: linear-gradient(135deg, #C8922A, #F0C060); color: #0c1221; font-family: 'Rajdhani', sans-serif; font-size: 15px; font-weight: 700; letter-spacing: 1px; padding: 16px 36px; border-radius: 12px; border: none; cursor: pointer; text-transform: uppercase; }
   .btn-cta:hover { opacity: .9; box-shadow: 0 4px 20px rgba(200,146,42,.3); }
 
   /* ── Panorama section ── */
   .panorama-section { margin-bottom: 32px; }
-  .panorama-label { font-family:'Inter',sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 3px; color: var(--dim); text-transform: uppercase; margin-bottom: 16px; }
-  .panorama-card { border-radius: 6px; overflow: hidden; border: 1px solid var(--border); opacity: 0; transform: translateY(16px); transition: opacity .5s ease .4s, transform .5s ease .4s; }
+  .panorama-label { font-family: 'Rajdhani', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 3px; color: var(--dim); text-transform: uppercase; margin-bottom: 16px; }
+  .panorama-card { border-radius: 16px; overflow: hidden; border: 1px solid var(--border); opacity: 0; transform: translateY(16px); transition: opacity .5s ease .4s, transform .5s ease .4s; }
   .panorama-card.visible { opacity: 1; transform: none; }
 
   .pan-header { padding: 22px 22px 18px; display: flex; gap: 16px; align-items: flex-start; }
-  .pan-icon { width: 40px; height: 40px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-family:'Inter',sans-serif; font-size: 22px; font-weight: 700; flex-shrink: 0; }
-  .pan-headline { font-family:'Inter',sans-serif; font-size: 20px; font-weight: 700; line-height: 1.2; margin-bottom: 8px; }
+  .pan-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; flex-shrink: 0; }
+  .pan-headline { font-family: 'Rajdhani', sans-serif; font-size: 20px; font-weight: 700; line-height: 1.2; margin-bottom: 8px; }
   .pan-diag { font-size: 13px; color: var(--muted); line-height: 1.65; }
 
   .pan-sintomas { padding: 16px 22px 18px; border-top: 1px solid rgba(255,255,255,.05); }
@@ -174,7 +179,7 @@
   .pan-sint-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
 
   .pan-apm { padding: 18px 22px 20px; border-top: 1px solid rgba(200,146,42,.12); background: rgba(200,146,42,.04); }
-  .pan-apm-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); background: rgba(200,146,42,.12); border: 1px solid rgba(200,146,42,.2); padding: 4px 10px; border-radius: 4px; margin-bottom: 10px; }
+  .pan-apm-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); background: rgba(200,146,42,.12); border: 1px solid rgba(200,146,42,.2); padding: 4px 10px; border-radius: 20px; margin-bottom: 10px; }
   .pan-apm-badge::before { content: ''; display: block; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
   .pan-apm-text { font-size: 13px; color: var(--text); line-height: 1.65; }
 
@@ -185,6 +190,23 @@
 
   .screen { display: none; }
   .screen.active { display: block; }
+
+  /* ── Print / PDF ── */
+  .print-header { display: none; }
+  .pdf-actions { text-align: center; margin-bottom: 36px; }
+  .btn-pdf { background: transparent; border: 1px solid var(--gold); color: var(--gold-light); font-family: 'Rajdhani', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 1px; padding: 13px 30px; border-radius: 10px; cursor: pointer; text-transform: uppercase; transition: all .2s; }
+  .btn-pdf:hover { background: rgba(200,146,42,.1); }
+
+  @media print {
+    @page { margin: 14mm 12mm; }
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    body { background: var(--bg); }
+    .header, .progress-wrap, #stepIndicator, .pdf-actions, .btn-cta { display: none !important; }
+    .screen:not(.active) { display: none !important; }
+    .container { padding-top: 8px; }
+    .print-header { display: block; text-align: center; margin-bottom: 28px; }
+    .result-header, .wheel-section, .quad-block, .panorama-card, .priority-item, .result-cta { break-inside: avoid; }
+  }
 
   @media (max-width: 520px) {
     .quadrants-preview { grid-template-columns: 1fr; }
@@ -200,13 +222,13 @@
 
 <div class="header">
   <div class="header-brand">
-    <img src="aresta-logo.png" class="logo-box" alt="Aresta">
+    <div class="logo-box">ARESTA</div>
     <div>
       <div class="header-title">ARESTA · APM</div>
       <div class="header-sub">Diagnóstico Rota Empresarial</div>
     </div>
   </div>
-  <div id="stepIndicator" style="font-family:'Inter',sans-serif;font-size:13px;color:var(--dim);display:none">
+  <div id="stepIndicator" style="font-family:'Rajdhani',sans-serif;font-size:13px;color:var(--dim);display:none">
     <span id="stepCurrent" style="color:var(--gold-light);font-weight:700"></span> / 4
   </div>
 </div>
@@ -217,7 +239,7 @@
   <!-- INTRO -->
   <div class="screen active" id="screen-intro">
     <div class="intro">
-      <img src="aresta-logo.png" class="big-badge" alt="Aresta APM">
+      <div class="big-badge">APM</div>
       <div id="nomeTag" style="display:none;margin-bottom:16px;font-size:12px;color:var(--muted);letter-spacing:1px;">Diagnóstico de <strong id="nomeTagText" style="color:var(--gold-light)"></strong></div>
       <h1>Diagnóstico<br><span>Rota Empresarial</span></h1>
       <p>Avalie sua empresa em 4 quadrantes estratégicos. O resultado mostra onde você está e qual é o próximo passo para sair da operação e construir um negócio de alta performance.</p>
@@ -291,10 +313,17 @@
   <!-- RESULTADO -->
   <div class="screen" id="screen-result">
     <div class="result">
+      <div class="print-header" id="printHeader">
+        <div style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;letter-spacing:2px;text-transform:uppercase;color:#C8922A">ARESTA · APM — Diagnóstico Rota Empresarial</div>
+        <div style="font-size:11px;color:#8899b4;margin-top:4px" id="printHeaderMeta"></div>
+      </div>
+
+      <div class="pdf-actions">
+        <button class="btn-pdf" onclick="window.print()">Baixar PDF do diagnóstico</button>
+      </div>
+
       <div class="result-header">
-        <div style="font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;color:var(--dim);text-transform:uppercase;margin-bottom:20px">Diagnóstico Rota Empresarial</div>
-        <div class="stage-name" id="levelBadge">—</div>
-        <div class="stage-desc" id="levelName">—</div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;color:var(--dim);text-transform:uppercase;margin-bottom:20px">Sua Rota Empresarial</div>
         <div class="result-score-ring">
           <canvas id="ringCanvas" width="150" height="150"></canvas>
           <div class="score-label">
@@ -302,7 +331,8 @@
             <div class="score-sub">/ 100</div>
           </div>
         </div>
-        <div class="stage-note">O APM atua em todas as frentes com gaps — independente do estágio em que você está.</div>
+        <div class="level-badge" id="levelBadge">—</div>
+        <div class="result-name" id="levelName">—</div>
       </div>
 
       <div class="wheel-section">
@@ -333,8 +363,7 @@
       <div class="result-cta">
         <h3>Próximo passo: Fase 1 do APM</h3>
         <p>Seu diagnóstico está mapeado. A Fase 1 do programa parte exatamente desse ponto — transformando os gaps identificados em plano de ação com prazo e dono.</p>
-        <button class="btn-cta" id="btnEnviar" onclick="enviarAnalise()">Enviar para análise →</button>
-        <div id="enviadoMsg" style="display:none;margin-top:16px;font-size:13px;color:#10B981;font-weight:600;">✓ Diagnóstico enviado com sucesso!</div>
+        <button class="btn-cta" onclick="window.location.reload()">Refazer diagnóstico</button>
       </div>
     </div>
   </div>
@@ -342,8 +371,14 @@
 </div>
 
 <script>
-// ── Backend config ──
-const API_BASE = 'https://lukana-orcamentos.onrender.com'
+// ── Supabase config ──
+const SUPABASE_URL = 'SUA_URL_SUPABASE'
+const SUPABASE_ANON_KEY = 'SUA_ANON_KEY_SUPABASE'
+const SUPABASE_CONFIGURED = !SUPABASE_URL.startsWith('SUA')
+let _sbClient = null
+if (SUPABASE_CONFIGURED) {
+  _sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+}
 
 // ── URL params ──
 const _params = new URLSearchParams(location.search)
@@ -355,23 +390,20 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 })
 
-// ── Save result ──
+// ── Save result to Supabase ──
 async function saveResult(total, results) {
+  if (!SUPABASE_CONFIGURED || !_sbClient) return
   try {
-    await fetch(API_BASE + '/api/diagnostico', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        nome:        _nome || 'Anônimo',
-        score_total: total,
-        score_fin:   results.find(r => r.id === 'fin').score,
-        score_exec:  results.find(r => r.id === 'exec').score,
-        score_pess:  results.find(r => r.id === 'pess').score,
-        score_estr:  results.find(r => r.id === 'estr').score,
-        nivel:       levelInfo(total).n,
-      })
+    await _sbClient.from('diagnostico_resultados').insert({
+      nome: _nome || 'Anônimo',
+      score_total: total,
+      score_fin:  results.find(r => r.id === 'fin').score,
+      score_exec: results.find(r => r.id === 'exec').score,
+      score_pess: results.find(r => r.id === 'pess').score,
+      score_estr: results.find(r => r.id === 'estr').score,
+      nivel: levelInfo(total).name
     })
-  } catch(e) { console.warn('save error:', e) }
+  } catch(e) { console.warn('Supabase save error:', e) }
 }
 
 // ── Quadrant definitions ──
@@ -463,41 +495,26 @@ function calcAndShow() {
     }
   })
   const total = Math.round(results.reduce((s, r) => s + r.score * r.weight, 0))
-  window._lastResults = results
-  window._lastTotal = total
   showResult(results, total)
+  saveResult(total, results)
   goTo('screen-result')
-  // Auto-salvar imediatamente — não depende de clique do usuário
-  saveResult(total, results).then(() => {
-    document.getElementById('enviadoMsg').style.display = 'block'
-    document.getElementById('btnEnviar').style.display = 'none'
-  }).catch(() => {
-    // falha silenciosa — botão manual ainda disponível
-  })
-}
-
-// ── Enviar manual (fallback caso auto-save falhe) ──
-async function enviarAnalise() {
-  const btn = document.getElementById('btnEnviar')
-  btn.disabled = true
-  btn.textContent = 'Enviando...'
-  await saveResult(window._lastTotal, window._lastResults)
-  btn.style.display = 'none'
-  document.getElementById('enviadoMsg').style.display = 'block'
 }
 
 // ── Level ──
 function levelInfo(s) {
-  if (s>=81) return { n:'Negócio Estruturado', desc:'Processos sólidos e sistemas rodando — gaps pontuais a eliminar.',     color:'#22c55e' }
-  if (s>=61) return { n:'Negócio em Expansão', desc:'Crescimento acontecendo, mas a estrutura ainda não acompanha o ritmo.', color:'#10B981' }
-  if (s>=41) return { n:'Negócio Operando',    desc:'A empresa funciona, mas depende demais do dono para se sustentar.',     color:'#eab308' }
-  if (s>=21) return { n:'Negócio em Formação', desc:'Primeiras estruturas surgindo — base ainda frágil e instável.',         color:'#f97316' }
-  return            { n:'Negócio Reativo',     desc:'A empresa apaga incêndios. Sem processo, sem previsibilidade.',         color:'#ef4444' }
+  if (s>=81) return { n:'Nível 5', name:'Alta Performance', color:'#22c55e' }
+  if (s>=61) return { n:'Nível 4', name:'Escala',           color:'#10B981' }
+  if (s>=41) return { n:'Nível 3', name:'Operação',         color:'#eab308' }
+  if (s>=21) return { n:'Nível 2', name:'Estruturação',     color:'#f97316' }
+  return            { n:'Nível 1', name:'Diagnóstico',       color:'#ef4444' }
 }
 
 // ── Render result ──
 function showResult(results, total) {
   const lv = levelInfo(total)
+
+  const dateStr = new Date().toLocaleDateString('pt-BR')
+  document.getElementById('printHeaderMeta').textContent = (_nome ? _nome + ' — ' : '') + dateStr
 
   document.getElementById('totalScore').textContent = total
   document.getElementById('totalScore').style.color = lv.color
@@ -505,8 +522,8 @@ function showResult(results, total) {
 
   const badge = document.getElementById('levelBadge')
   badge.textContent = lv.n
-  badge.style.color = lv.color
-  document.getElementById('levelName').textContent = lv.desc
+  badge.style.cssText += `;background:${lv.color}22;border:1px solid ${lv.color}44;color:${lv.color}`
+  document.getElementById('levelName').textContent = lv.name
 
   setTimeout(() => drawWheel(results, total), 80)
 
@@ -660,7 +677,7 @@ function drawWheel(results, total) {
     ctx.beginPath()
     ctx.moveTo(cx+Math.cos(a)*RC, cy+Math.sin(a)*RC)
     ctx.lineTo(cx+Math.cos(a)*RO, cy+Math.sin(a)*RO)
-    ctx.strokeStyle='#0F0F0F'; ctx.lineWidth=3; ctx.stroke()
+    ctx.strokeStyle='#0c1221'; ctx.lineWidth=3; ctx.stroke()
   }
   // Micro dividers (thin, only inside score+micro band)
   slices.forEach((sl, i) => {
@@ -703,10 +720,10 @@ function drawWheel(results, total) {
   // ── 8. Center circle ──
   ctx.beginPath(); ctx.arc(cx,cy,RC,0,Math.PI*2)
   const cg = ctx.createRadialGradient(cx,cy,0,cx,cy,RC)
-  cg.addColorStop(0,'#1A1A1A'); cg.addColorStop(1,'#0F0F0F')
+  cg.addColorStop(0,'#1a2540'); cg.addColorStop(1,'#0c1221')
   ctx.fillStyle=cg; ctx.fill()
   ctx.strokeStyle='rgba(255,255,255,.14)'; ctx.lineWidth=1.5; ctx.stroke()
-  ctx.font='bold 28px Inter,sans-serif'; ctx.fillStyle='#e8eaf0'
+  ctx.font='bold 28px Rajdhani,sans-serif'; ctx.fillStyle='#e8eaf0'
   ctx.textAlign='center'; ctx.textBaseline='middle'
   ctx.fillText(total, cx, cy-7)
   ctx.font='500 11px Inter,sans-serif'; ctx.fillStyle='#4a5a72'
