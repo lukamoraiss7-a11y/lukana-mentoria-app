@@ -382,7 +382,7 @@
       <div class="result-cta">
         <h3>Próximo passo: Fase 1 do APM</h3>
         <p>Seu diagnóstico está mapeado. A Fase 1 do programa parte exatamente desse ponto — transformando os gaps identificados em plano de ação com prazo e dono.</p>
-        <button class="btn-cta" onclick="window.location.reload()">Refazer diagnóstico</button>
+        <button class="btn-cta" onclick="goToRedo()">Refazer diagnóstico</button>
       </div>
     </div>
   </div>
@@ -398,15 +398,48 @@ const CRM_API_BASE = 'https://lukana-crm.vercel.app'
 const _params = new URLSearchParams(location.search)
 const _nome = _params.get('nome') || ''
 const _cid = _params.get('cid') || ''
+const _redo = _params.get('redo') === '1'
 document.addEventListener('DOMContentLoaded', () => {
   if (_nome) {
     document.getElementById('nomeTag').style.display = 'block'
     document.getElementById('nomeTagText').textContent = _nome
   }
+  if (_cid && !_redo) loadExistingResult()
 })
+
+// ── Refazer: força o quiz do zero, ignorando resultado salvo ──
+function goToRedo() {
+  const p = new URLSearchParams(location.search)
+  p.set('redo', '1')
+  location.href = location.pathname + '?' + p.toString()
+}
+
+// ── Load existing result (view mode) ──
+async function loadExistingResult() {
+  try {
+    const res = await fetch(CRM_API_BASE + '/api/diagnosticos/apm/' + _cid)
+    if (!res.ok) return
+    const d = await res.json()
+    if (!d.itemScores) return
+
+    const results = QUADS.map(q => {
+      const itemScores = d.itemScores[q.id]
+      if (!itemScores) return null
+      const scoreKey = { fin: 'scoreFin', exec: 'scoreExec', pess: 'scorePess', estr: 'scoreEstr' }[q.id]
+      return { ...q, score: d[scoreKey], itemScores }
+    })
+    if (results.some(r => !r)) return
+
+    showResult(results, d.scoreTotal)
+    goTo('screen-result')
+  } catch(e) { console.warn('load result error:', e) }
+}
 
 // ── Save result ──
 async function saveResult(total, results) {
+  const itemScores = {}
+  results.forEach(r => { itemScores[r.id] = r.itemScores })
+
   const payload = {
     nome:        _nome || 'Anônimo',
     score_total: total,
@@ -415,6 +448,7 @@ async function saveResult(total, results) {
     score_pess:  results.find(r => r.id === 'pess').score,
     score_estr:  results.find(r => r.id === 'estr').score,
     nivel:       levelInfo(total).name,
+    item_scores: itemScores,
   }
   try {
     await fetch(API_BASE + '/api/diagnostico', {
