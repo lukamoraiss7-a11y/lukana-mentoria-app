@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fluxograma Produtivo — APM Fase 4</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0c1221; --surface: #111929; --border: rgba(255,255,255,.07);
+    --gold: #C8922A; --gold-light: #F0C060; --text: #e8eaf0;
+    --muted: #8899b4; --dim: #4a5a72;
+    --blue: #3b82f6; --green: #10B981;
+  }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; min-height: 100vh; }
+
+  .header {
+    background: #08101a; border-bottom: 1px solid var(--border);
+    padding: 0 32px; height: 62px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .logo-box {
+    width: 38px; height: 38px;
+    background: linear-gradient(135deg, #C8922A, #F0C060);
+    border-radius: 10px; display: flex; align-items: center; justify-content: center;
+    font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 11px; color: #0c1221; letter-spacing: 1px;
+  }
+  .header-brand { display: flex; align-items: center; gap: 12px; }
+  .header-title { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 16px; letter-spacing: 2px; text-transform: uppercase; }
+  .header-sub { font-size: 10px; color: var(--dim); letter-spacing: 1px; }
+  .back-link { font-size: 11px; color: var(--muted); text-decoration: none; letter-spacing: .5px; }
+  .back-link:hover { color: var(--gold); }
+
+  .container { max-width: 760px; margin: 0 auto; padding: 48px 24px 90px; }
+
+  .intro-block { text-align: center; margin-bottom: 44px; }
+  .step-label { font-family: 'Rajdhani', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 3px; color: var(--dim); text-transform: uppercase; margin-bottom: 10px; }
+  .intro-block h1 { font-family: 'Rajdhani', sans-serif; font-size: 34px; font-weight: 700; line-height: 1.15; margin-bottom: 14px; }
+  .intro-block h1 span { color: var(--gold-light); }
+  .intro-block p { font-size: 13px; color: var(--muted); line-height: 1.7; max-width: 540px; margin: 0 auto; }
+
+  .cycle-total { display: flex; justify-content: center; gap: 8px; margin: 28px auto 0; }
+  .cycle-pill { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 8px 18px; font-size: 11px; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+  .cycle-pill b { color: var(--gold-light); font-family: 'Rajdhani', sans-serif; font-size: 14px; }
+
+  .section-divider { display: flex; align-items: center; gap: 14px; margin: 46px 0 22px; }
+  .section-divider .line { flex: 1; height: 1px; background: var(--border); }
+  .section-divider .label { font-family: 'Rajdhani', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; padding: 6px 16px; border-radius: 20px; }
+  .sd-fabrica .label { background: rgba(59,130,246,.12); color: var(--blue); border: 1px solid rgba(59,130,246,.3); }
+  .sd-obra .label { background: rgba(200,146,42,.12); color: var(--gold-light); border: 1px solid rgba(200,146,42,.3); }
+  .sd-mark .label { background: rgba(16,185,129,.1); color: var(--green); border: 1px solid rgba(16,185,129,.25); }
+
+  .flow { position: relative; padding-left: 34px; }
+  .flow::before { content:''; position: absolute; left: 13px; top: 6px; bottom: 6px; width: 2px; background: linear-gradient(180deg, var(--border), var(--border)); }
+
+  .step {
+    position: relative; background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    padding: 18px 20px; margin-bottom: 14px; cursor: pointer; transition: border-color .2s;
+  }
+  .step:hover { border-color: rgba(200,146,42,.3); }
+  .step::before {
+    content: attr(data-pct); position: absolute; left: -34px; top: 18px;
+    width: 26px; height: 26px; border-radius: 50%; background: var(--bg); border: 2px solid var(--gold);
+    color: var(--gold-light); font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 9px;
+    display: flex; align-items: center; justify-content: center; text-align:center; line-height:1;
+  }
+  .step-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+  .step-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .step-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+  .tag { font-size: 9px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; padding: 3px 9px; border-radius: 20px; white-space: nowrap; }
+  .tag-role { background: rgba(136,153,180,.12); color: var(--muted); border: 1px solid rgba(136,153,180,.2); }
+  .tag-time { background: rgba(200,146,42,.1); color: var(--gold-light); border: 1px solid rgba(200,146,42,.25); }
+  .chevron { color: var(--dim); font-size: 11px; transition: transform .2s; flex-shrink: 0; margin-top: 2px; }
+  .step.open .chevron { transform: rotate(180deg); }
+  .step-detail { max-height: 0; overflow: hidden; transition: max-height .25s ease; }
+  .step.open .step-detail { max-height: 240px; margin-top: 14px; }
+  .detail-row { font-size: 12px; color: var(--muted); line-height: 1.6; padding-top: 10px; border-top: 1px solid var(--border); }
+  .detail-row b { color: var(--text); font-weight: 600; display: block; margin-bottom: 3px; font-size: 11px; }
+  .detail-row + .detail-row { margin-top: 10px; padding-top: 10px; }
+  .detail-err { color: #f0a060; }
+
+  .connector-note {
+    background: rgba(200,146,42,.06); border: 1px dashed rgba(200,146,42,.3); border-radius: 12px;
+    padding: 14px 18px; margin: 6px 0 6px 0; font-size: 12px; color: var(--muted); line-height: 1.6;
+  }
+  .connector-note b { color: var(--gold-light); }
+
+  .footer-note {
+    margin-top: 48px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    padding: 22px; font-size: 12px; color: var(--muted); line-height: 1.7;
+  }
+  .footer-note b { color: var(--text); }
+  .footer-note .warn { color: #f0a060; }
+
+  @media print {
+    .header, .back-link { display: none; }
+    body { background: #fff; color: #111; }
+    .step, .footer-note, .connector-note { background: #f6f6f6; border-color: #ddd; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="header-brand">
+      <div class="logo-box">APM</div>
+      <div>
+        <div class="header-title">ARESTA APM</div>
+        <div class="header-sub">FASE 4 — OPERAÇÃO</div>
+      </div>
+    </div>
+    <a href="index.html" class="back-link">&larr; Voltar à trilha</a>
+  </div>
+
+  <div class="container">
+
+    <div class="intro-block">
+      <div class="step-label">Ferramenta 1 de 5 — Fase 4</div>
+      <h1>Fluxograma <span>Produtivo</span></h1>
+      <p>Do caderno técnico aprovado à entrega em obra: cada etapa, cada responsável, cada prazo esperado. Clique em cada etapa para ver o critério de saída e o erro mais comum.</p>
+      <div class="cycle-total">
+        <div class="cycle-pill">Ciclo padrão end-to-end: <b>~60 dias úteis</b></div>
+        <div class="cycle-pill">Miolo fábrica: <b>15d (teto 20d)</b></div>
+      </div>
+    </div>
+
+    <div class="section-divider sd-mark"><div class="line"></div><div class="label">Gatilho</div><div class="line"></div></div>
+    <div class="flow">
+      <div class="step" data-pct="0%">
+        <div class="step-top">
+          <div>
+            <div class="step-title">Caderno técnico aprovado</div>
+            <div class="step-meta">
+              <span class="tag tag-role">Projetista / Comercial</span>
+              <span class="tag tag-time">Marco zero</span>
+            </div>
+          </div>
+          <div class="chevron">▾</div>
+        </div>
+        <div class="step-detail">
+          <div class="detail-row"><b>Critério de saída</b>Medidas conferidas em obra, especificação de material e ferragem definida, cor/acabamento aprovado por escrito pelo cliente.</div>
+          <div class="detail-row detail-err"><b>Erro mais comum</b>Liberar para fábrica com caderno incompleto — a causa raiz de retrabalho mais frequente nasce aqui, não no corte.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-divider sd-mark"><div class="line"></div><div class="label">Pré-25% · 10–15 dias úteis</div><div class="line"></div></div>
+    <div class="flow">
+      <div class="step" data-pct="PCP">
+        <div class="step-top">
+          <div>
+            <div class="step-title">Planejamento e compras (PCP)</div>
+            <div class="step-meta">
+              <span class="tag tag-role">PCP</span>
+              <span class="tag tag-time">10 a 15 dias úteis</span>
+            </div>
+          </div>
+          <div class="chevron">▾</div>
+        </div>
+        <div class="step-detail">
+          <div class="detail-row"><b>Critério de saída</b>Cronograma-alvo do projeto publicado antes de iniciar produção. Itens sob encomenda antecipados. Prazo de cada fornecedor mapeado — não é surpresa.</div>
+          <div class="detail-row detail-err"><b>Erro mais comum</b>Começar a produzir sem cronograma-alvo publicado — sem isso, aderência não pode ser medida depois.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-divider sd-fabrica"><div class="line"></div><div class="label">Fábrica — miolo 15d (teto 20d)</div><div class="line"></div></div>
+    <div class="flow">
+      <div class="step" data-pct="25%">
+        <div class="step-top">
+          <div>
+            <div class="step-title">Material em pátio</div>
+            <div class="step-meta"><span class="tag tag-role">Encarregado de Pátio</span></div>
+          </div>
+          <div class="chevron">▾</div>
+        </div>
+        <div class="step-detail">
+          <div class="detail-row"><b>Critério de saída</b>Todo material do ambiente conferido fisicamente contra o caderno técnico e disponível no pátio — não parcial.</div>
+          <div class="detail-row detail-err"><b>Erro mais comum</b>Marcar 25% com material incompleto — gera parada no meio do corte.</div>
+        </div>
+      </div>
+      <div class="step" data-pct="50%">
+        <div class="step-top">
+          <div>
+            <div class="step-title">Corte e usinagem concluídos</div>
+            <div class="step-meta"><span class="tag tag-role">Marceneiro</span></div>
+          </div>
+          <div class="chevron">▾</div>
+        </div>
+        <div class="step-detail">
+          <div class="detail-row"><b>Critério de saída</b>Todas as peças do ambiente cortadas e usinadas conforme caderno técnico.</div>
+          <div class="detail-row detail-err"><b>Erro mais comum</b>Cortar por memória em vez de conferir o caderno técnico peça a peça.</div>
+        </div>
+      </div>
+      <div class="step" data-pct="75%">
+        <div class="step-top">
+          <div>
+            <div class="step-title">Pré-montagem finalizada</div>
+            <div class="step-meta"><span class="tag tag-role">Marceneiro</span></div>
+          </div>
+          <div class="chevron">▾</div>
+        </div>
+        <div class="step-detail">
+          <div class="detail-row"><b>Critério de saída</b>Módulos pré-montados e conferidos — encaixes testados antes da embalagem.</div>
+          <div class="detail-row detail-err"><b>Erro mais comum</b>Pular a pré-montagem de conferência e só testar encaixe na obra, na frente do cliente.</div>
+        </div>
+      </div>
+      <div class="step" data-pct="100%">
+        <div class="step-top">
+          <div>
+            <div class="step-title">Embalado — pronto para expedir</div>
+            <div class="step-meta"><span class="tag tag-role">Encarregado de Pátio</span></div>
+          </div>
+          <div class="chevron">▾</div>
+        </div>
+        <div class="step-detail">
+          <div class="detail-row"><b>Critério de saída</b>Ambiente 100% embalado e protegido para transporte, conferido contra checklist de expedição.</div>
+          <div class="detail-row detail-err"><b>Erro mais comum</b>Embalar sem checklist — peça errada ou faltante só aparece na obra.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="connector-note"><b>Pós-75% (fábrica) · 5–10 dias úteis</b> — logística: transporte agendado, carga conferida contra o caderno técnico antes de sair do pátio.</div>
+
+    <div class="section-divider sd-obra"><div class="line"></div><div class="label">Obra — 15–20 dias úteis</div><div class="line"></div></div>
+    <div class="flow">
+      <div class="step" data-pct="25%">
+        <div class="step-top">
+          <div>
+            <div class="step-title">Material in loco</div>
+            <div class="step-meta"><span class="tag tag-role">Encarregado de Obra</span></div>
+          </div>
+          <div class="chevron">▾</div>
+        </div>
+        <div class="step-detail">
+          <div class="detail-row"><b>Critério de saída</b>Material do ambiente conferido e recebido na obra, sem avaria de transporte.</div>
+          <div class="detail-row detail-err"><b>Erro mais comum</b>Receber sem conferir contra a nota — avaria só é notada na montagem.</div>
+        </div>
+      </div>
+      <div class="step" data-pct="50%">
+        <div class="step-top">
+          <div>
+            <div class="step-title">Montagem concluída</div>
+            <div class="step-meta"><span class="tag tag-role">Montador</span></div>
+          </div>
+          <div class="chevron">▾</div>
+        </div>
+        <div class="step-detail">
+          <div class="detail-row"><b>Critério de saída</b>Ambiente montado conforme projeto, portas e gavetas instaladas.</div>
+          <div class="detail-row detail-err"><b>Erro mais comum</b>Montar fora da sequência do projeto por pressa — retrabalho de desmontagem parcial.</div>
+        </div>
+      </div>
+      <div class="step" data-pct="75%">
+        <div class="step-top">
+          <div>
+            <div class="step-title">Ajustes e acabamentos prontos</div>
+            <div class="step-meta"><span class="tag tag-role">Montador</span></div>
+          </div>
+          <div class="chevron">▾</div>
+        </div>
+        <div class="step-detail">
+          <div class="detail-row"><b>Critério de saída</b>Regulagem de portas/gavetas, retoques de acabamento e ferragem final concluídos.</div>
+          <div class="detail-row detail-err"><b>Erro mais comum</b>Deixar regulagem "para depois" — vira chamado de assistência técnica.</div>
+        </div>
+      </div>
+      <div class="step" data-pct="100%">
+        <div class="step-top">
+          <div>
+            <div class="step-title">Limpo e entregue ao cliente</div>
+            <div class="step-meta"><span class="tag tag-role">Encarregado de Obra</span></div>
+          </div>
+          <div class="chevron">▾</div>
+        </div>
+        <div class="step-detail">
+          <div class="detail-row"><b>Critério de saída</b>Ambiente limpo, embalagem retirada, cliente comunicado e vistoria final feita.</div>
+          <div class="detail-row detail-err"><b>Erro mais comum</b>Considerar entregue sem vistoria formal do cliente — assistência aparece depois sem registro.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-note">
+      <b>Como usar este fluxograma:</b> ele é o mapa — não substitui o <b>Checklist por Etapa</b> (o que verificar em cada transição) nem o <b>KPI 25/50/75/100</b> (que mede se você está no prazo). Ciclo acima de 60 dias úteis é projeto atípico e <span class="warn">precisa de aprovação explícita antes de iniciar</span>.
+    </div>
+
+  </div>
+
+<script>
+document.querySelectorAll('.step').forEach(s => {
+  s.addEventListener('click', () => s.classList.toggle('open'));
+});
+</script>
+</body>
+</html>

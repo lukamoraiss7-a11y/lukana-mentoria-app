@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cronograma Mestre — APM Fase 4</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0c1221; --surface: #111929; --border: rgba(255,255,255,.07);
+    --gold: #C8922A; --gold-light: #F0C060; --text: #e8eaf0;
+    --muted: #8899b4; --dim: #4a5a72;
+    --blue: #3b82f6; --green: #10B981; --red: #ef4444;
+  }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; min-height: 100vh; }
+
+  .header {
+    background: #08101a; border-bottom: 1px solid var(--border);
+    padding: 0 32px; height: 62px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .logo-box {
+    width: 38px; height: 38px;
+    background: linear-gradient(135deg, #C8922A, #F0C060);
+    border-radius: 10px; display: flex; align-items: center; justify-content: center;
+    font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 11px; color: #0c1221; letter-spacing: 1px;
+  }
+  .header-brand { display: flex; align-items: center; gap: 12px; }
+  .header-title { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 16px; letter-spacing: 2px; text-transform: uppercase; }
+  .header-sub { font-size: 10px; color: var(--dim); letter-spacing: 1px; }
+  .back-link { font-size: 11px; color: var(--muted); text-decoration: none; letter-spacing: .5px; }
+  .back-link:hover { color: var(--gold); }
+
+  .container { max-width: 860px; margin: 0 auto; padding: 48px 24px 90px; }
+
+  .intro-block { text-align: center; margin-bottom: 36px; }
+  .step-label { font-family: 'Rajdhani', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 3px; color: var(--dim); text-transform: uppercase; margin-bottom: 10px; }
+  .intro-block h1 { font-family: 'Rajdhani', sans-serif; font-size: 34px; font-weight: 700; line-height: 1.15; margin-bottom: 14px; }
+  .intro-block h1 span { color: var(--gold-light); }
+  .intro-block p { font-size: 13px; color: var(--muted); line-height: 1.7; max-width: 560px; margin: 0 auto; }
+
+  .input-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    padding: 22px 24px; margin-bottom: 30px; display: flex; align-items: flex-end; gap: 20px; flex-wrap: wrap;
+  }
+  .input-field label { display: block; font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--dim); margin-bottom: 8px; }
+  .input-field input[type="date"] {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px;
+    color: var(--text); font-family: 'Inter', sans-serif; font-size: 13px; min-width: 170px;
+  }
+  .input-field input[type="date"]:focus { outline: none; border-color: var(--gold); }
+  .mode-toggle { display: flex; gap: 6px; margin-left: auto; }
+  .mode-btn {
+    font-family: 'Rajdhani', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase;
+    padding: 9px 14px; border-radius: 8px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer;
+  }
+  .mode-btn.active { background: linear-gradient(135deg, #C8922A, #F0C060); color: #0c1221; border-color: transparent; }
+
+  .total-banner { display: flex; align-items: center; justify-content: space-between; gap: 16px; background: rgba(200,146,42,.06); border: 1px solid rgba(200,146,42,.25); border-radius: 12px; padding: 16px 22px; margin-bottom: 34px; flex-wrap: wrap; }
+  .total-banner .lbl { font-size: 12px; color: var(--muted); }
+  .total-banner .val { font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; color: var(--gold-light); }
+  .total-banner.over { background: rgba(239,68,68,.08); border-color: rgba(239,68,68,.3); }
+  .total-banner.over .val { color: var(--red); }
+
+  .gantt { margin-bottom: 40px; }
+  .gantt-track { position: relative; height: 54px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; display: flex; }
+  .gantt-block { height: 100%; display: flex; align-items: center; justify-content: center; font-family: 'Rajdhani', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: #0c1221; text-align: center; padding: 0 4px; white-space: nowrap; overflow: hidden; }
+  .gb-pre { background: linear-gradient(135deg, #8899b4, #aab6ca); }
+  .gb-fab { background: linear-gradient(135deg, #3b82f6, #60a5fa); color: #fff; }
+  .gb-pos { background: linear-gradient(135deg, #6b7280, #9ca3af); }
+  .gb-obra { background: linear-gradient(135deg, #C8922A, #F0C060); }
+  .gantt-scale { display: flex; justify-content: space-between; font-size: 9px; color: var(--dim); margin-top: 6px; padding: 0 2px; }
+
+  .legend { display: flex; gap: 18px; flex-wrap: wrap; margin: 18px 0 40px; }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--muted); }
+  .legend-dot { width: 10px; height: 10px; border-radius: 3px; }
+
+  table.milestones { width: 100%; border-collapse: collapse; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; margin-bottom: 34px; }
+  table.milestones th { background: #0d1526; text-align: left; font-family: 'Rajdhani', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--dim); padding: 12px 16px; border-bottom: 1px solid var(--border); }
+  table.milestones td { padding: 13px 16px; font-size: 12.5px; color: var(--text); border-bottom: 1px solid var(--border); }
+  table.milestones tr:last-child td { border-bottom: none; }
+  table.milestones td.block-name { font-weight: 600; }
+  table.milestones td.duration { color: var(--muted); }
+  table.milestones td.date { font-family: 'Rajdhani', sans-serif; font-weight: 700; color: var(--gold-light); white-space: nowrap; }
+
+  .footer-note {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    padding: 22px; font-size: 12px; color: var(--muted); line-height: 1.7;
+  }
+  .footer-note b { color: var(--text); }
+  .footer-note .warn { color: #f0a060; }
+
+  @media print {
+    .header, .back-link, .mode-toggle { display: none; }
+  }
+  @media (max-width: 640px) {
+    .input-card { flex-direction: column; align-items: stretch; }
+    .mode-toggle { margin-left: 0; }
+    table.milestones { font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="header-brand">
+      <div class="logo-box">APM</div>
+      <div>
+        <div class="header-title">ARESTA APM</div>
+        <div class="header-sub">FASE 4 — OPERAÇÃO</div>
+      </div>
+    </div>
+    <a href="index.html" class="back-link">&larr; Voltar à trilha</a>
+  </div>
+
+  <div class="container">
+
+    <div class="intro-block">
+      <div class="step-label">Ferramenta 4 de 5 — Fase 4</div>
+      <h1>Cronograma <span>Mestre</span></h1>
+      <p>O ciclo padrão de marcenaria sob medida: ~60 dias úteis do caderno técnico aprovado à entrega em obra. Escolha a data de aprovação do caderno e veja as datas-alvo de cada bloco — publique o cronograma-alvo antes de iniciar a produção.</p>
+    </div>
+
+    <div class="input-card">
+      <div class="input-field">
+        <label>Data de aprovação do caderno técnico</label>
+        <input type="date" id="startDate">
+      </div>
+      <div class="mode-toggle">
+        <button class="mode-btn active" data-mode="avg">Cenário médio</button>
+        <button class="mode-btn" data-mode="max">Cenário teto</button>
+      </div>
+    </div>
+
+    <div class="total-banner" id="totalBanner">
+      <div class="lbl">Duração total do ciclo neste cenário</div>
+      <div class="val" id="totalVal">— dias úteis</div>
+    </div>
+
+    <div class="gantt">
+      <div class="gantt-track" id="ganttTrack"></div>
+      <div class="gantt-scale">
+        <span>Dia 0 — caderno aprovado</span>
+        <span id="scaleEnd">Dia 60 — entrega</span>
+      </div>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item"><span class="legend-dot" style="background:linear-gradient(135deg,#8899b4,#aab6ca)"></span>Pré-25% — PCP e compras</div>
+      <div class="legend-item"><span class="legend-dot" style="background:linear-gradient(135deg,#3b82f6,#60a5fa)"></span>Miolo fábrica — 25→75%</div>
+      <div class="legend-item"><span class="legend-dot" style="background:linear-gradient(135deg,#6b7280,#9ca3af)"></span>Pós-75% — logística</div>
+      <div class="legend-item"><span class="legend-dot" style="background:linear-gradient(135deg,#C8922A,#F0C060)"></span>Obra — 25→100%</div>
+    </div>
+
+    <table class="milestones">
+      <thead>
+        <tr><th>Bloco</th><th>Duração</th><th>Início</th><th>Marco de saída</th></tr>
+      </thead>
+      <tbody id="milestoneBody"></tbody>
+    </table>
+
+    <div class="footer-note">
+      <b>Como usar:</b> preencha a data de aprovação do caderno técnico de um projeto real e publique as datas resultantes como cronograma-alvo antes de iniciar produção — é isso que o <b>KPI 25/50/75/100</b> vai medir depois (aderência = % real vs. % planejado para hoje). <span class="warn">Ciclo que ultrapassa 60 dias úteis é projeto atípico e precisa de aprovação explícita antes de começar.</span>
+    </div>
+
+  </div>
+
+<script>
+const BLOCKS = {
+  avg: [
+    { name: 'Pré-25% — Planejamento e compras', dias: 12, cls: 'gb-pre', marco: 'Cronograma-alvo publicado, material comprado' },
+    { name: 'Miolo fábrica — 25% → 75%', dias: 15, cls: 'gb-fab', marco: 'Pré-montagem finalizada' },
+    { name: 'Pós-75% — Logística', dias: 7, cls: 'gb-pos', marco: 'Carga expedida para obra' },
+    { name: 'Obra — 25% → 100%', dias: 17, cls: 'gb-obra', marco: 'Ambiente limpo e entregue' },
+  ],
+  max: [
+    { name: 'Pré-25% — Planejamento e compras', dias: 15, cls: 'gb-pre', marco: 'Cronograma-alvo publicado, material comprado' },
+    { name: 'Miolo fábrica — 25% → 75%', dias: 20, cls: 'gb-fab', marco: 'Pré-montagem finalizada' },
+    { name: 'Pós-75% — Logística', dias: 10, cls: 'gb-pos', marco: 'Carga expedida para obra' },
+    { name: 'Obra — 25% → 100%', dias: 20, cls: 'gb-obra', marco: 'Ambiente limpo e entregue' },
+  ]
+};
+
+let mode = 'avg';
+
+function addBusinessDays(date, days) {
+  const d = new Date(date.getTime());
+  let added = 0;
+  while (added < days) {
+    d.setDate(d.getDate() + 1);
+    const dow = d.getDay();
+    if (dow !== 0 && dow !== 6) added++;
+  }
+  return d;
+}
+
+function fmt(d) {
+  return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+}
+
+function render() {
+  const startInput = document.getElementById('startDate').value;
+  const blocks = BLOCKS[mode];
+  const total = blocks.reduce((s, b) => s + b.dias, 0);
+
+  const banner = document.getElementById('totalBanner');
+  document.getElementById('totalVal').textContent = total + ' dias úteis';
+  banner.classList.toggle('over', total > 60);
+  document.getElementById('scaleEnd').textContent = 'Dia ' + total + ' — entrega';
+
+  const track = document.getElementById('ganttTrack');
+  track.innerHTML = '';
+  blocks.forEach(b => {
+    const el = document.createElement('div');
+    el.className = 'gantt-block ' + b.cls;
+    el.style.width = (b.dias / total * 100) + '%';
+    el.textContent = b.dias + 'd';
+    track.appendChild(el);
+  });
+
+  const body = document.getElementById('milestoneBody');
+  body.innerHTML = '';
+  let cursor = startInput ? new Date(startInput + 'T00:00:00') : null;
+  blocks.forEach(b => {
+    const tr = document.createElement('tr');
+    let startCell = '—';
+    if (cursor) {
+      startCell = fmt(cursor);
+      cursor = addBusinessDays(cursor, b.dias);
+    }
+    tr.innerHTML = '<td class="block-name">' + b.name + '</td>' +
+      '<td class="duration">' + b.dias + ' dias úteis</td>' +
+      '<td class="date">' + startCell + '</td>' +
+      '<td>' + b.marco + '</td>';
+    body.appendChild(tr);
+  });
+
+  if (cursor) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = '<td class="block-name">Entrega final</td><td class="duration">—</td><td class="date">' + fmt(cursor) + '</td><td>Ambiente 100% — limpo e entregue ao cliente</td>';
+    body.appendChild(tr);
+  }
+}
+
+document.querySelectorAll('.mode-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    mode = btn.dataset.mode;
+    render();
+  });
+});
+document.getElementById('startDate').addEventListener('input', render);
+
+render();
+</script>
+</body>
+</html>
