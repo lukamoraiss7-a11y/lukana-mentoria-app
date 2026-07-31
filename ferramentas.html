@@ -6,6 +6,7 @@
 <title>APM — Ferramentas | Área de Membros</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <style>
 :root{
   --navy:#0F0F0F;--navy-light:#1A1A1A;--navy-mid:#242424;--navy-deep:#0F0F0F;
@@ -151,6 +152,23 @@ h4{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--text-s
 h4:first-child{margin-top:0}
 .mini{font-size:11px;color:var(--text-muted)}
 .ck{width:16px;height:16px;accent-color:var(--accent);cursor:pointer}
+
+/* LOGIN */
+.gate{position:fixed;inset:0;background:var(--navy);display:flex;align-items:center;justify-content:center;z-index:100;padding:24px}
+.gate-box{width:100%;max-width:390px}
+.gate-brand{display:flex;align-items:center;gap:12px;margin-bottom:28px}
+.gate-brand .sb-icon{width:42px;height:42px;font-size:19px}
+.gate h1{font-size:20px;font-weight:600;margin-bottom:6px}
+.gate p{font-size:13px;color:var(--text-muted);line-height:1.65;margin-bottom:20px}
+.gate .f{margin-bottom:12px}
+.gate .btn{width:100%;padding:11px;justify-content:center;text-align:center;font-size:13px}
+.gate-msg{margin-top:16px}
+.sync{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--text-muted);margin-top:4px}
+.sync i{width:6px;height:6px;border-radius:50%;background:var(--text-muted);display:block;flex-shrink:0}
+.sync.ok i{background:var(--verde)}.sync.bad i{background:var(--vermelho)}.sync.wait i{background:var(--amarelo)}
+.sb-foot .u{font-size:11px;color:var(--text-secondary);word-break:break-all;line-height:1.4}
+.linkbtn{background:none;border:none;color:var(--text-muted);font-size:10px;cursor:pointer;padding:0;text-decoration:underline;margin-top:6px}
+.linkbtn:hover{color:var(--accent-light)}
 </style>
 </head>
 <body>
@@ -161,9 +179,7 @@ h4:first-child{margin-top:0}
       <div><div class="sb-name">APM</div><div class="sb-sub">Ferramentas</div></div>
     </div>
     <nav class="sb-nav" id="nav"></nav>
-    <div class="sb-foot">
-      Dados salvos neste navegador.<br><span id="lastsave">—</span>
-    </div>
+    <div class="sb-foot" id="sbfoot"></div>
   </aside>
   <main class="main">
     <div class="topbar">
@@ -180,6 +196,19 @@ h4:first-child{margin-top:0}
 </div>
 
 <script>
+/* ══════════════════════════════════════════════════════════════
+   CONFIGURAÇÃO — preencha com os dados do seu projeto Supabase.
+   Onde achar: painel do Supabase → Project Settings → API.
+   A chave "anon" é pública por design; a segurança vem do RLS
+   (a política SQL que só deixa cada usuário ler a própria linha).
+   Deixando os dois campos vazios, o app roda em modo local,
+   salvando só no navegador e sem exigir login.
+   ══════════════════════════════════════════════════════════════ */
+const CFG={
+  url : '',   // ex.: https://abcdefgh.supabase.co
+  anon: ''    // ex.: eyJhbGciOi...
+};
+
 /* ══════════ HELPERS ══════════ */
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const brl=n=>(!isFinite(n))?'—':n.toLocaleString('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0});
@@ -276,7 +305,7 @@ function vazio(){return{
 }}
 let DB=carregar();
 function carregar(){try{const r=localStorage.getItem(KEY);if(!r)return vazio();const d=JSON.parse(r);const v=vazio();return Object.assign(v,d)}catch(e){return vazio()}}
-function save(){localStorage.setItem(KEY,JSON.stringify(DB));$('#lastsave').textContent='Salvo '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});navBadges()}
+function save(){localStorage.setItem(KEY,JSON.stringify(DB));agendarPush();rodape();navBadges()}
 function setv(path,val){const p=path.split('.');let o=DB;for(let i=0;i<p.length-1;i++)o=o[p[i]];o[p[p.length-1]]=val;save();paint()}
 function setn(path,el){setv(path,num(el.value))}
 function setpct(path,el){setv(path,num(el.value)/100)}
@@ -1110,12 +1139,110 @@ function seed(){
  save();render();
 }
 
+/* ══════════ CONTA E SINCRONIZAÇÃO ══════════ */
+let sb=null, USER=null, REMOTO=false, SYNC='local', ultimo='';
+const configurado=()=>!!(CFG.url&&CFG.anon);
+
+function rodape(){
+ const el=$('#sbfoot');if(!el)return;
+ if(ultimo!=='')ultimo=ultimo;
+ const est={local:['','Dados salvos só neste navegador.'],
+            ok:['ok','Sincronizado'],
+            wait:['wait','Salvando…'],
+            bad:['bad','Falha ao sincronizar — dados guardados no navegador'],
+            off:['bad','Sem conexão — será sincronizado ao voltar']}[SYNC]||['',''];
+ el.innerHTML=(USER?`<div class="u">${esc(USER.email)}</div>`:'')
+  +`<div class="sync ${est[0]}"><i></i>${est[1]}${ultimo&&SYNC==='ok'?' · '+ultimo:''}</div>`
+  +(USER?`<button class="linkbtn" onclick="sair()">Sair da conta</button>`:'');
+}
+
+let tmr=null;
+function agendarPush(){
+ if(!REMOTO){SYNC='local';return}
+ SYNC='wait';clearTimeout(tmr);tmr=setTimeout(enviar,1200);
+}
+async function enviar(){
+ if(!REMOTO)return;
+ try{
+  const {error}=await sb.from('dados').upsert(
+    {user_id:USER.id,payload:DB,updated_at:new Date().toISOString()},{onConflict:'user_id'});
+  if(error)throw error;
+  SYNC='ok';ultimo=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+ }catch(e){SYNC=navigator.onLine?'bad':'off';console.error('sync',e)}
+ rodape();
+}
+async function puxar(){
+ const {data,error}=await sb.from('dados').select('payload').eq('user_id',USER.id).maybeSingle();
+ if(error)throw error;
+ if(data&&data.payload&&Object.keys(data.payload).length){
+  DB=Object.assign(vazio(),data.payload);
+  localStorage.setItem(KEY,JSON.stringify(DB));
+ }else{
+  await enviar();   // primeira vez: sobe o que já existe neste navegador
+ }
+ SYNC='ok';
+}
+window.addEventListener('online',()=>{if(REMOTO){SYNC='wait';rodape();enviar()}});
+
+function telaLogin(msg,tipo){
+ document.body.insertAdjacentHTML('beforeend',`
+ <div class="gate" id="gate"><div class="gate-box">
+  <div class="gate-brand"><div class="sb-icon">A</div>
+   <div><div class="sb-name">APM</div><div class="sb-sub">Ferramentas</div></div></div>
+  <h1>Entrar</h1>
+  <p>Acesso exclusivo dos membros da mentoria. Informe o e-mail do seu cadastro — enviamos um link de acesso, sem senha.</p>
+  <div class="f"><label>E-mail</label><input id="gm" type="email" placeholder="voce@email.com.br" autocomplete="email"></div>
+  <button class="btn gold" id="gb" onclick="enviarLink()">Receber link de acesso</button>
+  <div id="gmsg" class="gate-msg">${msg?`<div class="alert a-${tipo||'blu'}"><span class="ic">${tipo==='red'?'🔴':'🔵'}</span><div>${esc(msg)}</div></div>`:''}</div>
+ </div></div>`);
+ const i=$('#gm');if(i){i.focus();i.addEventListener('keydown',e=>{if(e.key==='Enter')enviarLink()})}
+}
+async function enviarLink(){
+ const em=($('#gm').value||'').trim();
+ if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){msgGate('E-mail inválido.','red');return}
+ const b=$('#gb');b.disabled=true;b.textContent='Enviando…';
+ const {error}=await sb.auth.signInWithOtp({email:em,options:{emailRedirectTo:location.href.split('#')[0]}});
+ b.disabled=false;b.textContent='Receber link de acesso';
+ if(error){msgGate('Não foi possível enviar: '+error.message,'red');return}
+ msgGate('Link enviado para '+em+'. Abra o e-mail nesta mesma máquina e clique no link. Pode cair na promoções ou no spam.','blu');
+}
+function msgGate(m,t){
+ const el=$('#gmsg');if(!el)return;
+ el.innerHTML=`<div class="alert a-${t==='red'?'red':'blu'}"><span class="ic">${t==='red'?'🔴':'🔵'}</span><div>${esc(m)}</div></div>`;
+}
+async function sair(){
+ if(!confirm('Sair da conta neste navegador?'))return;
+ await sb.auth.signOut();
+ localStorage.removeItem(KEY);
+ location.reload();
+}
+
 /* ══════════ BOOT ══════════ */
-renderNav();
-VIEW=(location.hash||'').replace('#','')||'painel';
-if(!NAV.some(n=>n.id===VIEW))VIEW='painel';
-render();
-window.addEventListener('hashchange',()=>{const v=location.hash.replace('#','');if(v&&v!==VIEW&&NAV.some(n=>n.id===v)){VIEW=v;render()}});
+function iniciarUI(){
+ renderNav();
+ VIEW=(location.hash||'').replace('#','')||'painel';
+ if(!NAV.some(n=>n.id===VIEW))VIEW='painel';
+ render();rodape();
+ window.addEventListener('hashchange',()=>{const v=location.hash.replace('#','');if(v&&v!==VIEW&&NAV.some(n=>n.id===v)){VIEW=v;render()}});
+}
+(async function boot(){
+ if(!configurado()){SYNC='local';iniciarUI();return}
+ if(!window.supabase){
+  SYNC='bad';iniciarUI();
+  alert('Não foi possível carregar a biblioteca de sincronização. O app segue funcionando, salvando só neste navegador.');
+  return;
+ }
+ sb=window.supabase.createClient(CFG.url,CFG.anon);
+ let sess=null;
+ try{ sess=(await sb.auth.getSession()).data.session }catch(e){ console.error(e) }
+ if(!sess){telaLogin();return}
+ USER=sess.user;REMOTO=true;
+ try{ await puxar() }
+ catch(e){ SYNC='bad';console.error('load',e);
+   alert('Entrou, mas não consegui carregar seus dados do servidor. Usando o que está neste navegador. Se o problema persistir, confira se a tabela e as políticas de acesso foram criadas.') }
+ iniciarUI();
+ sb.auth.onAuthStateChange((ev)=>{if(ev==='SIGNED_OUT')location.reload()});
+})();
 </script>
 </body>
 </html>
