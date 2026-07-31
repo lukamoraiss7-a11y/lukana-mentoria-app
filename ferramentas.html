@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APM — Ferramentas | Área de Membros</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0F0F0F;--navy-light:#1A1A1A;--navy-mid:#242424;--navy-deep:#0F0F0F;
+  --accent:#C9A84C;--accent-light:#E8C97A;
+  --text-primary:#E8E8E8;--text-secondary:#AAAAAA;--text-muted:#888888;
+  --verde:#22c55e;--amarelo:#eab308;--laranja:#f97316;--vermelho:#ef4444;--azul:#3b82f6;
+  --bd:#2a2a2a;--sidebar-w:232px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--navy);color:var(--text-primary);font-family:'Inter',-apple-system,sans-serif;-webkit-font-smoothing:antialiased;font-size:14px}
+.app{display:flex;height:100vh;overflow:hidden}
+button,input,select,textarea{font-family:inherit}
+
+/* SIDEBAR */
+.sidebar{width:var(--sidebar-w);background:var(--navy-deep);border-right:1px solid #222;display:flex;flex-direction:column;flex-shrink:0}
+.sb-brand{padding:16px 14px;border-bottom:1px solid #222;display:flex;align-items:center;gap:10px}
+.sb-icon{width:34px;height:34px;background:var(--accent);border-radius:4px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;color:var(--navy);flex-shrink:0}
+.sb-name{font-weight:700;font-size:22px;letter-spacing:3px;text-transform:uppercase;color:#fff;line-height:1}
+.sb-sub{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-top:3px}
+.sb-nav{flex:1;padding:12px 10px;overflow-y:auto}
+.nav-sec{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);padding:0 8px;margin:14px 0 5px}
+.nav-sec:first-child{margin-top:0}
+.nav-it{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:4px;cursor:pointer;font-size:13px;font-weight:500;color:var(--text-muted);transition:all .15s;margin-bottom:2px;position:relative}
+.nav-it:hover{background:rgba(255,255,255,.04);color:var(--text-secondary)}
+.nav-it.on{background:rgba(201,168,76,.09);color:var(--accent-light)}
+.nav-it.on::before{content:'';position:absolute;left:0;top:25%;height:50%;width:3px;background:var(--accent);border-radius:0 2px 2px 0}
+.nav-ic{width:16px;text-align:center;flex-shrink:0;font-size:13px}
+.nav-bg{margin-left:auto;font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;background:rgba(201,168,76,.12);color:var(--accent)}
+.nav-bg.red{background:rgba(239,68,68,.14);color:#fca5a5}
+.sb-foot{padding:12px 16px;border-top:1px solid #222;font-size:10px;color:var(--text-muted);line-height:1.6}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{height:56px;padding:0 26px;border-bottom:1px solid #222;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:var(--navy-deep)}
+.tb-t{font-size:15px;font-weight:600}
+.tb-s{font-size:11px;color:var(--text-muted);margin-top:2px}
+.tbr{display:flex;gap:8px;align-items:center}
+.content{flex:1;overflow-y:auto;padding:24px 26px 60px}
+.view{display:none}.view.on{display:block}
+
+/* UI */
+.btn{background:transparent;border:1px solid rgba(255,255,255,.12);color:var(--text-secondary);padding:7px 13px;border-radius:4px;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s}
+.btn:hover{border-color:rgba(255,255,255,.26);color:var(--text-primary)}
+.btn.gold{background:var(--accent);color:#111;border:none;font-weight:700;letter-spacing:.5px}
+.btn.gold:hover{background:var(--accent-light)}
+.btn.sm{padding:4px 9px;font-size:11px}
+.btn.dg{border-color:rgba(239,68,68,.3);color:#fca5a5}
+.btn.dg:hover{border-color:var(--vermelho);color:#fff;background:rgba(239,68,68,.15)}
+
+.card{background:var(--navy-light);border:1px solid var(--bd);border-radius:8px;padding:18px;margin-bottom:16px}
+.card h3{font-size:12px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--accent);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.card h3 .hint{margin-left:auto;font-size:10px;font-weight:400;letter-spacing:0;text-transform:none;color:var(--text-muted)}
+.sub{font-size:12px;color:var(--text-muted);margin:-8px 0 14px;line-height:1.6}
+
+.grid{display:grid;gap:12px}
+.g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}.g5{grid-template-columns:repeat(5,1fr)}
+@media(max-width:1180px){.g4,.g5{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(2,1fr)}}
+
+.f{display:flex;flex-direction:column;gap:5px}
+.f label{font-size:10px;letter-spacing:.8px;text-transform:uppercase;color:var(--text-muted);font-weight:600}
+.f input,.f select,.f textarea{background:#111;border:1px solid var(--bd);border-radius:5px;padding:8px 10px;color:var(--text-primary);font-size:13px;width:100%;outline:none;transition:border-color .15s}
+.f input:focus,.f select:focus,.f textarea:focus{border-color:var(--accent)}
+.f input::placeholder{color:#555}
+.f .u{font-size:10px;color:var(--text-muted)}
+input[type=date]{color-scheme:dark}
+
+/* KPI TILES */
+.kpis{display:grid;gap:12px;grid-template-columns:repeat(4,1fr)}
+@media(max-width:1180px){.kpis{grid-template-columns:repeat(2,1fr)}}
+.kpi{background:var(--navy-light);border:1px solid var(--bd);border-radius:8px;padding:14px 16px;position:relative;overflow:hidden}
+.kpi .l{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);font-weight:600}
+.kpi .v{font-size:24px;font-weight:700;margin-top:6px;line-height:1.1}
+.kpi .d{font-size:11px;color:var(--text-muted);margin-top:4px}
+.kpi.ok{border-left:3px solid var(--verde)}.kpi.warn{border-left:3px solid var(--amarelo)}
+.kpi.bad{border-left:3px solid var(--vermelho)}.kpi.neu{border-left:3px solid var(--accent)}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{text-align:left;font-size:10px;letter-spacing:.8px;text-transform:uppercase;color:var(--text-muted);font-weight:600;padding:8px 9px;border-bottom:1px solid var(--bd);white-space:nowrap}
+td{padding:8px 9px;border-bottom:1px solid #1f1f1f;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tbody tr:hover{background:rgba(255,255,255,.02)}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+.tw{overflow-x:auto}
+table input,table select{background:#111;border:1px solid #2a2a2a;border-radius:4px;padding:5px 7px;color:var(--text-primary);font-size:12px;width:100%;outline:none}
+table input:focus,table select:focus{border-color:var(--accent)}
+
+/* MISC */
+.tag{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;padding:3px 8px;border-radius:4px;white-space:nowrap}
+.t-verde{background:rgba(34,197,94,.13);color:#4ade80}
+.t-amarelo{background:rgba(234,179,8,.13);color:#facc15}
+.t-laranja{background:rgba(249,115,22,.14);color:#fb923c}
+.t-vermelho{background:rgba(239,68,68,.14);color:#f87171}
+.t-neu{background:rgba(255,255,255,.06);color:var(--text-secondary)}
+.t-gold{background:rgba(201,168,76,.13);color:var(--accent-light)}
+
+.bar{height:6px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;min-width:60px}
+.bar i{display:block;height:100%;border-radius:3px}
+.dual{position:relative;height:22px}
+.dual .plan{position:absolute;top:4px;left:0;height:5px;background:rgba(255,255,255,.16);border-radius:3px}
+.dual .real{position:absolute;top:11px;left:0;height:5px;border-radius:3px}
+
+.alert{display:flex;gap:11px;align-items:flex-start;padding:11px 13px;border-radius:6px;margin-bottom:8px;font-size:13px;line-height:1.5;border:1px solid}
+.alert b{font-weight:600}
+.a-red{background:rgba(239,68,68,.07);border-color:rgba(239,68,68,.25)}
+.a-org{background:rgba(249,115,22,.07);border-color:rgba(249,115,22,.25)}
+.a-yel{background:rgba(234,179,8,.06);border-color:rgba(234,179,8,.22)}
+.a-grn{background:rgba(34,197,94,.06);border-color:rgba(34,197,94,.22)}
+.a-blu{background:rgba(59,130,246,.06);border-color:rgba(59,130,246,.22)}
+.alert .ic{font-size:15px;line-height:1.2;flex-shrink:0}
+
+.empty{padding:26px;text-align:center;color:var(--text-muted);font-size:13px;border:1px dashed var(--bd);border-radius:6px}
+.dre{font-size:13px}
+.dre .r{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #1f1f1f}
+.dre .r.tot{font-weight:700;border-bottom:1px solid var(--bd);border-top:1px solid var(--bd);margin-top:2px;color:var(--accent-light)}
+.dre .r.ind{padding-left:16px;color:var(--text-secondary)}
+.dre .r span:last-child{font-variant-numeric:tabular-nums}
+
+.kb{display:flex;gap:10px;overflow-x:auto;padding-bottom:10px}
+.kb-col{min-width:174px;flex:1;background:#151515;border:1px solid var(--bd);border-radius:7px;display:flex;flex-direction:column}
+.kb-h{padding:9px 10px;border-bottom:1px solid var(--bd);font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text-secondary);line-height:1.4}
+.kb-h .c{float:right;background:rgba(255,255,255,.07);border-radius:9px;padding:0 6px;font-size:10px}
+.kb-b{padding:8px;display:flex;flex-direction:column;gap:7px;min-height:70px}
+.kb-c{background:var(--navy-light);border:1px solid var(--bd);border-radius:5px;padding:8px 9px;font-size:12px;border-left:3px solid var(--accent)}
+.kb-c .t{font-weight:600;margin-bottom:3px}
+.kb-c .m{font-size:10.5px;color:var(--text-muted)}
+
+.chk-row{display:grid;grid-template-columns:26px 1fr 148px 132px;gap:9px;align-items:center;padding:8px 0;border-bottom:1px solid #1f1f1f;font-size:12.5px}
+.chk-row .num{color:var(--text-muted);font-size:11px}
+.chk-row.done{opacity:.55}
+.seg{display:inline-flex;border:1px solid var(--bd);border-radius:5px;overflow:hidden}
+.seg button{background:#111;border:none;color:var(--text-muted);font-size:11px;padding:5px 9px;cursor:pointer;border-right:1px solid var(--bd)}
+.seg button:last-child{border-right:none}
+.seg button.on.ok{background:rgba(34,197,94,.2);color:#4ade80}
+.seg button.on.no{background:rgba(239,68,68,.2);color:#f87171}
+.seg button.on.na{background:rgba(255,255,255,.1);color:var(--text-primary)}
+
+.note{font-size:11.5px;color:var(--text-muted);line-height:1.65;border-left:2px solid var(--bd);padding-left:11px;margin-top:12px}
+.row{display:flex;gap:9px;align-items:flex-end;flex-wrap:wrap}
+.sp{flex:1}
+h4{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--text-secondary);margin:18px 0 9px;font-weight:600}
+h4:first-child{margin-top:0}
+.mini{font-size:11px;color:var(--text-muted)}
+.ck{width:16px;height:16px;accent-color:var(--accent);cursor:pointer}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="sb-brand">
+      <div class="sb-icon">A</div>
+      <div><div class="sb-name">APM</div><div class="sb-sub">Ferramentas</div></div>
+    </div>
+    <nav class="sb-nav" id="nav"></nav>
+    <div class="sb-foot">
+      Dados salvos neste navegador.<br><span id="lastsave">—</span>
+    </div>
+  </aside>
+  <main class="main">
+    <div class="topbar">
+      <div><div class="tb-t" id="vt">Painel Executivo</div><div class="tb-s" id="vs"></div></div>
+      <div class="tbr">
+        <button class="btn sm" onclick="seed()">Dados de exemplo</button>
+        <button class="btn sm" onclick="exportar()">Exportar</button>
+        <button class="btn sm" onclick="$('#imp').click()">Importar</button>
+        <input type="file" id="imp" accept="application/json" style="display:none" onchange="importar(this)">
+      </div>
+    </div>
+    <div class="content" id="content"></div>
+  </main>
+</div>
+
+<script>
+/* ══════════ HELPERS ══════════ */
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const brl=n=>(!isFinite(n))?'—':n.toLocaleString('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0});
+const brl2=n=>(!isFinite(n))?'—':n.toLocaleString('pt-BR',{style:'currency',currency:'BRL',minimumFractionDigits:2,maximumFractionDigits:2});
+const pc=(n,d=1)=>(!isFinite(n))?'—':(n*100).toFixed(d).replace('.',',')+'%';
+const nf=(n,d=0)=>(!isFinite(n))?'—':n.toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d});
+function num(v){if(typeof v==='number')return v;if(v==null||v==='')return 0;let s=String(v).replace(/[^\d,.-]/g,'');if(s.indexOf(',')>-1)s=s.replace(/\./g,'').replace(',','.');return parseFloat(s)||0}
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Math.random().toString(36).slice(2,9);
+const hoje=()=>new Date(Date.now()-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,10);
+const dt=iso=>iso?new Date(iso+'T12:00:00'):null;
+const fmtD=iso=>iso?iso.slice(8,10)+'/'+iso.slice(5,7):'—';
+const isoOf=d=>new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10);
+function addBiz(iso,n){const d=dt(iso);const st=n<0?-1:1,t=Math.abs(n);let c=0;while(c<t){d.setDate(d.getDate()+st);const w=d.getDay();if(w!==0&&w!==6)c++}return isoOf(d)}
+function bizBetween(a,b){if(!a||!b)return 0;let s=dt(a),e=dt(b),sig=1;if(s>e){[s,e]=[e,s];sig=-1}let c=0;const d=new Date(s);while(d<e){d.setDate(d.getDate()+1);const w=d.getDay();if(w!==0&&w!==6)c++}return c*sig}
+const dias=(a,b)=>(!a||!b)?0:Math.round((dt(b)-dt(a))/864e5);
+
+/* ══════════ CONSTANTES ══════════ */
+const MARCOS=[
+ {k:'F25',lbl:'Fábrica 25%',crit:'Material do ambiente comprado e em pátio',short:'Material em pátio',off:12,fase:'Fábrica'},
+ {k:'F50',lbl:'Fábrica 50%',crit:'Corte e usinagem concluídos',short:'Corte / usinagem',off:20,fase:'Fábrica',chk:'corte'},
+ {k:'F75',lbl:'Fábrica 75%',crit:'Pré-montagem finalizada',short:'Pré-montagem',off:27,fase:'Fábrica',chk:'premont'},
+ {k:'F100',lbl:'Fábrica 100%',crit:'Embalado — pronto para expedir',short:'Embalado',off:34,fase:'Fábrica',chk:'exped'},
+ {k:'O25',lbl:'Obra 25%',crit:'Material in loco (recebido na obra)',short:'In loco',off:36,fase:'Obra'},
+ {k:'O50',lbl:'Obra 50%',crit:'Montagem concluída',short:'Montado',off:45,fase:'Obra'},
+ {k:'O75',lbl:'Obra 75%',crit:'Ajustes e acabamentos prontos',short:'Ajustado',off:51,fase:'Obra'},
+ {k:'O100',lbl:'Obra 100%',crit:'Limpo e entregue ao cliente',short:'Entregue',off:55,fase:'Obra',chk:'instal'}
+];
+const CHECKLISTS={
+ corte:{nome:'Corte',emoji:'✂️',marco:'Fábrica 25% → 50%',itens:[
+  'Medidas do caderno técnico conferidas peça a peça antes de cortar',
+  'Material corresponde à especificação (cor/textura/espessura) do caderno',
+  'Quantidade de chapas/material bate com o projetado — sem sobra nem falta',
+  'Corte de teste feito em peça piloto quando há detalhe fora do padrão',
+  'Etiquetagem de peças por ambiente/módulo feita imediatamente após o corte',
+  'Sobras de material registradas e armazenadas (não descartadas sem registro)',
+  'Máquinas calibradas e testadas antes do início do lote',
+  'EPI da equipe conferido antes de iniciar o corte',
+  'Peças com defeito de matéria-prima identificadas e substituídas antes de seguir',
+  'Ambiente sinalizado como 25% concluído no sistema de acompanhamento']},
+ premont:{nome:'Pré-Montagem',emoji:'🔧',marco:'Fábrica 50% → 75%',itens:[
+  'Todas as peças do ambiente etiquetadas e conferidas contra o caderno técnico',
+  'Encaixes e furações testados antes de liberar para embalagem',
+  'Ferragens (dobradiças, corrediças, puxadores) conferidas contra especificação',
+  'Módulos montados a seco para checagem de esquadro e nivelamento',
+  'Acabamento (pintura/laca/verniz) conferido sem falha visível',
+  'Espelho/reflecta e detalhes especiais (LED, vidro) testados antes da pré-montagem final',
+  'Divergência entre projeto e execução registrada e resolvida antes de seguir',
+  'Peça avariada na pré-montagem substituída — nunca disfarçada',
+  'Responsável pela pré-montagem registrado',
+  'Ambiente sinalizado como 75% concluído no sistema de acompanhamento']},
+ exped:{nome:'Expedição',emoji:'📦',marco:'Fábrica 75% → 100%',itens:[
+  'Checklist de peças por ambiente conferido contra caderno técnico antes de embalar',
+  'Embalagem adequada ao tipo de peça (canto, espelho, porta) — protegida para transporte',
+  'Ferragens soltas, puxadores e acessórios separados e identificados por ambiente',
+  'Kit de instalação (manual, parafusos extras, cola, tinta de retoque) incluso',
+  'Carga conferida fisicamente contra a nota antes de sair do pátio',
+  'Transporte agendado e veículo compatível com volume/fragilidade da carga',
+  'Fotos da carga embalada registradas antes do embarque',
+  'Documentação de entrega (nota, romaneio) impressa e conferida',
+  'Motorista/instalador briefado sobre particularidades do ambiente',
+  'Ambiente sinalizado como 100% embalado no sistema de acompanhamento']},
+ instal:{nome:'Instalação (Obra)',emoji:'🏠',marco:'Obra 75% → 100%',itens:[
+  'Material recebido conferido contra a nota — avaria de transporte registrada na hora',
+  'Local de instalação limpo e liberado antes de iniciar montagem',
+  'Sequência de montagem seguida conforme projeto — sem atalho',
+  'Esquadro, nível e prumo conferidos após montagem',
+  'Portas e gavetas reguladas — sem atrito, sem desalinhamento',
+  'Ferragens finais instaladas e testadas (puxadores, dobradiças, iluminação)',
+  'Acabamento final revisado — retoques feitos antes da entrega',
+  'Ambiente limpo e embalagem retirada ao final',
+  'Vistoria final com o cliente registrada por escrito',
+  'Ambiente sinalizado como 100% entregue no sistema de acompanhamento']}
+};
+const ETAPAS_CRM=['Lead Novo','Qualificação','Visita Agendada','Proposta Enviada','Negociação','Fechado','Perdido'];
+const TAB_REF=[
+ {t:'Armário Simples',c:1.0,p:1400},{t:'Guarda-roupa Padrão',c:1.3,p:1700},
+ {t:'Cozinha Completa',c:1.4,p:2000},{t:'Closet Básico',c:1.6,p:2400},
+ {t:'Home Office',c:1.5,p:2200},{t:'Banheiro Planejado',c:1.8,p:2600}];
+const CV_LBL=['Material Direto (MDF, MDP, ferragens)','Mão de Obra Direta (marceneiros)','Terceirizações (pintura, vidro)','Frete de Material','Perda Técnica'];
+const CF_LBL=['Aluguel / IPTU','Folha Administrativa','Luz, Água, Internet, Telefone','Contador','Marketing / Anúncios','Manutenção Preventiva','Limpeza / Segurança','Seguros','Pró-labore do Dono'];
+
+/* ══════════ ESTADO ══════════ */
+const KEY='apm_ferramentas_v1';
+function vazio(){return{
+ empresa:{nome:'',cidade:''},
+ fin:{fat:[0,0,0],imposto:0.10,cv:[0,0,0,0,0],cf:[0,0,0,0,0,0,0,0,0]},
+ prec:{mats:[{n:'MDF Branco 18mm',c:120},{n:'MDF Amadeirado 18mm',c:140},{n:'MDP Branco 18mm',c:90},{n:'MDP Amadeirado 18mm',c:100}],
+       mo:90,perda:0.15,conv:2.46,margem:0.35,cfix:2000,
+       calc:{m2:8,mat:0,cx:1.3},hist:[]},
+ amb:[],crm:[],
+ est:{mat:[],mov:[]},
+ chk:{}
+}}
+let DB=carregar();
+function carregar(){try{const r=localStorage.getItem(KEY);if(!r)return vazio();const d=JSON.parse(r);const v=vazio();return Object.assign(v,d)}catch(e){return vazio()}}
+function save(){localStorage.setItem(KEY,JSON.stringify(DB));$('#lastsave').textContent='Salvo '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});navBadges()}
+function setv(path,val){const p=path.split('.');let o=DB;for(let i=0;i<p.length-1;i++)o=o[p[i]];o[p[p.length-1]]=val;save();paint()}
+function setn(path,el){setv(path,num(el.value))}
+function setpct(path,el){setv(path,num(el.value)/100)}
+
+/* ══════════ CÁLCULOS: FINANCEIRO ══════════ */
+function calcFin(){
+ const f=DB.fin, fatT=f.fat.reduce((a,b)=>a+b,0), fatM=fatT/3;
+ const imp=fatM*f.imposto, rl=fatM-imp;
+ const cv=f.cv.reduce((a,b)=>a+b,0), cf=f.cf.reduce((a,b)=>a+b,0);
+ const mc=rl-cv, mcp=fatM?mc/fatM:NaN, ll=mc-cf, llp=fatM?ll/fatM:NaN;
+ const mcRl=rl?mc/rl:NaN;
+ const pe=mcRl>0?cf/mcRl/(1-f.imposto):NaN;  // faturamento bruto de equilíbrio
+ return{fatT,fatM,imp,rl,cv,cf,mc,mcp,ll,llp,pe,cfp:fatM?cf/fatM:NaN};
+}
+function sangrias(){
+ const f=DB.fin,fatM=f.fat.reduce((a,b)=>a+b,0)/3;
+ const it=[...CV_LBL.map((l,i)=>({l,v:f.cv[i],t:'Variável'})),...CF_LBL.map((l,i)=>({l,v:f.cf[i],t:'Fixo'}))];
+ return it.filter(x=>x.v>0).sort((a,b)=>b.v-a.v).slice(0,5).map(x=>({...x,p:fatM?x.v/fatM:NaN}));
+}
+
+/* ══════════ CÁLCULOS: PRECIFICAÇÃO ══════════ */
+function calcPreco(m2,matIdx,cx,margem,matMult){
+ const p=DB.prec, custoMat=(p.mats[matIdx]||p.mats[0]||{c:0}).c*(matMult||1);
+ const m2r=m2*p.conv, bruto=m2r*custoMat, perda=bruto*p.perda, matReal=bruto+perda;
+ const mo=m2r*p.mo*cx, cfix=p.cfix, total=matReal+mo+cfix;
+ const preco=margem<1?total/(1-margem):NaN;
+ return{m2r,bruto,perda,matReal,mo,cfix,total,preco,pm2:m2?preco/m2:NaN,lucro:preco-total};
+}
+
+/* ══════════ CÁLCULOS: AMBIENTES / KPI ══════════ */
+function planOf(a){return MARCOS.map((m,i)=>a.plan&&a.plan[i]?a.plan[i]:(a.inicio?addBiz(a.inicio,m.off):''))}
+function stageIdx(a){let s=-1;for(let i=0;i<8;i++)if(a.real&&a.real[i])s=i;return s}
+function pctReal(a){return (stageIdx(a)+1)*12.5}
+function pctPlan(a){const p=planOf(a),h=hoje();let c=0;for(let i=0;i<8;i++)if(p[i]&&p[i]<=h)c=i+1;return c*12.5}
+function cor(desvio){if(desvio>=0)return'verde';if(desvio>=-12.5)return'amarelo';if(desvio>=-25)return'laranja';return'vermelho'}
+function ambStatus(a){
+ const r=pctReal(a),p=pctPlan(a),d=r-p;
+ return{real:r,plan:p,desvio:d,cor:r>=100?'verde':cor(d),done:r>=100};
+}
+function diasNaEtapa(a){const s=stageIdx(a);const ref=s>=0?a.real[s]:a.inicio;return ref?Math.max(0,dias(ref,hoje())):0}
+function etapaNome(a){const s=stageIdx(a);if(s<0)return'Pré-25% (Planejamento)';if(s>=7)return'Entregue';return MARCOS[s].lbl+' — '+MARCOS[s].short}
+function projetos(){
+ const m={};DB.amb.forEach(a=>{(m[a.projeto]=m[a.projeto]||[]).push(a)});
+ return Object.keys(m).sort().map(p=>{
+  const l=m[p],st=l.map(ambStatus);
+  const c=st.some(s=>s.cor==='vermelho')?'vermelho':st.some(s=>s.cor==='laranja')?'laranja':st.some(s=>s.cor==='amarelo')?'amarelo':'verde';
+  const real=st.reduce((a,s)=>a+s.real,0)/l.length, plan=st.reduce((a,s)=>a+s.plan,0)/l.length;
+  const pior=st.reduce((a,s)=>s.desvio<a.desvio?s:a,st[0]);
+  return{projeto:p,ambientes:l,cliente:l[0].cliente,cor:c,real,plan,desvio:real-plan,pior:pior.desvio,
+   entrega:l.map(a=>planOf(a)[7]).filter(Boolean).sort().pop()||''};
+ });
+}
+function chkPend(ambId,etapa){
+ const c=(DB.chk[ambId]||{})[etapa]||{};
+ const itens=CHECKLISTS[etapa].itens;
+ let no=0,pend=0;
+ itens.forEach((_,i)=>{const s=c[i]&&c[i].s;if(s==='no')no++;else if(s!=='ok'&&s!=='na')pend++});
+ return{no,pend,ok:itens.length-no-pend};
+}
+
+/* ══════════ CÁLCULOS: CRM ══════════ */
+function idxCRM(s){return ETAPAS_CRM.indexOf(s)}
+function crmMax(l){return Math.max(idxCRM(l.status)===6?(l.etapaMax||0):idxCRM(l.status),l.etapaMax||0)}
+function funil(){
+ const L=DB.crm;
+ const alc=n=>L.filter(l=>crmMax(l)>=n).length;
+ const novos=L.length,visita=alc(2),prop=alc(3),fech=L.filter(l=>l.status==='Fechado').length;
+ const fechados=L.filter(l=>l.status==='Fechado');
+ const ticket=fechados.length?fechados.reduce((a,l)=>a+num(l.valor),0)/fechados.length:NaN;
+ const fat=fechados.reduce((a,l)=>a+num(l.valor),0);
+ const tempos=fechados.filter(l=>l.criado&&l.fechadoEm).map(l=>dias(l.criado,l.fechadoEm));
+ return{novos,visita,prop,fech,ticket,fat,
+  cLV:novos?visita/novos:NaN,cVP:visita?prop/visita:NaN,cPF:prop?fech/prop:NaN,cGeral:novos?fech/novos:NaN,
+  tmedio:tempos.length?tempos.reduce((a,b)=>a+b,0)/tempos.length:NaN,
+  perdidos:L.filter(l=>l.status==='Perdido').length,
+  atrasados:L.filter(l=>l.followup&&l.followup<hoje()&&!['Fechado','Perdido'].includes(l.status)),
+  hoje:L.filter(l=>l.followup===hoje()&&!['Fechado','Perdido'].includes(l.status))};
+}
+
+/* ══════════ CÁLCULOS: ESTOQUE ══════════ */
+function saldos(){
+ return DB.est.mat.map(m=>{
+  const mov=DB.est.mov.filter(x=>x.cod===m.cod).reduce((a,x)=>a+(x.tipo==='ENTRADA'?num(x.qtd):-Math.abs(num(x.qtd))),0);
+  const s=num(m.inicial)+mov, v=s*num(m.custo);
+  const st=s<num(m.min)?'CRÍTICO':s<num(m.min)*1.3?'ATENÇÃO':'OK';
+  return{...m,saldo:s,valor:v,st};
+ });
+}
+function abc(){
+ const s=saldos().filter(x=>x.valor>0).sort((a,b)=>b.valor-a.valor);
+ const tot=s.reduce((a,x)=>a+x.valor,0);let ac=0;
+ return s.map(x=>{const p=tot?x.valor/tot:0;ac+=p;return{...x,p,ac,cl:ac<=.8?'A':ac<=.95?'B':'C'}});
+}
+
+/* ══════════ NAV ══════════ */
+const NAV=[
+ {s:'Cockpit'},
+ {id:'painel',ic:'📊',n:'Painel Executivo',t:'Painel Executivo',d:'Todos os indicadores em um lugar — alimentado pelos outros módulos'},
+ {s:'Dinheiro'},
+ {id:'financeiro',ic:'💰',n:'Diagnóstico Financeiro',t:'Diagnóstico Financeiro',d:'Margem, ponto de equilíbrio, sangrias e projeção'},
+ {id:'precos',ic:'🧮',n:'Precificação',t:'Precificação',d:'Preço por m² frontal com margem garantida'},
+ {s:'Produção'},
+ {id:'kpi',ic:'🎯',n:'KPI 25/50/75/100',t:'KPI 25/50/75/100 + Aderência',d:'Planejado × real por ambiente — semáforo objetivo'},
+ {id:'kanban',ic:'🗂️',n:'Kanban',t:'Kanban de Produção',d:'Onde cada ambiente está agora'},
+ {id:'pcp',ic:'⚙️',n:'PCP & Gargalos',t:'PCP & Gargalos',d:'Fila, prazos e onde a produção trava'},
+ {id:'check',ic:'✅',n:'Checklists',t:'Checklists por Etapa',d:'O que libera o avanço de cada marco'},
+ {s:'Comercial & Suprimentos'},
+ {id:'crm',ic:'🤝',n:'CRM Comercial',t:'CRM Comercial',d:'Funil, follow-up e taxa de conversão'},
+ {id:'estoque',ic:'📦',n:'Estoque',t:'Controle de Estoque',d:'Saldo, curva ABC e alerta de reposição'}
+];
+let VIEW='painel';
+function navBadges(){
+ const f=funil(),ab=DB.amb.map(ambStatus),cr=saldos().filter(x=>x.st==='CRÍTICO').length;
+ const b={kpi:ab.filter(s=>s.cor==='vermelho'||s.cor==='laranja').length,
+          crm:f.atrasados.length+f.hoje.length, estoque:cr,
+          kanban:DB.amb.filter(a=>!ambStatus(a).done).length};
+ $$('.nav-it').forEach(el=>{
+  const id=el.dataset.id,v=b[id];const old=el.querySelector('.nav-bg');if(old)old.remove();
+  if(v>0){const s=document.createElement('span');s.className='nav-bg'+((id==='kpi'||id==='estoque')?' red':'');s.textContent=v;el.appendChild(s)}
+ });
+}
+function renderNav(){
+ $('#nav').innerHTML=NAV.map(n=>n.s?`<div class="nav-sec">${n.s}</div>`
+  :`<div class="nav-it" data-id="${n.id}" onclick="go('${n.id}')"><span class="nav-ic">${n.ic}</span>${n.n}</div>`).join('');
+}
+function go(id){VIEW=id;location.hash=id;render()}
+function render(){
+ const meta=NAV.find(n=>n.id===VIEW)||NAV[1];
+ $('#vt').textContent=meta.t;$('#vs').textContent=meta.d;
+ $$('.nav-it').forEach(e=>e.classList.toggle('on',e.dataset.id===VIEW));
+ $('#content').innerHTML=VIEWS[VIEW]();
+ paint();navBadges();
+}
+function paint(){const f=PAINT[VIEW];if(f)f()}
+
+/* ══════════ VIEWS ══════════ */
+const VIEWS={},PAINT={};
+
+/* ---------- PAINEL ---------- */
+function alertas(){
+ const A=[],f=calcFin(),fu=funil(),sd=saldos();
+ DB.amb.forEach(a=>{const s=ambStatus(a);if(s.done)return;
+  if(s.cor==='vermelho')A.push({lvl:'red',t:`${a.projeto} — ${a.ambiente}`,m:`${nf(-s.desvio,0)} pontos atrás do planejado. Ambiente em vermelho: trava o projeto inteiro.`});
+  else if(s.cor==='laranja')A.push({lvl:'org',t:`${a.projeto} — ${a.ambiente}`,m:`${nf(-s.desvio,0)} pontos atrás do planejado.`});
+  const d=diasNaEtapa(a);
+  if(d>10&&s.cor!=='vermelho')A.push({lvl:'yel',t:`${a.projeto} — ${a.ambiente} parado`,m:`${d} dias em "${etapaNome(a)}". Cruze com o Kanban e o PCP.`});
+ });
+ sd.filter(m=>m.st==='CRÍTICO').forEach(m=>A.push({lvl:'red',t:`Estoque: ${m.nome}`,m:`Saldo ${nf(m.saldo,0)} ${m.un} contra mínimo ${nf(m.min,0)}. Lead time ${m.lead} dias — pedir hoje.`}));
+ if(fu.atrasados.length)A.push({lvl:'org',t:`${fu.atrasados.length} follow-up(s) atrasado(s)`,m:fu.atrasados.map(l=>l.lead).join(', ')});
+ if(fu.hoje.length)A.push({lvl:'blu',t:`${fu.hoje.length} follow-up(s) para hoje`,m:fu.hoje.map(l=>l.lead).join(', ')});
+ if(isFinite(f.llp)&&f.fatM>0){
+  if(f.llp<0)A.push({lvl:'red',t:'Prejuízo operacional',m:`Margem líquida ${pc(f.llp)}. Você está pagando para produzir.`});
+  else if(f.llp<0.10)A.push({lvl:'org',t:'Margem líquida abaixo de 10%',m:`${pc(f.llp)} não sustenta reinvestimento nem imprevisto.`});
+ }
+ if(isFinite(f.pe)&&f.fatM>0&&f.pe>f.fatM)A.push({lvl:'red',t:'Faturamento abaixo do ponto de equilíbrio',m:`Precisa faturar ${brl(f.pe)}/mês só para empatar. Está em ${brl(f.fatM)}.`});
+ if(isFinite(f.cfp)&&f.cfp>0.22)A.push({lvl:'yel',t:'Custo fixo alto',m:`${pc(f.cfp)} do faturamento. Ideal 15–20%.`});
+ return A;
+}
+VIEWS.painel=()=>`<div id="out"></div>`;
+PAINT.painel=()=>{
+ const f=calcFin(),fu=funil(),sd=saldos(),ps=projetos();
+ const ativos=DB.amb.filter(a=>!ambStatus(a).done);
+ const st=DB.amb.map(ambStatus);
+ const ader=st.length?st.filter(s=>s.cor==='verde').length/st.length:NaN;
+ const entregues=DB.amb.filter(a=>a.real&&a.real[7]);
+ const noPrazo=entregues.filter(a=>a.real[7]<=planOf(a)[7]).length;
+ const prazo=entregues.length?noPrazo/entregues.length:NaN;
+ const estVal=sd.reduce((a,m)=>a+m.valor,0);
+ const crit=sd.filter(m=>m.st==='CRÍTICO').length;
+ const A=alertas();
+ const tile=(l,v,d,c)=>`<div class="kpi ${c||'neu'}"><div class="l">${l}</div><div class="v">${v}</div><div class="d">${d}</div></div>`;
+ const cls=(ok,warn)=>ok?'ok':warn?'warn':'bad';
+ $('#out').innerHTML=`
+ <div class="kpis" style="margin-bottom:16px">
+  ${tile('Faturamento médio/mês',brl(f.fatM),f.fatM?'Base: 3 meses lançados':'Preencha o Diagnóstico Financeiro',f.fatM?'neu':'warn')}
+  ${tile('Margem líquida',pc(f.llp),'Ideal ≥ 15%',isFinite(f.llp)?cls(f.llp>=.15,f.llp>=.08):'neu')}
+  ${tile('Ponto de equilíbrio',brl(f.pe),isFinite(f.pe)&&f.fatM?(f.fatM>=f.pe?`Folga de ${brl(f.fatM-f.pe)}/mês`:`Falta ${brl(f.pe-f.fatM)}/mês`):'—',isFinite(f.pe)&&f.fatM?cls(f.fatM>=f.pe*1.15,f.fatM>=f.pe):'neu')}
+  ${tile('Lucro líquido/mês',brl(f.ll),`Margem contribuição ${pc(f.mcp)}`,isFinite(f.ll)?cls(f.ll>0,f.ll>=0):'neu')}
+ </div>
+ <div class="kpis" style="margin-bottom:16px">
+  ${tile('Ticket médio',brl(fu.ticket),`${fu.fech} venda(s) fechada(s)`,'neu')}
+  ${tile('Conversão lead → venda',pc(fu.cGeral),'Benchmark 15–25%',isFinite(fu.cGeral)?cls(fu.cGeral>=.15,fu.cGeral>=.10):'neu')}
+  ${tile('Aderência ao cronograma',pc(ader),`${st.filter(s=>s.cor==='verde').length} de ${st.length} ambientes no verde`,isFinite(ader)?cls(ader>=.8,ader>=.6):'neu')}
+  ${tile('Entrega no prazo',pc(prazo),`${entregues.length} ambiente(s) entregue(s)`,isFinite(prazo)?cls(prazo>=.9,prazo>=.8):'neu')}
+ </div>
+ <div class="kpis" style="margin-bottom:20px">
+  ${tile('Ambientes em produção',nf(ativos.length),`${ps.length} projeto(s) ativos`,'neu')}
+  ${tile('Valor em estoque',brl(estVal),`${crit} item(ns) abaixo do mínimo`,crit?'bad':'ok')}
+  ${tile('Leads ativos',nf(DB.crm.filter(l=>!['Fechado','Perdido'].includes(l.status)).length),`${fu.atrasados.length} follow-up atrasado`,fu.atrasados.length?'warn':'neu')}
+  ${tile('Custo fixo / faturamento',pc(f.cfp),'Ideal 15–20%',isFinite(f.cfp)&&f.fatM?cls(f.cfp<=.20,f.cfp<=.25):'neu')}
+ </div>
+
+ <div class="card">
+  <h3>⚠️ O que exige ação hoje<span class="hint">${A.length} item(ns)</span></h3>
+  ${A.length?A.map(a=>`<div class="alert a-${a.lvl}"><span class="ic">${a.lvl==='red'?'🔴':a.lvl==='org'?'🟠':a.lvl==='yel'?'🟡':'🔵'}</span><div><b>${esc(a.t)}</b><br><span style="color:var(--text-secondary)">${esc(a.m)}</span></div></div>`).join('')
+  :'<div class="alert a-grn"><span class="ic">🟢</span><div><b>Nada crítico agora.</b><br><span style="color:var(--text-secondary)">Nenhum ambiente em atraso relevante, nenhum item de estoque abaixo do mínimo, nenhum follow-up vencido.</span></div></div>'}
+ </div>
+
+ <div class="grid g2">
+  <div class="card">
+   <h3>🚦 Projetos</h3>
+   ${ps.length?`<div class="tw"><table><thead><tr><th>Projeto</th><th>Cliente</th><th class="n">Plan.</th><th class="n">Real</th><th>Status</th></tr></thead><tbody>
+   ${ps.map(p=>`<tr><td><b>${esc(p.projeto)}</b><div class="mini">${p.ambientes.length} ambiente(s)</div></td><td>${esc(p.cliente||'—')}</td><td class="n">${nf(p.plan)}%</td><td class="n">${nf(p.real)}%</td><td><span class="tag t-${p.cor}">${p.cor}</span></td></tr>`).join('')}
+   </tbody></table></div>`:'<div class="empty">Cadastre ambientes no módulo KPI 25/50/75/100.</div>'}
+  </div>
+  <div class="card">
+   <h3>📈 Funil comercial</h3>
+   ${DB.crm.length?[['Leads',fu.novos,1],['Visita agendada',fu.visita,fu.cLV],['Proposta enviada',fu.prop,fu.cVP],['Fechado',fu.fech,fu.cPF]].map(([l,v,c])=>`
+    <div style="margin-bottom:11px"><div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:4px"><span>${l}</span><span><b>${v}</b> <span class="mini">${c===1?'':'· '+pc(c,0)}</span></span></div>
+    <div class="bar"><i style="width:${fu.novos?v/fu.novos*100:0}%;background:var(--accent)"></i></div></div>`).join('')
+   :'<div class="empty">Cadastre leads no CRM Comercial.</div>'}
+  </div>
+ </div>`;
+};
+
+/* ---------- FINANCEIRO ---------- */
+VIEWS.financeiro=()=>{
+ const f=DB.fin;
+ return `<div class="card">
+  <h3>1 · Faturamento dos últimos 3 meses<span class="hint">Só o bruto. O resto o app calcula.</span></h3>
+  <div class="grid g4">
+   ${[0,1,2].map(i=>`<div class="f"><label>Mês ${i+1}</label><input value="${f.fat[i]||''}" placeholder="0" oninput="setn('fin.fat.${i}',this)"></div>`).join('')}
+   <div class="f"><label>Impostos sobre venda</label><input value="${(f.imposto*100).toString().replace('.',',')}" oninput="setpct('fin.imposto',this)"><span class="u">% — Simples costuma ficar entre 6% e 12%</span></div>
+  </div>
+ </div>
+ <div class="grid g2">
+  <div class="card">
+   <h3>2 · Custos variáveis<span class="hint">média mensal</span></h3>
+   <div class="sub">O que só existe se você produzir.</div>
+   ${CV_LBL.map((l,i)=>`<div class="row" style="margin-bottom:8px"><div class="sp" style="font-size:12.5px;color:var(--text-secondary)">${l}</div><input style="width:130px;background:#111;border:1px solid var(--bd);border-radius:5px;padding:7px 9px;color:var(--text-primary);font-size:13px;text-align:right" value="${f.cv[i]||''}" placeholder="0" oninput="setn('fin.cv.${i}',this)"></div>`).join('')}
+  </div>
+  <div class="card">
+   <h3>3 · Custos fixos<span class="hint">média mensal</span></h3>
+   <div class="sub">O que você paga mesmo com a fábrica parada.</div>
+   ${CF_LBL.map((l,i)=>`<div class="row" style="margin-bottom:8px"><div class="sp" style="font-size:12.5px;color:var(--text-secondary)">${l}</div><input style="width:130px;background:#111;border:1px solid var(--bd);border-radius:5px;padding:7px 9px;color:var(--text-primary);font-size:13px;text-align:right" value="${f.cf[i]||''}" placeholder="0" oninput="setn('fin.cf.${i}',this)"></div>`).join('')}
+  </div>
+ </div>
+ <div id="out"></div>`;
+};
+PAINT.financeiro=()=>{
+ const f=calcFin(),sg=sangrias();
+ if(!f.fatM){$('#out').innerHTML='<div class="card"><div class="empty">Lance o faturamento dos 3 meses para o diagnóstico aparecer.</div></div>';return}
+ const r=(l,v,c)=>`<div class="r ${c||''}"><span>${l}</span><span>${brl(v)}</span></div>`;
+ const cen=[['🔴 Pessimista (−10%)',f.fatM*.9,f.llp*.9],['🟡 Realista (média)',f.fatM,f.llp],['🟢 Otimista (+20%)',f.fatM*1.2,f.llp*1.1]];
+ const diag=[];
+ if(f.llp<0)diag.push(['red','Você está operando no prejuízo.',`Cada mês nesse ritmo consome ${brl(-f.ll)} de caixa. Não é problema de venda — é de estrutura de custo ou de preço.`]);
+ else if(f.llp<0.10)diag.push(['org','Margem líquida abaixo de 10%.',`${pc(f.llp)} não paga imprevisto nem reinvestimento. Um mês ruim vira prejuízo.`]);
+ else if(f.llp<0.15)diag.push(['yel','Margem apertada.',`${pc(f.llp)} está no limite. Alvo saudável: 15% a 25%.`]);
+ else diag.push(['grn','Margem líquida saudável.',`${pc(f.llp)} está dentro da faixa alvo.`]);
+ if(f.mcp<0.35)diag.push(['org','Margem de contribuição baixa.',`${pc(f.mcp)}. Abaixo de 35% significa preço mal calibrado ou perda técnica alta — o custo fixo não tem de onde sair.`]);
+ if(f.cfp>0.22)diag.push(['yel','Custo fixo pesado.',`${pc(f.cfp)} do faturamento contra ideal de 15–20%. Diferença anual: ${brl((f.cfp-0.20)*f.fatM*12)}.`]);
+ if(f.fatM<f.pe)diag.push(['red','Abaixo do ponto de equilíbrio.',`Faltam ${brl(f.pe-f.fatM)} de faturamento por mês só para empatar.`]);
+ else diag.push(['grn','Acima do ponto de equilíbrio.',`Folga de ${brl(f.fatM-f.pe)}/mês, ou ${pc((f.fatM-f.pe)/f.fatM)} do faturamento.`]);
+ const maior=sg[0];
+ if(maior)diag.push(['blu','Maior sangria: '+maior.l,`${brl(maior.v)}/mês = ${pc(maior.p)} do faturamento. Cortar 10% aqui devolve ${brl(maior.v*.1*12)} por ano.`]);
+
+ $('#out').innerHTML=`
+ <div class="kpis" style="margin-bottom:16px">
+  <div class="kpi ${f.mcp>=.35?'ok':'warn'}"><div class="l">Margem de contribuição</div><div class="v">${pc(f.mcp)}</div><div class="d">${brl(f.mc)}/mês · ideal ≥ 35%</div></div>
+  <div class="kpi ${f.llp>=.15?'ok':f.llp>=.08?'warn':'bad'}"><div class="l">Margem líquida</div><div class="v">${pc(f.llp)}</div><div class="d">${brl(f.ll)}/mês · ideal 15–25%</div></div>
+  <div class="kpi ${f.fatM>=f.pe?'ok':'bad'}"><div class="l">Ponto de equilíbrio</div><div class="v">${brl(f.pe)}</div><div class="d">${f.fatM>=f.pe?'Folga de '+brl(f.fatM-f.pe):'Falta '+brl(f.pe-f.fatM)}</div></div>
+  <div class="kpi ${f.cfp<=.20?'ok':'warn'}"><div class="l">Custo fixo / faturamento</div><div class="v">${pc(f.cfp)}</div><div class="d">${brl(f.cf)}/mês · ideal 15–20%</div></div>
+ </div>
+
+ <div class="grid g2">
+  <div class="card"><h3>DRE gerencial<span class="hint">média mensal</span></h3><div class="dre">
+   ${r('(+) Faturamento bruto',f.fatM)}
+   ${r('(−) Impostos sobre venda',-f.imp,'ind')}
+   ${r('(=) Receita líquida',f.rl,'tot')}
+   ${r('(−) Custos variáveis (CMV)',-f.cv,'ind')}
+   ${r('(=) Margem de contribuição',f.mc,'tot')}
+   <div class="r ind"><span>% margem de contribuição</span><span>${pc(f.mcp)}</span></div>
+   ${r('(−) Custos fixos',-f.cf,'ind')}
+   ${r('(=) LUCRO LÍQUIDO',f.ll,'tot')}
+   <div class="r ind"><span>% margem líquida</span><span>${pc(f.llp)}</span></div>
+  </div>
+  <div class="note">Ponto de equilíbrio calculado como custo fixo ÷ margem de contribuição sobre receita líquida, revertido para faturamento bruto pelo imposto. É o quanto você precisa vender para o lucro dar exatamente zero.</div>
+  </div>
+
+  <div class="card"><h3>🩸 Onde o dinheiro escorre<span class="hint">top 5</span></h3>
+   <div class="tw"><table><thead><tr><th>Item</th><th>Tipo</th><th class="n">Mês</th><th class="n">% fat.</th><th class="n">Corte de 10%/ano</th></tr></thead><tbody>
+   ${sg.length?sg.map(s=>`<tr><td>${esc(s.l)}</td><td><span class="tag t-neu">${s.t}</span></td><td class="n">${brl(s.v)}</td><td class="n">${pc(s.p)}</td><td class="n" style="color:var(--verde)">${brl(s.v*.1*12)}</td></tr>`).join(''):'<tr><td colspan="5" class="mini">Lance os custos.</td></tr>'}
+   </tbody></table></div>
+   <h4>Projeção próximo mês</h4>
+   <div class="tw"><table><thead><tr><th>Cenário</th><th class="n">Faturamento</th><th class="n">Margem</th><th class="n">Lucro estimado</th></tr></thead><tbody>
+   ${cen.map(([l,fa,m])=>`<tr><td>${l}</td><td class="n">${brl(fa)}</td><td class="n">${pc(m)}</td><td class="n"><b>${brl(fa*m)}</b></td></tr>`).join('')}
+   </tbody></table></div>
+  </div>
+ </div>
+
+ <div class="card"><h3>💡 Leitura do resultado</h3>
+  ${diag.map(([c,t,m])=>`<div class="alert a-${c}"><span class="ic">${c==='red'?'🔴':c==='org'?'🟠':c==='yel'?'🟡':c==='grn'?'🟢':'🔵'}</span><div><b>${t}</b><br><span style="color:var(--text-secondary)">${m}</span></div></div>`).join('')}
+ </div>`;
+};
+
+/* ---------- PRECIFICAÇÃO ---------- */
+VIEWS.precos=()=>{
+ const p=DB.prec,c=p.calc;
+ return `<div class="grid g2">
+ <div class="card">
+  <h3>Calculadora<span class="hint">3 campos</span></h3>
+  <div class="grid g3">
+   <div class="f"><label>m² frontais</label><input value="${c.m2}" oninput="setn('prec.calc.m2',this)"></div>
+   <div class="f"><label>Material</label><select onchange="setv('prec.calc.mat',+this.value)">${p.mats.map((m,i)=>`<option value="${i}" ${i===c.mat?'selected':''}>${esc(m.n)}</option>`).join('')}</select></div>
+   <div class="f"><label>Complexidade</label><select onchange="setv('prec.calc.cx',+this.value)">${[['1.0','Baixa — armário simples'],['1.3','Média — guarda-roupa'],['1.4','Média-alta — cozinha'],['1.5','Média-alta — home office'],['1.6','Alta — closet'],['1.8','Muito alta — banheiro/curvas']].map(([v,l])=>`<option value="${v}" ${Math.abs(c.cx-parseFloat(v))<.001?'selected':''}>${l}</option>`).join('')}</select></div>
+  </div>
+  <div id="out"></div>
+ </div>
+ <div class="card">
+  <h3>Dados base<span class="hint">configure uma vez</span></h3>
+  <div class="sub">Estes números mandam em todo cálculo. Custo-hora mal calibrado aqui infla o orçamento inteiro.</div>
+  <h4>Custo de material por m² real</h4>
+  ${p.mats.map((m,i)=>`<div class="row" style="margin-bottom:7px"><div class="sp" style="font-size:12.5px;color:var(--text-secondary)">${esc(m.n)}</div><input style="width:110px;background:#111;border:1px solid var(--bd);border-radius:5px;padding:6px 9px;color:var(--text-primary);font-size:12.5px;text-align:right" value="${m.c}" oninput="setn('prec.mats.${i}.c',this)"></div>`).join('')}
+  <h4>Parâmetros</h4>
+  <div class="grid g2">
+   <div class="f"><label>Custo MO por m² real</label><input value="${p.mo}" oninput="setn('prec.mo',this)"><span class="u">R$ — padrão simples, multiplicado pela complexidade</span></div>
+   <div class="f"><label>Perda técnica</label><input value="${(p.perda*100).toString().replace('.',',')}" oninput="setpct('prec.perda',this)"><span class="u">% do material</span></div>
+   <div class="f"><label>Conversão frontal → real</label><input value="${String(p.conv).replace('.',',')}" oninput="setn('prec.conv',this)"><span class="u">multiplicador (padrão 2,46)</span></div>
+   <div class="f"><label>Margem desejada</label><input value="${(p.margem*100).toString().replace('.',',')}" oninput="setpct('prec.margem',this)"><span class="u">% sobre preço de venda</span></div>
+   <div class="f"><label>Custo fixo diluído</label><input value="${p.cfix}" oninput="setn('prec.cfix',this)"><span class="u">R$ por projeto médio</span></div>
+  </div>
+ </div>
+ </div>
+ <div class="card"><h3>Histórico de orçamentos</h3><div id="hist"></div></div>`;
+};
+PAINT.precos=()=>{
+ const p=DB.prec,c=p.calc,r=calcPreco(c.m2,c.mat,c.cx,p.margem);
+ const ref=TAB_REF.reduce((a,t)=>Math.abs(t.c-c.cx)<Math.abs(a.c-c.cx)?t:a,TAB_REF[0]);
+ const diffRef=r.pm2-ref.p;
+ const cen=[['Base ('+pc(p.margem,0)+' de margem)',p.margem,1],['Margem agressiva (40%)',.40,1],['Margem mínima (30%)',.30,1],['Material premium (+20%)',p.margem,1.2],['Material econômico (−15%)',p.margem,.85]];
+ const lin=(l,v,c2)=>`<div class="r ${c2||''}"><span>${l}</span><span>${brl(v)}</span></div>`;
+ const txt=(l,v,c2)=>`<div class="r ${c2||''}"><span>${l}</span><span>${v}</span></div>`;
+ $('#out').innerHTML=`
+  <div style="background:#111;border:1px solid rgba(201,168,76,.3);border-radius:8px;padding:16px;margin:16px 0">
+   <div style="font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-muted);font-weight:600">Preço final sugerido</div>
+   <div style="font-size:34px;font-weight:700;color:var(--accent-light);line-height:1.15;margin-top:4px">${brl(r.preco)}</div>
+   <div class="mini" style="margin-top:5px">${brl(r.pm2)} por m² frontal · lucro embutido ${brl(r.lucro)} (${pc(p.margem,0)})</div>
+  </div>
+  <div class="dre">
+   ${txt('m² reais ('+nf(c.m2,1)+' frontais × '+String(p.conv).replace('.',',')+')',nf(r.m2r,1)+' m²')}
+   ${lin('Custo material bruto',r.bruto)}
+   ${lin('+ Perda técnica ('+pc(p.perda,0)+')',r.perda,'ind')}
+   ${lin('= Material real',r.matReal,'tot')}
+   ${lin('Mão de obra (×'+String(c.cx).replace('.',',')+' complexidade)',r.mo)}
+   ${lin('Custo fixo diluído',r.cfix)}
+   ${lin('= CUSTO TOTAL',r.total,'tot')}
+  </div>
+  <div class="alert ${Math.abs(diffRef)/ref.p<.12?'a-grn':diffRef<0?'a-org':'a-yel'}" style="margin-top:14px">
+   <span class="ic">${Math.abs(diffRef)/ref.p<.12?'🟢':diffRef<0?'🟠':'🟡'}</span>
+   <div><b>Referência: ${ref.t} — ${brl(ref.p)}/m²</b><br><span style="color:var(--text-secondary)">
+   ${diffRef<0?`Seu preço está ${brl(-diffRef)}/m² <b>abaixo</b> da referência (${pc(-diffRef/ref.p,0)}). Ou seu custo está subestimado, ou você está deixando dinheiro na mesa.`
+    :`Seu preço está ${brl(diffRef)}/m² acima da referência (${pc(diffRef/ref.p,0)}). Precisa sustentar isso com proposta de valor, não com desconto.`}
+   </span></div>
+  </div>
+  <h4>Simulador</h4>
+  <div class="tw"><table><thead><tr><th>Cenário</th><th class="n">Preço final</th><th class="n">R$/m²</th><th class="n">Δ vs base</th></tr></thead><tbody>
+  ${cen.map(([l,m,mult],i)=>{const rr=calcPreco(c.m2,c.mat,c.cx,m,mult),pr=rr.preco,base=r.preco;
+   return `<tr><td>${l}</td><td class="n">${brl(pr)}</td><td class="n">${brl(pr/c.m2)}</td><td class="n" style="color:${pr-base>0?'var(--verde)':pr-base<0?'var(--vermelho)':'var(--text-muted)'}">${i===0?'—':(pr-base>0?'+':'')+brl(pr-base)}</td></tr>`}).join('')}
+  </tbody></table></div>
+  <div class="row" style="margin-top:14px">
+   <div class="f sp"><label>Cliente</label><input id="hc" placeholder="Nome do cliente"></div>
+   <div class="f" style="width:180px"><label>Tipo de móvel</label><input id="ht" value="${ref.t}"></div>
+   <button class="btn gold" onclick="salvarOrc()">Salvar no histórico</button>
+  </div>`;
+ const h=p.hist;
+ $('#hist').innerHTML=h.length?`<div class="tw"><table><thead><tr><th>Data</th><th>Cliente</th><th>Tipo</th><th class="n">m²</th><th class="n">Preço</th><th class="n">R$/m²</th><th>Status</th><th></th></tr></thead><tbody>
+  ${h.map((o,i)=>`<tr><td>${fmtD(o.data)}</td><td>${esc(o.cliente)}</td><td>${esc(o.tipo)}</td><td class="n">${nf(o.m2,1)}</td><td class="n">${brl(o.preco)}</td><td class="n">${brl(o.preco/o.m2)}</td>
+   <td><select onchange="setv('prec.hist.${i}.status',this.value)">${['Pendente','Fechado','Perdido'].map(s=>`<option ${o.status===s?'selected':''}>${s}</option>`).join('')}</select></td>
+   <td><button class="btn sm dg" onclick="delOrc(${i})">×</button></td></tr>`).join('')}
+  </tbody></table></div>
+  <div class="row" style="margin-top:12px;gap:22px">
+   <div><div class="mini">Orçamentos</div><b>${h.length}</b></div>
+   <div><div class="mini">Ticket médio</div><b>${brl(h.reduce((a,o)=>a+o.preco,0)/h.length)}</b></div>
+   <div><div class="mini">Taxa de conversão</div><b>${pc(h.filter(o=>o.status==='Fechado').length/h.length,0)}</b></div>
+   <div><div class="mini">Preço médio/m²</div><b>${brl(h.reduce((a,o)=>a+o.preco/o.m2,0)/h.length)}</b></div>
+  </div>`:'<div class="empty">Nenhum orçamento salvo. Calcule e clique em "Salvar no histórico".</div>';
+};
+function salvarOrc(){
+ const c=DB.prec.calc,r=calcPreco(c.m2,c.mat,c.cx,DB.prec.margem);
+ DB.prec.hist.unshift({data:hoje(),cliente:$('#hc').value||'—',tipo:$('#ht').value||'—',m2:c.m2,preco:r.preco,status:'Pendente',margem:DB.prec.margem});
+ save();paint();
+}
+function delOrc(i){DB.prec.hist.splice(i,1);save();paint()}
+
+/* ---------- KPI ---------- */
+VIEWS.kpi=()=>`
+ <div class="card">
+  <h3>Novo ambiente<span class="hint">o cronograma é gerado sozinho a partir da data de início</span></h3>
+  <div class="row">
+   <div class="f" style="width:110px"><label>Projeto</label><input id="np" placeholder="089"></div>
+   <div class="f" style="width:170px"><label>Ambiente</label><input id="na" placeholder="Cozinha"></div>
+   <div class="f" style="width:170px"><label>Cliente</label><input id="nc" placeholder="João Silva"></div>
+   <div class="f" style="width:160px"><label>Início (caderno aprovado)</label><input type="date" id="ni" value="${hoje()}"></div>
+   <button class="btn gold" onclick="addAmb()">Adicionar</button>
+  </div>
+  <div class="note">Ciclo padrão: 55 dias úteis do caderno técnico aprovado à entrega. Pré-25% 12d · miolo fábrica 25%→75% 15d · pós-75% 7d · obra 21d. Toda data planejada pode ser editada por ambiente.</div>
+ </div>
+ <div id="out"></div>`;
+PAINT.kpi=()=>{
+ if(!DB.amb.length){$('#out').innerHTML='<div class="card"><div class="empty">Nenhum ambiente cadastrado. A unidade de medida é o <b>ambiente completo</b>, nunca o móvel isolado.</div></div>';return}
+ const ps=projetos();
+ $('#out').innerHTML=`
+ <div class="card"><h3>🚦 Painel do projeto<span class="hint">um ambiente laranja derruba o projeto inteiro</span></h3>
+  <div class="tw"><table><thead><tr><th>Projeto</th><th>Cliente</th><th>Ambientes</th><th class="n">% planejado</th><th class="n">% real</th><th class="n">Pior ambiente</th><th>Entrega prevista</th><th>Status</th></tr></thead><tbody>
+  ${ps.map(p=>{const c={verde:0,amarelo:0,laranja:0,vermelho:0};p.ambientes.forEach(a=>c[ambStatus(a).cor]++);
+   return `<tr><td><b>${esc(p.projeto)}</b></td><td>${esc(p.cliente||'—')}</td>
+   <td>${Object.entries(c).filter(([,v])=>v).map(([k,v])=>`<span class="tag t-${k}" style="margin-right:3px">${v}</span>`).join('')}</td>
+   <td class="n">${nf(p.plan)}%</td><td class="n">${nf(p.real)}%</td>
+   <td class="n" style="color:${p.pior>=0?'var(--verde)':'var(--vermelho)'}">${p.pior>0?'+':''}${nf(p.pior)} pts</td>
+   <td>${fmtD(p.entrega)}</td><td><span class="tag t-${p.cor}">${p.cor}</span></td></tr>`}).join('')}
+  </tbody></table></div>
+  <div class="note">Verde = adiantado ou em dia · Amarelo = até 12,5 pts atrás (menos de um marco) · Laranja = até 25 pts · Vermelho = mais de 25 pts atrás. % planejado avança por marco vencido, não linearmente.</div>
+ </div>
+ ${DB.amb.map((a,i)=>ambCard(a,i)).join('')}`;
+};
+function ambCard(a,i){
+ const s=ambStatus(a),plan=planOf(a),si=stageIdx(a);
+ const gate=m=>{const c=MARCOS[m].chk;if(!c)return null;const r=chkPend(a.id,c);return r};
+ return `<div class="card">
+  <h3>${esc(a.projeto)} — ${esc(a.ambiente)} <span class="tag t-${s.cor}" style="margin-left:6px">${s.cor}</span>
+   <span class="hint">${esc(a.cliente||'')} · ${etapaNome(a)} há ${diasNaEtapa(a)} dia(s) · <button class="btn sm dg" onclick="delAmb(${i})">remover</button></span></h3>
+  <div class="row" style="margin-bottom:14px;gap:20px">
+   <div><div class="mini">% planejado hoje</div><b style="font-size:19px">${nf(s.plan)}%</b></div>
+   <div><div class="mini">% real hoje</div><b style="font-size:19px">${nf(s.real)}%</b></div>
+   <div><div class="mini">Desvio</div><b style="font-size:19px;color:${s.desvio>=0?'var(--verde)':'var(--vermelho)'}">${s.desvio>0?'+':''}${nf(s.desvio)} pts</b></div>
+   <div class="sp" style="min-width:170px"><div class="mini">planejado / real</div>
+    <div class="dual"><div class="plan" style="width:${s.plan}%"></div><div class="real" style="width:${s.real}%;background:var(--${s.cor==='verde'?'verde':s.cor==='amarelo'?'amarelo':s.cor==='laranja'?'laranja':'vermelho'})"></div></div></div>
+   <div class="f" style="width:150px"><label>Início</label><input type="date" value="${a.inicio||''}" onchange="setAmbInicio(${i},this.value)"></div>
+  </div>
+  <div class="tw"><table><thead><tr><th style="width:34px"></th><th>Marco</th><th>Critério objetivo</th><th style="width:140px">Planejado</th><th style="width:140px">Real</th><th class="n" style="width:70px">Desvio</th><th>Checklist</th></tr></thead><tbody>
+  ${MARCOS.map((m,j)=>{const done=a.real&&a.real[j];const g=gate(j);
+   const atras=done&&plan[j]?bizBetween(plan[j],a.real[j]):(!done&&plan[j]&&plan[j]<hoje()?bizBetween(plan[j],hoje()):0);
+   return `<tr style="${done?'':j===si+1?'background:rgba(201,168,76,.04)':'opacity:.72'}">
+   <td><input type="checkbox" class="ck" ${done?'checked':''} onchange="marcar(${i},${j},this.checked)"></td>
+   <td><b>${m.lbl}</b><div class="mini">${m.short}</div></td>
+   <td class="mini">${m.crit}</td>
+   <td><input type="date" value="${plan[j]||''}" onchange="setPlan(${i},${j},this.value)"></td>
+   <td><input type="date" value="${done||''}" onchange="setReal(${i},${j},this.value)"></td>
+   <td class="n" style="color:${atras>0?'var(--vermelho)':atras<0?'var(--verde)':'var(--text-muted)'}">${atras?((atras>0?'+':'')+atras+'d'):'—'}</td>
+   <td>${g?(g.no?`<span class="tag t-vermelho">${g.no} não OK</span>`:g.pend?`<span class="tag t-amarelo">${g.pend} pend.</span>`:`<span class="tag t-verde">liberado</span>`):'<span class="mini">—</span>'}</td>
+   </tr>`}).join('')}
+  </tbody></table></div>
+ </div>`;
+}
+function addAmb(){
+ const p=$('#np').value.trim(),am=$('#na').value.trim();
+ if(!p||!am){alert('Projeto e ambiente são obrigatórios.');return}
+ const inicio=$('#ni').value||hoje();
+ DB.amb.push({id:uid(),projeto:p,ambiente:am,cliente:$('#nc').value.trim(),inicio,plan:MARCOS.map(m=>addBiz(inicio,m.off)),real:Array(8).fill('')});
+ $('#np').value='';$('#na').value='';$('#nc').value='';
+ save();render();
+}
+function delAmb(i){if(!confirm('Remover este ambiente e seus checklists?'))return;const a=DB.amb[i];delete DB.chk[a.id];DB.amb.splice(i,1);save();render()}
+function setAmbInicio(i,v){const a=DB.amb[i];a.inicio=v;a.plan=MARCOS.map(m=>addBiz(v,m.off));save();render()}
+function setPlan(i,j,v){DB.amb[i].plan[j]=v;save();render()}
+function setReal(i,j,v){DB.amb[i].real[j]=v;save();render()}
+function marcar(i,j,on){
+ const a=DB.amb[i];
+ if(on){
+  const c=MARCOS[j].chk;
+  if(c){const g=chkPend(a.id,c);
+   if(g.no&&!confirm(`O checklist de ${CHECKLISTS[c].nome} tem ${g.no} item(ns) marcado(s) como NÃO OK. Avançar mesmo assim?`))return render();
+   if(g.pend&&!confirm(`O checklist de ${CHECKLISTS[c].nome} tem ${g.pend} item(ns) sem verificação. Avançar mesmo assim?`))return render();}
+  for(let k=0;k<=j;k++)if(!a.real[k])a.real[k]=hoje();
+ }else{for(let k=j;k<8;k++)a.real[k]=''}
+ save();render();
+}
+
+/* ---------- KANBAN ---------- */
+VIEWS.kanban=()=>`<div id="out"></div>`;
+PAINT.kanban=()=>{
+ const cols=[{lbl:'Pré-25%',sub:'Planejamento'},...MARCOS.map(m=>({lbl:m.lbl,sub:m.short}))];
+ const buckets=cols.map(()=>[]);
+ DB.amb.forEach((a,i)=>buckets[stageIdx(a)+1].push({a,i}));
+ $('#out').innerHTML=`
+ <div class="card"><h3>🗂️ Quadro por ambiente<span class="hint">${DB.amb.length} ambiente(s)</span></h3>
+ ${DB.amb.length?`<div class="kb">${cols.map((c,ci)=>`
+  <div class="kb-col"><div class="kb-h">${c.lbl}<span class="c">${buckets[ci].length}</span><div style="font-weight:400;color:var(--text-muted);text-transform:none;letter-spacing:0;font-size:10px">${c.sub}</div></div>
+  <div class="kb-b">${buckets[ci].map(({a,i})=>{const s=ambStatus(a),d=diasNaEtapa(a);
+   const prox=ci<8?planOf(a)[ci]:'';const venc=prox&&prox<hoje();
+   return `<div class="kb-c" style="border-left-color:var(--${s.cor==='verde'?'verde':s.cor==='amarelo'?'amarelo':s.cor==='laranja'?'laranja':'vermelho'})">
+    <div class="t">${esc(a.projeto)} — ${esc(a.ambiente)}</div>
+    <div class="m">${esc(a.cliente||'')}</div>
+    <div class="m" style="margin-top:4px">${d}d nesta etapa</div>
+    ${prox?`<div class="m" style="color:${venc?'var(--vermelho)':'var(--text-muted)'}">próx. ${MARCOS[ci].lbl} até ${fmtD(prox)}${venc?' · vencido':''}</div>`:''}
+    ${ci<9?`<div style="margin-top:6px;display:flex;gap:4px">${ci>0?`<button class="btn sm" onclick="mover(${i},-1)">◀</button>`:''}${ci<9?`<button class="btn sm" onclick="mover(${i},1)">▶</button>`:''}</div>`:''}
+   </div>`}).join('')||'<div class="mini" style="text-align:center;padding:8px;color:#444">—</div>'}</div></div>`).join('')}</div>`
+ :'<div class="empty">Cadastre ambientes no KPI 25/50/75/100 — o Kanban se preenche sozinho.</div>'}
+ <div class="note">Cada card é um ambiente completo. A cor da borda vem do desvio de cronograma, não do olho de ninguém. Mover o card grava a data real do marco — é a mesma informação que alimenta o KPI, o PCP e o painel.</div>
+ </div>
+ ${DB.amb.length?`<div class="card"><h3>Ambientes parados</h3>
+  <div class="tw"><table><thead><tr><th>Projeto</th><th>Ambiente</th><th>Etapa atual</th><th class="n">Dias parado</th><th>Status</th></tr></thead><tbody>
+  ${DB.amb.filter(a=>!ambStatus(a).done).sort((a,b)=>diasNaEtapa(b)-diasNaEtapa(a)).slice(0,12).map(a=>{const s=ambStatus(a),d=diasNaEtapa(a);
+   return `<tr><td>${esc(a.projeto)}</td><td>${esc(a.ambiente)}</td><td>${etapaNome(a)}</td><td class="n" style="color:${d>10?'var(--vermelho)':d>6?'var(--laranja)':'inherit'}">${d}</td><td><span class="tag t-${s.cor}">${s.cor}</span></td></tr>`}).join('')}
+  </tbody></table></div></div>`:''}`;
+};
+function mover(i,dir){
+ const a=DB.amb[i],s=stageIdx(a);
+ if(dir>0){if(s>=7)return;marcar(i,s+1,true)}
+ else{if(s<0)return;a.real[s]='';save();render()}
+}
+
+/* ---------- PCP ---------- */
+VIEWS.pcp=()=>`<div id="out"></div>`;
+PAINT.pcp=()=>{
+ const ativos=DB.amb.filter(a=>!ambStatus(a).done);
+ if(!DB.amb.length){$('#out').innerHTML='<div class="card"><div class="empty">O PCP é derivado dos ambientes. Cadastre no KPI 25/50/75/100.</div></div>';return}
+ const etapas=[{lbl:'Pré-25% (Planejamento)',i:-1},...MARCOS.map((m,i)=>({lbl:m.lbl+' — '+m.short,i}))];
+ const gg=etapas.map(e=>{
+  const l=ativos.filter(a=>stageIdx(a)===e.i);
+  const tm=l.length?l.reduce((s,a)=>s+diasNaEtapa(a),0)/l.length:0;
+  return{...e,qtd:l.length,tm,lista:l};
+ }).filter(e=>e.qtd>0);
+ const maxQ=Math.max(...gg.map(g=>g.qtd),1);
+ const gargalo=gg.filter(g=>g.qtd>=3||g.tm>10).sort((a,b)=>(b.qtd*b.tm)-(a.qtd*a.tm))[0];
+ const fila=[...ativos].sort((a,b)=>{const pa=planOf(a)[7],pb=planOf(b)[7];return (pa||'9')<(pb||'9')?-1:1});
+ $('#out').innerHTML=`
+ <div class="kpis" style="margin-bottom:16px">
+  <div class="kpi neu"><div class="l">Ambientes em produção</div><div class="v">${ativos.length}</div><div class="d">${projetos().length} projeto(s)</div></div>
+  <div class="kpi ${fila.filter(a=>planOf(a)[7]<hoje()).length?'bad':'ok'}"><div class="l">Entrega vencida</div><div class="v">${fila.filter(a=>planOf(a)[7]<hoje()).length}</div><div class="d">data de entrega já passou</div></div>
+  <div class="kpi ${fila.filter(a=>{const d=bizBetween(hoje(),planOf(a)[7]);return d>=0&&d<=5}).length?'warn':'ok'}"><div class="l">Prazo crítico</div><div class="v">${fila.filter(a=>{const d=bizBetween(hoje(),planOf(a)[7]);return d>=0&&d<=5}).length}</div><div class="d">≤ 5 dias úteis para entregar</div></div>
+  <div class="kpi ${gargalo?'bad':'ok'}"><div class="l">Gargalo</div><div class="v" style="font-size:16px;margin-top:9px">${gargalo?gargalo.lbl:'Nenhum'}</div><div class="d">${gargalo?`${gargalo.qtd} ambientes · ${nf(gargalo.tm,1)}d em média`:'fluxo distribuído'}</div></div>
+ </div>
+ <div class="grid g2">
+ <div class="card"><h3>🔴 Onde a produção acumula</h3>
+  <div class="tw"><table><thead><tr><th>Etapa</th><th class="n">Ambientes</th><th>Distribuição</th><th class="n">Dias médios parado</th><th>Leitura</th></tr></thead><tbody>
+  ${gg.map(g=>{const crit=g.qtd>=3||g.tm>10;
+   return `<tr><td>${g.lbl}</td><td class="n">${g.qtd}</td>
+   <td><div class="bar" style="min-width:80px"><i style="width:${g.qtd/maxQ*100}%;background:${crit?'var(--vermelho)':'var(--accent)'}"></i></div></td>
+   <td class="n" style="color:${g.tm>10?'var(--vermelho)':g.tm>6?'var(--laranja)':'inherit'}">${nf(g.tm,1)}</td>
+   <td>${crit?'<span class="tag t-vermelho">gargalo</span>':'<span class="tag t-verde">ok</span>'}</td></tr>`}).join('')}
+  </tbody></table></div>
+  <div class="note">Gargalo = etapa com 3+ ambientes acumulados ou média acima de 10 dias parado. Não adianta contratar antes de saber onde a fila se forma.</div>
+ </div>
+ <div class="card"><h3>📅 Fila por prazo de entrega<span class="hint">ordem de prioridade real</span></h3>
+  <div class="tw"><table><thead><tr><th>#</th><th>Projeto / Ambiente</th><th>Etapa atual</th><th>Entrega</th><th class="n">Dias úteis</th><th>Status</th></tr></thead><tbody>
+  ${fila.map((a,n)=>{const e=planOf(a)[7],du=bizBetween(hoje(),e),s=ambStatus(a);
+   return `<tr><td class="mini">${n+1}</td><td><b>${esc(a.projeto)}</b> — ${esc(a.ambiente)}<div class="mini">${esc(a.cliente||'')}</div></td>
+   <td class="mini">${etapaNome(a)}</td><td>${fmtD(e)}</td>
+   <td class="n" style="color:${du<0?'var(--vermelho)':du<=5?'var(--laranja)':'inherit'}">${du}</td>
+   <td><span class="tag t-${s.cor}">${s.cor}</span></td></tr>`}).join('')}
+  </tbody></table></div>
+ </div>
+ </div>
+ <div class="card"><h3>⏱️ Cronograma padrão vs. praticado</h3>
+  <div class="tw"><table><thead><tr><th>Trecho</th><th class="n">Padrão (dias úteis)</th><th class="n">Média praticada</th><th class="n">Desvio</th><th>Leitura</th></tr></thead><tbody>
+  ${[[0,'Início → Fábrica 25%',12],[1,'F25 → F50 (corte)',8],[2,'F50 → F75 (pré-montagem)',7],[3,'F75 → F100 (embalado)',7],[4,'F100 → Obra 25%',2],[5,'O25 → O50 (montado)',9],[6,'O50 → O75 (ajustado)',6],[7,'O75 → O100 (entregue)',4]].map(([j,lbl,pad])=>{
+   const am=DB.amb.filter(a=>a.real[j]&&(j===0?a.inicio:a.real[j-1]));
+   const md=am.length?am.reduce((s,a)=>s+bizBetween(j===0?a.inicio:a.real[j-1],a.real[j]),0)/am.length:NaN;
+   const dv=isFinite(md)?md-pad:NaN;
+   return `<tr><td>${lbl}</td><td class="n">${pad}</td><td class="n">${isFinite(md)?nf(md,1):'—'}</td>
+   <td class="n" style="color:${dv>0?'var(--vermelho)':dv<0?'var(--verde)':'inherit'}">${isFinite(dv)?(dv>0?'+':'')+nf(dv,1):'—'}</td>
+   <td class="mini">${!isFinite(dv)?'sem histórico':dv>2?'trecho estourando o padrão':dv<-1?'mais rápido que o padrão':'dentro do padrão'}</td></tr>`}).join('')}
+  </tbody></table></div>
+  <div class="note">Ciclo padrão total: 55 dias úteis do caderno técnico aprovado à entrega. Projeto que soma mais que isso é atípico e exige aprovação escrita antes de entrar na fila.</div>
+ </div>`;
+};
+
+/* ---------- CHECKLISTS ---------- */
+VIEWS.check=()=>{
+ if(!DB.amb.length)return '<div class="card"><div class="empty">Cadastre um ambiente no KPI 25/50/75/100 para usar os checklists.</div></div>';
+ const sel=window.__chkAmb||DB.amb[0].id, et=window.__chkEt||'corte';
+ return `<div class="card"><div class="row">
+  <div class="f" style="width:280px"><label>Ambiente</label><select onchange="window.__chkAmb=this.value;render()">${DB.amb.map(a=>`<option value="${a.id}" ${a.id===sel?'selected':''}>${esc(a.projeto)} — ${esc(a.ambiente)}</option>`).join('')}</select></div>
+  <div class="f" style="width:240px"><label>Etapa</label><select onchange="window.__chkEt=this.value;render()">${Object.entries(CHECKLISTS).map(([k,c])=>`<option value="${k}" ${k===et?'selected':''}>${c.emoji} ${c.nome}</option>`).join('')}</select></div>
+ </div></div>
+ <div id="out"></div>`;
+};
+PAINT.check=()=>{
+ if(!DB.amb.length)return;
+ const sel=window.__chkAmb||DB.amb[0].id, et=window.__chkEt||'corte';
+ const a=DB.amb.find(x=>x.id===sel)||DB.amb[0], C=CHECKLISTS[et];
+ const st=(DB.chk[a.id]||{})[et]||{};
+ const g=chkPend(a.id,et);
+ const lib=g.no===0&&g.pend===0;
+ $('#out').innerHTML=`
+ <div class="card">
+  <h3>${C.emoji} ${C.nome}<span class="hint">${C.marco} · ${esc(a.projeto)} — ${esc(a.ambiente)}</span></h3>
+  <div class="alert ${lib?'a-grn':g.no?'a-red':'a-yel'}"><span class="ic">${lib?'🟢':g.no?'🔴':'🟡'}</span>
+   <div><b>${lib?'Etapa liberada para avançar.':g.no?`${g.no} item(ns) NÃO OK — não avance o ambiente.`:`${g.pend} item(ns) sem verificação.`}</b><br>
+   <span style="color:var(--text-secondary)">${g.ok} de ${C.itens.length} conferidos. O checklist é o que garante que o % marcado no KPI é real, não achismo.</span></div></div>
+  ${C.itens.map((it,i)=>{const s=(st[i]||{}).s;
+   return `<div class="chk-row ${s==='ok'||s==='na'?'done':''}">
+   <div class="num">${i+1}</div>
+   <div>${esc(it)}</div>
+   <div class="seg">
+    <button class="${s==='ok'?'on ok':''}" onclick="setChk('${a.id}','${et}',${i},'ok')">OK</button>
+    <button class="${s==='no'?'on no':''}" onclick="setChk('${a.id}','${et}',${i},'no')">Não OK</button>
+    <button class="${s==='na'?'on na':''}" onclick="setChk('${a.id}','${et}',${i},'na')">N/A</button>
+   </div>
+   <input placeholder="Responsável" value="${esc((st[i]||{}).r||'')}" oninput="setChkR('${a.id}','${et}',${i},this.value)" style="background:#111;border:1px solid var(--bd);border-radius:4px;padding:5px 7px;color:var(--text-primary);font-size:12px">
+   </div>`}).join('')}
+ </div>
+ <div class="card"><h3>Situação por ambiente</h3>
+  <div class="tw"><table><thead><tr><th>Ambiente</th>${Object.values(CHECKLISTS).map(c=>`<th>${c.emoji} ${c.nome}</th>`).join('')}</tr></thead><tbody>
+  ${DB.amb.map(x=>`<tr><td><b>${esc(x.projeto)}</b> — ${esc(x.ambiente)}</td>
+   ${Object.keys(CHECKLISTS).map(k=>{const r=chkPend(x.id,k);
+    return `<td>${r.no?`<span class="tag t-vermelho">${r.no} não OK</span>`:r.pend?`<span class="tag t-amarelo">${r.pend} pend.</span>`:`<span class="tag t-verde">completo</span>`}</td>`}).join('')}
+  </tr>`).join('')}
+  </tbody></table></div>
+ </div>`;
+};
+function setChk(id,et,i,v){
+ DB.chk[id]=DB.chk[id]||{};DB.chk[id][et]=DB.chk[id][et]||{};
+ const cur=DB.chk[id][et][i]||{};
+ DB.chk[id][et][i]={...cur,s:cur.s===v?'':v};
+ save();render();
+}
+function setChkR(id,et,i,v){
+ DB.chk[id]=DB.chk[id]||{};DB.chk[id][et]=DB.chk[id][et]||{};
+ DB.chk[id][et][i]={...(DB.chk[id][et][i]||{}),r:v};save();
+}
+
+/* ---------- CRM ---------- */
+VIEWS.crm=()=>`
+ <div class="card"><h3>Novo lead</h3>
+  <div class="row">
+   <div class="f" style="width:180px"><label>Nome</label><input id="ln" placeholder="João Silva"></div>
+   <div class="f" style="width:150px"><label>Contato</label><input id="lc" placeholder="(67) 9....."></div>
+   <div class="f" style="width:150px"><label>Origem</label><select id="lo">${['Instagram','Google Ads','Meta Ads','Indicação','Site','Orgânico','Outro'].map(o=>`<option>${o}</option>`).join('')}</select></div>
+   <div class="f" style="width:150px"><label>Ambiente</label><input id="la" placeholder="Cozinha"></div>
+   <div class="f" style="width:140px"><label>Budget</label><input id="lb" placeholder="R$ 15-20k"></div>
+   <button class="btn gold" onclick="addLead()">Adicionar</button>
+  </div>
+  <div class="note">Origem preenchida na entrada é pré-requisito do KPI comercial. Sem classificar pago × orgânico na hora, o dado depois é lixo.</div>
+ </div>
+ <div id="out"></div>`;
+PAINT.crm=()=>{
+ const f=funil();
+ if(!DB.crm.length){$('#out').innerHTML='<div class="card"><div class="empty">Nenhum lead cadastrado.</div></div>';return}
+ const orig={};DB.crm.forEach(l=>{const o=l.origem||'—';orig[o]=orig[o]||{n:0,f:0,v:0};orig[o].n++;if(l.status==='Fechado'){orig[o].f++;orig[o].v+=num(l.valor)}});
+ const bench=[['Lead → Visita',f.cLV,.6,.8],['Visita → Proposta',f.cVP,.8,.9],['Proposta → Fechado',f.cPF,.3,.5],['Geral',f.cGeral,.15,.25]];
+ $('#out').innerHTML=`
+ <div class="kpis" style="margin-bottom:16px">
+  <div class="kpi ${f.atrasados.length?'bad':'ok'}"><div class="l">Follow-up hoje / atrasado</div><div class="v">${f.hoje.length} / ${f.atrasados.length}</div><div class="d">${f.atrasados.length?'Ligue antes de qualquer outra coisa':'Agenda em dia'}</div></div>
+  <div class="kpi ${f.cGeral>=.15?'ok':'warn'}"><div class="l">Conversão geral</div><div class="v">${pc(f.cGeral)}</div><div class="d">Benchmark 15–25%</div></div>
+  <div class="kpi neu"><div class="l">Ticket médio</div><div class="v">${brl(f.ticket)}</div><div class="d">${f.fech} fechado(s) · ${brl(f.fat)} total</div></div>
+  <div class="kpi neu"><div class="l">Tempo médio de fechamento</div><div class="v">${isFinite(f.tmedio)?nf(f.tmedio,0)+' d':'—'}</div><div class="d">${f.perdidos} lead(s) perdido(s)</div></div>
+ </div>
+ ${f.atrasados.length||f.hoje.length?`<div class="card"><h3>📞 Fazer hoje</h3>
+  ${f.atrasados.map(l=>`<div class="alert a-red"><span class="ic">🔴</span><div><b>${esc(l.lead)}</b> · ${esc(l.contato||'')} — ${esc(l.status)}<br><span style="color:var(--text-secondary)">Follow-up era ${fmtD(l.followup)} · ${dias(l.followup,hoje())} dia(s) atrasado</span></div></div>`).join('')}
+  ${f.hoje.map(l=>`<div class="alert a-blu"><span class="ic">🔵</span><div><b>${esc(l.lead)}</b> · ${esc(l.contato||'')} — ${esc(l.status)}<br><span style="color:var(--text-secondary)">Follow-up marcado para hoje</span></div></div>`).join('')}
+ </div>`:''}
+ <div class="card"><h3>Funil comercial</h3>
+  <div class="tw"><table><thead><tr><th>Lead</th><th>Contato</th><th>Origem</th><th>Ambiente</th><th style="width:160px">Status</th><th style="width:145px">Próx. follow-up</th><th style="width:120px">Valor</th><th></th></tr></thead><tbody>
+  ${DB.crm.map((l,i)=>{const atr=l.followup&&l.followup<hoje()&&!['Fechado','Perdido'].includes(l.status);
+   return `<tr>
+   <td><b>${esc(l.lead)}</b><div class="mini">${l.criado?dias(l.criado,hoje())+'d no funil':''}</div></td>
+   <td class="mini">${esc(l.contato||'')}</td><td class="mini">${esc(l.origem||'')}</td><td class="mini">${esc(l.ambiente||'')}</td>
+   <td><select onchange="setStatus(${i},this.value)">${ETAPAS_CRM.map(s=>`<option ${l.status===s?'selected':''}>${s}</option>`).join('')}</select></td>
+   <td><input type="date" value="${l.followup||''}" onchange="setv('crm.${i}.followup',this.value)" style="${atr?'border-color:var(--vermelho)':''}"></td>
+   <td><input value="${l.valor||''}" placeholder="0" oninput="setv('crm.${i}.valor',num(this.value))"></td>
+   <td><button class="btn sm dg" onclick="delLead(${i})">×</button></td></tr>`}).join('')}
+  </tbody></table></div>
+ </div>
+ <div class="grid g2">
+  <div class="card"><h3>Conversão por etapa</h3>
+   <div class="tw"><table><thead><tr><th>Etapa</th><th class="n">Taxa</th><th class="n">Benchmark</th><th>Leitura</th></tr></thead><tbody>
+   ${bench.map(([l,v,lo,hi])=>`<tr><td>${l}</td><td class="n"><b>${pc(v)}</b></td><td class="n mini">${pc(lo,0)}–${pc(hi,0)}</td>
+    <td>${!isFinite(v)?'<span class="mini">sem dado</span>':v>=lo?'<span class="tag t-verde">ok</span>':'<span class="tag t-vermelho">abaixo</span>'}</td></tr>`).join('')}
+   </tbody></table></div>
+   <div class="note">Taxa calculada por etapa alcançada, não por status atual — um lead fechado conta em todas as etapas anteriores. É a leitura correta de funil.</div>
+  </div>
+  <div class="card"><h3>Origem do lead<span class="hint">pago × orgânico</span></h3>
+   <div class="tw"><table><thead><tr><th>Origem</th><th class="n">Leads</th><th class="n">Fechados</th><th class="n">Conversão</th><th class="n">Faturamento</th></tr></thead><tbody>
+   ${Object.entries(orig).sort((a,b)=>b[1].n-a[1].n).map(([o,d])=>`<tr><td>${esc(o)}</td><td class="n">${d.n}</td><td class="n">${d.f}</td><td class="n">${pc(d.f/d.n,0)}</td><td class="n">${brl(d.v)}</td></tr>`).join('')}
+   </tbody></table></div>
+  </div>
+ </div>`;
+};
+function addLead(){
+ const n=$('#ln').value.trim();if(!n){alert('Nome do lead é obrigatório.');return}
+ DB.crm.unshift({id:uid(),lead:n,contato:$('#lc').value.trim(),origem:$('#lo').value,ambiente:$('#la').value.trim(),budget:$('#lb').value.trim(),
+  status:'Lead Novo',etapaMax:0,criado:hoje(),followup:addBiz(hoje(),2),valor:0});
+ ['#ln','#lc','#la','#lb'].forEach(s=>$(s).value='');
+ save();render();
+}
+function setStatus(i,v){
+ const l=DB.crm[i],idx=idxCRM(v);
+ if(idx<6)l.etapaMax=Math.max(l.etapaMax||0,idx);
+ l.status=v;
+ if(v==='Fechado'&&!l.fechadoEm)l.fechadoEm=hoje();
+ if(v!=='Fechado')delete l.fechadoEm;
+ save();render();
+}
+function delLead(i){DB.crm.splice(i,1);save();render()}
+
+/* ---------- ESTOQUE ---------- */
+VIEWS.estoque=()=>`
+ <div class="grid g2">
+ <div class="card"><h3>Cadastrar material</h3>
+  <div class="grid g3">
+   <div class="f"><label>Nome</label><input id="mn" placeholder="MDF Branco 18mm"></div>
+   <div class="f"><label>Unidade</label><input id="mu" placeholder="m²" value="m²"></div>
+   <div class="f"><label>Custo unitário</label><input id="mc" placeholder="120"></div>
+   <div class="f"><label>Estoque atual</label><input id="mi" placeholder="0"></div>
+   <div class="f"><label>Estoque mínimo</label><input id="mm" placeholder="50"></div>
+   <div class="f"><label>Lead time (dias)</label><input id="ml" placeholder="7"></div>
+   <div class="f"><label>Fornecedor</label><input id="mf" placeholder="Berneck"></div>
+   <div class="f"><label>Categoria</label><select id="mg">${['Chapa','Acabamento','Ferragem','Químico','Fixação','Outro'].map(c=>`<option>${c}</option>`).join('')}</select></div>
+   <div class="f"><label>&nbsp;</label><button class="btn gold" onclick="addMat()">Adicionar</button></div>
+  </div>
+ </div>
+ <div class="card"><h3>Movimentação</h3>
+  <div class="grid g3">
+   <div class="f"><label>Data</label><input type="date" id="vd" value="${hoje()}"></div>
+   <div class="f"><label>Material</label><select id="vm">${DB.est.mat.map(m=>`<option value="${m.cod}">${esc(m.nome)}</option>`).join('')||'<option value="">— cadastre um material —</option>'}</select></div>
+   <div class="f"><label>Tipo</label><select id="vt"><option>ENTRADA</option><option>SAÍDA</option></select></div>
+   <div class="f"><label>Quantidade</label><input id="vq" placeholder="0"></div>
+   <div class="f"><label>Documento / Projeto</label><input id="vdoc" placeholder="NF 12345 ou Projeto 089"></div>
+   <div class="f"><label>&nbsp;</label><button class="btn gold" onclick="addMov()">Lançar</button></div>
+  </div>
+  <div class="note">Saída sempre amarrada a um projeto. Sem isso não existe custo por obra — e sem custo por obra a margem real de cada projeto é chute.</div>
+ </div>
+ </div>
+ <div id="out"></div>`;
+PAINT.estoque=()=>{
+ const s=saldos(),A=abc(),crit=s.filter(m=>m.st!=='OK');
+ if(!s.length){$('#out').innerHTML='<div class="card"><div class="empty">Cadastre materiais para ver saldo, curva ABC e alertas.</div></div>';return}
+ const tot=s.reduce((a,m)=>a+m.valor,0);
+ const cat={};s.forEach(m=>{cat[m.cat]=(cat[m.cat]||0)+m.valor});
+ $('#out').innerHTML=`
+ <div class="kpis" style="margin-bottom:16px">
+  <div class="kpi neu"><div class="l">Valor total em estoque</div><div class="v">${brl(tot)}</div><div class="d">${s.length} item(ns) cadastrados</div></div>
+  <div class="kpi ${s.filter(m=>m.st==='CRÍTICO').length?'bad':'ok'}"><div class="l">Itens críticos</div><div class="v">${s.filter(m=>m.st==='CRÍTICO').length}</div><div class="d">abaixo do estoque mínimo</div></div>
+  <div class="kpi ${s.filter(m=>m.st==='ATENÇÃO').length?'warn':'ok'}"><div class="l">Em atenção</div><div class="v">${s.filter(m=>m.st==='ATENÇÃO').length}</div><div class="d">até 30% acima do mínimo</div></div>
+  <div class="kpi neu"><div class="l">Concentração classe A</div><div class="v">${A.filter(x=>x.cl==='A').length} itens</div><div class="d">${pc(A.filter(x=>x.cl==='A').reduce((a,x)=>a+x.p,0),0)} do valor</div></div>
+ </div>
+ ${crit.length?`<div class="card"><h3>⚠️ Reposição</h3>
+  <div class="tw"><table><thead><tr><th>Material</th><th class="n">Saldo</th><th class="n">Mínimo</th><th class="n">Falta</th><th class="n">Lead time</th><th>Ação</th><th>Fornecedor</th></tr></thead><tbody>
+  ${crit.map(m=>`<tr><td>${esc(m.nome)} ${m.st==='CRÍTICO'?'<span class="tag t-vermelho">crítico</span>':'<span class="tag t-amarelo">atenção</span>'}</td>
+   <td class="n">${nf(m.saldo,0)} ${esc(m.un)}</td><td class="n">${nf(m.min,0)}</td>
+   <td class="n" style="color:var(--vermelho)">${m.min-m.saldo>0?nf(m.min-m.saldo,0):'—'}</td>
+   <td class="n">${m.lead}d</td><td>${m.st==='CRÍTICO'?'<b style="color:var(--vermelho)">pedir hoje</b>':'<span class="mini">programar compra</span>'}</td><td class="mini">${esc(m.forn||'')}</td></tr>`).join('')}
+  </tbody></table></div></div>`:''}
+ <div class="grid g2">
+ <div class="card"><h3>Saldo atual</h3>
+  <div class="tw"><table><thead><tr><th>Material</th><th class="n">Saldo</th><th class="n">Mín.</th><th class="n">Custo un.</th><th class="n">Valor</th><th>Status</th><th></th></tr></thead><tbody>
+  ${s.map((m,i)=>`<tr><td>${esc(m.nome)}<div class="mini">${esc(m.cat)} · ${esc(m.forn||'')}</div></td>
+   <td class="n">${nf(m.saldo,0)} ${esc(m.un)}</td>
+   <td class="n"><input value="${m.min}" oninput="setMat(${i},'min',num(this.value))" style="width:60px;text-align:right"></td>
+   <td class="n"><input value="${m.custo}" oninput="setMat(${i},'custo',num(this.value))" style="width:70px;text-align:right"></td>
+   <td class="n">${brl(m.valor)}</td>
+   <td><span class="tag t-${m.st==='CRÍTICO'?'vermelho':m.st==='ATENÇÃO'?'amarelo':'verde'}">${m.st}</span></td>
+   <td><button class="btn sm dg" onclick="delMat(${i})">×</button></td></tr>`).join('')}
+  <tr><td colspan="4"><b>TOTAL</b></td><td class="n"><b>${brl(tot)}</b></td><td colspan="2"></td></tr>
+  </tbody></table></div>
+ </div>
+ <div class="card"><h3>Curva ABC<span class="hint">onde seu dinheiro está parado</span></h3>
+  <div class="tw"><table><thead><tr><th>Material</th><th class="n">Valor</th><th class="n">% total</th><th class="n">% acum.</th><th>Classe</th></tr></thead><tbody>
+  ${A.map(x=>`<tr><td>${esc(x.nome)}</td><td class="n">${brl(x.valor)}</td><td class="n">${pc(x.p,1)}</td><td class="n">${pc(x.ac,1)}</td>
+   <td><span class="tag ${x.cl==='A'?'t-gold':x.cl==='B'?'t-neu':'t-neu'}">${x.cl}</span></td></tr>`).join('')}
+  </tbody></table></div>
+  <div class="note">Classe A = 80% do valor. São esses que merecem negociação de preço, contrato de fornecimento e contagem frequente. Classe C você só não pode deixar faltar.</div>
+  <h4>Valor por categoria</h4>
+  ${Object.entries(cat).sort((a,b)=>b[1]-a[1]).map(([c,v])=>`<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:12.5px"><span>${esc(c)}</span><span>${brl(v)} · ${pc(v/tot,0)}</span></div><div class="bar"><i style="width:${v/tot*100}%;background:var(--accent)"></i></div></div>`).join('')}
+ </div>
+ </div>
+ <div class="card"><h3>Movimentações<span class="hint">últimas 25</span></h3>
+  ${DB.est.mov.length?`<div class="tw"><table><thead><tr><th>Data</th><th>Material</th><th>Tipo</th><th class="n">Qtd</th><th>Documento</th><th></th></tr></thead><tbody>
+  ${[...DB.est.mov].reverse().slice(0,25).map((m,ri)=>{const idx=DB.est.mov.length-1-ri;const mat=DB.est.mat.find(x=>x.cod===m.cod);
+   return `<tr><td>${fmtD(m.data)}</td><td>${esc(mat?mat.nome:m.cod)}</td>
+   <td><span class="tag ${m.tipo==='ENTRADA'?'t-verde':'t-neu'}">${m.tipo}</span></td>
+   <td class="n">${m.tipo==='ENTRADA'?'+':'−'}${nf(Math.abs(num(m.qtd)),0)}</td>
+   <td class="mini">${esc(m.doc||'')}</td><td><button class="btn sm dg" onclick="delMov(${idx})">×</button></td></tr>`}).join('')}
+  </tbody></table></div>`:'<div class="empty">Nenhuma movimentação lançada.</div>'}
+ </div>`;
+};
+function addMat(){
+ const n=$('#mn').value.trim();if(!n){alert('Nome do material é obrigatório.');return}
+ const cod='MAT'+String(DB.est.mat.length+1).padStart(3,'0');
+ DB.est.mat.push({cod,nome:n,un:$('#mu').value||'un',custo:num($('#mc').value),inicial:num($('#mi').value),
+  min:num($('#mm').value),lead:num($('#ml').value)||7,forn:$('#mf').value,cat:$('#mg').value});
+ ['#mn','#mc','#mi','#mm','#ml','#mf'].forEach(s=>$(s).value='');
+ save();render();
+}
+function setMat(i,k,v){DB.est.mat[i][k]=v;save();paint()}
+function delMat(i){const c=DB.est.mat[i].cod;DB.est.mat.splice(i,1);DB.est.mov=DB.est.mov.filter(m=>m.cod!==c);save();render()}
+function addMov(){
+ const cod=$('#vm').value;if(!cod){alert('Cadastre um material antes.');return}
+ const q=num($('#vq').value);if(!q){alert('Informe a quantidade.');return}
+ DB.est.mov.push({data:$('#vd').value||hoje(),cod,tipo:$('#vt').value,qtd:Math.abs(q),doc:$('#vdoc').value});
+ $('#vq').value='';$('#vdoc').value='';
+ save();render();
+}
+function delMov(i){DB.est.mov.splice(i,1);save();render()}
+
+/* ══════════ EXPORT / IMPORT / SEED ══════════ */
+function exportar(){
+ const b=new Blob([JSON.stringify(DB,null,1)],{type:'application/json'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(b);
+ a.download='apm-ferramentas-'+hoje()+'.json';a.click();
+}
+function importar(el){
+ const f=el.files[0];if(!f)return;
+ const r=new FileReader();
+ r.onload=()=>{try{DB=Object.assign(vazio(),JSON.parse(r.result));save();render();alert('Dados importados.')}catch(e){alert('Arquivo inválido.')}};
+ r.readAsText(f);el.value='';
+}
+function seed(){
+ if(!confirm('Isso substitui os dados atuais pelos dados de exemplo. Continuar?'))return;
+ DB=vazio();
+ DB.fin={fat:[310000,330000,350000],imposto:.10,cv:[105000,58000,14000,5000,12000],cf:[9000,16000,4500,2200,7000,2500,1800,900,15000]};
+ const h=hoje();
+ const mk=(p,am,cl,atras,ate,jit)=>{const ini=addBiz(h,-atras);
+  const a={id:uid(),projeto:p,ambiente:am,cliente:cl,inicio:ini,plan:MARCOS.map(m=>addBiz(ini,m.off)),real:Array(8).fill('')};
+  for(let i=0;i<=ate;i++){const d=addBiz(ini,MARCOS[i].off+(jit||0));a.real[i]=d>h?h:d}return a};
+ DB.amb=[mk('089','Cozinha','João Silva',30,3,-1),mk('089','Área de serviço','João Silva',30,1,2),
+         mk('090','Closet','Maria Santos',35,0,3),mk('091','Home Office','Pedro Costa',8,0,0),
+         mk('092','Dormitório casal','Ana Oliveira',48,6,1)];
+ DB.crm=[
+  {id:uid(),lead:'João Silva',contato:'(67) 99999-9999',origem:'Instagram',ambiente:'Cozinha',budget:'R$ 15-20k',status:'Fechado',etapaMax:5,criado:addBiz(h,-22),fechadoEm:addBiz(h,-8),followup:'',valor:18500},
+  {id:uid(),lead:'Maria Souza',contato:'(67) 98888-8888',origem:'Google Ads',ambiente:'Closet',budget:'R$ 25-30k',status:'Proposta Enviada',etapaMax:3,criado:addBiz(h,-9),followup:addBiz(h,-2),valor:28800},
+  {id:uid(),lead:'Pedro Costa',contato:'(67) 97777-7777',origem:'Indicação',ambiente:'Quarto completo',budget:'—',status:'Visita Agendada',etapaMax:2,criado:addBiz(h,-4),followup:h,valor:0},
+  {id:uid(),lead:'Carla Menezes',contato:'(67) 96666-6666',origem:'Instagram',ambiente:'Home Office',budget:'R$ 12k',status:'Qualificação',etapaMax:1,criado:addBiz(h,-2),followup:addBiz(h,1),valor:0},
+  {id:uid(),lead:'Rafael Dias',contato:'(67) 95555-5555',origem:'Google Ads',ambiente:'Cozinha',budget:'R$ 20k',status:'Perdido',etapaMax:3,criado:addBiz(h,-30),followup:'',valor:0}];
+ DB.est.mat=[
+  ['MDF Branco 18mm','m²',120,57,50,7,'Berneck','Chapa'],['MDF Amadeirado 18mm','m²',140,40,40,7,'Berneck','Chapa'],
+  ['MDP Branco 18mm','m²',90,80,60,5,'Duratex','Chapa'],['MDP Amadeirado 18mm','m²',100,50,50,5,'Duratex','Chapa'],
+  ['Fita de Borda PVC 22mm','metro',3.5,485,500,10,'Rehau','Acabamento'],['Dobradiça Caneco 35mm','un',8,152,200,7,'Blum','Ferragem'],
+  ['Corrediça Telescópica 45cm','par',35,98,100,10,'Blum','Ferragem'],['Puxador Inox 128mm','un',12,145,150,14,'diversos','Ferragem'],
+  ['Cola Branca Marceneiro','litro',25,18,20,3,'local','Químico'],['Parafuso 4x30mm','cx 1000',45,9,10,7,'local','Fixação']
+ ].map((m,i)=>({cod:'MAT'+String(i+1).padStart(3,'0'),nome:m[0],un:m[1],custo:m[2],inicial:m[3],min:m[4],lead:m[5],forn:m[6],cat:m[7]}));
+ DB.est.mov=[{data:addBiz(h,-6),cod:'MAT001',tipo:'ENTRADA',qtd:100,doc:'NF 12345'},
+             {data:addBiz(h,-5),cod:'MAT001',tipo:'SAÍDA',qtd:25,doc:'Projeto 089'},
+             {data:addBiz(h,-3),cod:'MAT006',tipo:'SAÍDA',qtd:48,doc:'Projeto 089'}];
+ DB.est.mat[0].inicial=57-75;DB.est.mat[5].inicial=152+48;
+ DB.prec.hist=[{data:addBiz(h,-14),cliente:'João Silva',tipo:'Cozinha Completa',m2:10,preco:20000,status:'Fechado',margem:.35},
+               {data:addBiz(h,-9),cliente:'Maria Santos',tipo:'Closet Básico',m2:12,preco:28800,status:'Pendente',margem:.35}];
+ CHECKLISTS.corte.itens.forEach((_,i)=>{DB.chk[DB.amb[0].id]=DB.chk[DB.amb[0].id]||{};DB.chk[DB.amb[0].id].corte=DB.chk[DB.amb[0].id].corte||{};DB.chk[DB.amb[0].id].corte[i]={s:i===7?'no':'ok',r:'Matheus'}});
+ save();render();
+}
+
+/* ══════════ BOOT ══════════ */
+renderNav();
+VIEW=(location.hash||'').replace('#','')||'painel';
+if(!NAV.some(n=>n.id===VIEW))VIEW='painel';
+render();
+window.addEventListener('hashchange',()=>{const v=location.hash.replace('#','');if(v&&v!==VIEW&&NAV.some(n=>n.id===v)){VIEW=v;render()}});
+</script>
+</body>
+</html>
