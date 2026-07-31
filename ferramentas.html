@@ -185,6 +185,7 @@ h4:first-child{margin-top:0}
     <div class="topbar">
       <div><div class="tb-t" id="vt">Painel Executivo</div><div class="tb-s" id="vs"></div></div>
       <div class="tbr">
+        <span id="undo"></span>
         <button class="btn sm" onclick="seed()">Dados de exemplo</button>
         <button class="btn sm" onclick="exportar()">Exportar</button>
         <button class="btn sm" onclick="$('#imp').click()">Importar</button>
@@ -437,7 +438,7 @@ function render(){
  $('#vt').textContent=meta.t;$('#vs').textContent=meta.d;
  $$('.nav-it').forEach(e=>e.classList.toggle('on',e.dataset.id===VIEW));
  $('#content').innerHTML=VIEWS[VIEW]();
- paint();navBadges();
+ paint();navBadges();botaoUndo();
 }
 function paint(){const f=PAINT[VIEW];if(f)f()}
 
@@ -1105,8 +1106,30 @@ function importar(el){
  r.onload=()=>{try{DB=Object.assign(vazio(),JSON.parse(r.result));save();render();alert('Dados importados.')}catch(e){alert('Arquivo inválido.')}};
  r.readAsText(f);el.value='';
 }
+const BKP=KEY+'_bkp';
+function temDados(){
+ return DB.amb.length||DB.crm.length||DB.est.mat.length||DB.prec.hist.length||DB.fin.fat.some(x=>x>0);
+}
+function botaoUndo(){
+ const el=$('#undo');if(!el)return;
+ el.innerHTML=localStorage.getItem(BKP)
+  ? `<button class="btn sm" style="border-color:rgba(201,168,76,.4);color:var(--accent-light)" onclick="restaurar()">↩ Desfazer exemplo</button>`
+  : '';
+}
+function restaurar(){
+ const b=localStorage.getItem(BKP);
+ if(!b){alert('Não há nada para restaurar.');return}
+ if(!confirm('Restaurar os seus dados e descartar os dados de exemplo?'))return;
+ try{ DB=Object.assign(vazio(),JSON.parse(b)) }
+ catch(e){ alert('A cópia de segurança está corrompida. Nada foi alterado.');return }
+ localStorage.removeItem(BKP);
+ save();render();
+}
 function seed(){
- if(!confirm('Isso substitui os dados atuais pelos dados de exemplo. Continuar?'))return;
+ if(temDados()){
+  if(!confirm('ATENÇÃO\n\nIsto APAGA tudo o que você já lançou e coloca dados fictícios no lugar.\n\nUma cópia dos seus dados fica guardada para o botão "Desfazer exemplo", mas o seguro é clicar em Exportar antes.\n\nContinuar mesmo assim?'))return;
+  localStorage.setItem(BKP,JSON.stringify(DB));
+ }else if(!confirm('Carregar os dados de exemplo?'))return;
  DB=vazio();
  DB.fin={fat:[310000,330000,350000],imposto:.10,cv:[105000,58000,14000,5000,12000],cf:[9000,16000,4500,2200,7000,2500,1800,900,15000]};
  const h=hoje();
@@ -1213,7 +1236,7 @@ function msgGate(m,t){
 async function sair(){
  if(!confirm('Sair da conta neste navegador?'))return;
  await sb.auth.signOut();
- localStorage.removeItem(KEY);
+ localStorage.removeItem(KEY);localStorage.removeItem(BKP);
  location.reload();
 }
 

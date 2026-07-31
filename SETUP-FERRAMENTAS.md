@@ -1,75 +1,87 @@
 # Ferramentas APM — o que falta para vender
 
-O app está pronto e funcionando. Faltam três coisas que dependem de contas suas — eu não consigo criar conta nem autenticar no seu nome.
+**Publicado:** https://mentoria-app-self.vercel.app/ferramentas.html
 
-Enquanto você não fizer o passo 2, o app funciona **em modo local**: sem login, salvando só no navegador. É o modo em que você validou. Serve para demonstração, não para venda.
+O app está no ar e funcionando, mas em **modo local**: sem login, dados só no navegador. Serve para demonstrar numa call. Não serve para vender — hoje qualquer pessoa com o link usa de graça, e o mentorado perde tudo se trocar de navegador.
 
----
-
-## 1. Publicar (2 min) — destrava o link
-
-O commit já está feito na branch `main`. O push falhou por falta de permissão do token guardado no Mac.
-
-```bash
-cd "/Users/institutogianini/Documents/Claude - Workspace/mentoria-app" && git push origin main
-```
-
-Se pedir senha: use um **Personal Access Token** do GitHub com escopo `repo`, não a senha da conta (github.com → Settings → Developer settings → Personal access tokens).
-
-Se recusar de novo, apague a credencial velha e tente outra vez:
-
-```bash
-printf "protocol=https\nhost=github.com\n\n" | git credential-osxkeychain erase
-```
-
-A Vercel publica sozinha depois do push. O app fica em `/ferramentas.html`.
+Falta um passo, e ele depende de contas suas.
 
 ---
 
-## 2. Ligar as contas de membro (15 min) — destrava a venda
+## Passo único: ligar as contas de membro (~15 min)
 
-Sem isto, duas coisas quebram o modelo: **qualquer um com o link usa de graça**, e **o membro perde tudo se trocar de navegador**.
+### 1. Criar o projeto
 
-**2.1** Crie um projeto em [supabase.com](https://supabase.com) — plano gratuito. Escolha a região `South America (São Paulo)`.
+Em [supabase.com](https://supabase.com), crie um projeto no plano gratuito. Região: **South America (São Paulo)**.
 
-**2.2** Rode o SQL: painel do Supabase → **SQL Editor** → **New query** → cole o conteúdo de [`supabase-setup.sql`](supabase-setup.sql) → **Run**.
+### 2. Criar a tabela
 
-**2.3** Pegue as duas chaves em **Project Settings → API**:
-- *Project URL* → algo como `https://abcdefgh.supabase.co`
-- *anon public* → uma string longa começando em `eyJ...`
+Painel do Supabase → **SQL Editor** → **New query** → cole o conteúdo de [`supabase-setup.sql`](supabase-setup.sql) → **Run**.
 
-**2.4** Abra `ferramentas.html`, ache o bloco `const CFG` (logo no começo do `<script>`) e preencha:
+### 3. Pegar as duas chaves
+
+**Project Settings → API**:
+
+| Campo no painel | Vai no app como |
+|---|---|
+| *Project URL* — `https://xxxxx.supabase.co` | `url` |
+| *anon public* — string longa `eyJ...` | `anon` |
+
+A chave `anon` é **pública por natureza** — ela fica visível no HTML e é assim que tem que ser. A segurança vem do RLS que você criou no passo 2, que só deixa cada pessoa ler a própria linha.
+
+**Nunca use a `service_role`.** Essa ignora o RLS e dá acesso aos dados de todos os membros. Se ela vazar, o estrago é total.
+
+### 4. Preencher no app — sem Terminal
+
+Abra direto no GitHub:
+
+**https://github.com/lukamoraiss7-a11y/lukana-mentoria-app/edit/main/ferramentas.html**
+
+Logo no começo do `<script>` está o bloco abaixo. Preencha as aspas:
 
 ```js
 const CFG={
-  url : 'https://abcdefgh.supabase.co',
+  url : 'https://xxxxx.supabase.co',
   anon: 'eyJhbGciOi...'
 };
 ```
 
-A chave `anon` é pública por design — ela vai no HTML e qualquer um consegue ler. A segurança vem do RLS que você criou no passo 2.2, que só deixa cada pessoa ler a própria linha. **Nunca** coloque aqui a chave `service_role`: essa ignora o RLS e dá acesso a tudo.
+Role até o fim da página → **Commit changes**. A Vercel republica sozinha em ~1 minuto. Não precisa de token, nem de git, nem de Terminal.
 
-**2.5** Em **Authentication → URL Configuration**, ponha em *Site URL*:
-`https://mentoria-app-self.vercel.app/ferramentas.html`
+### 5. Apontar o endereço de retorno
 
-**2.6** Em **Authentication → Providers → Email**, deixe ligado. Desligue *Confirm email* só se quiser entrada imediata.
+**Authentication → URL Configuration** → em *Site URL*, ponha:
 
-**2.7** Faça commit e push de novo. Pronto — a partir daí o app exige login.
+```
+https://mentoria-app-self.vercel.app/ferramentas.html
+```
 
-### Controlar quem entra
+Sem isso, o link do e-mail leva a lugar nenhum.
 
-Por padrão, qualquer e-mail consegue criar conta. Para vender, você quer o contrário: em **Authentication → Providers → Email**, desligue **Allow new users to sign up**. Aí só entra quem você cadastrar na mão em **Authentication → Users → Add user**, à medida que os mentorados pagarem.
+### 6. Fechar a porta
+
+Por padrão qualquer e-mail cria conta sozinho — o oposto do que você quer.
+
+**Authentication → Providers → Email** → desligue **Allow new users to sign up**.
+
+A partir daí só entra quem você cadastrar em **Authentication → Users → Add user**, conforme os mentorados pagarem.
 
 ---
 
-## 3. O limite que sobra (decidir depois)
+## O limite que aparece na primeira turma
 
-O e-mail de login sai pelo servidor gratuito do Supabase, que **limita a 3 ou 4 mensagens por hora**. Para 5 ou 10 mentorados entrando aos poucos, passa. No dia em que você abrir uma turma e 30 pessoas tentarem entrar juntas, a maioria não recebe o link e você vai ouvir que "o sistema não funciona".
+O e-mail de login sai pelo servidor gratuito do Supabase, limitado a **3 ou 4 mensagens por hora**. Cinco mentorados entrando aos poucos, passa liso. Trinta pessoas numa abertura de turma, a maioria não recebe o link e você ouve que o sistema não funciona.
 
-A correção é plugar um serviço de e-mail próprio (Resend tem plano gratuito de 3.000/mês) em **Authentication → Emails → SMTP Settings**. Não é urgente hoje. É urgente antes da primeira turma.
+Correção: SMTP próprio em **Authentication → Emails → SMTP Settings**. O [Resend](https://resend.com) tem 3.000 e-mails/mês grátis e leva uns 10 minutos para plugar.
+
+Não é para hoje. É para **antes** de abrir turma.
 
 ---
 
-## Como os dados ficam organizados
+## Como os dados ficam
 
-Uma linha por membro, com o estado inteiro do app num JSON. O navegador continua guardando uma cópia local: se a internet cair no meio de um lançamento, nada se perde — o rodapé da barra lateral mostra o estado da sincronização, e o envio é refeito quando a conexão volta.
+Uma linha por membro, com o estado inteiro do app num JSON — sem tabela por módulo, então módulo novo não exige migração.
+
+O navegador mantém uma cópia local. Se a internet cair no meio de um lançamento, nada se perde: o rodapé da barra lateral mostra o estado da sincronização e o envio é refeito quando a conexão volta.
+
+O botão **Dados de exemplo** guarda uma cópia antes de sobrescrever, e o botão **Desfazer exemplo** devolve tudo. Ainda assim, oriente o mentorado a usar **Exportar** antes de qualquer teste — o desfazer é de um nível só.
