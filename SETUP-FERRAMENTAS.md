@@ -1,87 +1,76 @@
-# Ferramentas APM — o que falta para vender
+# Ferramentas APM — manual de operação
 
-**Publicado:** https://mentoria-app-self.vercel.app/ferramentas.html
+**No ar:** https://mentoria-app-self.vercel.app/ferramentas.html
+**Projeto Supabase:** `frqoxmerrfucprtgvghm`
 
-O app está no ar e funcionando, mas em **modo local**: sem login, dados só no navegador. Serve para demonstrar numa call. Não serve para vender — hoje qualquer pessoa com o link usa de graça, e o mentorado perde tudo se trocar de navegador.
-
-Falta um passo, e ele depende de contas suas.
-
----
-
-## Passo único: ligar as contas de membro (~15 min)
-
-### 1. Criar o projeto
-
-Em [supabase.com](https://supabase.com), crie um projeto no plano gratuito. Região: **South America (São Paulo)**.
-
-### 2. Criar a tabela
-
-Painel do Supabase → **SQL Editor** → **New query** → cole o conteúdo de [`supabase-setup.sql`](supabase-setup.sql) → **Run**.
-
-### 3. Pegar as duas chaves
-
-**Project Settings → API**:
-
-| Campo no painel | Vai no app como |
-|---|---|
-| *Project URL* — `https://xxxxx.supabase.co` | `url` |
-| *anon public* — string longa `eyJ...` | `anon` |
-
-A chave `anon` é **pública por natureza** — ela fica visível no HTML e é assim que tem que ser. A segurança vem do RLS que você criou no passo 2, que só deixa cada pessoa ler a própria linha.
-
-**Nunca use a `service_role`.** Essa ignora o RLS e dá acesso aos dados de todos os membros. Se ela vazar, o estrago é total.
-
-### 4. Preencher no app — sem Terminal
-
-Abra direto no GitHub:
-
-**https://github.com/lukamoraiss7-a11y/lukana-mentoria-app/edit/main/ferramentas.html**
-
-Logo no começo do `<script>` está o bloco abaixo. Preencha as aspas:
-
-```js
-const CFG={
-  url : 'https://xxxxx.supabase.co',
-  anon: 'eyJhbGciOi...'
-};
-```
-
-Role até o fim da página → **Commit changes**. A Vercel republica sozinha em ~1 minuto. Não precisa de token, nem de git, nem de Terminal.
-
-### 5. Apontar o endereço de retorno
-
-**Authentication → URL Configuration** → em *Site URL*, ponha:
-
-```
-https://mentoria-app-self.vercel.app/ferramentas.html
-```
-
-Sem isso, o link do e-mail leva a lugar nenhum.
-
-### 6. Fechar a porta
-
-Por padrão qualquer e-mail cria conta sozinho — o oposto do que você quer.
-
-**Authentication → Providers → Email** → desligue **Allow new users to sign up**.
-
-A partir daí só entra quem você cadastrar em **Authentication → Users → Add user**, conforme os mentorados pagarem.
+A instalação está feita. Este documento é o que você usa daqui pra frente.
 
 ---
 
-## O limite que aparece na primeira turma
+## Liberar acesso a quem pagou
 
-O e-mail de login sai pelo servidor gratuito do Supabase, limitado a **3 ou 4 mensagens por hora**. Cinco mentorados entrando aos poucos, passa liso. Trinta pessoas numa abertura de turma, a maioria não recebe o link e você ouve que o sistema não funciona.
+O cadastro aberto está **desligado** — ninguém entra sozinho. Para cada mentorado novo:
 
-Correção: SMTP próprio em **Authentication → Emails → SMTP Settings**. O [Resend](https://resend.com) tem 3.000 e-mails/mês grátis e leva uns 10 minutos para plugar.
+1. Abra https://supabase.com/dashboard/project/frqoxmerrfucprtgvghm/auth/users
+2. **Add user** → **Send invitation** → e-mail da pessoa
 
-Não é para hoje. É para **antes** de abrir turma.
+Ela recebe um convite, clica e cai dentro do app já logada. Não precisa criar senha.
+
+Se aparecer só **Create new user**: ponha o e-mail, invente qualquer senha (ela nunca vai usar — entra por link) e marque **Auto Confirm User**.
+
+## Tirar acesso de quem saiu
+
+Mesma tela, três pontinhos ao lado do usuário → **Delete user**. Os dados dele vão junto (a tabela tem `on delete cascade`).
+
+Se quiser preservar o histórico, use **Ban user** em vez de apagar.
 
 ---
 
-## Como os dados ficam
+## Antes de abrir turma: resolver o e-mail
 
-Uma linha por membro, com o estado inteiro do app num JSON — sem tabela por módulo, então módulo novo não exige migração.
+O plano gratuito do Supabase entrega **3 a 4 e-mails de login por hora**. Com mentorados entrando aos poucos, passa. Com trinta pessoas entrando no mesmo dia, a maioria não recebe o link — e vai concluir que a ferramenta está quebrada, não que o e-mail está na fila.
 
-O navegador mantém uma cópia local. Se a internet cair no meio de um lançamento, nada se perde: o rodapé da barra lateral mostra o estado da sincronização e o envio é refeito quando a conexão volta.
+**Correção:** SMTP próprio em Authentication → Emails → SMTP Settings. O [Resend](https://resend.com) tem 3.000 e-mails/mês grátis e leva uns 10 minutos.
 
-O botão **Dados de exemplo** guarda uma cópia antes de sobrescrever, e o botão **Desfazer exemplo** devolve tudo. Ainda assim, oriente o mentorado a usar **Exportar** antes de qualquer teste — o desfazer é de um nível só.
+Faça isso **antes** da primeira turma, não durante.
+
+---
+
+## Como os dados funcionam
+
+Uma linha por membro na tabela `dados`, com o estado inteiro do app num JSON. Sem tabela por módulo — módulo novo não exige migração.
+
+O navegador guarda uma cópia local. Se a internet cair no meio de um lançamento, nada se perde: o rodapé da barra lateral mostra o estado da sincronização e o envio é refeito quando a conexão volta.
+
+**Cada conta é um mundo isolado.** O mentorado A não alcança nada do B — a política de acesso do banco compara o dono da linha com quem está logado, e o Postgres nega tudo que nenhuma política libere.
+
+Isso também significa que **duas pessoas da mesma empresa não compartilham dados**. Ver a seção final.
+
+## Se um membro disser que perdeu dados
+
+1. Peça um print do rodapé da barra lateral. Se disser **"Dados salvos só neste navegador"** em vez de **"Sincronizado"**, ele não está logado — está usando o app como visitante.
+2. Se disser **"Falha ao sincronizar"**, é rede ou queda do Supabase. Os dados estão no navegador dele; volta sozinho quando a conexão normalizar.
+3. O botão **Dados de exemplo** apaga o que foi lançado. Existe **Desfazer exemplo** ao lado, mas é de um nível só. Oriente a usar **Exportar** antes de qualquer teste.
+
+---
+
+## Mexer no código
+
+**O push por Terminal está quebrado** — o token do GitHub foi revogado. Para voltar a funcionar, gere um Personal Access Token novo (github.com → Settings → Developer settings → Tokens classic, escopo `repo`) e use no primeiro push; o macOS guarda no keychain.
+
+Enquanto isso, alterações vão pelo editor web:
+https://github.com/lukamoraiss7-a11y/lukana-mentoria-app/edit/main/ferramentas.html
+
+A Vercel republica sozinha a cada commit em `main`.
+
+**Nunca coloque a chave `sb_secret_` no código.** Ela ignora a trava de segurança e daria acesso aos dados de todos os membros. A que está lá (`sb_publishable_`) é pública por natureza e não tem problema.
+
+---
+
+## Limitação conhecida: um app, uma pessoa
+
+Cada conta tem seu próprio conjunto de dados. Isso está **certo** para vender a marceneiros individuais.
+
+Está **errado** para uso interno na Lukana: KPI, Kanban e PCP são dados da empresa, não da pessoa. Do jeito que está, Luka lançaria os ambientes na conta dele e Matheus não veria nada na dele — cada um alimentando uma base paralela, que é exatamente o problema que a ferramenta existe para matar.
+
+Dimensionamento da mudança em `memory/projects/app-ferramentas-apm.md`. Resumo: banco e políticas são meio dia, mas o modelo de JSON único não sobrevive a duas pessoas editando ao mesmo tempo — sobrescrita silenciosa. Fazer certo significa reescrever a camada de persistência.
