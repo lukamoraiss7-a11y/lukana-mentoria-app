@@ -298,7 +298,7 @@ function vazio(){return{
  empresa:{nome:'',cidade:''},
  fin:{fat:[0,0,0],imposto:0.10,cv:[0,0,0,0,0],cf:[0,0,0,0,0,0,0,0,0]},
  prec:{mats:[{n:'MDF Branco 18mm',c:120},{n:'MDF Amadeirado 18mm',c:140},{n:'MDP Branco 18mm',c:90},{n:'MDP Amadeirado 18mm',c:100}],
-       mo:90,perda:0.15,conv:2.46,margem:0.35,cfix:2000,
+       mo:90,perda:0.15,conv:2.46,margem:0.35,comissao:0,cfix:2000,
        calc:{m2:8,mat:0,cx:1.3},hist:[]},
  cc:{on:true,fonte:'fin',poolManual:0,base:'uteis',diasUteis:21,frentes:4,ocup:0.80,dias:6,moCap:false},
  amb:[],crm:[],
@@ -353,12 +353,18 @@ function cfixAtual(){return ccAtivo()?calcCC().rateio:num(DB.prec.cfix)}
 function moUnit(){return (ccAtivo()&&DB.cc.moCap)?0:num(DB.prec.mo)}
 
 /* ══════════ CÁLCULOS: PRECIFICAÇÃO ══════════ */
+/* Imposto e comissão incidem sobre o PREÇO, não sobre o custo. Por isso os três
+   percentuais entram juntos no divisor: custo ÷ (1 − imposto − comissão − margem).
+   Multiplicar o custo por (1+margem) devolveria uma margem que o imposto come. */
 function calcPreco(m2,matIdx,cx,margem,matMult){
  const p=DB.prec, custoMat=(p.mats[matIdx]||p.mats[0]||{c:0}).c*(matMult||1);
  const m2r=m2*p.conv, bruto=m2r*custoMat, perda=bruto*p.perda, matReal=bruto+perda;
  const mo=m2r*moUnit()*cx, cfix=cfixAtual(), total=matReal+mo+cfix;
- const preco=margem<1?total/(1-margem):NaN;
- return{m2r,bruto,perda,matReal,mo,cfix,total,preco,pm2:m2?preco/m2:NaN,lucro:preco-total};
+ const imp=num(DB.fin.imposto), com=num(p.comissao), carga=imp+com+margem;
+ const preco=carga<1?total/(1-carga):NaN;
+ const vImp=preco*imp, vCom=preco*com, lucro=preco*margem;
+ return{m2r,bruto,perda,matReal,mo,cfix,total,imp,com,carga,preco,
+        pm2:m2?preco/m2:NaN,vImp,vCom,lucro,markup:total?preco/total:NaN};
 }
 
 /* ══════════ CÁLCULOS: AMBIENTES / KPI ══════════ */
@@ -650,7 +656,9 @@ VIEWS.precos=()=>{
    <div class="f"><label>Custo MO por m² real</label><input value="${p.mo}" oninput="setn('prec.mo',this)"><span class="u">R$ — padrão simples, multiplicado pela complexidade</span></div>
    <div class="f"><label>Perda técnica</label><input value="${(p.perda*100).toString().replace('.',',')}" oninput="setpct('prec.perda',this)"><span class="u">% do material</span></div>
    <div class="f"><label>Conversão frontal → real</label><input value="${String(p.conv).replace('.',',')}" oninput="setn('prec.conv',this)"><span class="u">multiplicador (padrão 2,46)</span></div>
-   <div class="f"><label>Margem desejada</label><input value="${(p.margem*100).toString().replace('.',',')}" oninput="setpct('prec.margem',this)"><span class="u">% sobre preço de venda</span></div>
+   <div class="f"><label>Margem líquida desejada</label><input value="${(p.margem*100).toString().replace('.',',')}" oninput="setpct('prec.margem',this)"><span class="u">% do preço que sobra depois de imposto e comissão</span></div>
+   <div class="f"><label>Comissão comercial</label><input value="${(num(p.comissao)*100).toString().replace('.',',')}" oninput="setpct('prec.comissao',this)"><span class="u">% sobre o preço de venda</span></div>
+   <div class="f"><label>Imposto sobre venda</label><input value="${(num(DB.fin.imposto)*100).toString().replace('.',',')}" oninput="setpct('fin.imposto',this)"><span class="u">% — mesmo campo do Diagnóstico Financeiro</span></div>
    <div class="f"><label>Custo fixo diluído</label><input value="${p.cfix}" oninput="setn('prec.cfix',this)" ${ccAtivo()?'disabled style="opacity:.45"':''}><span class="u">${ccAtivo()?'calculado pelo centro de custo abaixo':'R$ por projeto médio — chute manual'}</span></div>
   </div>
  </div>
@@ -714,7 +722,7 @@ PAINT.precos=()=>{
   <div style="background:#111;border:1px solid rgba(201,168,76,.3);border-radius:8px;padding:16px;margin:16px 0">
    <div style="font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-muted);font-weight:600">Preço final sugerido</div>
    <div style="font-size:34px;font-weight:700;color:var(--accent-light);line-height:1.15;margin-top:4px">${brl(r.preco)}</div>
-   <div class="mini" style="margin-top:5px">${brl(r.pm2)} por m² frontal · lucro embutido ${brl(r.lucro)} (${pc(p.margem,0)})</div>
+   <div class="mini" style="margin-top:5px">${brl(r.pm2)} por m² frontal · lucro líquido ${brl(r.lucro)} (${pc(p.margem,0)}) · markup ${isFinite(r.markup)?nf(r.markup,2)+'×':'—'}</div>
   </div>
   <div class="dre">
    ${txt('m² reais ('+nf(c.m2,1)+' frontais × '+String(p.conv).replace('.',',')+')',nf(r.m2r,1)+' m²')}
@@ -724,7 +732,14 @@ PAINT.precos=()=>{
    ${lin(cc.moCap&&ccAtivo()?'Mão de obra (movida para o centro de custo)':'Mão de obra (×'+String(c.cx).replace('.',',')+' complexidade)',r.mo)}
    ${lin(ccAtivo()?'Custo fixo rateado ('+nf(cc.dias,0)+' dias-frente × '+brl2(rc.cdf)+')':'Custo fixo diluído (valor manual)',r.cfix)}
    ${lin('= CUSTO TOTAL',r.total,'tot')}
+   ${txt('÷ (1 − '+pc(r.imp,0)+' imposto − '+pc(r.com,0)+' comissão − '+pc(p.margem,0)+' margem)','divisor '+nf(1-r.carga,2))}
+   ${lin('= PREÇO DE VENDA',r.preco,'tot')}
+   ${lin('− Imposto ('+pc(r.imp,0)+' do preço)',r.vImp,'ind')}
+   ${lin('− Comissão ('+pc(r.com,0)+' do preço)',r.vCom,'ind')}
+   ${lin('= LUCRO LÍQUIDO',r.lucro,'tot')}
   </div>
+  ${r.carga>=1?`<div class="alert a-red" style="margin-top:14px"><span class="ic">🔴</span><div><b>Percentuais somam ${pc(r.carga,0)}</b><br><span style="color:var(--text-secondary)">Imposto + comissão + margem não podem chegar a 100% do preço. Não existe preço que feche essa conta.</span></div></div>`:''}
+  ${num(p.comissao)===0?`<div class="alert a-blu" style="margin-top:14px"><span class="ic">🔵</span><div><b>Comissão em zero</b><br><span style="color:var(--text-secondary)">Se você paga vendedor, arquiteto ou indicação, isso sai do preço e não do lucro. Lance o percentual em Dados base — cada ponto que falta ali é um ponto que some da sua margem.</span></div></div>`:''}
   <div class="alert ${Math.abs(diffRef)/ref.p<.12?'a-grn':diffRef<0?'a-org':'a-yel'}" style="margin-top:14px">
    <span class="ic">${Math.abs(diffRef)/ref.p<.12?'🟢':diffRef<0?'🟠':'🟡'}</span>
    <div><b>Referência: ${ref.t} — ${brl(ref.p)}/m²</b><br><span style="color:var(--text-secondary)">
