@@ -305,6 +305,7 @@ const SIM_CAMPOS=[
  {k:'precoM2',    l:'Preço de venda por m²',      u:'R$ por m² frontal, o mesmo que você orça'},
  {k:'imp',        l:'Impostos',                   u:'% sobre o preço de venda', t:'p'},
  {k:'com',        l:'Comissão',                   u:'% sobre o preço de venda', t:'p'},
+ {k:'metaLucro',  l:'Meta de lucro por mês',      u:'R$ que você quer que sobre depois de tudo. Zero aqui = ponto de equilíbrio'},
  {g:'3 · Entrega'},
  {k:'volume',     l:'m² entregues por mês',       u:'o que saiu montado e aceito — não o que foi orçado nem o que foi vendido'}
 ];
@@ -325,9 +326,11 @@ function vazio(){return{
        calc:{m2:8,mat:0,cx:1.3},hist:[]},
  cc:{on:true,fonte:'fin',poolManual:0,base:'uteis',diasUteis:21,frentes:4,ocup:0.80,dias:6,moCap:false},
  sim:{atual:{pessoasFab:7,prodFab:10,pessoasMon:3,prodMon:21,custoPessoa:4200,
-             fixos:14000,variaveis:6000,matM2:550,precoM2:1950,imp:0.10,com:0.03,volume:60},
+             fixos:14000,variaveis:6000,matM2:550,precoM2:1950,imp:0.10,com:0.03,
+             metaLucro:10000,volume:60},
       simulado:{pessoasFab:8,prodFab:10,pessoasMon:5,prodMon:21,custoPessoa:4200,
-             fixos:14000,variaveis:6500,matM2:550,precoM2:1950,imp:0.10,com:0.03,volume:78}},
+             fixos:14000,variaveis:6500,matM2:550,precoM2:1950,imp:0.10,com:0.03,
+             metaLucro:15000,volume:78}},
  amb:[],crm:[],
  est:{mat:[],mov:[]},
  chk:{}
@@ -426,6 +429,13 @@ function calcSim(c){
  const peM2 = mcM2>0 ? estrutura/mcM2 : NaN;               // m² para empatar
  const pePessoa = (P>0&&isFinite(peM2)) ? peM2/P : NaN;    // m² que cada um precisa produzir
  const peReceita = isFinite(peM2) ? peM2*preco : NaN;
+ /* A meta e o mesmo calculo do equilibrio com o lucro desejado somado a estrutura.
+    Meta de lucro zero devolve exatamente o ponto de equilibrio — sao a mesma conta. */
+ const meta = num(c.metaLucro);
+ const metaM2 = mcM2>0 ? (estrutura+meta)/mcM2 : NaN;
+ const metaPessoa = (P>0&&isFinite(metaM2)) ? metaM2/P : NaN;
+ const metaReceita = isFinite(metaM2) ? metaM2*preco : NaN;
+ const metaFolga = (isFinite(metaM2)&&isFinite(capEnt)) ? capEnt-metaM2 : NaN;
  const precoMin = mcM2>0||preco>0 ? (num(c.imp)+num(c.com)<1 ? custoM2/(1-num(c.imp)-num(c.com)) : NaN) : NaN;
 
  /* ---------- ETAPA 3: resultado no volume entregue ---------- */
@@ -438,6 +448,7 @@ function calcSim(c){
  return{pf,pm,P,capFab,capMon,capEnt,gargalo,ocioso,prodPessoa,
         folha,fixoEstrut,estrutura,estrutM2,mobM2,matM2,custoM2,
         preco,impM2,comM2,varM2,mcM2,mcPct,mbM2,mbPct,peM2,pePessoa,peReceita,precoMin,
+        meta,metaM2,metaPessoa,metaReceita,metaFolga,
         vol,receita,mcTotal,lucro,mlPct,fatPessoa,
         folgaCap: isFinite(capEnt)?capEnt-vol:NaN,
         folgaPE:  isFinite(peM2)?vol-peM2:NaN};
@@ -972,8 +983,13 @@ PAINT.simulador=()=>{
    ['Margem bruta — tirando material e mão de obra',A.mbPct,B.mbPct,'p',1],
    ['Preço mínimo por m² (cobre custo, imposto e comissão)',A.precoMin,B.precoMin,'r',-1],
    ['PONTO DE EQUILÍBRIO — m² por mês',A.peM2,B.peM2,'n',-1,1],
-   ['Cada funcionário precisa produzir',A.pePessoa,B.pePessoa,'n',-1,1],
-   ['Faturamento de equilíbrio',A.peReceita,B.peReceita,'r',-1]
+   ['— por funcionário',A.pePessoa,B.pePessoa,'n',-1],
+   ['— em faturamento',A.peReceita,B.peReceita,'r',-1],
+   ['Meta de lucro por mês',A.meta,B.meta,'r',0],
+   ['META — m² por mês',A.metaM2,B.metaM2,'n',-1,1],
+   ['— por funcionário',A.metaPessoa,B.metaPessoa,'n',-1],
+   ['— em faturamento',A.metaReceita,B.metaReceita,'r',-1],
+   ['Capacidade sobrando depois da meta',A.metaFolga,B.metaFolga,'n',1]
   ]],
   ['3 · Resultado no volume entregue',[
    ['m² entregues por mês',A.vol,B.vol,'n',1],
@@ -1005,9 +1021,19 @@ PAINT.simulador=()=>{
  const realPessoa = B.P>0 ? B.vol/B.P : NaN;
  if(isFinite(B.pePessoa)){
   const sobra=realPessoa-B.pePessoa;
-  F.push([sobra>=0?'grn':'red','Cada funcionário precisa produzir '+m2(B.pePessoa)+' por mês para se pagar',
-   `São ${m2(B.peM2)}/mês no total — é onde a contribuição de ${brl(B.mcM2)} por m² cobre exatamente os ${brl(B.estrutura)} de estrutura. Hoje cada um entrega ${m2(realPessoa)}: ${sobra>=0?`sobram <b>${m2(sobra)}</b> por pessoa acima do empate`:`faltam <b>${m2(-sobra)}</b> por pessoa, e a empresa opera no prejuízo`}.`]);
- }else if(isFinite(B.mcM2)&&B.mcM2<=0){
+  F.push([sobra>=0?'grn':'red',
+   `Com ${nf(B.P,0)} ${B.P===1?'funcionário':'funcionários'} e ${brl(B.estrutura)} de estrutura, você precisa entregar ${m2(B.peM2)} por mês para empatar`,
+   `São <b>${m2(B.pePessoa)} por pessoa</b> — é onde a contribuição de ${brl(B.mcM2)} por m² cobre exatamente a estrutura. Hoje cada um entrega ${m2(realPessoa)}: ${sobra>=0?`sobram <b>${m2(sobra)}</b> por pessoa acima do empate`:`faltam <b>${m2(-sobra)}</b> por pessoa, e a empresa opera no prejuízo`}.`]);
+ }
+ /* a meta e a mesma conta do equilibrio com o lucro desejado somado */
+ if(isFinite(B.metaM2)&&B.meta>0){
+  const cabe=B.metaFolga>=0;
+  F.push([cabe?'blu':'red',`Para ${brl(B.meta)} de lucro por mês: entregar ${m2(B.metaM2)}`,
+   `São <b>${m2(B.metaPessoa)} por pessoa</b> e ${brl(B.metaReceita)} de faturamento — ${m2(B.metaM2-B.peM2)} acima do empate. `+
+   (cabe?`Cabe na capacidade de ${m2(B.capEnt)}, sobrando ${m2(B.metaFolga)}. Hoje você entrega ${m2(B.vol)}: ${B.vol>=B.metaM2?'a meta já está sendo batida':`faltam <b>${m2(B.metaM2-B.vol)}</b> por mês`}.`
+        :`<b>Não cabe:</b> a capacidade é ${m2(B.capEnt)} e faltam ${m2(-B.metaFolga)} que a estrutura atual não produz. Essa meta exige mais gente no gargalo, preço maior ou custo menor — vender mais não resolve.`)]);
+ }
+ if(isFinite(B.mcM2)&&B.mcM2<=0){
   F.push(['red','Não existe ponto de equilíbrio neste cenário',
    `A margem de contribuição é ${brl(B.mcM2)} por m² — ou seja, cada m² vendido tira dinheiro do caixa. Nenhum volume conserta isso; só preço ou custo.`]);
  }
