@@ -285,6 +285,26 @@ const CHECKLISTS={
   'Ambiente sinalizado como 100% entregue no sistema de acompanhamento']}
 };
 const ETAPAS_CRM=['Lead Novo','Qualificação','Visita Agendada','Proposta Enviada','Negociação','Fechado','Perdido'];
+/* Campos do simulador. tipo 'p' = percentual (guardado como fração). */
+const SIM_CAMPOS=[
+ {g:'Equipe'},
+ {k:'pessoas',    l:'Pessoas na produção',        u:'chão de fábrica + montagem em obra'},
+ {k:'equipe',     l:'Pessoas por equipe',         u:'quantas trabalham juntas num mesmo ambiente'},
+ {k:'custoPessoa',l:'Custo médio por pessoa',     u:'R$/mês já com encargos'},
+ {g:'Estrutura'},
+ {k:'fixos',      l:'Custos fixos',               u:'R$/mês — aluguel, admin, pró-labore. Sem a folha da produção'},
+ {k:'variaveis',  l:'Variáveis de estrutura',     u:'R$/mês — energia, insumos, manutenção, frete'},
+ {g:'Capacidade'},
+ {k:'dias',       l:'Dias úteis no mês',          u:'padrão 21'},
+ {k:'ocup',       l:'Ocupação da capacidade',     u:'% da capacidade que você realmente vende', t:'p'},
+ {k:'diasAmb',    l:'Dias-frente por ambiente',   u:'quantos dias uma equipe leva num ambiente médio, fábrica + obra'},
+ {g:'Venda'},
+ {k:'preco',      l:'Preço médio do ambiente',    u:'R$ que você cobra por ambiente'},
+ {k:'volume',     l:'Ambientes vendidos por mês', u:'quantos você fecha, não quantos orça'},
+ {k:'mat',        l:'Material sobre o preço',     u:'% do preço que vira chapa, ferragem e acabamento', t:'p'},
+ {k:'imp',        l:'Impostos',                   u:'% sobre o preço de venda', t:'p'},
+ {k:'com',        l:'Comissão',                   u:'% sobre o preço de venda', t:'p'}
+];
 const TAB_REF=[
  {t:'Armário Simples',c:1.0,p:1400},{t:'Guarda-roupa Padrão',c:1.3,p:1700},
  {t:'Cozinha Completa',c:1.4,p:2000},{t:'Closet Básico',c:1.6,p:2400},
@@ -301,6 +321,10 @@ function vazio(){return{
        mo:90,perda:0.15,conv:2.46,margem:0.35,comissao:0,cfix:2000,
        calc:{m2:8,mat:0,cx:1.3},hist:[]},
  cc:{on:true,fonte:'fin',poolManual:0,base:'uteis',diasUteis:21,frentes:4,ocup:0.80,dias:6,moCap:false},
+ sim:{atual:{pessoas:10,equipe:2.5,custoPessoa:4200,fixos:14000,variaveis:6000,dias:21,ocup:0.80,
+             diasAmb:11,preco:20000,volume:6,mat:0.28,imp:0.10,com:0.03},
+      simulado:{pessoas:14,equipe:2.5,custoPessoa:4200,fixos:14000,variaveis:7500,dias:21,ocup:0.80,
+             diasAmb:11,preco:20000,volume:8,mat:0.28,imp:0.10,com:0.03}},
  amb:[],crm:[],
  est:{mat:[],mov:[]},
  chk:{}
@@ -351,6 +375,35 @@ function cfixAtual(){return ccAtivo()?calcCC().rateio:num(DB.prec.cfix)}
 /* Mão de obra direta só sai do preço por m² quando ela foi movida para o pool de
    capacidade — senão seria cobrada duas vezes. */
 function moUnit(){return (ccAtivo()&&DB.cc.moCap)?0:num(DB.prec.mo)}
+
+/* ══════════ CÁLCULOS: SIMULADOR ══════════ */
+/* Independente do resto do app: nada aqui le fin/prec/cc nem escreve neles.
+   A frente sai de pessoas ÷ tamanho da equipe — e por isso contratar muda
+   capacidade, e nao so custo. */
+function calcSim(c){
+ const P=num(c.pessoas), E=num(c.equipe);
+ const frentes = E>0 ? P/E : 0;
+ const folha   = P*num(c.custoPessoa);
+ const pool    = folha+num(c.fixos)+num(c.variaveis);
+ const cap     = num(c.dias)*frentes*num(c.ocup);          // dias-frente por mes
+ const cdf     = cap>0 ? pool/cap : NaN;                   // custo por dia-frente
+ const ambCap  = num(c.diasAmb)>0 ? cap/num(c.diasAmb) : NaN; // ambientes que cabem no mes
+ const vol     = num(c.volume);
+ const receita = vol*num(c.preco);
+ const carga   = num(c.mat)+num(c.imp)+num(c.com);
+ const mat=receita*num(c.mat), imp=receita*num(c.imp), com=receita*num(c.com);
+ const lucro   = receita-pool-mat-imp-com;
+ const marg    = receita>0 ? lucro/receita : NaN;
+ /* equilibrio: receita onde sobra zero depois de material, imposto, comissao e estrutura */
+ const peReceita = carga<1 ? pool/(1-carga) : NaN;
+ const peAmb     = num(c.preco)>0 ? peReceita/num(c.preco) : NaN;
+ /* preco minimo do ambiente: o indireto nao pode ser diluido em volume que nao existe */
+ const indiretoAmb = num(c.diasAmb)*cdf;
+ const precoMin  = carga<1 ? indiretoAmb/(1-carga) : NaN;
+ return{frentes,folha,pool,cap,cdf,ambCap,vol,receita,mat,imp,com,lucro,marg,
+        peReceita,peAmb,indiretoAmb,precoMin,carga,
+        sobra: isFinite(ambCap)? ambCap-vol : NaN};
+}
 
 /* ══════════ CÁLCULOS: PRECIFICAÇÃO ══════════ */
 /* Imposto e comissão incidem sobre o PREÇO, não sobre o custo. Por isso os três
@@ -439,6 +492,7 @@ const NAV=[
  {s:'Dinheiro'},
  {id:'financeiro',ic:'💰',n:'Diagnóstico Financeiro',t:'Diagnóstico Financeiro',d:'Margem, ponto de equilíbrio, sangrias e projeção'},
  {id:'precos',ic:'🧮',n:'Precificação',t:'Precificação',d:'Preço por m² frontal com margem garantida'},
+ {id:'simulador',ic:'🔮',n:'Simulador',t:'Simulador de Cenários',d:'E se eu contratar, subir custo ou mudar preço — quanto preciso vender'},
  {s:'Produção'},
  {id:'kpi',ic:'🎯',n:'KPI 25/50/75/100',t:'KPI 25/50/75/100 + Aderência',d:'Planejado × real por ambiente — semáforo objetivo'},
  {id:'kanban',ic:'🗂️',n:'Kanban',t:'Kanban de Produção',d:'Onde cada ambiente está agora'},
@@ -672,7 +726,7 @@ function viewCC(){
  const cc=DB.cc, on=!!cc.on, man=cc.fonte==='manual';
  return `<div class="card">
   <h3>Centro de custo<span class="hint">de onde sai o custo fixo do projeto</span></h3>
-  <div class="sub">Custo fixo não se dilui por "projeto médio" — se dilui por <b>tempo de ocupação da fábrica</b>. Pool mensal ÷ capacidade produtiva = custo por dia-frente. Multiplicado pelos dias que o projeto ocupa, vira o custo indireto medido dele. Dividir só por 30 assume que a fábrica faz um projeto por vez.</div>
+  <div class="sub">Custo fixo não se dilui por "projeto médio" — se dilui por <b>tempo de ocupação da fábrica</b>. Pool mensal ÷ capacidade produtiva = custo por dia-frente. Multiplicado pelos dias que o projeto ocupa, vira o custo indireto medido dele. Dividir só por 30 assume que a fábrica faz um projeto por vez.<br><b>Frente = uma equipe trabalhando em um ambiente</b> — não é pessoa nem ambiente vendido. Para simular contratação ou mudança de preço sem mexer aqui, use o <b>Simulador</b>.</div>
   <div class="row" style="margin-bottom:14px;gap:10px">
    <div class="seg">
     <button class="${on?'on ok':''}" onclick="setCC('on',true)">Ratear por tempo</button>
@@ -694,7 +748,7 @@ function viewCC(){
      <option value="corridos" ${cc.base==='corridos'?'selected':''}>Dias corridos (30)</option>
     </select><span class="u">a fábrica não produz sábado e domingo</span></div>
    ${cc.base!=='corridos'?`<div class="f"><label>Dias úteis no mês</label><input value="${cc.diasUteis}" oninput="setn('cc.diasUteis',this)"><span class="u">padrão 21</span></div>`:''}
-   <div class="f"><label>Frentes simultâneas</label><input value="${cc.frentes}" oninput="setn('cc.frentes',this)"><span class="u">equipes/ambientes tocados ao mesmo tempo</span></div>
+   <div class="f"><label>Frentes simultâneas</label><input value="${cc.frentes}" oninput="setn('cc.frentes',this)"><span class="u"><b>equipes</b>, não pessoas: quantos ambientes andam ao mesmo tempo. 10 pessoas em equipes de 2,5 = 4 frentes</span></div>
    <div class="f"><label>Ocupação real</label><input value="${(cc.ocup*100).toString().replace('.',',')}" oninput="setpct('cc.ocup',this)"><span class="u">% da capacidade que você realmente vende</span></div>
    <div class="f"><label>Dias-frente deste projeto</label><input value="${cc.dias}" oninput="setn('cc.dias',this)"><span class="u">fábrica + obra, contando a equipe alocada</span></div>
   </div>
@@ -812,6 +866,92 @@ function salvarOrc(){
  save();paint();
 }
 function delOrc(i){DB.prec.hist.splice(i,1);save();paint()}
+
+/* ---------- SIMULADOR ---------- */
+VIEWS.simulador=()=>{
+ const S=DB.sim;
+ const linha=f=>{
+  if(f.g)return `<tr><td colspan="3" style="padding:16px 6px 4px"><span style="font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--accent-light);font-weight:700">${f.g}</span></td></tr>`;
+  const v=c=>f.t==='p'?(num(S[c][f.k])*100).toString().replace('.',','):S[c][f.k];
+  const fn=f.t==='p'?'setpct':'setn';
+  return `<tr>
+   <td><div style="font-size:12.5px">${f.l}</div><div class="mini">${f.u}</div></td>
+   <td><input value="${v('atual')}" oninput="${fn}('sim.atual.${f.k}',this)"></td>
+   <td><input value="${v('simulado')}" oninput="${fn}('sim.simulado.${f.k}',this)"></td>
+  </tr>`;
+ };
+ return `<div class="card">
+  <h3>Cenários<span class="hint">nada aqui altera os outros módulos</span></h3>
+  <div class="sub"><b>Frente = uma equipe trabalhando em um ambiente.</b> Não é pessoa e não é ambiente vendido — é quantos ambientes a fábrica consegue tocar ao mesmo tempo. Sai de pessoas ÷ tamanho da equipe, e é por isso que contratar muda a capacidade, não só o custo. Preencha à mão: este módulo não lê nem escreve nada dos outros.</div>
+  <div class="tw"><table>
+   <thead><tr><th>Variável</th><th class="n">Atual</th><th class="n">Simulado</th></tr></thead>
+   <tbody>${SIM_CAMPOS.map(linha).join('')}</tbody>
+  </table></div>
+  <button class="btn" onclick="simCopiar()">Copiar Atual → Simulado</button>
+ </div>
+ <div id="outsim"></div>`;
+};
+function simCopiar(){DB.sim.simulado=Object.assign({},DB.sim.atual);save();render()}
+
+PAINT.simulador=()=>{
+ const el=$('#outsim'); if(!el)return;
+ const a=DB.sim.atual, b=DB.sim.simulado, A=calcSim(a), B=calcSim(b);
+ const fmt=(v,t)=>t==='r'?brl(v):t==='r2'?brl2(v):t==='p'?pc(v):nf(v,1);
+ /* dir = +1 quando subir e bom (capacidade, lucro), -1 quando subir e ruim (custo,
+    ponto de equilibrio). A cor segue o que e favoravel, nao o sinal da conta. */
+ const delta=(x,y,t,dir)=>{
+  if(!isFinite(x)||!isFinite(y))return '<span style="color:var(--text-muted)">—</span>';
+  const d=y-x; if(Math.abs(d)<1e-9)return '<span style="color:var(--text-muted)">—</span>';
+  const bom=d*dir>0;
+  return `<span style="color:${bom?'var(--verde)':'var(--vermelho)'}">${d>0?'+':'−'}${fmt(Math.abs(d),t)}</span>`;
+ };
+ const L=[
+  ['Frentes simultâneas',A.frentes,B.frentes,'n',1],
+  ['Capacidade — dias-frente por mês',A.cap,B.cap,'n',1],
+  ['Ambientes que cabem no mês',A.ambCap,B.ambCap,'n',1],
+  ['Custo de estrutura por mês',A.pool,B.pool,'r',-1],
+  ['— só a folha da produção',A.folha,B.folha,'r',-1],
+  ['Custo por dia-frente',A.cdf,B.cdf,'r2',-1],
+  ['Preço mínimo do ambiente',A.precoMin,B.precoMin,'r',-1],
+  ['Faturamento de equilíbrio por mês',A.peReceita,B.peReceita,'r',-1],
+  ['— em ambientes por mês',A.peAmb,B.peAmb,'n',-1],
+  ['Receita no volume informado',A.receita,B.receita,'r',1],
+  ['Lucro',A.lucro,B.lucro,'r',1],
+  ['Margem líquida',A.marg,B.marg,'p',1]
+ ];
+ /* leitura em portugues do que a simulacao fez */
+ const F=[], dP=num(b.pessoas)-num(a.pessoas), dCusto=B.pool-A.pool, dLucro=B.lucro-A.lucro;
+ if(dP!==0){
+  F.push([dLucro>=0?'grn':'org', (dP>0?'Contratar ':'Reduzir ')+Math.abs(dP)+(Math.abs(dP)===1?' pessoa':' pessoas'),
+   `A estrutura ${dCusto>0?'sobe':'cai'} ${brl(Math.abs(dCusto))} por mês. A capacidade vai de ${nf(A.ambCap,1)} para ${nf(B.ambCap,1)} ambientes/mês e o equilíbrio passa de ${brl(A.peReceita)} para <b>${brl(B.peReceita)}</b> de faturamento — ${nf(B.peAmb,1)} ambientes só para empatar.`]);
+ }
+ if(isFinite(B.lucro)) F.push([dLucro>0?'grn':dLucro<0?'org':'blu','No volume simulado o lucro '+(dLucro>0?'sobe':dLucro<0?'cai':'não muda'),
+   `${brl(A.lucro)} → <b>${brl(B.lucro)}</b> (${pc(A.marg)} → ${pc(B.marg)} de margem). Vendendo ${nf(B.vol,1)} ambientes a ${brl(num(b.preco))}.`]);
+ if(isFinite(B.sobra)&&B.sobra<0) F.push(['red','Vendendo mais do que a fábrica comporta',
+   `O cenário simulado vende ${nf(B.vol,1)} ambientes/mês, mas a capacidade é ${nf(B.ambCap,1)}. Faltam ${nf(-B.sobra,1)} — vira atraso, hora extra ou terceirização, nenhum deles no cálculo.`]);
+ else if(isFinite(B.sobra)&&B.sobra>0.5) F.push(['yel','Capacidade ociosa',
+   `Sobram ${nf(B.sobra,1)} ambientes de capacidade por mês. Você paga ${brl(B.sobra*num(b.diasAmb)*B.cdf)} por essa fábrica parada — é isso que a ocupação de ${pc(num(b.ocup),0)} já tenta representar.`]);
+ if(isFinite(B.precoMin)&&num(b.preco)<B.precoMin) F.push(['red','Preço abaixo do mínimo',
+   `Você cobra ${brl(num(b.preco))} por ambiente e o mínimo para não dar prejuízo é ${brl(B.precoMin)}. Faltam ${brl(B.precoMin-num(b.preco))} por ambiente — vender mais só aumenta o rombo.`]);
+ if(B.carga>=1) F.push(['red','Material, imposto e comissão somam '+pc(B.carga,0),
+   'Passando de 100% do preço não existe preço que feche. Confira os percentuais.']);
+
+ el.innerHTML=`
+ <div class="card">
+  <h3>Comparação</h3>
+  <div class="tw"><table>
+   <thead><tr><th>Indicador</th><th class="n">Atual</th><th class="n">Simulado</th><th class="n">Diferença</th></tr></thead>
+   <tbody>${L.map(([l,x,y,t,dir])=>`<tr>
+     <td>${l}</td><td class="n">${fmt(x,t)}</td>
+     <td class="n" style="font-weight:600;color:var(--accent-light)">${fmt(y,t)}</td>
+     <td class="n">${delta(x,y,t,dir)}</td></tr>`).join('')}
+  </tbody></table></div>
+ </div>
+ <div class="card">
+  <h3>Leitura</h3>
+  ${F.map(([k,t,m])=>`<div class="alert a-${k}"><span class="ic">${k==='red'?'🔴':k==='org'?'🟠':k==='yel'?'🟡':k==='grn'?'🟢':'🔵'}</span><div><b>${t}</b><br><span style="color:var(--text-secondary)">${m}</span></div></div>`).join('')}
+ </div>`;
+};
 
 /* ---------- KPI ---------- */
 VIEWS.kpi=()=>`
