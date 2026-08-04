@@ -695,14 +695,23 @@ function fileIc(t,c){
 
 function fbxCls(t){return t==='xlsx'?'bxl':t==='pdf'?'bxp':t==='video'?'bxv':'bxlnk';}
 
+/* HTML abre em aba nova: o documento e' preenchivel na tela e gera o PDF por
+   dentro. Baixar o .html so entrega um arquivo que o aluno nao sabe abrir. */
+const ICO_DL='<svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v8M4 10l4 4 4-4"/><path d="M2 14h12"/></svg>';
+const ICO_OPEN='<svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2.5h5.5v5.5"/><path d="M13.5 2.5L7 9"/><path d="M6.5 4H3a1 1 0 00-1 1v8a1 1 0 001 1h8a1 1 0 001-1v-3.5"/></svg>';
+
+function fbtn(f,extra){
+  const st=extra?` style="${extra}"`:'';
+  if(f.file&&f.type==='html')return`<a href="files/${f.file}" target="_blank" rel="noopener" class="bdl"${st}>${ICO_OPEN}Abrir</a>`;
+  if(f.file)return`<a href="files/${f.file}" download class="bdl"${st}>${ICO_DL}Baixar</a>`;
+  if(f.url)return`<a href="${f.url}" target="_blank" rel="noopener" class="bdl"${st}>${ICO_OPEN}Acessar</a>`;
+  return'';
+}
+
 function fcrd(f,showDel){
   const x=f.type==='xlsx',isPdf=f.type==='pdf';
   const c=x?'#22c55e':isPdf?'#ef4444':f.type==='video'?'#93C5FD':'#C9A84C';
-  const dlBtn=f.file
-    ?`<a href="files/${f.file}" download class="bdl"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v8M4 10l4 4 4-4"/><path d="M2 14h12"/></svg>Baixar</a>`
-    :f.url
-    ?`<a href="${f.url}" target="_blank" rel="noopener" class="bdl"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2.5h5.5v5.5"/><path d="M13.5 2.5L7 9"/><path d="M6.5 4H3a1 1 0 00-1 1v8a1 1 0 001 1h8a1 1 0 001-1v-3.5"/></svg>Acessar</a>`
-    :'';
+  const dlBtn=fbtn(f);
   const delBtn=showDel?`<button class="adm-del" style="margin-left:8px;" onclick="event.stopPropagation();admDelMatSec('${f._id}')">Remover</button>`:'';
   return`<div class="fc"><div class="fh"><div style="flex-shrink:0;margin-top:2px;">${fileIc(f.type,c)}</div><div><div class="fn">${f.name}<span class="fbx ${fbxCls(f.type)}">${f.type.toUpperCase()}</span></div><div class="fdesc">${f.desc||''}</div></div></div><div class="ff"><span class="fsz">${f.sz||''}</span><div style="display:flex;align-items:center;">${dlBtn}${delBtn}</div></div></div>`;
 }
@@ -761,7 +770,7 @@ function smd(id){
   const allMats=[...mf,...admMatsForPhase];
   const fh=allMats.length?`<div class="xc" style="margin-bottom:13px;"><div class="xt">Materiais desta Fase</div>${allMats.map(f=>{
     const x=f.type==='xlsx';const c=x?'#22c55e':f.type==='pdf'?'#ef4444':'#C9A84C';
-    const dlBtn=f.file?`<a href="files/${f.file}" download class="bdl" style="padding:4px 10px;font-size:9px;">Baixar</a>`:f.url?`<a href="${f.url}" target="_blank" class="bdl" style="padding:4px 10px;font-size:9px;">Acessar</a>`:'';
+    const dlBtn=fbtn(f,'padding:4px 10px;font-size:9px;');
     return`<div style="display:flex;align-items:center;gap:9px;padding:8px 9px;background:var(--navy-mid);border-radius:4px;margin-bottom:5px;">${fileIc(f.type,c)}<div style="flex:1;"><div style="font-size:13px;font-weight:500;">${f.name}</div><div style="font-size:10px;color:var(--text-muted);">${f.desc||''}</div></div>${dlBtn}</div>`;
   }).join('')}</div>`:'';
 
