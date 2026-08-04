@@ -300,7 +300,7 @@ const SIM_CAMPOS=[
  {k:'custoPessoa',l:'Custo médio por pessoa',     u:'R$/mês já com encargos'},
  {k:'fixos',      l:'Custos fixos',               u:'R$/mês — aluguel, admin, pró-labore. Sem a folha da produção'},
  {k:'variaveis',  l:'Variáveis de estrutura',     u:'R$/mês — energia, insumos, manutenção, frete'},
- {k:'matM2',      l:'Custo direto do m²',         u:'R$ de chapa, fita, ferragem e acabamento em 1 m² frontal'},
+ {k:'matM2',      l:'Custo direto do m²',         u:'R$ de chapa, fita, ferragem e acabamento em 1 m² frontal. Para medir: notas de material do mês ÷ m² produzidos no mês'},
  {g:'2 · Margens — aqui entra o preço'},
  {k:'precoM2',    l:'Preço de venda por m²',      u:'R$ por m² frontal, o mesmo que você orça'},
  {k:'imp',        l:'Impostos',                   u:'% sobre o preço de venda', t:'p'},
@@ -920,7 +920,7 @@ VIEWS.simulador=()=>{
  };
  return `<div class="card">
   <h3>Cenários<span class="hint">nada aqui altera os outros módulos</span></h3>
-  <div class="sub">A capacidade sai de <b>m² por pessoa medido sobre o que foi entregue</b> — não de ocupação estimada. Ocupação é chute e não existe aqui de propósito: a produtividade histórica já carrega dentro dela a falta de material, o retrabalho, a quebra de máquina e a gente parada. Aplicar um fator de ocupação em cima contaria a ociosidade duas vezes.<br><b>Fábrica e montagem são capacidades separadas, e o que a empresa entrega é a menor das duas.</b> Móvel embalado no pátio não é obra entregue. Preencha à mão: este módulo não lê nem escreve nada dos outros.</div>
+  <div class="sub">A capacidade sai de <b>m² por pessoa medido sobre o que foi entregue</b> — não de ocupação estimada. Ocupação é chute e não existe aqui de propósito: a produtividade histórica já carrega dentro dela a falta de material, o retrabalho, a quebra de máquina e a gente parada. Aplicar um fator de ocupação em cima contaria a ociosidade duas vezes.<br><b>Fábrica e montagem são capacidades separadas, e o que a empresa entrega é a menor das duas.</b> Móvel embalado no pátio não é obra entregue.<br>Preencha à mão: este módulo não lê nem escreve nada dos outros. <b>Os números que já vêm nos campos são exemplo, não recomendação</b> — cada marcenaria tem o próprio custo de material, a própria produtividade e o próprio preço. Troque tudo pelos seus antes de decidir qualquer coisa.</div>
   <div class="tw"><table>
    <thead><tr><th>Variável</th><th class="n">Atual</th><th class="n">Simulado</th></tr></thead>
    <tbody>${SIM_CAMPOS.map(linha).join('')}</tbody>
