@@ -56,9 +56,9 @@ Isso também significa que **duas pessoas da mesma empresa não compartilham dad
 
 ## Mexer no código
 
-**O push por Terminal está quebrado** — o token do GitHub foi revogado. Para voltar a funcionar, gere um Personal Access Token novo (github.com → Settings → Developer settings → Tokens classic, escopo `repo`) e use no primeiro push; o macOS guarda no keychain.
+O push por Terminal **voltou a funcionar em 04/08/2026** — o token está no keychain do iMac e expira por volta de novembro/2026. Quando voltar o erro `could not read Username`, é ele: gere outro em github.com → Settings → Developer settings → Tokens classic, escopo `repo`, e use no primeiro push.
 
-Enquanto isso, alterações vão pelo editor web:
+Alternativa sem Terminal, pelo editor web:
 https://github.com/lukamoraiss7-a11y/lukana-mentoria-app/edit/main/ferramentas.html
 
 A Vercel republica sozinha a cada commit em `main`.
