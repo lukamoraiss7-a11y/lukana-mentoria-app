@@ -44,6 +44,8 @@ body{
 .ident .c:last-child{border-right:none}
 .ident .r{display:block;font-size:6.5pt;letter-spacing:.16em;text-transform:uppercase;
   color:var(--fraco);font-weight:600;margin-bottom:3pt}
+.ident .v{display:block;min-height:11pt;font-size:9pt;line-height:1.35;outline:none}
+.ident .v:focus{background:#FFF6DF}
 
 /* secoes */
 h2{font:600 9pt/1.2 'Inter',sans-serif;letter-spacing:.16em;text-transform:uppercase;
@@ -136,10 +138,16 @@ td[contenteditable]{min-height:22pt}
 .marca img{max-height:52pt;max-width:190pt;display:block}
 
 /* barra de personalizacao — nunca sai na impressao */
-.barra{position:fixed;right:14px;bottom:14px;display:flex;gap:8px;z-index:9}
+.barra{position:fixed;right:14px;bottom:14px;display:flex;gap:8px;z-index:9;
+  align-items:center}
 .barra button{background:var(--tinta);color:#fff;border:0;border-radius:5px;
   padding:9px 15px;font:600 12px Inter,sans-serif;cursor:pointer}
 .barra button.sec{background:#fff;color:var(--tinta);border:1px solid var(--linha)}
+/* recado curto de que o preenchimento foi guardado; some sozinho */
+.barra .estado{font:500 11px Inter,sans-serif;color:var(--fraco);background:#fff;
+  border:1px solid var(--linha);border-radius:5px;padding:5px 9px;
+  opacity:0;transition:opacity .25s;pointer-events:none}
+.barra .estado.on{opacity:1}
 .painel{position:fixed;inset:0;background:rgba(20,18,16,.55);display:none;
   align-items:center;justify-content:center;z-index:10;padding:20px}
 .painel.on{display:flex}
@@ -168,14 +176,14 @@ td[contenteditable]{min-height:22pt}
   <p class="sub">Da conferência na fábrica à saída da obra — conduta, transporte, montagem e entrega.</p>
 <div class="ident">
 <div class="l" style="grid-template-columns:2fr 1fr 1fr">
-<div class="c"><span class="r">Obra</span></div>
-<div class="c"><span class="r">Data</span></div>
-<div class="c"><span class="r">Equipe</span></div>
+<div class="c"><span class="r">Obra</span><div class="v" contenteditable="true" spellcheck="false"></div></div>
+<div class="c"><span class="r">Data</span><div class="v" contenteditable="true" spellcheck="false"></div></div>
+<div class="c"><span class="r">Equipe</span><div class="v" contenteditable="true" spellcheck="false"></div></div>
 </div>
 <div class="l" style="grid-template-columns:2fr 1fr 1fr">
-<div class="c"><span class="r">Cliente</span></div>
-<div class="c"><span class="r">Conferente</span></div>
-<div class="c"><span class="r">Coordenação</span></div>
+<div class="c"><span class="r">Cliente</span><div class="v" contenteditable="true" spellcheck="false"></div></div>
+<div class="c"><span class="r">Conferente</span><div class="v" contenteditable="true" spellcheck="false"></div></div>
+<div class="c"><span class="r">Coordenação</span><div class="v" contenteditable="true" spellcheck="false"></div></div>
 </div>
 </div><h2>1 · Diretrizes em obra — proteção e conduta</h2><ul class="chk"><li><input type="checkbox" class="cx"><span>Instalar proteção de piso antes de iniciar qualquer movimentação</span></li><li><input type="checkbox" class="cx"><span>Proteger quinas e rotas de passagem de todo o trajeto</span></li><li><input type="checkbox" class="cx"><span>Verificar se há cliente morando ou operando no local — sem música nesses casos</span></li><li><input type="checkbox" class="cx"><span>Em obras vazias, o uso de música é opcional e em volume baixo</span></li><li><input type="checkbox" class="cx"><span>Levar água própria para a equipe</span></li><li><input type="checkbox" class="cx"><span>Evitar uso do banheiro do cliente; se usar por exceção, retirar todo o lixo gerado</span></li><li><input type="checkbox" class="cx"><span>Proibido descartar resíduos do time no lixo do cliente</span></li><li><input type="checkbox" class="cx"><span>Manter postura discreta: ouvir e reportar, sem conversas técnicas paralelas com o cliente</span></li><li><input type="checkbox" class="cx"><span>Não prometer soluções nem contestar o cliente sem consultar projeto ou coordenação</span></li><li><input type="checkbox" class="cx"><span>Ambiente sempre limpo e organizado durante toda a execução</span></li></ul><h2>2 · Conferência pré-obra (fábrica / CD)</h2><ul class="chk"><li><input type="checkbox" class="cx"><span>Checklist completo de peças por ambiente e por módulo</span></li><li><input type="checkbox" class="cx"><span>Separação de peças em kits por módulo quando houver grande volume (acima de 50 a 100 peças)</span></li><li><input type="checkbox" class="cx"><span>Conferir ferragens e acessórios completos por módulo</span></li><li><input type="checkbox" class="cx"><span>Aplicar etiquetas (ambiente, módulo, ordem) em todos os volumes</span></li><li><input type="checkbox" class="cx"><span>Registrar fotos do carregamento antes da saída</span></li></ul><h2>3 · Embalagem e transporte</h2><ul class="chk"><li><input type="checkbox" class="cx"><span>Priorizar envio de módulos embalados e semiprontos quando viável</span></li><li><input type="checkbox" class="cx"><span>Peças que não podem ir montadas (tamponamentos, sarrafos): manta + cantoneira + filme</span></li><li><input type="checkbox" class="cx"><span>Acima de 100 peças: agrupar por módulo ou kit, reforçar arestas, usar separadores e cintas, etiquetar por ambiente</span></li><li><input type="checkbox" class="cx"><span>Revisar fixação interna do veículo: cintas, separadores, tapetes</span></li><li><input type="checkbox" class="cx"><span>Não embarcar peças soltas sem proteção mínima e identificação</span></li><li><input type="checkbox" class="cx"><span>Alinhar rota e horário com cliente ou portaria antes da saída</span></li><li><input type="checkbox" class="cx"><span>Havendo avaria mesmo com peça embalada, revisar método de fixação e acomodação no veículo</span></li></ul><h2>4 · Chegada à obra e preparação do ambiente</h2><ul class="chk"><li><input type="checkbox" class="cx"><span>Antes de descarregar, confirmar proteção de piso e quinas instalada</span></li><li><input type="checkbox" class="cx"><span>Validar acesso, elevadores ou escadas e rotas de circulação liberadas</span></li><li><input type="checkbox" class="cx"><span>Respeitar regras do condomínio ou do estabelecimento (ruído, horários)</span></li><li><input type="checkbox" class="cx"><span>Organizar área de staging para descarregar sem obstruções</span></li></ul><h2>5 · Montagem e autoridade técnica</h2><ul class="chk"><li><input type="checkbox" class="cx"><span>Qualquer dúvida técnica: acionar a coordenação com foto e contexto</span></li><li><input type="checkbox" class="cx"><span>Explicações técnicas ao cliente somente com projeto ou desenho em mãos</span></li><li><input type="checkbox" class="cx"><span>A coordenação pode orientar na frente do cliente quando for necessário para transparência</span></li><li><input type="checkbox" class="cx"><span>Respeitar preferência individual (profissionais que preferem feedback reservado)</span></li><li><input type="checkbox" class="cx"><span>Ajustes em campo somente com OK explícito da coordenação</span></li></ul><h2>6 · Casos e lições — aplicar aprendizados</h2><ul class="chk"><li><input type="checkbox" class="cx"><span>Coordenação faz a mediação; a equipe deve ouvir e repassar, sem prometer em obra</span></li><li><input type="checkbox" class="cx"><span>Piso novo: reforçar proteção e acompanhamento próximo</span></li><li><input type="checkbox" class="cx"><span>Cliente que precisa visualizar no desenho: evitar debates em campo sem material técnico</span></li></ul><h2>7 · Decisões padronizadas — confirmar implementação</h2><ul class="chk"><li><input type="checkbox" class="cx"><span>Usar checklists obrigatórios: pré-obra, saída do CD, chegada, entrega e aceite</span></li><li><input type="checkbox" class="cx"><span>Adotar política de zero lixo do cliente (água própria, evitar banheiro; se usar, levar o lixo)</span></li><li><input type="checkbox" class="cx"><span>Aplicar padrão de embalagem por tipologia (módulo, porta, tampo, sarrafo) com instruções visuais</span></li><li><input type="checkbox" class="cx"><span>Padronizar postura de comunicação: equipe escuta e reporta, coordenação responde tecnicamente</span></li></ul><div class="quebra"></div><h2>8 · Entrega e saída</h2><ul class="chk"><li><input type="checkbox" class="cx"><span>Executar limpeza fina do mobiliário e da área de trabalho</span></li><li><input type="checkbox" class="cx"><span>Conferir toques, frestas e níveis (portas, gavetas, alinhamentos)</span></li><li><input type="checkbox" class="cx"><span>Fazer fotos de antes e depois e dos volumes instalados</span></li><li><input type="checkbox" class="cx"><span>Apresentar ao cliente e lançar pendências no termo de entrega</span></li><li><input type="checkbox" class="cx"><span>Retirar proteções e verificar que nada ficou para trás</span></li></ul><h2>9 · Riscos e mitigações</h2><table><thead><tr><th style="width:38%">Risco</th><th>Mitigação</th><th style="width:52pt;text-align:center">Aplicado</th></tr></thead><tbody><tr><td>Avarias no transporte</td><td>Embalagem correta, fixação e auditoria pós-entrega</td><td class="v"><span class="quad"></span></td></tr><tr><td>Incômodo ao cliente (ruído, uso de espaços)</td><td>Política de silêncio, aviso prévio e coordenação rápida</td><td class="v"><span class="quad"></span></td></tr><tr><td>Conflitos em público</td><td>Feedback individual; exceções com transparência dirigida pela coordenação</td><td class="v"><span class="quad"></span></td></tr></tbody></table><h2>10 · Ações, donos e prazos</h2><table><thead><tr><th style="width:52%">Ação</th><th style="width:24%">Dono</th><th>Prazo</th></tr></thead><tbody><tr><td>Criar 4 checklists e etiquetas padrão</td><td></td><td>____/____/______</td></tr><tr><td>Gerar guia de 1 página sobre comportamento em obra</td><td></td><td>____/____/______</td></tr><tr><td>Definir matriz de embalagem por tipologia e treinamento de 1 hora</td><td></td><td>____/____/______</td></tr><tr><td>Revisar set-up do veículo (separadores, cintas, mantas)</td><td></td><td>____/____/______</td></tr><tr><td>Pilotar kits por módulo no próximo lote, com auditoria de avarias</td><td></td><td>____/____/______</td></tr><tr><td>Ativar canal único para repasse ao cliente</td><td></td><td>____/____/______</td></tr></tbody></table><h2>11 · Encaminhamentos finais</h2><ul class="chk"><li><input type="checkbox" class="cx"><span>Realizar treinamento rápido de 30 a 45 minutos: proteções, embalagem por tipologia e comunicação com o cliente</span></li><li><input type="checkbox" class="cx"><span>Agendar follow-up com indicadores: percentual de avarias, NPS e ocorrências de conduta</span></li></ul><h3>Observações e pendências</h3><div class="pauta" style="--h:88pt"></div><div class="assina"><h2>Assinaturas</h2><div class="g n2"><div class="f"><b>Líder da equipe</b><span>Assinatura e data</span></div><div class="f"><b>Coordenação</b><span>Assinatura e data</span></div></div></div>
   <div class="rodape"><span>DOC-05 · versão 1.0</span>
@@ -183,6 +191,7 @@ td[contenteditable]{min-height:22pt}
 </div>
 
 <div class="barra naoimprime">
+  <span class="estado" id="estado"></span>
   <button class="sec" onclick="limparPreenchimento()">Limpar preenchimento</button>
   <button class="sec" onclick="abrirMarca()">Personalizar marca</button>
   <button onclick="window.print()">Imprimir / Salvar em PDF</button>
@@ -190,7 +199,7 @@ td[contenteditable]{min-height:22pt}
 <div class="painel naoimprime" id="painel">
   <div class="cx">
     <h4>Coloque a sua marca</h4>
-    <p class="aj">Preencha uma vez: vale para os sete documentos neste navegador.
+    <p class="aj">Preencha uma vez: vale para todos os documentos neste navegador.
        Envie um logo em PNG ou JPG, ou deixe em branco para usar o nome em texto.</p>
     <label>Nome da empresa</label>
     <input type="text" id="f_nome" placeholder="Sua Marcenaria">
@@ -245,6 +254,8 @@ td[contenteditable]{min-height:22pt}
     if(!confirm('Apagar tudo o que foi preenchido nesta tela?'))return;
     document.querySelectorAll('[contenteditable]').forEach(function(e){e.textContent=''});
     document.querySelectorAll('input.cx').forEach(function(e){e.checked=false});
+    try{localStorage.removeItem(CHAVE_P)}catch(e){}
+    aviso('preenchimento apagado');
   };
   window.limparLogo=function(){
     var m=ler();m.logo='';localStorage.setItem(CHAVE,JSON.stringify(m));aplicar();
@@ -265,7 +276,67 @@ td[contenteditable]{min-height:22pt}
       q.parentNode.replaceChild(i,q);
     });
   }
-  document.addEventListener('DOMContentLoaded',function(){aplicar();preenchivel()});
+
+  /* Preenchimento fica guardado neste navegador, por documento. Sem isso o
+     aluno digita a obra inteira, fecha a aba e perde tudo. Chave pelo nome do
+     arquivo: cada documento guarda o seu. */
+  var CHAVE_P='lkn-doc-preenchido:'+(location.pathname.split('/').pop()||'doc');
+  var relogio;
+
+  function campos(){
+    return {ed:[].slice.call(document.querySelectorAll('[contenteditable]')),
+            cx:[].slice.call(document.querySelectorAll('input.cx'))};
+  }
+  /* Guardamos texto puro, nunca HTML: o que volta do localStorage entra como
+     texto e quebra de linha, sem chance de virar marcacao. */
+  function escreverTexto(el,txt){
+    el.textContent='';
+    String(txt).split('\n').forEach(function(linha,i){
+      if(i)el.appendChild(document.createElement('br'));
+      el.appendChild(document.createTextNode(linha));
+    });
+  }
+  function salvar(){
+    var c=campos();
+    try{
+      localStorage.setItem(CHAVE_P,JSON.stringify({
+        n:c.ed.length, m:c.cx.length,
+        t:c.ed.map(function(e){return e.innerText}),
+        v:c.cx.map(function(e){return e.checked?1:0})
+      }));
+      aviso('salvo');
+    }catch(e){aviso('nao foi possivel salvar');}
+  }
+  function restaurar(){
+    var b;
+    try{b=JSON.parse(localStorage.getItem(CHAVE_P)||'null')}catch(e){return}
+    if(!b)return;
+    var c=campos();
+    /* Documento revisado desde o ultimo preenchimento: os campos mudaram de
+       lugar e o texto salvo cairia na linha errada. Melhor nao restaurar. */
+    if(b.n!==c.ed.length||b.m!==c.cx.length)return;
+    c.ed.forEach(function(e,i){escreverTexto(e,b.t[i]||'')});
+    c.cx.forEach(function(e,i){e.checked=!!b.v[i]});
+  }
+  function agendar(){clearTimeout(relogio);relogio=setTimeout(salvar,400)}
+  function aviso(txt){
+    var e=document.getElementById('estado'); if(!e)return;
+    e.textContent=txt; e.classList.add('on');
+    clearTimeout(e._t); e._t=setTimeout(function(){e.classList.remove('on')},1800);
+  }
+  function vigiar(){
+    document.addEventListener('input',function(ev){
+      var a=ev.target;
+      if(a&&(a.isContentEditable||(a.classList&&a.classList.contains('cx'))))agendar();
+    });
+    document.addEventListener('change',function(ev){
+      var a=ev.target;
+      if(a&&a.classList&&a.classList.contains('cx'))agendar();
+    });
+  }
+  document.addEventListener('DOMContentLoaded',function(){
+    aplicar();preenchivel();restaurar();vigiar();
+  });
 })();
 </script>
 </body>

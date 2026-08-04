@@ -44,6 +44,8 @@ body{
 .ident .c:last-child{border-right:none}
 .ident .r{display:block;font-size:6.5pt;letter-spacing:.16em;text-transform:uppercase;
   color:var(--fraco);font-weight:600;margin-bottom:3pt}
+.ident .v{display:block;min-height:11pt;font-size:9pt;line-height:1.35;outline:none}
+.ident .v:focus{background:#FFF6DF}
 
 /* secoes */
 h2{font:600 9pt/1.2 'Inter',sans-serif;letter-spacing:.16em;text-transform:uppercase;
@@ -136,10 +138,16 @@ td[contenteditable]{min-height:22pt}
 .marca img{max-height:52pt;max-width:190pt;display:block}
 
 /* barra de personalizacao — nunca sai na impressao */
-.barra{position:fixed;right:14px;bottom:14px;display:flex;gap:8px;z-index:9}
+.barra{position:fixed;right:14px;bottom:14px;display:flex;gap:8px;z-index:9;
+  align-items:center}
 .barra button{background:var(--tinta);color:#fff;border:0;border-radius:5px;
   padding:9px 15px;font:600 12px Inter,sans-serif;cursor:pointer}
 .barra button.sec{background:#fff;color:var(--tinta);border:1px solid var(--linha)}
+/* recado curto de que o preenchimento foi guardado; some sozinho */
+.barra .estado{font:500 11px Inter,sans-serif;color:var(--fraco);background:#fff;
+  border:1px solid var(--linha);border-radius:5px;padding:5px 9px;
+  opacity:0;transition:opacity .25s;pointer-events:none}
+.barra .estado.on{opacity:1}
 .painel{position:fixed;inset:0;background:rgba(20,18,16,.55);display:none;
   align-items:center;justify-content:center;z-index:10;padding:20px}
 .painel.on{display:flex}
@@ -182,6 +190,7 @@ INDETERMINADO</b>, regido pela legislação trabalhista e pelas cláusulas segui
 </div>
 
 <div class="barra naoimprime">
+  <span class="estado" id="estado"></span>
   <button class="sec" onclick="limparPreenchimento()">Limpar preenchimento</button>
   <button class="sec" onclick="abrirMarca()">Personalizar marca</button>
   <button onclick="window.print()">Imprimir / Salvar em PDF</button>
@@ -189,7 +198,7 @@ INDETERMINADO</b>, regido pela legislação trabalhista e pelas cláusulas segui
 <div class="painel naoimprime" id="painel">
   <div class="cx">
     <h4>Coloque a sua marca</h4>
-    <p class="aj">Preencha uma vez: vale para os sete documentos neste navegador.
+    <p class="aj">Preencha uma vez: vale para todos os documentos neste navegador.
        Envie um logo em PNG ou JPG, ou deixe em branco para usar o nome em texto.</p>
     <label>Nome da empresa</label>
     <input type="text" id="f_nome" placeholder="Sua Marcenaria">
@@ -244,6 +253,8 @@ INDETERMINADO</b>, regido pela legislação trabalhista e pelas cláusulas segui
     if(!confirm('Apagar tudo o que foi preenchido nesta tela?'))return;
     document.querySelectorAll('[contenteditable]').forEach(function(e){e.textContent=''});
     document.querySelectorAll('input.cx').forEach(function(e){e.checked=false});
+    try{localStorage.removeItem(CHAVE_P)}catch(e){}
+    aviso('preenchimento apagado');
   };
   window.limparLogo=function(){
     var m=ler();m.logo='';localStorage.setItem(CHAVE,JSON.stringify(m));aplicar();
@@ -264,7 +275,67 @@ INDETERMINADO</b>, regido pela legislação trabalhista e pelas cláusulas segui
       q.parentNode.replaceChild(i,q);
     });
   }
-  document.addEventListener('DOMContentLoaded',function(){aplicar();preenchivel()});
+
+  /* Preenchimento fica guardado neste navegador, por documento. Sem isso o
+     aluno digita a obra inteira, fecha a aba e perde tudo. Chave pelo nome do
+     arquivo: cada documento guarda o seu. */
+  var CHAVE_P='lkn-doc-preenchido:'+(location.pathname.split('/').pop()||'doc');
+  var relogio;
+
+  function campos(){
+    return {ed:[].slice.call(document.querySelectorAll('[contenteditable]')),
+            cx:[].slice.call(document.querySelectorAll('input.cx'))};
+  }
+  /* Guardamos texto puro, nunca HTML: o que volta do localStorage entra como
+     texto e quebra de linha, sem chance de virar marcacao. */
+  function escreverTexto(el,txt){
+    el.textContent='';
+    String(txt).split('\n').forEach(function(linha,i){
+      if(i)el.appendChild(document.createElement('br'));
+      el.appendChild(document.createTextNode(linha));
+    });
+  }
+  function salvar(){
+    var c=campos();
+    try{
+      localStorage.setItem(CHAVE_P,JSON.stringify({
+        n:c.ed.length, m:c.cx.length,
+        t:c.ed.map(function(e){return e.innerText}),
+        v:c.cx.map(function(e){return e.checked?1:0})
+      }));
+      aviso('salvo');
+    }catch(e){aviso('nao foi possivel salvar');}
+  }
+  function restaurar(){
+    var b;
+    try{b=JSON.parse(localStorage.getItem(CHAVE_P)||'null')}catch(e){return}
+    if(!b)return;
+    var c=campos();
+    /* Documento revisado desde o ultimo preenchimento: os campos mudaram de
+       lugar e o texto salvo cairia na linha errada. Melhor nao restaurar. */
+    if(b.n!==c.ed.length||b.m!==c.cx.length)return;
+    c.ed.forEach(function(e,i){escreverTexto(e,b.t[i]||'')});
+    c.cx.forEach(function(e,i){e.checked=!!b.v[i]});
+  }
+  function agendar(){clearTimeout(relogio);relogio=setTimeout(salvar,400)}
+  function aviso(txt){
+    var e=document.getElementById('estado'); if(!e)return;
+    e.textContent=txt; e.classList.add('on');
+    clearTimeout(e._t); e._t=setTimeout(function(){e.classList.remove('on')},1800);
+  }
+  function vigiar(){
+    document.addEventListener('input',function(ev){
+      var a=ev.target;
+      if(a&&(a.isContentEditable||(a.classList&&a.classList.contains('cx'))))agendar();
+    });
+    document.addEventListener('change',function(ev){
+      var a=ev.target;
+      if(a&&a.classList&&a.classList.contains('cx'))agendar();
+    });
+  }
+  document.addEventListener('DOMContentLoaded',function(){
+    aplicar();preenchivel();restaurar();vigiar();
+  });
 })();
 </script>
 </body>

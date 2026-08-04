@@ -44,6 +44,8 @@ body{
 .ident .c:last-child{border-right:none}
 .ident .r{display:block;font-size:6.5pt;letter-spacing:.16em;text-transform:uppercase;
   color:var(--fraco);font-weight:600;margin-bottom:3pt}
+.ident .v{display:block;min-height:11pt;font-size:9pt;line-height:1.35;outline:none}
+.ident .v:focus{background:#FFF6DF}
 
 /* secoes */
 h2{font:600 9pt/1.2 'Inter',sans-serif;letter-spacing:.16em;text-transform:uppercase;
@@ -136,10 +138,16 @@ td[contenteditable]{min-height:22pt}
 .marca img{max-height:52pt;max-width:190pt;display:block}
 
 /* barra de personalizacao — nunca sai na impressao */
-.barra{position:fixed;right:14px;bottom:14px;display:flex;gap:8px;z-index:9}
+.barra{position:fixed;right:14px;bottom:14px;display:flex;gap:8px;z-index:9;
+  align-items:center}
 .barra button{background:var(--tinta);color:#fff;border:0;border-radius:5px;
   padding:9px 15px;font:600 12px Inter,sans-serif;cursor:pointer}
 .barra button.sec{background:#fff;color:var(--tinta);border:1px solid var(--linha)}
+/* recado curto de que o preenchimento foi guardado; some sozinho */
+.barra .estado{font:500 11px Inter,sans-serif;color:var(--fraco);background:#fff;
+  border:1px solid var(--linha);border-radius:5px;padding:5px 9px;
+  opacity:0;transition:opacity .25s;pointer-events:none}
+.barra .estado.on{opacity:1}
 .painel{position:fixed;inset:0;background:rgba(20,18,16,.55);display:none;
   align-items:center;justify-content:center;z-index:10;padding:20px}
 .painel.on{display:flex}
@@ -168,17 +176,17 @@ td[contenteditable]{min-height:22pt}
   <p class="sub">Levantamento de instalações e conferência do estado da obra antes de produzir.</p>
 <div class="ident">
 <div class="l" style="grid-template-columns:2fr 1fr 1fr">
-<div class="c"><span class="r">Cliente</span></div>
-<div class="c"><span class="r">Projeto n.º</span></div>
-<div class="c"><span class="r">Data</span></div>
+<div class="c"><span class="r">Cliente</span><div class="v" contenteditable="true" spellcheck="false"></div></div>
+<div class="c"><span class="r">Projeto n.º</span><div class="v" contenteditable="true" spellcheck="false"></div></div>
+<div class="c"><span class="r">Data</span><div class="v" contenteditable="true" spellcheck="false"></div></div>
 </div>
 <div class="l" style="grid-template-columns:3fr 1fr">
-<div class="c"><span class="r">Obra / endereço</span></div>
-<div class="c"><span class="r">Responsável</span></div>
+<div class="c"><span class="r">Obra / endereço</span><div class="v" contenteditable="true" spellcheck="false"></div></div>
+<div class="c"><span class="r">Responsável</span><div class="v" contenteditable="true" spellcheck="false"></div></div>
 </div>
 <div class="l" style="grid-template-columns:3fr 1fr">
-<div class="c"><span class="r">Ambientes levantados</span></div>
-<div class="c"><span class="r">Conferente</span></div>
+<div class="c"><span class="r">Ambientes levantados</span><div class="v" contenteditable="true" spellcheck="false"></div></div>
+<div class="c"><span class="r">Conferente</span><div class="v" contenteditable="true" spellcheck="false"></div></div>
 </div>
 </div><div class="aviso">Este documento reúne duas conferências que sempre andam juntas: o <b>levantamento técnico</b> das instalações e o <b>relatório de status da obra</b> por ambiente. Um sem o outro não libera a produção.</div><h2>Parte A · Levantamento técnico — hidráulica e gás</h2><ul class="chk duas"><li><input type="checkbox" class="cx"><span>Registros (por tipo, conforme legenda)</span></li><li><input type="checkbox" class="cx"><span>Caixas de inspeção</span></li><li><input type="checkbox" class="cx"><span>Caixa de gordura</span></li><li><input type="checkbox" class="cx"><span>Posição do botijão (abrigo)</span></li><li><input type="checkbox" class="cx"><span>Ponto de gás</span></li><li><input type="checkbox" class="cx"><span>Ponto de filtro</span></li><li><input type="checkbox" class="cx"><span>Ralo (posição do eixo, tipo e tamanho)</span></li><li><input type="checkbox" class="cx"><span>Altura da válvula de descarga ou caixa acoplada</span></li><li><input type="checkbox" class="cx"><span>Eixo da cuba</span></li><li><input type="checkbox" class="cx"><span>Tamanho das cubas</span></li><li><input type="checkbox" class="cx"><span>Altura e modelo da torneira</span></li><li><input type="checkbox" class="cx"><span>Altura livre do sifão</span></li></ul><h3>Regras de registro</h3><ul class="chk"><li><input type="checkbox" class="cx"><span>Indicar alturas de todos os pontos (pelo eixo)</span></li><li><input type="checkbox" class="cx"><span>Cotas de amarração e cotas entre os pontos (pelos eixos)</span></li><li><input type="checkbox" class="cx"><span>Desenhar os símbolos seguindo a legenda</span></li><li><input type="checkbox" class="cx"><span>Registrar fotos totais do ambiente e vídeos explicativos</span></li></ul><h3>Croqui e observações do levantamento</h3><div class="pauta" style="--h:120pt"></div><div class="quebra"></div><h2>Parte B · Status da obra por ambiente</h2><p class="sub">Marque o estado de cada item. Item não pronto vira pendência com dono e prazo.</p><table><thead><tr><th>Item</th><th class="v" style="width:52pt;text-align:center">Pronto</th><th class="v" style="width:52pt;text-align:center">Pendente</th><th class="v" style="width:52pt;text-align:center">Não se aplica</th></tr></thead><tbody><tr><td colspan="4" style="background:var(--claro);font-weight:600">Ambiente 1: ________________________________</td></tr><tr><td>Paredes</td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td></tr><tr><td>Teto / gesso</td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td></tr><tr><td>Esquadrias</td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td></tr><tr><td>Piso / rodapé</td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td></tr><tr><td>Tomadas e interruptores</td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td></tr><tr><td>Pontos hidráulicos</td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td></tr><tr><td>Pedras e revestimentos</td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td></tr><tr><td>Outros</td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td></tr><tr><td colspan="4" style="background:var(--claro);font-weight:600">Ambiente 2: ________________________________</td></tr><tr><td>Paredes</td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td></tr><tr><td>Teto / gesso</td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td></tr><tr><td>Esquadrias</td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td></tr><tr><td>Piso / rodapé</td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td></tr><tr><td>Tomadas e interruptores</td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td></tr><tr><td>Pontos hidráulicos</td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td></tr><tr><td>Pedras e revestimentos</td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td></tr><tr><td>Outros</td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td></tr><tr><td colspan="4" style="background:var(--claro);font-weight:600">Ambiente 3: ________________________________</td></tr><tr><td>Paredes</td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td></tr><tr><td>Teto / gesso</td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td></tr><tr><td>Esquadrias</td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td></tr><tr><td>Piso / rodapé</td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td></tr><tr><td>Tomadas e interruptores</td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td></tr><tr><td>Pontos hidráulicos</td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td></tr><tr><td>Pedras e revestimentos</td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td></tr><tr><td>Outros</td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td></tr><tr><td colspan="4" style="background:var(--claro);font-weight:600">Ambiente 4: ________________________________</td></tr><tr><td>Paredes</td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td></tr><tr><td>Teto / gesso</td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td></tr><tr><td>Esquadrias</td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td></tr><tr><td>Piso / rodapé</td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td></tr><tr><td>Tomadas e interruptores</td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td></tr><tr><td>Pontos hidráulicos</td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td></tr><tr><td>Pedras e revestimentos</td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td></tr><tr><td>Outros</td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td><td class="v"><span class="quad"></span></td></tr></tbody></table><h2>Pendências que travam o início da marcenaria</h2><table><thead><tr><th style="width:30%">Pendência</th><th style="width:22%">Ambiente</th><th style="width:24%">Responsável</th><th>Prazo</th></tr></thead><tbody><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr></tbody></table><div class="assina"><h2>Assinaturas</h2><div class="g n3"><div class="f"><b>Conferente <span data-empresa>Sua Marca</span></b><span>Assinatura e data</span></div><div class="f"><b>Responsável pela obra</b><span>Assinatura e data</span></div><div class="f"><b>Cliente ou arquiteto</b><span>Assinatura e data</span></div></div></div>
   <div class="rodape"><span>DOC-03 · versão 1.0</span>
@@ -186,6 +194,7 @@ td[contenteditable]{min-height:22pt}
 </div>
 
 <div class="barra naoimprime">
+  <span class="estado" id="estado"></span>
   <button class="sec" onclick="limparPreenchimento()">Limpar preenchimento</button>
   <button class="sec" onclick="abrirMarca()">Personalizar marca</button>
   <button onclick="window.print()">Imprimir / Salvar em PDF</button>
@@ -193,7 +202,7 @@ td[contenteditable]{min-height:22pt}
 <div class="painel naoimprime" id="painel">
   <div class="cx">
     <h4>Coloque a sua marca</h4>
-    <p class="aj">Preencha uma vez: vale para os sete documentos neste navegador.
+    <p class="aj">Preencha uma vez: vale para todos os documentos neste navegador.
        Envie um logo em PNG ou JPG, ou deixe em branco para usar o nome em texto.</p>
     <label>Nome da empresa</label>
     <input type="text" id="f_nome" placeholder="Sua Marcenaria">
@@ -248,6 +257,8 @@ td[contenteditable]{min-height:22pt}
     if(!confirm('Apagar tudo o que foi preenchido nesta tela?'))return;
     document.querySelectorAll('[contenteditable]').forEach(function(e){e.textContent=''});
     document.querySelectorAll('input.cx').forEach(function(e){e.checked=false});
+    try{localStorage.removeItem(CHAVE_P)}catch(e){}
+    aviso('preenchimento apagado');
   };
   window.limparLogo=function(){
     var m=ler();m.logo='';localStorage.setItem(CHAVE,JSON.stringify(m));aplicar();
@@ -268,7 +279,67 @@ td[contenteditable]{min-height:22pt}
       q.parentNode.replaceChild(i,q);
     });
   }
-  document.addEventListener('DOMContentLoaded',function(){aplicar();preenchivel()});
+
+  /* Preenchimento fica guardado neste navegador, por documento. Sem isso o
+     aluno digita a obra inteira, fecha a aba e perde tudo. Chave pelo nome do
+     arquivo: cada documento guarda o seu. */
+  var CHAVE_P='lkn-doc-preenchido:'+(location.pathname.split('/').pop()||'doc');
+  var relogio;
+
+  function campos(){
+    return {ed:[].slice.call(document.querySelectorAll('[contenteditable]')),
+            cx:[].slice.call(document.querySelectorAll('input.cx'))};
+  }
+  /* Guardamos texto puro, nunca HTML: o que volta do localStorage entra como
+     texto e quebra de linha, sem chance de virar marcacao. */
+  function escreverTexto(el,txt){
+    el.textContent='';
+    String(txt).split('\n').forEach(function(linha,i){
+      if(i)el.appendChild(document.createElement('br'));
+      el.appendChild(document.createTextNode(linha));
+    });
+  }
+  function salvar(){
+    var c=campos();
+    try{
+      localStorage.setItem(CHAVE_P,JSON.stringify({
+        n:c.ed.length, m:c.cx.length,
+        t:c.ed.map(function(e){return e.innerText}),
+        v:c.cx.map(function(e){return e.checked?1:0})
+      }));
+      aviso('salvo');
+    }catch(e){aviso('nao foi possivel salvar');}
+  }
+  function restaurar(){
+    var b;
+    try{b=JSON.parse(localStorage.getItem(CHAVE_P)||'null')}catch(e){return}
+    if(!b)return;
+    var c=campos();
+    /* Documento revisado desde o ultimo preenchimento: os campos mudaram de
+       lugar e o texto salvo cairia na linha errada. Melhor nao restaurar. */
+    if(b.n!==c.ed.length||b.m!==c.cx.length)return;
+    c.ed.forEach(function(e,i){escreverTexto(e,b.t[i]||'')});
+    c.cx.forEach(function(e,i){e.checked=!!b.v[i]});
+  }
+  function agendar(){clearTimeout(relogio);relogio=setTimeout(salvar,400)}
+  function aviso(txt){
+    var e=document.getElementById('estado'); if(!e)return;
+    e.textContent=txt; e.classList.add('on');
+    clearTimeout(e._t); e._t=setTimeout(function(){e.classList.remove('on')},1800);
+  }
+  function vigiar(){
+    document.addEventListener('input',function(ev){
+      var a=ev.target;
+      if(a&&(a.isContentEditable||(a.classList&&a.classList.contains('cx'))))agendar();
+    });
+    document.addEventListener('change',function(ev){
+      var a=ev.target;
+      if(a&&a.classList&&a.classList.contains('cx'))agendar();
+    });
+  }
+  document.addEventListener('DOMContentLoaded',function(){
+    aplicar();preenchivel();restaurar();vigiar();
+  });
 })();
 </script>
 </body>
