@@ -216,6 +216,9 @@ const brl=n=>(!isFinite(n))?'—':n.toLocaleString('pt-BR',{style:'currency',cur
 const brl2=n=>(!isFinite(n))?'—':n.toLocaleString('pt-BR',{style:'currency',currency:'BRL',minimumFractionDigits:2,maximumFractionDigits:2});
 const pc=(n,d=1)=>(!isFinite(n))?'—':(n*100).toFixed(d).replace('.',',')+'%';
 const nf=(n,d=0)=>(!isFinite(n))?'—':n.toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d});
+/* Fracao -> texto do campo de porcentagem. Sem arredondar, 0.28*100 vira
+   28.000000000000004 em ponto flutuante e aparece assim na tela. */
+const pctIn=v=>String(Math.round(num(v)*1e6)/1e4).replace('.',',');
 function num(v){if(typeof v==='number')return v;if(v==null||v==='')return 0;let s=String(v).replace(/[^\d,.-]/g,'');if(s.indexOf(',')>-1)s=s.replace(/\./g,'').replace(',','.');return parseFloat(s)||0}
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uid=()=>Math.random().toString(36).slice(2,9);
@@ -614,7 +617,7 @@ VIEWS.financeiro=()=>{
   <h3>1 · Faturamento dos últimos 3 meses<span class="hint">Só o bruto. O resto o app calcula.</span></h3>
   <div class="grid g4">
    ${[0,1,2].map(i=>`<div class="f"><label>Mês ${i+1}</label><input value="${f.fat[i]||''}" placeholder="0" oninput="setn('fin.fat.${i}',this)"></div>`).join('')}
-   <div class="f"><label>Impostos sobre venda</label><input value="${(f.imposto*100).toString().replace('.',',')}" oninput="setpct('fin.imposto',this)"><span class="u">% — Simples costuma ficar entre 6% e 12%</span></div>
+   <div class="f"><label>Impostos sobre venda</label><input value="${pctIn(f.imposto)}" oninput="setpct('fin.imposto',this)"><span class="u">% — Simples costuma ficar entre 6% e 12%</span></div>
   </div>
  </div>
  <div class="grid g2">
@@ -708,11 +711,11 @@ VIEWS.precos=()=>{
   <h4>Parâmetros</h4>
   <div class="grid g2">
    <div class="f"><label>Custo MO por m² real</label><input value="${p.mo}" oninput="setn('prec.mo',this)"><span class="u">R$ — padrão simples, multiplicado pela complexidade</span></div>
-   <div class="f"><label>Perda técnica</label><input value="${(p.perda*100).toString().replace('.',',')}" oninput="setpct('prec.perda',this)"><span class="u">% do material</span></div>
+   <div class="f"><label>Perda técnica</label><input value="${pctIn(p.perda)}" oninput="setpct('prec.perda',this)"><span class="u">% do material</span></div>
    <div class="f"><label>Conversão frontal → real</label><input value="${String(p.conv).replace('.',',')}" oninput="setn('prec.conv',this)"><span class="u">multiplicador (padrão 2,46)</span></div>
-   <div class="f"><label>Margem líquida desejada</label><input value="${(p.margem*100).toString().replace('.',',')}" oninput="setpct('prec.margem',this)"><span class="u">% do preço que sobra depois de imposto e comissão</span></div>
-   <div class="f"><label>Comissão comercial</label><input value="${(num(p.comissao)*100).toString().replace('.',',')}" oninput="setpct('prec.comissao',this)"><span class="u">% sobre o preço de venda</span></div>
-   <div class="f"><label>Imposto sobre venda</label><input value="${(num(DB.fin.imposto)*100).toString().replace('.',',')}" oninput="setpct('fin.imposto',this)"><span class="u">% — mesmo campo do Diagnóstico Financeiro</span></div>
+   <div class="f"><label>Margem líquida desejada</label><input value="${pctIn(p.margem)}" oninput="setpct('prec.margem',this)"><span class="u">% do preço que sobra depois de imposto e comissão</span></div>
+   <div class="f"><label>Comissão comercial</label><input value="${pctIn(p.comissao)}" oninput="setpct('prec.comissao',this)"><span class="u">% sobre o preço de venda</span></div>
+   <div class="f"><label>Imposto sobre venda</label><input value="${pctIn(DB.fin.imposto)}" oninput="setpct('fin.imposto',this)"><span class="u">% — mesmo campo do Diagnóstico Financeiro</span></div>
    <div class="f"><label>Custo fixo diluído</label><input value="${p.cfix}" oninput="setn('prec.cfix',this)" ${ccAtivo()?'disabled style="opacity:.45"':''}><span class="u">${ccAtivo()?'calculado pelo centro de custo abaixo':'R$ por projeto médio — chute manual'}</span></div>
   </div>
  </div>
@@ -749,7 +752,7 @@ function viewCC(){
     </select><span class="u">a fábrica não produz sábado e domingo</span></div>
    ${cc.base!=='corridos'?`<div class="f"><label>Dias úteis no mês</label><input value="${cc.diasUteis}" oninput="setn('cc.diasUteis',this)"><span class="u">padrão 21</span></div>`:''}
    <div class="f"><label>Frentes simultâneas</label><input value="${cc.frentes}" oninput="setn('cc.frentes',this)"><span class="u"><b>equipes</b>, não pessoas: quantos ambientes andam ao mesmo tempo. 10 pessoas em equipes de 2,5 = 4 frentes</span></div>
-   <div class="f"><label>Ocupação real</label><input value="${(cc.ocup*100).toString().replace('.',',')}" oninput="setpct('cc.ocup',this)"><span class="u">% da capacidade que você realmente vende</span></div>
+   <div class="f"><label>Ocupação real</label><input value="${pctIn(cc.ocup)}" oninput="setpct('cc.ocup',this)"><span class="u">% da capacidade que você realmente vende</span></div>
    <div class="f"><label>Dias-frente deste projeto</label><input value="${cc.dias}" oninput="setn('cc.dias',this)"><span class="u">fábrica + obra, contando a equipe alocada</span></div>
   </div>
   <div class="row" style="margin-top:14px;gap:10px">
@@ -872,7 +875,7 @@ VIEWS.simulador=()=>{
  const S=DB.sim;
  const linha=f=>{
   if(f.g)return `<tr><td colspan="3" style="padding:16px 6px 4px"><span style="font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--accent-light);font-weight:700">${f.g}</span></td></tr>`;
-  const v=c=>f.t==='p'?(num(S[c][f.k])*100).toString().replace('.',','):S[c][f.k];
+  const v=c=>f.t==='p'?pctIn(S[c][f.k]):S[c][f.k];
   const fn=f.t==='p'?'setpct':'setn';
   return `<tr>
    <td><div style="font-size:12.5px">${f.l}</div><div class="mini">${f.u}</div></td>
