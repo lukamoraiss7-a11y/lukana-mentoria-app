@@ -291,22 +291,22 @@ const ETAPAS_CRM=['Lead Novo','Qualificação','Visita Agendada','Proposta Envia
 /* Campos do simulador. tipo 'p' = percentual (guardado como fração).
    Capacidade sai de m² por pessoa medido, nao de ocupacao chutada. */
 const SIM_CAMPOS=[
- {g:'Fábrica'},
+ {g:'1 · Equipe e capacidade'},
  {k:'pessoasFab', l:'Pessoas na fábrica',         u:'quem corta, monta e embala'},
  {k:'prodFab',    l:'m² por pessoa/mês na fábrica', u:'medido: m² que saíram embalados nos últimos 6 meses ÷ pessoas ÷ 6'},
- {g:'Montagem em obra'},
  {k:'pessoasMon', l:'Pessoas na montagem',        u:'quem instala e entrega'},
  {k:'prodMon',    l:'m² por pessoa/mês na montagem', u:'mesma conta, com m² montados e aceitos pelo cliente'},
- {g:'Custo'},
+ {g:'1 · Custo — ainda sem falar de preço'},
  {k:'custoPessoa',l:'Custo médio por pessoa',     u:'R$/mês já com encargos'},
  {k:'fixos',      l:'Custos fixos',               u:'R$/mês — aluguel, admin, pró-labore. Sem a folha da produção'},
  {k:'variaveis',  l:'Variáveis de estrutura',     u:'R$/mês — energia, insumos, manutenção, frete'},
- {g:'Venda'},
- {k:'precoM2',    l:'Preço médio por m²',         u:'R$ por m² frontal, o mesmo que você orça'},
- {k:'volume',     l:'m² entregues por mês',       u:'o que saiu montado e aceito — não o que foi orçado nem o que foi vendido'},
- {k:'mat',        l:'Material sobre o preço',     u:'% do preço que vira chapa, ferragem e acabamento', t:'p'},
+ {k:'matM2',      l:'Custo direto do m²',         u:'R$ de chapa, fita, ferragem e acabamento em 1 m² frontal'},
+ {g:'2 · Margens — aqui entra o preço'},
+ {k:'precoM2',    l:'Preço de venda por m²',      u:'R$ por m² frontal, o mesmo que você orça'},
  {k:'imp',        l:'Impostos',                   u:'% sobre o preço de venda', t:'p'},
- {k:'com',        l:'Comissão',                   u:'% sobre o preço de venda', t:'p'}
+ {k:'com',        l:'Comissão',                   u:'% sobre o preço de venda', t:'p'},
+ {g:'3 · Entrega'},
+ {k:'volume',     l:'m² entregues por mês',       u:'o que saiu montado e aceito — não o que foi orçado nem o que foi vendido'}
 ];
 const TAB_REF=[
  {t:'Armário Simples',c:1.0,p:1400},{t:'Guarda-roupa Padrão',c:1.3,p:1700},
@@ -325,9 +325,9 @@ function vazio(){return{
        calc:{m2:8,mat:0,cx:1.3},hist:[]},
  cc:{on:true,fonte:'fin',poolManual:0,base:'uteis',diasUteis:21,frentes:4,ocup:0.80,dias:6,moCap:false},
  sim:{atual:{pessoasFab:7,prodFab:10,pessoasMon:3,prodMon:21,custoPessoa:4200,
-             fixos:14000,variaveis:6000,precoM2:1950,volume:60,mat:0.28,imp:0.10,com:0.03},
+             fixos:14000,variaveis:6000,matM2:550,precoM2:1950,imp:0.10,com:0.03,volume:60},
       simulado:{pessoasFab:8,prodFab:10,pessoasMon:5,prodMon:21,custoPessoa:4200,
-             fixos:14000,variaveis:6500,precoM2:1950,volume:78,mat:0.28,imp:0.10,com:0.03}},
+             fixos:14000,variaveis:6500,matM2:550,precoM2:1950,imp:0.10,com:0.03,volume:78}},
  amb:[],crm:[],
  est:{mat:[],mov:[]},
  chk:{}
@@ -336,10 +336,10 @@ let DB=carregar();
 function carregar(){try{
  const r=localStorage.getItem(KEY);if(!r)return vazio();
  const d=JSON.parse(r), o=Object.assign(vazio(),d);
- /* O simulador trocou o modelo de capacidade: era ambientes por ocupacao estimada,
-    virou m² por pessoa medido sobre o entregue. Cenario salvo no formato antigo nao
-    tem traducao — os campos nao sao os mesmos e a unidade mudou. Volta ao padrao. */
- if(!o.sim||!o.sim.atual||o.sim.atual.prodFab===undefined)o.sim=vazio().sim;
+ /* O simulador foi reestruturado em etapas (custo -> margens -> resultado) e o
+    material passou de % do preco para R$ por m². Cenario salvo em formato anterior
+    nao tem traducao: os campos nao sao os mesmos. Volta ao padrao. */
+ if(!o.sim||!o.sim.atual||o.sim.atual.matM2===undefined)o.sim=vazio().sim;
  return o
 }catch(e){return vazio()}}
 function save(){localStorage.setItem(KEY,JSON.stringify(DB));agendarPush();rodape();navBadges()}
@@ -396,29 +396,51 @@ function moUnit(){return (ccAtivo()&&DB.cc.moCap)?0:num(DB.prec.mo)}
    Fabrica e montagem sao capacidades separadas, e o que a empresa entrega e a
    MENOR das duas — obra embalada no patio nao e obra entregue. */
 function calcSim(c){
+ /* ---------- ETAPA 1: base de custo, sem nenhuma referencia a preco ---------- */
  const pf=num(c.pessoasFab), pm=num(c.pessoasMon), P=pf+pm;
  const capFab = pf*num(c.prodFab);
  const capMon = pm*num(c.prodMon);
  const capEnt = Math.min(capFab,capMon);                   // m² entregues por mes
  const gargalo = capFab===capMon ? 'equilibrado' : (capFab<capMon ? 'fábrica' : 'montagem');
- const ocioso = Math.abs(capFab-capMon);                   // capacidade do outro lado que nao vira entrega
- const prodMedia = P>0 ? capEnt/P : NaN;                   // m² entregues por pessoa/mes
- const folha = P*num(c.custoPessoa);
- const pool  = folha+num(c.fixos)+num(c.variaveis);
- const custoM2 = capEnt>0 ? pool/capEnt : NaN;             // estrutura por m² entregue
- const vol   = num(c.volume);
- const receita = vol*num(c.precoM2);
- const carga = num(c.mat)+num(c.imp)+num(c.com);
- const mat=receita*num(c.mat), imp=receita*num(c.imp), com=receita*num(c.com);
- const lucro = receita-pool-mat-imp-com;
- const marg  = receita>0 ? lucro/receita : NaN;
- const peReceita = carga<1 ? pool/(1-carga) : NaN;         // faturamento de equilibrio
- const peM2  = num(c.precoM2)>0 ? peReceita/num(c.precoM2) : NaN;
- const precoMin = carga<1 ? custoM2/(1-carga) : NaN;       // preco minimo do m²
- const fatPessoa = P>0 ? receita*12/P : NaN;               // faturamento por pessoa/ano
- return{pf,pm,P,capFab,capMon,capEnt,gargalo,ocioso,prodMedia,folha,pool,custoM2,
-        vol,receita,mat,imp,com,lucro,marg,peReceita,peM2,precoMin,fatPessoa,carga,
-        sobra: isFinite(capEnt) ? capEnt-vol : NaN};
+ const ocioso = Math.abs(capFab-capMon);
+ const prodPessoa = P>0 ? capEnt/P : NaN;                  // m² entregues por pessoa/mes
+ const folha = P*num(c.custoPessoa);                       // mao de obra direta, quase-fixa
+ const fixoEstrut = num(c.fixos)+num(c.variaveis);
+ const estrutura = folha+fixoEstrut;                       // tudo que corre todo mes
+ const estrutM2 = capEnt>0 ? estrutura/capEnt : NaN;       // estrutura diluida no m²
+ const mobM2 = capEnt>0 ? folha/capEnt : NaN;              // mao de obra direta por m²
+ const matM2 = num(c.matM2);                               // material por m², custo variavel
+ const custoM2 = estrutM2+matM2;                           // PISO ABSOLUTO do m², sem imposto nem lucro
+
+ /* ---------- ETAPA 2: margens — so aqui o preco entra ---------- */
+ const preco = num(c.precoM2);
+ const impM2 = preco*num(c.imp), comM2 = preco*num(c.com);
+ const varM2 = matM2+impM2+comM2;                          // o que varia com cada m² vendido
+ const mcM2  = preco-varM2;                                // margem de contribuicao por m²
+ const mcPct = preco>0 ? mcM2/preco : NaN;
+ const mbM2  = preco-matM2-mobM2;                          // margem bruta: tira material e MOD
+ const mbPct = preco>0 ? mbM2/preco : NaN;
+ /* equilibrio: a contribuicao de cada m² precisa cobrir a estrutura inteira.
+    A folha entra como fixa de proposito — marceneiro e salario mensal, nao cai
+    porque o mes foi fraco. Sem preco, esta conta nao existe. */
+ const peM2 = mcM2>0 ? estrutura/mcM2 : NaN;               // m² para empatar
+ const pePessoa = (P>0&&isFinite(peM2)) ? peM2/P : NaN;    // m² que cada um precisa produzir
+ const peReceita = isFinite(peM2) ? peM2*preco : NaN;
+ const precoMin = mcM2>0||preco>0 ? (num(c.imp)+num(c.com)<1 ? custoM2/(1-num(c.imp)-num(c.com)) : NaN) : NaN;
+
+ /* ---------- ETAPA 3: resultado no volume entregue ---------- */
+ const vol = num(c.volume);
+ const receita = vol*preco;
+ const mcTotal = vol*mcM2;
+ const lucro = mcTotal-estrutura;
+ const mlPct = receita>0 ? lucro/receita : NaN;
+ const fatPessoa = P>0 ? receita*12/P : NaN;
+ return{pf,pm,P,capFab,capMon,capEnt,gargalo,ocioso,prodPessoa,
+        folha,fixoEstrut,estrutura,estrutM2,mobM2,matM2,custoM2,
+        preco,impM2,comM2,varM2,mcM2,mcPct,mbM2,mbPct,peM2,pePessoa,peReceita,precoMin,
+        vol,receita,mcTotal,lucro,mlPct,fatPessoa,
+        folgaCap: isFinite(capEnt)?capEnt-vol:NaN,
+        folgaPE:  isFinite(peM2)?vol-peM2:NaN};
 }
 
 /* ══════════ CÁLCULOS: PRECIFICAÇÃO ══════════ */
@@ -918,29 +940,55 @@ PAINT.simulador=()=>{
  const delta=(x,y,t,dir)=>{
   if(!isFinite(x)||!isFinite(y))return '<span style="color:var(--text-muted)">—</span>';
   const d=y-x; if(Math.abs(d)<1e-9)return '<span style="color:var(--text-muted)">—</span>';
-  const bom=d*dir>0;
-  return `<span style="color:${bom?'var(--verde)':'var(--vermelho)'}">${d>0?'+':'−'}${fmt(Math.abs(d),t)}</span>`;
+  const sinal=(d>0?'+':'−')+fmt(Math.abs(d),t);
+  if(!dir)return `<span style="color:var(--text-secondary)">${sinal}</span>`; // sem direcao boa
+  return `<span style="color:${d*dir>0?'var(--verde)':'var(--vermelho)'}">${sinal}</span>`;
  };
  const m2=(v)=>isFinite(v)?nf(v,1)+' m²':'—';
- const L=[
-  ['Capacidade da fábrica',A.capFab,B.capFab,'n',1],
-  ['Capacidade da montagem',A.capMon,B.capMon,'n',1],
-  ['Capacidade de entrega — a menor das duas',A.capEnt,B.capEnt,'n',1],
-  ['Capacidade parada do outro lado',A.ocioso,B.ocioso,'n',-1],
-  ['m² entregues por pessoa/mês',A.prodMedia,B.prodMedia,'n',1],
-  ['Custo de estrutura por mês',A.pool,B.pool,'r',-1],
-  ['— só a folha da produção',A.folha,B.folha,'r',-1],
-  ['Custo de estrutura por m² entregue',A.custoM2,B.custoM2,'r2',-1],
-  ['Preço mínimo por m²',A.precoMin,B.precoMin,'r',-1],
-  ['Faturamento de equilíbrio por mês',A.peReceita,B.peReceita,'r',-1],
-  ['— em m² por mês',A.peM2,B.peM2,'n',-1],
-  ['Receita no volume informado',A.receita,B.receita,'r',1],
-  ['Lucro',A.lucro,B.lucro,'r',1],
-  ['Margem líquida',A.marg,B.marg,'p',1],
-  ['Faturamento por pessoa/ano',A.fatPessoa,B.fatPessoa,'r',1]
+ /* Tres blocos, na ordem em que a conta se constroi: custo primeiro, preco depois,
+    resultado por ultimo. O ponto de equilibrio mora no bloco 2 porque depende da
+    margem de contribuicao, que depende do preco — nao ha como calcular antes. */
+ const BLOCOS=[
+  ['1 · Base de custo — sem falar de preço',[
+   ['Capacidade da fábrica',A.capFab,B.capFab,'n',1],
+   ['Capacidade da montagem',A.capMon,B.capMon,'n',1],
+   ['Capacidade de entrega — a menor das duas',A.capEnt,B.capEnt,'n',1],
+   ['Capacidade parada do outro lado',A.ocioso,B.ocioso,'n',-1],
+   ['m² por pessoa/mês',A.prodPessoa,B.prodPessoa,'n',1],
+   ['Folha da produção',A.folha,B.folha,'r',-1],
+   ['Custos fixos + variáveis de estrutura',A.fixoEstrut,B.fixoEstrut,'r',-1],
+   ['= Custo de estrutura por mês',A.estrutura,B.estrutura,'r',-1,1],
+   ['Custo de estrutura por m²',A.estrutM2,B.estrutM2,'r2',-1],
+   ['+ Custo direto do m² (material)',A.matM2,B.matM2,'r2',-1],
+   ['= CUSTO TOTAL POR m² — piso absoluto',A.custoM2,B.custoM2,'r2',-1,1]
+  ]],
+  ['2 · Margens — aqui o preço entra',[
+   ['Preço de venda por m²',A.preco,B.preco,'r',1],
+   ['− Material por m²',A.matM2,B.matM2,'r2',-1],
+   ['− Impostos por m²',A.impM2,B.impM2,'r2',-1],
+   ['− Comissão por m²',A.comM2,B.comM2,'r2',-1],
+   ['= Margem de contribuição por m²',A.mcM2,B.mcM2,'r2',1,1],
+   ['Margem de contribuição',A.mcPct,B.mcPct,'p',1],
+   ['Margem bruta — tirando material e mão de obra',A.mbPct,B.mbPct,'p',1],
+   ['Preço mínimo por m² (cobre custo, imposto e comissão)',A.precoMin,B.precoMin,'r',-1],
+   ['PONTO DE EQUILÍBRIO — m² por mês',A.peM2,B.peM2,'n',-1,1],
+   ['Cada funcionário precisa produzir',A.pePessoa,B.pePessoa,'n',-1,1],
+   ['Faturamento de equilíbrio',A.peReceita,B.peReceita,'r',-1]
+  ]],
+  ['3 · Resultado no volume entregue',[
+   ['m² entregues por mês',A.vol,B.vol,'n',1],
+   ['Receita',A.receita,B.receita,'r',1],
+   ['Margem de contribuição total',A.mcTotal,B.mcTotal,'r',1],
+   ['− Custo de estrutura',A.estrutura,B.estrutura,'r',-1],
+   ['= LUCRO',A.lucro,B.lucro,'r',1,1],
+   ['Margem líquida',A.mlPct,B.mlPct,'p',1,1],
+   ['Folga sobre o ponto de equilíbrio',A.folgaPE,B.folgaPE,'n',1],
+   ['Capacidade de entrega ainda livre',A.folgaCap,B.folgaCap,'n',0],
+   ['Faturamento por pessoa/ano',A.fatPessoa,B.fatPessoa,'r',1]
+  ]]
  ];
  /* leitura em portugues do que a simulacao fez */
- const F=[], dP=B.P-A.P, dCusto=B.pool-A.pool, dLucro=B.lucro-A.lucro;
+ const F=[], dP=B.P-A.P, dCusto=B.estrutura-A.estrutura, dLucro=B.lucro-A.lucro;
  /* o gargalo e a leitura mais importante: contratar do lado errado nao entrega nada */
  if(B.gargalo!=='equilibrado'&&B.ocioso>0.5){
   const lado=B.gargalo, outro=lado==='fábrica'?'montagem':'fábrica';
@@ -953,34 +1001,51 @@ PAINT.simulador=()=>{
   F.push([dLucro>=0?'grn':'org',(dP>0?'Contratar ':'Reduzir ')+Math.abs(dP)+(Math.abs(dP)===1?' pessoa':' pessoas'),
    `A estrutura ${dCusto>0?'sobe':'cai'} ${brl(Math.abs(dCusto))} por mês. A capacidade de entrega vai de ${m2(A.capEnt)} para ${m2(B.capEnt)} e o equilíbrio passa de ${brl(A.peReceita)} para <b>${brl(B.peReceita)}</b> — ${m2(B.peM2)} por mês só para empatar.`]);
  }
+ /* a pergunta que o Luka fez: quantos m² cada funcionario precisa produzir para se pagar */
+ const realPessoa = B.P>0 ? B.vol/B.P : NaN;
+ if(isFinite(B.pePessoa)){
+  const sobra=realPessoa-B.pePessoa;
+  F.push([sobra>=0?'grn':'red','Cada funcionário precisa produzir '+m2(B.pePessoa)+' por mês para se pagar',
+   `São ${m2(B.peM2)}/mês no total — é onde a contribuição de ${brl(B.mcM2)} por m² cobre exatamente os ${brl(B.estrutura)} de estrutura. Hoje cada um entrega ${m2(realPessoa)}: ${sobra>=0?`sobram <b>${m2(sobra)}</b> por pessoa acima do empate`:`faltam <b>${m2(-sobra)}</b> por pessoa, e a empresa opera no prejuízo`}.`]);
+ }else if(isFinite(B.mcM2)&&B.mcM2<=0){
+  F.push(['red','Não existe ponto de equilíbrio neste cenário',
+   `A margem de contribuição é ${brl(B.mcM2)} por m² — ou seja, cada m² vendido tira dinheiro do caixa. Nenhum volume conserta isso; só preço ou custo.`]);
+ }
+ /* o pior estado possivel: o volume necessario para empatar nao cabe na fabrica.
+    Passa despercebido olhando so o m² por funcionario, que sempre cai quando se
+    contrata — o fixo se espalha por mais gente e o alvo individual afrouxa. */
+ if(isFinite(B.peM2)&&isFinite(B.capEnt)&&B.peM2>B.capEnt){
+  F.push(['red','O ponto de equilíbrio não cabe na sua capacidade',
+   `Empatar exige ${m2(B.peM2)}/mês, mas a estrutura só entrega ${m2(B.capEnt)}. <b>Faltam ${m2(B.peM2-B.capEnt)} que não existem</b> — trabalhando no limite, todo mês fecha no vermelho. Não é problema de esforço nem de comercial: com este custo e este preço, empatar é impossível. Sai preço, sai custo, ou sai gente do lado errado.`]);
+ }
  if(isFinite(B.lucro)) F.push([dLucro>0?'grn':dLucro<0?'org':'blu','No volume simulado o lucro '+(dLucro>0?'sobe':dLucro<0?'cai':'não muda'),
-   `${brl(A.lucro)} → <b>${brl(B.lucro)}</b> (${pc(A.marg)} → ${pc(B.marg)} de margem). Entregando ${m2(B.vol)} a ${brl(num(b.precoM2))}/m².`]);
- if(isFinite(B.sobra)&&B.sobra<0) F.push(['red','Vendendo mais do que consegue entregar',
-   `O cenário simulado entrega ${m2(B.vol)}/mês, mas a capacidade é ${m2(B.capEnt)}. Faltam <b>${m2(-B.sobra)}</b> — isso não some, vira atraso, hora extra ou terceirização, e nenhum dos três está neste cálculo.`]);
- else if(isFinite(B.sobra)&&B.sobra>1) F.push(['yel','Capacidade de entrega sobrando',
-   `Você poderia entregar mais ${m2(B.sobra)} por mês com a mesma estrutura — ${brl(B.sobra*num(b.precoM2))} de receita que o comercial não trouxe. O custo dessa capacidade você já paga.`]);
- if(isFinite(B.precoMin)&&num(b.precoM2)<B.precoMin) F.push(['red','Preço abaixo do mínimo',
-   `Você cobra ${brl(num(b.precoM2))}/m² e o mínimo para não dar prejuízo é ${brl(B.precoMin)}. Faltam ${brl(B.precoMin-num(b.precoM2))} por m² — entregar mais só aumenta o rombo.`]);
+   `${brl(A.lucro)} → <b>${brl(B.lucro)}</b> (${pc(A.mlPct)} → ${pc(B.mlPct)} de margem líquida). Entregando ${m2(B.vol)} a ${brl(B.preco)}/m².`]);
+ if(isFinite(B.folgaCap)&&B.folgaCap<0) F.push(['red','Entregando mais do que a capacidade permite',
+   `O cenário entrega ${m2(B.vol)}/mês, mas a capacidade é ${m2(B.capEnt)}. Faltam <b>${m2(-B.folgaCap)}</b> — isso não some, vira atraso, hora extra ou terceirização, e nenhum dos três está neste cálculo.`]);
+ else if(isFinite(B.folgaCap)&&B.folgaCap>1) F.push(['yel','Capacidade de entrega sobrando',
+   `Você poderia entregar mais ${m2(B.folgaCap)} por mês com a mesma estrutura — ${brl(B.folgaCap*B.preco)} de receita que o comercial não trouxe. O custo dessa capacidade você já paga.`]);
+ if(isFinite(B.precoMin)&&B.preco<B.precoMin) F.push(['red','Preço abaixo do mínimo',
+   `Você cobra ${brl(B.preco)}/m² e o piso para não dar prejuízo é ${brl(B.precoMin)}. Faltam ${brl(B.precoMin-B.preco)} por m² — entregar mais só aumenta o rombo.`]);
  if(isFinite(B.fatPessoa)&&B.fatPessoa>0){
   const bm=B.fatPessoa<220000?'org':B.fatPessoa<=350000?'grn':'blu';
   F.push([bm,'Faturamento por pessoa: '+brl(B.fatPessoa)+'/ano',
    B.fatPessoa<220000?`Referência de marcenaria sob medida premium é R$ 220 mil a R$ 350 mil por pessoa/ano. Faltam ${brl(220000-B.fatPessoa)} por pessoa para entrar na faixa — é produtividade ou preço, não esforço.`
    :`Dentro da faixa de referência da marcenaria sob medida premium (R$ 220 mil a R$ 350 mil por pessoa/ano).`]);
  }
- if(B.carga>=1) F.push(['red','Material, imposto e comissão somam '+pc(B.carga,0),
+ if(num(b.imp)+num(b.com)>=1) F.push(['red','Imposto e comissão somam '+pc(num(b.imp)+num(b.com),0),
    'Passando de 100% do preço não existe preço que feche. Confira os percentuais.']);
 
- el.innerHTML=`
+ el.innerHTML=BLOCOS.map(([titulo,linhas])=>`
  <div class="card">
-  <h3>Comparação</h3>
+  <h3>${titulo}</h3>
   <div class="tw"><table>
    <thead><tr><th>Indicador</th><th class="n">Atual</th><th class="n">Simulado</th><th class="n">Diferença</th></tr></thead>
-   <tbody>${L.map(([l,x,y,t,dir])=>`<tr>
-     <td>${l}</td><td class="n">${fmt(x,t)}</td>
+   <tbody>${linhas.map(([l,x,y,t,dir,forte])=>`<tr${forte?' style="font-weight:700"':''}>
+     <td${forte?' style="color:var(--accent-light)"':''}>${l}</td><td class="n">${fmt(x,t)}</td>
      <td class="n" style="font-weight:600;color:var(--accent-light)">${fmt(y,t)}</td>
      <td class="n">${delta(x,y,t,dir)}</td></tr>`).join('')}
   </tbody></table></div>
- </div>
+ </div>`).join('')+`
  <div class="card">
   <h3>Leitura</h3>
   ${F.map(([k,t,m])=>`<div class="alert a-${k}"><span class="ic">${k==='red'?'🔴':k==='org'?'🟠':k==='yel'?'🟡':k==='grn'?'🟢':'🔵'}</span><div><b>${t}</b><br><span style="color:var(--text-secondary)">${m}</span></div></div>`).join('')}
