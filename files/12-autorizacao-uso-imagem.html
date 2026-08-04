@@ -57,8 +57,7 @@ ul.chk{list-style:none}
 ul.chk li{display:flex;gap:6pt;align-items:flex-start;padding:3.2pt 0;
   border-bottom:.5pt dotted var(--linha);break-inside:avoid}
 ul.chk li:last-child{border-bottom:none}
-ul.chk li::before{content:'';flex:0 0 auto;width:9pt;height:9pt;margin-top:1.5pt;
-  border:.9pt solid var(--tinta);border-radius:1pt}
+ul.chk li input.cx{margin-top:1.5pt}
 .duas{column-count:2;column-gap:9mm}
 .duas li{break-inside:avoid}
 
@@ -80,9 +79,22 @@ td.v{text-align:center;width:26pt}
 .grade td.v{width:17pt;padding:3pt}
 .grade td:first-child{font-size:8pt}
 
-/* campo preenchivel dentro do texto corrido */
+/* campo preenchivel dentro do texto corrido — digitavel na tela e imprimivel */
 .pre{display:inline-block;min-width:var(--w,110pt);border-bottom:.7pt solid var(--tinta);
-  height:10pt;vertical-align:baseline;margin:0 1.5pt}
+  min-height:10pt;vertical-align:baseline;margin:0 1.5pt;outline:none;padding:0 2pt}
+.pre:focus{background:#FFF6DF}
+
+/* caixa de marcar de verdade, que imprime marcada */
+input.cx{appearance:none;-webkit-appearance:none;width:9pt;height:9pt;flex:0 0 auto;
+  border:.9pt solid var(--tinta);border-radius:1pt;margin:0;padding:0;position:relative;
+  vertical-align:-1pt;cursor:pointer;background:transparent}
+input.cx:checked::after{content:'✕';position:absolute;left:0;right:0;top:-2.5pt;text-align:center;
+  font:700 9pt/1 'Inter',sans-serif;color:var(--tinta)}
+
+/* celulas e areas de texto digitaveis */
+[contenteditable]{outline:none}
+[contenteditable]:focus{background:#FFF6DF}
+td[contenteditable]{min-height:22pt}
 
 /* texto juridico */
 .jur p{text-align:justify;margin-bottom:5pt;font-size:9.5pt;line-height:1.5}
@@ -154,12 +166,13 @@ td.v{text-align:center;width:26pt}
   </div>
   <div class="regua"></div>
   <p class="sub">Uma via por pessoa autorizante.</p>
-<div class="nota"><b>Antes de usar:</b> este é um modelo de referência, não uma peça pronta. Contrato produz obrigação — prazos, multas, garantias e foro precisam ser conferidos por advogado à luz da sua operação, do seu regime tributário e da legislação vigente. Preencher os campos não substitui essa revisão.</div><div class="jur"><p>Eu, <span class="pre" style="--w:230pt"></span>, <span class="pre" style="--w:80pt"></span>, <span class="pre" style="--w:80pt"></span>, <span class="pre" style="--w:120pt"></span>, inscrito(a) no CPF sob o n.º <span class="pre" style="--w:110pt"></span>, residente e domiciliado(a) em <span class="pre" style="--w:230pt"></span>, <b>AUTORIZO</b> o uso da minha imagem em todo e qualquer material — vídeos, fotos e documentos — para ser utilizada por <span class="pre" style="--w:200pt"></span>, pessoa jurídica de direito privado inscrita no CNPJ sob o n.º <span class="pre" style="--w:120pt"></span>, com endereço em <span class="pre" style="--w:220pt"></span>, neste ato representada por <span class="pre" style="--w:180pt"></span>.</p><p>A presente autorização é concedida a título gratuito, abrangendo o uso da imagem em todo o território nacional e no exterior, nas seguintes condições: a) redes sociais; b) cartazes; c) mídia eletrônica — painéis, vídeos, televisão, cinema, programas de rádio e outros meios; d) página na internet; e) anúncios em revistas e jornais; f) folders; g) outdoor; h) busdoor; i) folhetos em geral.</p><p>Fica ainda autorizada, de livre e espontânea vontade e para os mesmos fins, a cessão de direitos da veiculação das imagens, não recebendo o(a) autorizante qualquer tipo de remuneração por isso.</p><p>Por esta ser a expressão da minha vontade, <b>DECLARO QUE AUTORIZO</b> o uso acima descrito sem que nada haja a ser reclamado a título de direitos conexos à minha imagem ou a qualquer outro título, e assino a presente autorização em 2 vias de igual teor e forma.</p><p style="margin-top:11pt;font-size:9.5pt"><span class="pre" style="--w:160pt"></span>, <span class="pre" style="--w:30pt"></span> de <span class="pre" style="--w:110pt"></span> de <span class="pre" style="--w:50pt"></span>.</p></div><div class="assina"><h2>Assinaturas</h2><div class="g n2"><div class="f"><b>Autorizante</b><span>Nome completo e CPF</span></div></div></div><div class="nota"><b>Sobre dados pessoais:</b> este termo coleta nome, CPF e endereço, e autoriza o uso de imagem — todos dados pessoais protegidos pela Lei n.º 13.709/2018 (LGPD). Guarde as vias assinadas em local restrito, colete apenas o necessário e defina por quanto tempo os manterá. A autorização pode ser revogada pelo titular.</div>
+<div class="nota"><b>Antes de usar:</b> este é um modelo de referência, não uma peça pronta. Contrato produz obrigação — prazos, multas, garantias e foro precisam ser conferidos por advogado à luz da sua operação, do seu regime tributário e da legislação vigente. Preencher os campos não substitui essa revisão.</div><div class="jur"><p>Eu, <span class="pre" contenteditable="true" spellcheck="false" style="--w:230pt"></span>, <span class="pre" contenteditable="true" spellcheck="false" style="--w:80pt"></span>, <span class="pre" contenteditable="true" spellcheck="false" style="--w:80pt"></span>, <span class="pre" contenteditable="true" spellcheck="false" style="--w:120pt"></span>, inscrito(a) no CPF sob o n.º <span class="pre" contenteditable="true" spellcheck="false" style="--w:110pt"></span>, residente e domiciliado(a) em <span class="pre" contenteditable="true" spellcheck="false" style="--w:230pt"></span>, <b>AUTORIZO</b> o uso da minha imagem em todo e qualquer material — vídeos, fotos e documentos — para ser utilizada por <span class="pre" contenteditable="true" spellcheck="false" style="--w:200pt"></span>, pessoa jurídica de direito privado inscrita no CNPJ sob o n.º <span class="pre" contenteditable="true" spellcheck="false" style="--w:120pt"></span>, com endereço em <span class="pre" contenteditable="true" spellcheck="false" style="--w:220pt"></span>, neste ato representada por <span class="pre" contenteditable="true" spellcheck="false" style="--w:180pt"></span>.</p><p>A presente autorização é concedida a título gratuito, abrangendo o uso da imagem em todo o território nacional e no exterior, nas seguintes condições: a) redes sociais; b) cartazes; c) mídia eletrônica — painéis, vídeos, televisão, cinema, programas de rádio e outros meios; d) página na internet; e) anúncios em revistas e jornais; f) folders; g) outdoor; h) busdoor; i) folhetos em geral.</p><p>Fica ainda autorizada, de livre e espontânea vontade e para os mesmos fins, a cessão de direitos da veiculação das imagens, não recebendo o(a) autorizante qualquer tipo de remuneração por isso.</p><p>Por esta ser a expressão da minha vontade, <b>DECLARO QUE AUTORIZO</b> o uso acima descrito sem que nada haja a ser reclamado a título de direitos conexos à minha imagem ou a qualquer outro título, e assino a presente autorização em 2 vias de igual teor e forma.</p><p style="margin-top:11pt;font-size:9.5pt"><span class="pre" contenteditable="true" spellcheck="false" style="--w:160pt"></span>, <span class="pre" contenteditable="true" spellcheck="false" style="--w:30pt"></span> de <span class="pre" contenteditable="true" spellcheck="false" style="--w:110pt"></span> de <span class="pre" contenteditable="true" spellcheck="false" style="--w:50pt"></span>.</p></div><div class="assina"><h2>Assinaturas</h2><div class="g n2"><div class="f"><b>Autorizante</b><span>Nome completo e CPF</span></div></div></div><div class="nota"><b>Sobre dados pessoais:</b> este termo coleta nome, CPF e endereço, e autoriza o uso de imagem — todos dados pessoais protegidos pela Lei n.º 13.709/2018 (LGPD). Guarde as vias assinadas em local restrito, colete apenas o necessário e defina por quanto tempo os manterá. A autorização pode ser revogada pelo titular.</div>
   <div class="rodape"><span>DOC-12 · versão 1.0</span>
     <span><span data-empresa>Sua Marca</span> · <span data-cidade>Cidade / UF</span></span></div>
 </div>
 
 <div class="barra naoimprime">
+  <button class="sec" onclick="limparPreenchimento()">Limpar preenchimento</button>
   <button class="sec" onclick="abrirMarca()">Personalizar marca</button>
   <button onclick="window.print()">Imprimir / Salvar em PDF</button>
 </div>
@@ -217,10 +230,31 @@ td.v{text-align:center;width:26pt}
     }
     localStorage.setItem(CHAVE,JSON.stringify(m));aplicar();fecharMarca();
   };
+  window.limparPreenchimento=function(){
+    if(!confirm('Apagar tudo o que foi preenchido nesta tela?'))return;
+    document.querySelectorAll('[contenteditable]').forEach(function(e){e.textContent=''});
+    document.querySelectorAll('input.cx').forEach(function(e){e.checked=false});
+  };
   window.limparLogo=function(){
     var m=ler();m.logo='';localStorage.setItem(CHAVE,JSON.stringify(m));aplicar();
   };
-  document.addEventListener('DOMContentLoaded',aplicar);
+  /* Torna o documento preenchivel na tela sem mexer em cada ponto do gerador:
+     celula de tabela vazia e area pautada aceitam digitacao, e o quadradinho
+     desenhado em CSS vira caixa de marcar de verdade. */
+  function preenchivel(){
+    document.querySelectorAll('table td:empty').forEach(function(td){
+      td.contentEditable='true'; td.spellcheck=false;
+    });
+    document.querySelectorAll('.pauta').forEach(function(p){
+      p.contentEditable='true'; p.spellcheck=false;
+    });
+    document.querySelectorAll('span.quad').forEach(function(q){
+      var i=document.createElement('input');
+      i.type='checkbox'; i.className='cx';
+      q.parentNode.replaceChild(i,q);
+    });
+  }
+  document.addEventListener('DOMContentLoaded',function(){aplicar();preenchivel()});
 })();
 </script>
 </body>

@@ -57,8 +57,7 @@ ul.chk{list-style:none}
 ul.chk li{display:flex;gap:6pt;align-items:flex-start;padding:3.2pt 0;
   border-bottom:.5pt dotted var(--linha);break-inside:avoid}
 ul.chk li:last-child{border-bottom:none}
-ul.chk li::before{content:'';flex:0 0 auto;width:9pt;height:9pt;margin-top:1.5pt;
-  border:.9pt solid var(--tinta);border-radius:1pt}
+ul.chk li input.cx{margin-top:1.5pt}
 .duas{column-count:2;column-gap:9mm}
 .duas li{break-inside:avoid}
 
@@ -80,9 +79,22 @@ td.v{text-align:center;width:26pt}
 .grade td.v{width:17pt;padding:3pt}
 .grade td:first-child{font-size:8pt}
 
-/* campo preenchivel dentro do texto corrido */
+/* campo preenchivel dentro do texto corrido — digitavel na tela e imprimivel */
 .pre{display:inline-block;min-width:var(--w,110pt);border-bottom:.7pt solid var(--tinta);
-  height:10pt;vertical-align:baseline;margin:0 1.5pt}
+  min-height:10pt;vertical-align:baseline;margin:0 1.5pt;outline:none;padding:0 2pt}
+.pre:focus{background:#FFF6DF}
+
+/* caixa de marcar de verdade, que imprime marcada */
+input.cx{appearance:none;-webkit-appearance:none;width:9pt;height:9pt;flex:0 0 auto;
+  border:.9pt solid var(--tinta);border-radius:1pt;margin:0;padding:0;position:relative;
+  vertical-align:-1pt;cursor:pointer;background:transparent}
+input.cx:checked::after{content:'✕';position:absolute;left:0;right:0;top:-2.5pt;text-align:center;
+  font:700 9pt/1 'Inter',sans-serif;color:var(--tinta)}
+
+/* celulas e areas de texto digitaveis */
+[contenteditable]{outline:none}
+[contenteditable]:focus{background:#FFF6DF}
+td[contenteditable]{min-height:22pt}
 
 /* texto juridico */
 .jur p{text-align:justify;margin-bottom:5pt;font-size:9.5pt;line-height:1.5}
@@ -164,12 +176,13 @@ td.v{text-align:center;width:26pt}
 <div class="c"><span class="r">Vigência a partir de</span></div>
 <div class="c"><span class="r">Aprovado por</span></div>
 </div>
-</div><div class="jur"><p>Este Regulamento Interno estabelece normas, diretrizes e procedimentos que orientam a conduta, os direitos e os deveres de todos os colaboradores da empresa. Busca promover organização, disciplina, transparência e bom relacionamento no ambiente de trabalho, garantindo condições adequadas para o desempenho das atividades e fortalecendo a cultura organizacional.</p></div><div class="jur"></div><h2>Capítulo I — Da empresa</h2><div class="jur"><p>Art. 1.º — A empresa <span class="pre" style="--w:200pt"></span> é especializada em <span class="pre" style="--w:200pt"></span>.</p><p>Art. 2.º — Este Regulamento Interno estabelece as normas, diretrizes e procedimentos que orientam a conduta, os direitos e os deveres de todos os colaboradores.</p></div><h2>Capítulo II — Dos valores e princípios</h2><div class="jur"><p>Art. 3.º — A empresa rege suas atividades com base nos seguintes princípios: I — ética e transparência nas relações internas e externas; II — compromisso com qualidade e prazos; III — trabalho em equipe e colaboração entre os setores; IV — valorização e respeito às pessoas; V — inovação, responsabilidade social, ambiental e sustentabilidade.</p></div><h2>Capítulo III — Da organização interna</h2><div class="jur"><p>Art. 4.º — A empresa é composta pelos seguintes setores: I — <b>Comercial</b>: atendimento comercial e relacionamento com clientes; II — <b>Projetos</b>: desenvolvimento de projetos técnicos e criativos; III — <b>Fábrica</b>: produção, acabamento das peças e instalação dos móveis; IV — <b>Administrativo e Financeiro</b>: organização e gestão dos processos internos.</p><p>Art. 5.º — Cada setor deverá seguir o mapeamento de funções e responsabilidades definido pela diretoria.</p></div><h2>Capítulo IV — Dos direitos dos colaboradores</h2><div class="jur"><p>Art. 6.º — São direitos assegurados aos colaboradores: I — ambiente de trabalho seguro e saudável; II — remuneração conforme contrato de trabalho; III — respeito e tratamento digno; IV — participação em treinamentos e desenvolvimento quando ofertados; V — acesso às normas e informações necessárias ao desempenho das funções.</p></div><h2>Capítulo V — Dos deveres dos colaboradores</h2><div class="jur"><p>Art. 7.º — São deveres dos colaboradores: I — cumprir rigorosamente o horário de expediente estabelecido no contrato de trabalho, salvo ajustes previamente autorizados pela diretoria; II — usar corretamente uniformes, EPIs e ferramentas de trabalho; III — zelar pelo patrimônio da empresa; IV — manter postura ética, respeitosa e colaborativa com colegas, clientes e fornecedores; V — cumprir ordens e instruções da liderança; VI — preservar a confidencialidade de informações internas.</p></div><h2>Capítulo VI — Da disciplina e da conduta</h2><div class="jur"><p>Art. 8.º — São consideradas infrações disciplinares: I — atrasos e faltas injustificadas; II — desídia, entendida como negligência ou desleixo no cumprimento das funções; III — uso de bebidas alcoólicas ou drogas durante o expediente; IV — desrespeito a colegas, clientes ou superiores; V — danos intencionais ao patrimônio da empresa ou de clientes; VI — descumprimento de normas de segurança.</p><p>Art. 9.º — As penalidades aplicáveis são: I — advertência verbal; II — advertência escrita; III — suspensão; IV — dispensa por justa causa, nos casos previstos em lei.</p></div><h2>Capítulo VII — Da comunicação interna</h2><div class="jur"><p>Art. 10 — A empresa manterá canais de comunicação internos para alinhamento entre setores, visando melhorar a produtividade e evitar ruídos.</p><p>Art. 11 — É dever de todos manter a comunicação clara, objetiva e respeitosa.</p></div><h2>Capítulo VIII — Das disposições finais</h2><div class="jur"><p>Art. 12 — Este regulamento é de conhecimento e cumprimento obrigatório por todos os colaboradores da empresa.</p><p>Art. 13 — Casos omissos serão analisados pela diretoria.</p><p>Art. 14 — O presente Regulamento entra em vigor a partir de sua divulgação e assinatura pelos colaboradores.</p></div><p style="margin-top:11pt;font-size:9.5pt"><span class="pre" style="--w:160pt"></span>, <span class="pre" style="--w:30pt"></span> de <span class="pre" style="--w:110pt"></span> de <span class="pre" style="--w:50pt"></span>.</p><div class="assina"><h2>Assinaturas</h2><div class="g n2"><div class="f"><b>Diretoria</b><span>Assinatura e data</span></div></div></div><h2>Ciência dos colaboradores</h2><p class="sub">Cada colaborador assina uma via, que fica arquivada em sua pasta funcional.</p><table><thead><tr><th style="width:40%">Nome</th><th style="width:22%">Função</th><th style="width:14%">Data</th><th>Assinatura</th></tr></thead><tbody><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr></tbody></table>
+</div><div class="jur"><p>Este Regulamento Interno estabelece normas, diretrizes e procedimentos que orientam a conduta, os direitos e os deveres de todos os colaboradores da empresa. Busca promover organização, disciplina, transparência e bom relacionamento no ambiente de trabalho, garantindo condições adequadas para o desempenho das atividades e fortalecendo a cultura organizacional.</p></div><div class="jur"></div><h2>Capítulo I — Da empresa</h2><div class="jur"><p>Art. 1.º — A empresa <span class="pre" contenteditable="true" spellcheck="false" style="--w:200pt"></span> é especializada em <span class="pre" contenteditable="true" spellcheck="false" style="--w:200pt"></span>.</p><p>Art. 2.º — Este Regulamento Interno estabelece as normas, diretrizes e procedimentos que orientam a conduta, os direitos e os deveres de todos os colaboradores.</p></div><h2>Capítulo II — Dos valores e princípios</h2><div class="jur"><p>Art. 3.º — A empresa rege suas atividades com base nos seguintes princípios: I — ética e transparência nas relações internas e externas; II — compromisso com qualidade e prazos; III — trabalho em equipe e colaboração entre os setores; IV — valorização e respeito às pessoas; V — inovação, responsabilidade social, ambiental e sustentabilidade.</p></div><h2>Capítulo III — Da organização interna</h2><div class="jur"><p>Art. 4.º — A empresa é composta pelos seguintes setores: I — <b>Comercial</b>: atendimento comercial e relacionamento com clientes; II — <b>Projetos</b>: desenvolvimento de projetos técnicos e criativos; III — <b>Fábrica</b>: produção, acabamento das peças e instalação dos móveis; IV — <b>Administrativo e Financeiro</b>: organização e gestão dos processos internos.</p><p>Art. 5.º — Cada setor deverá seguir o mapeamento de funções e responsabilidades definido pela diretoria.</p></div><h2>Capítulo IV — Dos direitos dos colaboradores</h2><div class="jur"><p>Art. 6.º — São direitos assegurados aos colaboradores: I — ambiente de trabalho seguro e saudável; II — remuneração conforme contrato de trabalho; III — respeito e tratamento digno; IV — participação em treinamentos e desenvolvimento quando ofertados; V — acesso às normas e informações necessárias ao desempenho das funções.</p></div><h2>Capítulo V — Dos deveres dos colaboradores</h2><div class="jur"><p>Art. 7.º — São deveres dos colaboradores: I — cumprir rigorosamente o horário de expediente estabelecido no contrato de trabalho, salvo ajustes previamente autorizados pela diretoria; II — usar corretamente uniformes, EPIs e ferramentas de trabalho; III — zelar pelo patrimônio da empresa; IV — manter postura ética, respeitosa e colaborativa com colegas, clientes e fornecedores; V — cumprir ordens e instruções da liderança; VI — preservar a confidencialidade de informações internas.</p></div><h2>Capítulo VI — Da disciplina e da conduta</h2><div class="jur"><p>Art. 8.º — São consideradas infrações disciplinares: I — atrasos e faltas injustificadas; II — desídia, entendida como negligência ou desleixo no cumprimento das funções; III — uso de bebidas alcoólicas ou drogas durante o expediente; IV — desrespeito a colegas, clientes ou superiores; V — danos intencionais ao patrimônio da empresa ou de clientes; VI — descumprimento de normas de segurança.</p><p>Art. 9.º — As penalidades aplicáveis são: I — advertência verbal; II — advertência escrita; III — suspensão; IV — dispensa por justa causa, nos casos previstos em lei.</p></div><h2>Capítulo VII — Da comunicação interna</h2><div class="jur"><p>Art. 10 — A empresa manterá canais de comunicação internos para alinhamento entre setores, visando melhorar a produtividade e evitar ruídos.</p><p>Art. 11 — É dever de todos manter a comunicação clara, objetiva e respeitosa.</p></div><h2>Capítulo VIII — Das disposições finais</h2><div class="jur"><p>Art. 12 — Este regulamento é de conhecimento e cumprimento obrigatório por todos os colaboradores da empresa.</p><p>Art. 13 — Casos omissos serão analisados pela diretoria.</p><p>Art. 14 — O presente Regulamento entra em vigor a partir de sua divulgação e assinatura pelos colaboradores.</p></div><p style="margin-top:11pt;font-size:9.5pt"><span class="pre" contenteditable="true" spellcheck="false" style="--w:160pt"></span>, <span class="pre" contenteditable="true" spellcheck="false" style="--w:30pt"></span> de <span class="pre" contenteditable="true" spellcheck="false" style="--w:110pt"></span> de <span class="pre" contenteditable="true" spellcheck="false" style="--w:50pt"></span>.</p><div class="assina"><h2>Assinaturas</h2><div class="g n2"><div class="f"><b>Diretoria</b><span>Assinatura e data</span></div></div></div><h2>Ciência dos colaboradores</h2><p class="sub">Cada colaborador assina uma via, que fica arquivada em sua pasta funcional.</p><table><thead><tr><th style="width:40%">Nome</th><th style="width:22%">Função</th><th style="width:14%">Data</th><th>Assinatura</th></tr></thead><tbody><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr></tbody></table>
   <div class="rodape"><span>DOC-11 · versão 1.0</span>
     <span><span data-empresa>Sua Marca</span> · <span data-cidade>Cidade / UF</span></span></div>
 </div>
 
 <div class="barra naoimprime">
+  <button class="sec" onclick="limparPreenchimento()">Limpar preenchimento</button>
   <button class="sec" onclick="abrirMarca()">Personalizar marca</button>
   <button onclick="window.print()">Imprimir / Salvar em PDF</button>
 </div>
@@ -227,10 +240,31 @@ td.v{text-align:center;width:26pt}
     }
     localStorage.setItem(CHAVE,JSON.stringify(m));aplicar();fecharMarca();
   };
+  window.limparPreenchimento=function(){
+    if(!confirm('Apagar tudo o que foi preenchido nesta tela?'))return;
+    document.querySelectorAll('[contenteditable]').forEach(function(e){e.textContent=''});
+    document.querySelectorAll('input.cx').forEach(function(e){e.checked=false});
+  };
   window.limparLogo=function(){
     var m=ler();m.logo='';localStorage.setItem(CHAVE,JSON.stringify(m));aplicar();
   };
-  document.addEventListener('DOMContentLoaded',aplicar);
+  /* Torna o documento preenchivel na tela sem mexer em cada ponto do gerador:
+     celula de tabela vazia e area pautada aceitam digitacao, e o quadradinho
+     desenhado em CSS vira caixa de marcar de verdade. */
+  function preenchivel(){
+    document.querySelectorAll('table td:empty').forEach(function(td){
+      td.contentEditable='true'; td.spellcheck=false;
+    });
+    document.querySelectorAll('.pauta').forEach(function(p){
+      p.contentEditable='true'; p.spellcheck=false;
+    });
+    document.querySelectorAll('span.quad').forEach(function(q){
+      var i=document.createElement('input');
+      i.type='checkbox'; i.className='cx';
+      q.parentNode.replaceChild(i,q);
+    });
+  }
+  document.addEventListener('DOMContentLoaded',function(){aplicar();preenchivel()});
 })();
 </script>
 </body>

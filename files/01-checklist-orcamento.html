@@ -57,8 +57,7 @@ ul.chk{list-style:none}
 ul.chk li{display:flex;gap:6pt;align-items:flex-start;padding:3.2pt 0;
   border-bottom:.5pt dotted var(--linha);break-inside:avoid}
 ul.chk li:last-child{border-bottom:none}
-ul.chk li::before{content:'';flex:0 0 auto;width:9pt;height:9pt;margin-top:1.5pt;
-  border:.9pt solid var(--tinta);border-radius:1pt}
+ul.chk li input.cx{margin-top:1.5pt}
 .duas{column-count:2;column-gap:9mm}
 .duas li{break-inside:avoid}
 
@@ -79,6 +78,35 @@ td.v{text-align:center;width:26pt}
   font-size:6.2pt;letter-spacing:.06em}
 .grade td.v{width:17pt;padding:3pt}
 .grade td:first-child{font-size:8pt}
+
+/* campo preenchivel dentro do texto corrido — digitavel na tela e imprimivel */
+.pre{display:inline-block;min-width:var(--w,110pt);border-bottom:.7pt solid var(--tinta);
+  min-height:10pt;vertical-align:baseline;margin:0 1.5pt;outline:none;padding:0 2pt}
+.pre:focus{background:#FFF6DF}
+
+/* caixa de marcar de verdade, que imprime marcada */
+input.cx{appearance:none;-webkit-appearance:none;width:9pt;height:9pt;flex:0 0 auto;
+  border:.9pt solid var(--tinta);border-radius:1pt;margin:0;padding:0;position:relative;
+  vertical-align:-1pt;cursor:pointer;background:transparent}
+input.cx:checked::after{content:'✕';position:absolute;left:0;right:0;top:-2.5pt;text-align:center;
+  font:700 9pt/1 'Inter',sans-serif;color:var(--tinta)}
+
+/* celulas e areas de texto digitaveis */
+[contenteditable]{outline:none}
+[contenteditable]:focus{background:#FFF6DF}
+td[contenteditable]{min-height:22pt}
+
+/* texto juridico */
+.jur p{text-align:justify;margin-bottom:5pt;font-size:9.5pt;line-height:1.5}
+.jur p.cl{font-weight:600;margin-top:9pt;break-after:avoid}
+.jur p.par{padding-left:11pt}
+.jur .partes{background:var(--claro);border-left:3pt solid var(--ouro);padding:8pt 10pt;
+  margin-bottom:9pt}
+.jur .partes p{margin-bottom:6pt}
+.jur .partes p:last-child{margin-bottom:0}
+.nota{border:.75pt dashed var(--ouro);padding:7pt 9pt;font-size:8pt;margin:9pt 0;
+  color:var(--fraco);break-inside:avoid}
+.nota b{color:var(--tinta)}
 
 /* linhas para escrever */
 .pauta{border:.75pt solid var(--linha);padding:6pt 7pt;min-height:var(--h,54pt);
@@ -150,12 +178,13 @@ td.v{text-align:center;width:26pt}
 </div>
 </div><div class="aviso"><b>Possui projeto executivo de marcenaria?</b>
  &nbsp;&nbsp;<span class="quad"></span> Sim &nbsp;&nbsp;<span class="quad"></span> Não
- <br>Se não, use este checklist como base para reunir as informações antes de orçar.</div><h2>Planta baixa geral</h2><ul class="chk"><li>Nome e área do ambiente</li><li>Cotas gerais e cotas internas</li><li>Altura do pé-direito</li><li>Indicação de janelas (tipo de esquadria e dimensões)</li><li>Indicação de portas (sentido de abertura e dimensões)</li><li>Marcação de pilares, vigas, shafts e estruturas</li><li>Marcação de pontos hidráulicos, elétricos e de gás (medidas e alturas escritas)</li><li>Posicionamento de ar-condicionado (previsão das infraestruturas)</li><li>Indicação de áreas molhadas (MDF hidrorresistente)</li><li>Indicação de pedras e medidas</li><li>Indicação do modelo e posicionamento de equipamentos</li></ul><h2>Planta de layout de marcenaria</h2><ul class="chk"><li>Posição de portas e janelas (tipos de abertura e medidas)</li><li>Indicação das paredes de alvenaria e drywall (com medidas gerais)</li><li>Indicação de mobiliário fixo com medidas gerais (planejados)</li><li>Indicação de mobiliário solto com medidas</li><li>Modelo e posicionamento de equipamentos que dependem dos planejados</li></ul><h2>Vistas e definições de marcenaria</h2><ul class="chk"><li>Planta do ambiente (nome, área em m², pé-direito)</li><li>Materiais e cores (MDF, lâmina natural, fórmica, etc.)</li><li>Especificações gerais (LED, puxadores, corrediças, dobradiças, ferragem especial)</li><li>Interiores dos armários pré-definidos (cor interna, gavetas, cabideiros, prateleiras)</li><li>Tipo de iluminação: perfil de LED ou spot — local dos rasgos, medidas dos perfis, de onde serão puxados os pontos e localização das fontes</li><li>Tomadas a serem realocadas na marcenaria</li><li>Indicação de acabamentos nas legendas (corrediças, cores, ferragens, puxadores)</li><li>Cotas gerais</li></ul><div class="quebra"></div><h2>Ambientes que terão móveis planejados</h2><ul class="chk duas"><li>Sala de jantar</li><li>Sala de TV</li><li>Gourmet</li><li>Varanda</li><li>Lavanderia</li><li>Despensa</li><li>Cozinha</li><li>Copa</li><li>Hall de entrada</li><li>Lavabo</li><li>WC de funcionários</li><li>Dependência de funcionários</li><li>Closet</li><li>Escritório / ateliê</li><li>Spa</li><li>1 Quarto</li><li>2 Quartos</li><li>3 Quartos</li><li>4 ou mais quartos</li><li>1 Banheiro</li><li>2 Banheiros</li><li>3 Banheiros</li><li>4 ou mais banheiros</li></ul><h2>O cliente mora no local atualmente?</h2><ul class="chk"><li>Sim, e permanecerão no espaço inclusive durante a obra de marcenaria</li><li>Sim, mas devem sair no momento da obra</li><li>Não, e não vão mudar até finalizar a obra de marcenaria</li><li>Não, mas precisarão mudar em breve, antes de iniciar a obra de marcenaria</li><li>Obra em andamento (sem chaves) — orçamento feito por projeto</li></ul><h2>Estado da obra</h2><p class="sub">Para aferição de medidas e confecção do caderno técnico, todos os ambientes devem estar prontos, com a obra bruta feita — principalmente piso e forro.</p><ul class="chk duas"><li>Pisos e rodapés prontos</li><li>Paredes prontas</li><li>Forro de gesso pronto</li><li>Portas e janelas prontas</li><li>Bancadas instaladas</li><li>Iluminação pronta</li><li>Pontos elétricos prontos</li><li>Pontos hidráulicos prontos</li></ul><h2>Especificações e prazo</h2><h3>Descreva o que pretende ter em cada ambiente</h3><div class="pauta" style="--h:88pt"></div><h3>Prazo máximo esperado para o espaço estar pronto</h3><div class="pauta" style="--h:37pt"></div><div class="assina"><h2>Assinaturas</h2><div class="g n2"><div class="f"><b>Cliente</b><span>Nome e data</span></div><div class="f"><b><span data-empresa>Sua Marca</span></b><span>Responsável e data</span></div></div></div>
+ <br>Se não, use este checklist como base para reunir as informações antes de orçar.</div><h2>Planta baixa geral</h2><ul class="chk"><li><input type="checkbox" class="cx"><span>Nome e área do ambiente</span></li><li><input type="checkbox" class="cx"><span>Cotas gerais e cotas internas</span></li><li><input type="checkbox" class="cx"><span>Altura do pé-direito</span></li><li><input type="checkbox" class="cx"><span>Indicação de janelas (tipo de esquadria e dimensões)</span></li><li><input type="checkbox" class="cx"><span>Indicação de portas (sentido de abertura e dimensões)</span></li><li><input type="checkbox" class="cx"><span>Marcação de pilares, vigas, shafts e estruturas</span></li><li><input type="checkbox" class="cx"><span>Marcação de pontos hidráulicos, elétricos e de gás (medidas e alturas escritas)</span></li><li><input type="checkbox" class="cx"><span>Posicionamento de ar-condicionado (previsão das infraestruturas)</span></li><li><input type="checkbox" class="cx"><span>Indicação de áreas molhadas (MDF hidrorresistente)</span></li><li><input type="checkbox" class="cx"><span>Indicação de pedras e medidas</span></li><li><input type="checkbox" class="cx"><span>Indicação do modelo e posicionamento de equipamentos</span></li></ul><h2>Planta de layout de marcenaria</h2><ul class="chk"><li><input type="checkbox" class="cx"><span>Posição de portas e janelas (tipos de abertura e medidas)</span></li><li><input type="checkbox" class="cx"><span>Indicação das paredes de alvenaria e drywall (com medidas gerais)</span></li><li><input type="checkbox" class="cx"><span>Indicação de mobiliário fixo com medidas gerais (planejados)</span></li><li><input type="checkbox" class="cx"><span>Indicação de mobiliário solto com medidas</span></li><li><input type="checkbox" class="cx"><span>Modelo e posicionamento de equipamentos que dependem dos planejados</span></li></ul><h2>Vistas e definições de marcenaria</h2><ul class="chk"><li><input type="checkbox" class="cx"><span>Planta do ambiente (nome, área em m², pé-direito)</span></li><li><input type="checkbox" class="cx"><span>Materiais e cores (MDF, lâmina natural, fórmica, etc.)</span></li><li><input type="checkbox" class="cx"><span>Especificações gerais (LED, puxadores, corrediças, dobradiças, ferragem especial)</span></li><li><input type="checkbox" class="cx"><span>Interiores dos armários pré-definidos (cor interna, gavetas, cabideiros, prateleiras)</span></li><li><input type="checkbox" class="cx"><span>Tipo de iluminação: perfil de LED ou spot — local dos rasgos, medidas dos perfis, de onde serão puxados os pontos e localização das fontes</span></li><li><input type="checkbox" class="cx"><span>Tomadas a serem realocadas na marcenaria</span></li><li><input type="checkbox" class="cx"><span>Indicação de acabamentos nas legendas (corrediças, cores, ferragens, puxadores)</span></li><li><input type="checkbox" class="cx"><span>Cotas gerais</span></li></ul><div class="quebra"></div><h2>Ambientes que terão móveis planejados</h2><ul class="chk duas"><li><input type="checkbox" class="cx"><span>Sala de jantar</span></li><li><input type="checkbox" class="cx"><span>Sala de TV</span></li><li><input type="checkbox" class="cx"><span>Gourmet</span></li><li><input type="checkbox" class="cx"><span>Varanda</span></li><li><input type="checkbox" class="cx"><span>Lavanderia</span></li><li><input type="checkbox" class="cx"><span>Despensa</span></li><li><input type="checkbox" class="cx"><span>Cozinha</span></li><li><input type="checkbox" class="cx"><span>Copa</span></li><li><input type="checkbox" class="cx"><span>Hall de entrada</span></li><li><input type="checkbox" class="cx"><span>Lavabo</span></li><li><input type="checkbox" class="cx"><span>WC de funcionários</span></li><li><input type="checkbox" class="cx"><span>Dependência de funcionários</span></li><li><input type="checkbox" class="cx"><span>Closet</span></li><li><input type="checkbox" class="cx"><span>Escritório / ateliê</span></li><li><input type="checkbox" class="cx"><span>Spa</span></li><li><input type="checkbox" class="cx"><span>1 Quarto</span></li><li><input type="checkbox" class="cx"><span>2 Quartos</span></li><li><input type="checkbox" class="cx"><span>3 Quartos</span></li><li><input type="checkbox" class="cx"><span>4 ou mais quartos</span></li><li><input type="checkbox" class="cx"><span>1 Banheiro</span></li><li><input type="checkbox" class="cx"><span>2 Banheiros</span></li><li><input type="checkbox" class="cx"><span>3 Banheiros</span></li><li><input type="checkbox" class="cx"><span>4 ou mais banheiros</span></li></ul><h2>O cliente mora no local atualmente?</h2><ul class="chk"><li><input type="checkbox" class="cx"><span>Sim, e permanecerão no espaço inclusive durante a obra de marcenaria</span></li><li><input type="checkbox" class="cx"><span>Sim, mas devem sair no momento da obra</span></li><li><input type="checkbox" class="cx"><span>Não, e não vão mudar até finalizar a obra de marcenaria</span></li><li><input type="checkbox" class="cx"><span>Não, mas precisarão mudar em breve, antes de iniciar a obra de marcenaria</span></li><li><input type="checkbox" class="cx"><span>Obra em andamento (sem chaves) — orçamento feito por projeto</span></li></ul><h2>Estado da obra</h2><p class="sub">Para aferição de medidas e confecção do caderno técnico, todos os ambientes devem estar prontos, com a obra bruta feita — principalmente piso e forro.</p><ul class="chk duas"><li><input type="checkbox" class="cx"><span>Pisos e rodapés prontos</span></li><li><input type="checkbox" class="cx"><span>Paredes prontas</span></li><li><input type="checkbox" class="cx"><span>Forro de gesso pronto</span></li><li><input type="checkbox" class="cx"><span>Portas e janelas prontas</span></li><li><input type="checkbox" class="cx"><span>Bancadas instaladas</span></li><li><input type="checkbox" class="cx"><span>Iluminação pronta</span></li><li><input type="checkbox" class="cx"><span>Pontos elétricos prontos</span></li><li><input type="checkbox" class="cx"><span>Pontos hidráulicos prontos</span></li></ul><h2>Especificações e prazo</h2><h3>Descreva o que pretende ter em cada ambiente</h3><div class="pauta" style="--h:88pt"></div><h3>Prazo máximo esperado para o espaço estar pronto</h3><div class="pauta" style="--h:37pt"></div><div class="assina"><h2>Assinaturas</h2><div class="g n2"><div class="f"><b>Cliente</b><span>Nome e data</span></div><div class="f"><b><span data-empresa>Sua Marca</span></b><span>Responsável e data</span></div></div></div>
   <div class="rodape"><span>DOC-01 · versão 1.0</span>
     <span><span data-empresa>Sua Marca</span> · <span data-cidade>Cidade / UF</span></span></div>
 </div>
 
 <div class="barra naoimprime">
+  <button class="sec" onclick="limparPreenchimento()">Limpar preenchimento</button>
   <button class="sec" onclick="abrirMarca()">Personalizar marca</button>
   <button onclick="window.print()">Imprimir / Salvar em PDF</button>
 </div>
@@ -213,10 +242,31 @@ td.v{text-align:center;width:26pt}
     }
     localStorage.setItem(CHAVE,JSON.stringify(m));aplicar();fecharMarca();
   };
+  window.limparPreenchimento=function(){
+    if(!confirm('Apagar tudo o que foi preenchido nesta tela?'))return;
+    document.querySelectorAll('[contenteditable]').forEach(function(e){e.textContent=''});
+    document.querySelectorAll('input.cx').forEach(function(e){e.checked=false});
+  };
   window.limparLogo=function(){
     var m=ler();m.logo='';localStorage.setItem(CHAVE,JSON.stringify(m));aplicar();
   };
-  document.addEventListener('DOMContentLoaded',aplicar);
+  /* Torna o documento preenchivel na tela sem mexer em cada ponto do gerador:
+     celula de tabela vazia e area pautada aceitam digitacao, e o quadradinho
+     desenhado em CSS vira caixa de marcar de verdade. */
+  function preenchivel(){
+    document.querySelectorAll('table td:empty').forEach(function(td){
+      td.contentEditable='true'; td.spellcheck=false;
+    });
+    document.querySelectorAll('.pauta').forEach(function(p){
+      p.contentEditable='true'; p.spellcheck=false;
+    });
+    document.querySelectorAll('span.quad').forEach(function(q){
+      var i=document.createElement('input');
+      i.type='checkbox'; i.className='cx';
+      q.parentNode.replaceChild(i,q);
+    });
+  }
+  document.addEventListener('DOMContentLoaded',function(){aplicar();preenchivel()});
 })();
 </script>
 </body>

@@ -57,8 +57,7 @@ ul.chk{list-style:none}
 ul.chk li{display:flex;gap:6pt;align-items:flex-start;padding:3.2pt 0;
   border-bottom:.5pt dotted var(--linha);break-inside:avoid}
 ul.chk li:last-child{border-bottom:none}
-ul.chk li::before{content:'';flex:0 0 auto;width:9pt;height:9pt;margin-top:1.5pt;
-  border:.9pt solid var(--tinta);border-radius:1pt}
+ul.chk li input.cx{margin-top:1.5pt}
 .duas{column-count:2;column-gap:9mm}
 .duas li{break-inside:avoid}
 
@@ -79,6 +78,35 @@ td.v{text-align:center;width:26pt}
   font-size:6.2pt;letter-spacing:.06em}
 .grade td.v{width:17pt;padding:3pt}
 .grade td:first-child{font-size:8pt}
+
+/* campo preenchivel dentro do texto corrido — digitavel na tela e imprimivel */
+.pre{display:inline-block;min-width:var(--w,110pt);border-bottom:.7pt solid var(--tinta);
+  min-height:10pt;vertical-align:baseline;margin:0 1.5pt;outline:none;padding:0 2pt}
+.pre:focus{background:#FFF6DF}
+
+/* caixa de marcar de verdade, que imprime marcada */
+input.cx{appearance:none;-webkit-appearance:none;width:9pt;height:9pt;flex:0 0 auto;
+  border:.9pt solid var(--tinta);border-radius:1pt;margin:0;padding:0;position:relative;
+  vertical-align:-1pt;cursor:pointer;background:transparent}
+input.cx:checked::after{content:'✕';position:absolute;left:0;right:0;top:-2.5pt;text-align:center;
+  font:700 9pt/1 'Inter',sans-serif;color:var(--tinta)}
+
+/* celulas e areas de texto digitaveis */
+[contenteditable]{outline:none}
+[contenteditable]:focus{background:#FFF6DF}
+td[contenteditable]{min-height:22pt}
+
+/* texto juridico */
+.jur p{text-align:justify;margin-bottom:5pt;font-size:9.5pt;line-height:1.5}
+.jur p.cl{font-weight:600;margin-top:9pt;break-after:avoid}
+.jur p.par{padding-left:11pt}
+.jur .partes{background:var(--claro);border-left:3pt solid var(--ouro);padding:8pt 10pt;
+  margin-bottom:9pt}
+.jur .partes p{margin-bottom:6pt}
+.jur .partes p:last-child{margin-bottom:0}
+.nota{border:.75pt dashed var(--ouro);padding:7pt 9pt;font-size:8pt;margin:9pt 0;
+  color:var(--fraco);break-inside:avoid}
+.nota b{color:var(--tinta)}
 
 /* linhas para escrever */
 .pauta{border:.75pt solid var(--linha);padding:6pt 7pt;min-height:var(--h,54pt);
@@ -157,6 +185,7 @@ td.v{text-align:center;width:26pt}
 </div>
 
 <div class="barra naoimprime">
+  <button class="sec" onclick="limparPreenchimento()">Limpar preenchimento</button>
   <button class="sec" onclick="abrirMarca()">Personalizar marca</button>
   <button onclick="window.print()">Imprimir / Salvar em PDF</button>
 </div>
@@ -214,10 +243,31 @@ td.v{text-align:center;width:26pt}
     }
     localStorage.setItem(CHAVE,JSON.stringify(m));aplicar();fecharMarca();
   };
+  window.limparPreenchimento=function(){
+    if(!confirm('Apagar tudo o que foi preenchido nesta tela?'))return;
+    document.querySelectorAll('[contenteditable]').forEach(function(e){e.textContent=''});
+    document.querySelectorAll('input.cx').forEach(function(e){e.checked=false});
+  };
   window.limparLogo=function(){
     var m=ler();m.logo='';localStorage.setItem(CHAVE,JSON.stringify(m));aplicar();
   };
-  document.addEventListener('DOMContentLoaded',aplicar);
+  /* Torna o documento preenchivel na tela sem mexer em cada ponto do gerador:
+     celula de tabela vazia e area pautada aceitam digitacao, e o quadradinho
+     desenhado em CSS vira caixa de marcar de verdade. */
+  function preenchivel(){
+    document.querySelectorAll('table td:empty').forEach(function(td){
+      td.contentEditable='true'; td.spellcheck=false;
+    });
+    document.querySelectorAll('.pauta').forEach(function(p){
+      p.contentEditable='true'; p.spellcheck=false;
+    });
+    document.querySelectorAll('span.quad').forEach(function(q){
+      var i=document.createElement('input');
+      i.type='checkbox'; i.className='cx';
+      q.parentNode.replaceChild(i,q);
+    });
+  }
+  document.addEventListener('DOMContentLoaded',function(){aplicar();preenchivel()});
 })();
 </script>
 </body>

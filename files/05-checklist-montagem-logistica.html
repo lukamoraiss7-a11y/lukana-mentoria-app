@@ -57,8 +57,7 @@ ul.chk{list-style:none}
 ul.chk li{display:flex;gap:6pt;align-items:flex-start;padding:3.2pt 0;
   border-bottom:.5pt dotted var(--linha);break-inside:avoid}
 ul.chk li:last-child{border-bottom:none}
-ul.chk li::before{content:'';flex:0 0 auto;width:9pt;height:9pt;margin-top:1.5pt;
-  border:.9pt solid var(--tinta);border-radius:1pt}
+ul.chk li input.cx{margin-top:1.5pt}
 .duas{column-count:2;column-gap:9mm}
 .duas li{break-inside:avoid}
 
@@ -79,6 +78,35 @@ td.v{text-align:center;width:26pt}
   font-size:6.2pt;letter-spacing:.06em}
 .grade td.v{width:17pt;padding:3pt}
 .grade td:first-child{font-size:8pt}
+
+/* campo preenchivel dentro do texto corrido — digitavel na tela e imprimivel */
+.pre{display:inline-block;min-width:var(--w,110pt);border-bottom:.7pt solid var(--tinta);
+  min-height:10pt;vertical-align:baseline;margin:0 1.5pt;outline:none;padding:0 2pt}
+.pre:focus{background:#FFF6DF}
+
+/* caixa de marcar de verdade, que imprime marcada */
+input.cx{appearance:none;-webkit-appearance:none;width:9pt;height:9pt;flex:0 0 auto;
+  border:.9pt solid var(--tinta);border-radius:1pt;margin:0;padding:0;position:relative;
+  vertical-align:-1pt;cursor:pointer;background:transparent}
+input.cx:checked::after{content:'✕';position:absolute;left:0;right:0;top:-2.5pt;text-align:center;
+  font:700 9pt/1 'Inter',sans-serif;color:var(--tinta)}
+
+/* celulas e areas de texto digitaveis */
+[contenteditable]{outline:none}
+[contenteditable]:focus{background:#FFF6DF}
+td[contenteditable]{min-height:22pt}
+
+/* texto juridico */
+.jur p{text-align:justify;margin-bottom:5pt;font-size:9.5pt;line-height:1.5}
+.jur p.cl{font-weight:600;margin-top:9pt;break-after:avoid}
+.jur p.par{padding-left:11pt}
+.jur .partes{background:var(--claro);border-left:3pt solid var(--ouro);padding:8pt 10pt;
+  margin-bottom:9pt}
+.jur .partes p{margin-bottom:6pt}
+.jur .partes p:last-child{margin-bottom:0}
+.nota{border:.75pt dashed var(--ouro);padding:7pt 9pt;font-size:8pt;margin:9pt 0;
+  color:var(--fraco);break-inside:avoid}
+.nota b{color:var(--tinta)}
 
 /* linhas para escrever */
 .pauta{border:.75pt solid var(--linha);padding:6pt 7pt;min-height:var(--h,54pt);
@@ -149,12 +177,13 @@ td.v{text-align:center;width:26pt}
 <div class="c"><span class="r">Conferente</span></div>
 <div class="c"><span class="r">Coordenação</span></div>
 </div>
-</div><h2>1 · Diretrizes em obra — proteção e conduta</h2><ul class="chk"><li>Instalar proteção de piso antes de iniciar qualquer movimentação</li><li>Proteger quinas e rotas de passagem de todo o trajeto</li><li>Verificar se há cliente morando ou operando no local — sem música nesses casos</li><li>Em obras vazias, o uso de música é opcional e em volume baixo</li><li>Levar água própria para a equipe</li><li>Evitar uso do banheiro do cliente; se usar por exceção, retirar todo o lixo gerado</li><li>Proibido descartar resíduos do time no lixo do cliente</li><li>Manter postura discreta: ouvir e reportar, sem conversas técnicas paralelas com o cliente</li><li>Não prometer soluções nem contestar o cliente sem consultar projeto ou coordenação</li><li>Ambiente sempre limpo e organizado durante toda a execução</li></ul><h2>2 · Conferência pré-obra (fábrica / CD)</h2><ul class="chk"><li>Checklist completo de peças por ambiente e por módulo</li><li>Separação de peças em kits por módulo quando houver grande volume (acima de 50 a 100 peças)</li><li>Conferir ferragens e acessórios completos por módulo</li><li>Aplicar etiquetas (ambiente, módulo, ordem) em todos os volumes</li><li>Registrar fotos do carregamento antes da saída</li></ul><h2>3 · Embalagem e transporte</h2><ul class="chk"><li>Priorizar envio de módulos embalados e semiprontos quando viável</li><li>Peças que não podem ir montadas (tamponamentos, sarrafos): manta + cantoneira + filme</li><li>Acima de 100 peças: agrupar por módulo ou kit, reforçar arestas, usar separadores e cintas, etiquetar por ambiente</li><li>Revisar fixação interna do veículo: cintas, separadores, tapetes</li><li>Não embarcar peças soltas sem proteção mínima e identificação</li><li>Alinhar rota e horário com cliente ou portaria antes da saída</li><li>Havendo avaria mesmo com peça embalada, revisar método de fixação e acomodação no veículo</li></ul><h2>4 · Chegada à obra e preparação do ambiente</h2><ul class="chk"><li>Antes de descarregar, confirmar proteção de piso e quinas instalada</li><li>Validar acesso, elevadores ou escadas e rotas de circulação liberadas</li><li>Respeitar regras do condomínio ou do estabelecimento (ruído, horários)</li><li>Organizar área de staging para descarregar sem obstruções</li></ul><h2>5 · Montagem e autoridade técnica</h2><ul class="chk"><li>Qualquer dúvida técnica: acionar a coordenação com foto e contexto</li><li>Explicações técnicas ao cliente somente com projeto ou desenho em mãos</li><li>A coordenação pode orientar na frente do cliente quando for necessário para transparência</li><li>Respeitar preferência individual (profissionais que preferem feedback reservado)</li><li>Ajustes em campo somente com OK explícito da coordenação</li></ul><h2>6 · Casos e lições — aplicar aprendizados</h2><ul class="chk"><li>Coordenação faz a mediação; a equipe deve ouvir e repassar, sem prometer em obra</li><li>Piso novo: reforçar proteção e acompanhamento próximo</li><li>Cliente que precisa visualizar no desenho: evitar debates em campo sem material técnico</li></ul><h2>7 · Decisões padronizadas — confirmar implementação</h2><ul class="chk"><li>Usar checklists obrigatórios: pré-obra, saída do CD, chegada, entrega e aceite</li><li>Adotar política de zero lixo do cliente (água própria, evitar banheiro; se usar, levar o lixo)</li><li>Aplicar padrão de embalagem por tipologia (módulo, porta, tampo, sarrafo) com instruções visuais</li><li>Padronizar postura de comunicação: equipe escuta e reporta, coordenação responde tecnicamente</li></ul><div class="quebra"></div><h2>8 · Entrega e saída</h2><ul class="chk"><li>Executar limpeza fina do mobiliário e da área de trabalho</li><li>Conferir toques, frestas e níveis (portas, gavetas, alinhamentos)</li><li>Fazer fotos de antes e depois e dos volumes instalados</li><li>Apresentar ao cliente e lançar pendências no termo de entrega</li><li>Retirar proteções e verificar que nada ficou para trás</li></ul><h2>9 · Riscos e mitigações</h2><table><thead><tr><th style="width:38%">Risco</th><th>Mitigação</th><th style="width:52pt;text-align:center">Aplicado</th></tr></thead><tbody><tr><td>Avarias no transporte</td><td>Embalagem correta, fixação e auditoria pós-entrega</td><td class="v"><span class="quad"></span></td></tr><tr><td>Incômodo ao cliente (ruído, uso de espaços)</td><td>Política de silêncio, aviso prévio e coordenação rápida</td><td class="v"><span class="quad"></span></td></tr><tr><td>Conflitos em público</td><td>Feedback individual; exceções com transparência dirigida pela coordenação</td><td class="v"><span class="quad"></span></td></tr></tbody></table><h2>10 · Ações, donos e prazos</h2><table><thead><tr><th style="width:52%">Ação</th><th style="width:24%">Dono</th><th>Prazo</th></tr></thead><tbody><tr><td>Criar 4 checklists e etiquetas padrão</td><td></td><td>____/____/______</td></tr><tr><td>Gerar guia de 1 página sobre comportamento em obra</td><td></td><td>____/____/______</td></tr><tr><td>Definir matriz de embalagem por tipologia e treinamento de 1 hora</td><td></td><td>____/____/______</td></tr><tr><td>Revisar set-up do veículo (separadores, cintas, mantas)</td><td></td><td>____/____/______</td></tr><tr><td>Pilotar kits por módulo no próximo lote, com auditoria de avarias</td><td></td><td>____/____/______</td></tr><tr><td>Ativar canal único para repasse ao cliente</td><td></td><td>____/____/______</td></tr></tbody></table><h2>11 · Encaminhamentos finais</h2><ul class="chk"><li>Realizar treinamento rápido de 30 a 45 minutos: proteções, embalagem por tipologia e comunicação com o cliente</li><li>Agendar follow-up com indicadores: percentual de avarias, NPS e ocorrências de conduta</li></ul><h3>Observações e pendências</h3><div class="pauta" style="--h:88pt"></div><div class="assina"><h2>Assinaturas</h2><div class="g n2"><div class="f"><b>Líder da equipe</b><span>Assinatura e data</span></div><div class="f"><b>Coordenação</b><span>Assinatura e data</span></div></div></div>
+</div><h2>1 · Diretrizes em obra — proteção e conduta</h2><ul class="chk"><li><input type="checkbox" class="cx"><span>Instalar proteção de piso antes de iniciar qualquer movimentação</span></li><li><input type="checkbox" class="cx"><span>Proteger quinas e rotas de passagem de todo o trajeto</span></li><li><input type="checkbox" class="cx"><span>Verificar se há cliente morando ou operando no local — sem música nesses casos</span></li><li><input type="checkbox" class="cx"><span>Em obras vazias, o uso de música é opcional e em volume baixo</span></li><li><input type="checkbox" class="cx"><span>Levar água própria para a equipe</span></li><li><input type="checkbox" class="cx"><span>Evitar uso do banheiro do cliente; se usar por exceção, retirar todo o lixo gerado</span></li><li><input type="checkbox" class="cx"><span>Proibido descartar resíduos do time no lixo do cliente</span></li><li><input type="checkbox" class="cx"><span>Manter postura discreta: ouvir e reportar, sem conversas técnicas paralelas com o cliente</span></li><li><input type="checkbox" class="cx"><span>Não prometer soluções nem contestar o cliente sem consultar projeto ou coordenação</span></li><li><input type="checkbox" class="cx"><span>Ambiente sempre limpo e organizado durante toda a execução</span></li></ul><h2>2 · Conferência pré-obra (fábrica / CD)</h2><ul class="chk"><li><input type="checkbox" class="cx"><span>Checklist completo de peças por ambiente e por módulo</span></li><li><input type="checkbox" class="cx"><span>Separação de peças em kits por módulo quando houver grande volume (acima de 50 a 100 peças)</span></li><li><input type="checkbox" class="cx"><span>Conferir ferragens e acessórios completos por módulo</span></li><li><input type="checkbox" class="cx"><span>Aplicar etiquetas (ambiente, módulo, ordem) em todos os volumes</span></li><li><input type="checkbox" class="cx"><span>Registrar fotos do carregamento antes da saída</span></li></ul><h2>3 · Embalagem e transporte</h2><ul class="chk"><li><input type="checkbox" class="cx"><span>Priorizar envio de módulos embalados e semiprontos quando viável</span></li><li><input type="checkbox" class="cx"><span>Peças que não podem ir montadas (tamponamentos, sarrafos): manta + cantoneira + filme</span></li><li><input type="checkbox" class="cx"><span>Acima de 100 peças: agrupar por módulo ou kit, reforçar arestas, usar separadores e cintas, etiquetar por ambiente</span></li><li><input type="checkbox" class="cx"><span>Revisar fixação interna do veículo: cintas, separadores, tapetes</span></li><li><input type="checkbox" class="cx"><span>Não embarcar peças soltas sem proteção mínima e identificação</span></li><li><input type="checkbox" class="cx"><span>Alinhar rota e horário com cliente ou portaria antes da saída</span></li><li><input type="checkbox" class="cx"><span>Havendo avaria mesmo com peça embalada, revisar método de fixação e acomodação no veículo</span></li></ul><h2>4 · Chegada à obra e preparação do ambiente</h2><ul class="chk"><li><input type="checkbox" class="cx"><span>Antes de descarregar, confirmar proteção de piso e quinas instalada</span></li><li><input type="checkbox" class="cx"><span>Validar acesso, elevadores ou escadas e rotas de circulação liberadas</span></li><li><input type="checkbox" class="cx"><span>Respeitar regras do condomínio ou do estabelecimento (ruído, horários)</span></li><li><input type="checkbox" class="cx"><span>Organizar área de staging para descarregar sem obstruções</span></li></ul><h2>5 · Montagem e autoridade técnica</h2><ul class="chk"><li><input type="checkbox" class="cx"><span>Qualquer dúvida técnica: acionar a coordenação com foto e contexto</span></li><li><input type="checkbox" class="cx"><span>Explicações técnicas ao cliente somente com projeto ou desenho em mãos</span></li><li><input type="checkbox" class="cx"><span>A coordenação pode orientar na frente do cliente quando for necessário para transparência</span></li><li><input type="checkbox" class="cx"><span>Respeitar preferência individual (profissionais que preferem feedback reservado)</span></li><li><input type="checkbox" class="cx"><span>Ajustes em campo somente com OK explícito da coordenação</span></li></ul><h2>6 · Casos e lições — aplicar aprendizados</h2><ul class="chk"><li><input type="checkbox" class="cx"><span>Coordenação faz a mediação; a equipe deve ouvir e repassar, sem prometer em obra</span></li><li><input type="checkbox" class="cx"><span>Piso novo: reforçar proteção e acompanhamento próximo</span></li><li><input type="checkbox" class="cx"><span>Cliente que precisa visualizar no desenho: evitar debates em campo sem material técnico</span></li></ul><h2>7 · Decisões padronizadas — confirmar implementação</h2><ul class="chk"><li><input type="checkbox" class="cx"><span>Usar checklists obrigatórios: pré-obra, saída do CD, chegada, entrega e aceite</span></li><li><input type="checkbox" class="cx"><span>Adotar política de zero lixo do cliente (água própria, evitar banheiro; se usar, levar o lixo)</span></li><li><input type="checkbox" class="cx"><span>Aplicar padrão de embalagem por tipologia (módulo, porta, tampo, sarrafo) com instruções visuais</span></li><li><input type="checkbox" class="cx"><span>Padronizar postura de comunicação: equipe escuta e reporta, coordenação responde tecnicamente</span></li></ul><div class="quebra"></div><h2>8 · Entrega e saída</h2><ul class="chk"><li><input type="checkbox" class="cx"><span>Executar limpeza fina do mobiliário e da área de trabalho</span></li><li><input type="checkbox" class="cx"><span>Conferir toques, frestas e níveis (portas, gavetas, alinhamentos)</span></li><li><input type="checkbox" class="cx"><span>Fazer fotos de antes e depois e dos volumes instalados</span></li><li><input type="checkbox" class="cx"><span>Apresentar ao cliente e lançar pendências no termo de entrega</span></li><li><input type="checkbox" class="cx"><span>Retirar proteções e verificar que nada ficou para trás</span></li></ul><h2>9 · Riscos e mitigações</h2><table><thead><tr><th style="width:38%">Risco</th><th>Mitigação</th><th style="width:52pt;text-align:center">Aplicado</th></tr></thead><tbody><tr><td>Avarias no transporte</td><td>Embalagem correta, fixação e auditoria pós-entrega</td><td class="v"><span class="quad"></span></td></tr><tr><td>Incômodo ao cliente (ruído, uso de espaços)</td><td>Política de silêncio, aviso prévio e coordenação rápida</td><td class="v"><span class="quad"></span></td></tr><tr><td>Conflitos em público</td><td>Feedback individual; exceções com transparência dirigida pela coordenação</td><td class="v"><span class="quad"></span></td></tr></tbody></table><h2>10 · Ações, donos e prazos</h2><table><thead><tr><th style="width:52%">Ação</th><th style="width:24%">Dono</th><th>Prazo</th></tr></thead><tbody><tr><td>Criar 4 checklists e etiquetas padrão</td><td></td><td>____/____/______</td></tr><tr><td>Gerar guia de 1 página sobre comportamento em obra</td><td></td><td>____/____/______</td></tr><tr><td>Definir matriz de embalagem por tipologia e treinamento de 1 hora</td><td></td><td>____/____/______</td></tr><tr><td>Revisar set-up do veículo (separadores, cintas, mantas)</td><td></td><td>____/____/______</td></tr><tr><td>Pilotar kits por módulo no próximo lote, com auditoria de avarias</td><td></td><td>____/____/______</td></tr><tr><td>Ativar canal único para repasse ao cliente</td><td></td><td>____/____/______</td></tr></tbody></table><h2>11 · Encaminhamentos finais</h2><ul class="chk"><li><input type="checkbox" class="cx"><span>Realizar treinamento rápido de 30 a 45 minutos: proteções, embalagem por tipologia e comunicação com o cliente</span></li><li><input type="checkbox" class="cx"><span>Agendar follow-up com indicadores: percentual de avarias, NPS e ocorrências de conduta</span></li></ul><h3>Observações e pendências</h3><div class="pauta" style="--h:88pt"></div><div class="assina"><h2>Assinaturas</h2><div class="g n2"><div class="f"><b>Líder da equipe</b><span>Assinatura e data</span></div><div class="f"><b>Coordenação</b><span>Assinatura e data</span></div></div></div>
   <div class="rodape"><span>DOC-05 · versão 1.0</span>
     <span><span data-empresa>Sua Marca</span> · <span data-cidade>Cidade / UF</span></span></div>
 </div>
 
 <div class="barra naoimprime">
+  <button class="sec" onclick="limparPreenchimento()">Limpar preenchimento</button>
   <button class="sec" onclick="abrirMarca()">Personalizar marca</button>
   <button onclick="window.print()">Imprimir / Salvar em PDF</button>
 </div>
@@ -212,10 +241,31 @@ td.v{text-align:center;width:26pt}
     }
     localStorage.setItem(CHAVE,JSON.stringify(m));aplicar();fecharMarca();
   };
+  window.limparPreenchimento=function(){
+    if(!confirm('Apagar tudo o que foi preenchido nesta tela?'))return;
+    document.querySelectorAll('[contenteditable]').forEach(function(e){e.textContent=''});
+    document.querySelectorAll('input.cx').forEach(function(e){e.checked=false});
+  };
   window.limparLogo=function(){
     var m=ler();m.logo='';localStorage.setItem(CHAVE,JSON.stringify(m));aplicar();
   };
-  document.addEventListener('DOMContentLoaded',aplicar);
+  /* Torna o documento preenchivel na tela sem mexer em cada ponto do gerador:
+     celula de tabela vazia e area pautada aceitam digitacao, e o quadradinho
+     desenhado em CSS vira caixa de marcar de verdade. */
+  function preenchivel(){
+    document.querySelectorAll('table td:empty').forEach(function(td){
+      td.contentEditable='true'; td.spellcheck=false;
+    });
+    document.querySelectorAll('.pauta').forEach(function(p){
+      p.contentEditable='true'; p.spellcheck=false;
+    });
+    document.querySelectorAll('span.quad').forEach(function(q){
+      var i=document.createElement('input');
+      i.type='checkbox'; i.className='cx';
+      q.parentNode.replaceChild(i,q);
+    });
+  }
+  document.addEventListener('DOMContentLoaded',function(){aplicar();preenchivel()});
 })();
 </script>
 </body>
