@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Termo de Autorização de Uso de Imagem</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --tinta:#2C2825; --ouro:#B8925A; --claro:#F5F1EA; --linha:#D8D2C7;
+  --fraco:#6E675E; --papel:#FFFFFF;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+@page{size:A4;margin:13mm 12mm 12mm}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{
+  font:10.5pt/1.45 'Inter',-apple-system,'Helvetica Neue',Arial,sans-serif;
+  color:var(--tinta);background:var(--papel);
+}
+.folha{max-width:186mm;margin:0 auto;padding:10mm 0}
+
+/* cabecalho */
+.topo{display:flex;justify-content:space-between;align-items:flex-end;
+  border-bottom:1.5pt solid var(--tinta);padding-bottom:5pt}
+.marca{font:600 15pt/1 'Cormorant Garamond',Georgia,serif;letter-spacing:.22em;
+  text-transform:uppercase}
+.marca small{display:block;font:400 6.5pt/1 'Inter',sans-serif;letter-spacing:.34em;
+  color:var(--fraco);margin-top:3pt}
+.doc{text-align:right}
+.doc h1{font:600 13pt/1.15 'Cormorant Garamond',Georgia,serif;letter-spacing:.04em;
+  text-transform:uppercase}
+.doc .cod{font-size:7pt;letter-spacing:.2em;color:var(--ouro);font-weight:600;
+  text-transform:uppercase;margin-top:2pt}
+.regua{height:2.5pt;background:var(--ouro);margin-bottom:9pt}
+.sub{font-size:8.5pt;color:var(--fraco);margin:-4pt 0 9pt;font-style:italic}
+
+/* blocos de identificacao */
+.ident{display:grid;gap:0;border:.75pt solid var(--linha);margin-bottom:10pt}
+.ident .l{display:grid;border-bottom:.75pt solid var(--linha)}
+.ident .l:last-child{border-bottom:none}
+.ident .c{padding:5pt 6pt;border-right:.75pt solid var(--linha);min-height:26pt}
+.ident .c:last-child{border-right:none}
+.ident .r{display:block;font-size:6.5pt;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--fraco);font-weight:600;margin-bottom:3pt}
+
+/* secoes */
+h2{font:600 9pt/1.2 'Inter',sans-serif;letter-spacing:.16em;text-transform:uppercase;
+  background:var(--claro);border-left:3pt solid var(--ouro);
+  padding:5pt 7pt;margin:11pt 0 6pt;break-after:avoid}
+h3{font:600 8.5pt/1.2 'Inter',sans-serif;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--fraco);margin:8pt 0 4pt;break-after:avoid}
+
+/* listas de verificacao */
+ul.chk{list-style:none}
+ul.chk li{display:flex;gap:6pt;align-items:flex-start;padding:3.2pt 0;
+  border-bottom:.5pt dotted var(--linha);break-inside:avoid}
+ul.chk li:last-child{border-bottom:none}
+ul.chk li::before{content:'';flex:0 0 auto;width:9pt;height:9pt;margin-top:1.5pt;
+  border:.9pt solid var(--tinta);border-radius:1pt}
+.duas{column-count:2;column-gap:9mm}
+.duas li{break-inside:avoid}
+
+/* tabelas */
+table{width:100%;border-collapse:collapse;font-size:8.5pt;break-inside:auto}
+thead{display:table-header-group}
+th{background:var(--claro);border:.75pt solid var(--linha);padding:4pt 5pt;
+  font-size:6.5pt;letter-spacing:.12em;text-transform:uppercase;font-weight:600;
+  text-align:left}
+td{border:.75pt solid var(--linha);padding:5pt;height:22pt;vertical-align:top}
+tr{break-inside:avoid}
+td.v{text-align:center;width:26pt}
+.quad{display:inline-block;width:9pt;height:9pt;border:.9pt solid var(--tinta);
+  border-radius:1pt;vertical-align:-1pt}
+.grade th.gir{height:64pt;white-space:nowrap;vertical-align:bottom;padding:3pt 0;
+  text-align:center;width:17pt}
+.grade th.gir span{writing-mode:vertical-rl;transform:rotate(180deg);
+  font-size:6.2pt;letter-spacing:.06em}
+.grade td.v{width:17pt;padding:3pt}
+.grade td:first-child{font-size:8pt}
+
+/* campo preenchivel dentro do texto corrido */
+.pre{display:inline-block;min-width:var(--w,110pt);border-bottom:.7pt solid var(--tinta);
+  height:10pt;vertical-align:baseline;margin:0 1.5pt}
+
+/* texto juridico */
+.jur p{text-align:justify;margin-bottom:5pt;font-size:9.5pt;line-height:1.5}
+.jur p.cl{font-weight:600;margin-top:9pt;break-after:avoid}
+.jur p.par{padding-left:11pt}
+.jur .partes{background:var(--claro);border-left:3pt solid var(--ouro);padding:8pt 10pt;
+  margin-bottom:9pt}
+.jur .partes p{margin-bottom:6pt}
+.jur .partes p:last-child{margin-bottom:0}
+.nota{border:.75pt dashed var(--ouro);padding:7pt 9pt;font-size:8pt;margin:9pt 0;
+  color:var(--fraco);break-inside:avoid}
+.nota b{color:var(--tinta)}
+
+/* linhas para escrever */
+.pauta{border:.75pt solid var(--linha);padding:6pt 7pt;min-height:var(--h,54pt);
+  background:repeating-linear-gradient(transparent,transparent 17pt,var(--linha) 17pt,var(--linha) 17.6pt);
+  background-position:0 9pt}
+.legenda{font-size:7.5pt;color:var(--fraco);margin:5pt 0 0}
+
+/* assinaturas */
+.assina{margin-top:13pt;break-inside:avoid;page-break-inside:avoid}
+.assina .g{display:grid;gap:9mm;margin-top:14pt}
+.assina .g.n2{grid-template-columns:1fr 1fr}
+.assina .g.n3{grid-template-columns:1fr 1fr 1fr}
+.assina .f{border-top:.9pt solid var(--tinta);padding-top:4pt;text-align:center}
+.assina .f b{display:block;font-size:8pt;font-weight:600}
+.assina .f span{display:block;font-size:7pt;color:var(--fraco);margin-top:1pt}
+
+/* rodape */
+.rodape{margin-top:14pt;padding-top:5pt;border-top:.75pt solid var(--linha);
+  display:flex;justify-content:space-between;font-size:6.8pt;color:var(--fraco);
+  letter-spacing:.08em;text-transform:uppercase}
+.aviso{background:var(--claro);border-left:3pt solid var(--ouro);padding:6pt 8pt;
+  font-size:8pt;margin:8pt 0;break-inside:avoid}
+.quebra{break-before:page}
+@media print{.folha{padding:0}.naoimprime{display:none!important}}
+
+/* logo do proprio usuario */
+.marca img{max-height:52pt;max-width:190pt;display:block}
+
+/* barra de personalizacao — nunca sai na impressao */
+.barra{position:fixed;right:14px;bottom:14px;display:flex;gap:8px;z-index:9}
+.barra button{background:var(--tinta);color:#fff;border:0;border-radius:5px;
+  padding:9px 15px;font:600 12px Inter,sans-serif;cursor:pointer}
+.barra button.sec{background:#fff;color:var(--tinta);border:1px solid var(--linha)}
+.painel{position:fixed;inset:0;background:rgba(20,18,16,.55);display:none;
+  align-items:center;justify-content:center;z-index:10;padding:20px}
+.painel.on{display:flex}
+.painel .cx{background:#fff;border-radius:8px;padding:22px;width:400px;max-width:100%;
+  max-height:90vh;overflow:auto;font-family:'Inter',sans-serif}
+.painel h4{font:600 13px/1.3 Inter,sans-serif;margin-bottom:3px}
+.painel p.aj{font-size:11.5px;color:var(--fraco);margin-bottom:15px;line-height:1.45}
+.painel label{display:block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--fraco);font-weight:600;margin:11px 0 4px}
+.painel input[type=text]{width:100%;border:1px solid var(--linha);border-radius:5px;
+  padding:8px 10px;font:13px Inter,sans-serif;color:var(--tinta)}
+.painel input[type=file]{width:100%;font:12px Inter,sans-serif;margin-top:3px}
+.painel .acoes{display:flex;gap:8px;margin-top:18px}
+.painel .acoes button{flex:1}
+.painel .lim{background:none;border:0;color:var(--fraco);font-size:11.5px;
+  text-decoration:underline;cursor:pointer;margin-top:9px;padding:0}
+</style>
+</head>
+<body>
+<div class="folha">
+  <div class="topo">
+    <div class="marca" id="marca">SUA MARCA<small>MARCENARIA</small></div>
+    <div class="doc"><h1>Termo de Autorização de Uso de Imagem</h1><div class="cod">DOC-12</div></div>
+  </div>
+  <div class="regua"></div>
+  <p class="sub">Uma via por pessoa autorizante.</p>
+<div class="nota"><b>Antes de usar:</b> este é um modelo de referência, não uma peça pronta. Contrato produz obrigação — prazos, multas, garantias e foro precisam ser conferidos por advogado à luz da sua operação, do seu regime tributário e da legislação vigente. Preencher os campos não substitui essa revisão.</div><div class="jur"><p>Eu, <span class="pre" style="--w:230pt"></span>, <span class="pre" style="--w:80pt"></span>, <span class="pre" style="--w:80pt"></span>, <span class="pre" style="--w:120pt"></span>, inscrito(a) no CPF sob o n.º <span class="pre" style="--w:110pt"></span>, residente e domiciliado(a) em <span class="pre" style="--w:230pt"></span>, <b>AUTORIZO</b> o uso da minha imagem em todo e qualquer material — vídeos, fotos e documentos — para ser utilizada por <span class="pre" style="--w:200pt"></span>, pessoa jurídica de direito privado inscrita no CNPJ sob o n.º <span class="pre" style="--w:120pt"></span>, com endereço em <span class="pre" style="--w:220pt"></span>, neste ato representada por <span class="pre" style="--w:180pt"></span>.</p><p>A presente autorização é concedida a título gratuito, abrangendo o uso da imagem em todo o território nacional e no exterior, nas seguintes condições: a) redes sociais; b) cartazes; c) mídia eletrônica — painéis, vídeos, televisão, cinema, programas de rádio e outros meios; d) página na internet; e) anúncios em revistas e jornais; f) folders; g) outdoor; h) busdoor; i) folhetos em geral.</p><p>Fica ainda autorizada, de livre e espontânea vontade e para os mesmos fins, a cessão de direitos da veiculação das imagens, não recebendo o(a) autorizante qualquer tipo de remuneração por isso.</p><p>Por esta ser a expressão da minha vontade, <b>DECLARO QUE AUTORIZO</b> o uso acima descrito sem que nada haja a ser reclamado a título de direitos conexos à minha imagem ou a qualquer outro título, e assino a presente autorização em 2 vias de igual teor e forma.</p><p style="margin-top:11pt;font-size:9.5pt"><span class="pre" style="--w:160pt"></span>, <span class="pre" style="--w:30pt"></span> de <span class="pre" style="--w:110pt"></span> de <span class="pre" style="--w:50pt"></span>.</p></div><div class="assina"><h2>Assinaturas</h2><div class="g n2"><div class="f"><b>Autorizante</b><span>Nome completo e CPF</span></div></div></div><div class="nota"><b>Sobre dados pessoais:</b> este termo coleta nome, CPF e endereço, e autoriza o uso de imagem — todos dados pessoais protegidos pela Lei n.º 13.709/2018 (LGPD). Guarde as vias assinadas em local restrito, colete apenas o necessário e defina por quanto tempo os manterá. A autorização pode ser revogada pelo titular.</div>
+  <div class="rodape"><span>DOC-12 · versão 1.0</span>
+    <span><span data-empresa>Sua Marca</span> · <span data-cidade>Cidade / UF</span></span></div>
+</div>
+
+<div class="barra naoimprime">
+  <button class="sec" onclick="abrirMarca()">Personalizar marca</button>
+  <button onclick="window.print()">Imprimir / Salvar em PDF</button>
+</div>
+<div class="painel naoimprime" id="painel">
+  <div class="cx">
+    <h4>Coloque a sua marca</h4>
+    <p class="aj">Preencha uma vez: vale para os sete documentos neste navegador.
+       Envie um logo em PNG ou JPG, ou deixe em branco para usar o nome em texto.</p>
+    <label>Nome da empresa</label>
+    <input type="text" id="f_nome" placeholder="Sua Marcenaria">
+    <label>Linha de apoio</label>
+    <input type="text" id="f_sub" placeholder="MARCENARIA">
+    <label>Cidade / UF</label>
+    <input type="text" id="f_cidade" placeholder="Campo Grande / MS">
+    <label>Logo (opcional)</label>
+    <input type="file" id="f_logo" accept="image/png,image/jpeg,image/svg+xml">
+    <button class="lim" onclick="limparLogo()">remover logo e voltar ao nome em texto</button>
+    <div class="acoes">
+      <button class="sec" onclick="fecharMarca()">Cancelar</button>
+      <button onclick="salvarMarca()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var CHAVE='lkn-doc-marca';
+  var pad={nome:'SUA MARCA',sub:'MARCENARIA',cidade:'Cidade / UF',logo:''};
+  function ler(){try{return Object.assign({},pad,JSON.parse(localStorage.getItem(CHAVE)||'{}'))}
+                 catch(e){return Object.assign({},pad)}}
+  function aplicar(){
+    var m=ler(), alvo=document.getElementById('marca');
+    alvo.innerHTML = m.logo
+      ? '<img src="'+m.logo+'" alt="">'
+      : m.nome+'<small>'+m.sub+'</small>';
+    document.querySelectorAll('[data-empresa]').forEach(function(e){e.textContent=m.nome});
+    document.querySelectorAll('[data-cidade]').forEach(function(e){e.textContent=m.cidade});
+    ['nome','sub','cidade'].forEach(function(k){
+      var i=document.getElementById('f_'+k); if(i) i.value=m[k];
+    });
+  }
+  window.abrirMarca=function(){document.getElementById('painel').classList.add('on')};
+  window.fecharMarca=function(){document.getElementById('painel').classList.remove('on')};
+  window.salvarMarca=function(){
+    var m=ler();
+    m.nome=document.getElementById('f_nome').value.trim()||pad.nome;
+    m.sub=document.getElementById('f_sub').value.trim();
+    m.cidade=document.getElementById('f_cidade').value.trim()||pad.cidade;
+    var f=document.getElementById('f_logo').files[0];
+    if(f){
+      var r=new FileReader();
+      r.onload=function(){m.logo=r.result;localStorage.setItem(CHAVE,JSON.stringify(m));
+                          aplicar();fecharMarca()};
+      r.readAsDataURL(f); return;
+    }
+    localStorage.setItem(CHAVE,JSON.stringify(m));aplicar();fecharMarca();
+  };
+  window.limparLogo=function(){
+    var m=ler();m.logo='';localStorage.setItem(CHAVE,JSON.stringify(m));aplicar();
+  };
+  document.addEventListener('DOMContentLoaded',aplicar);
+})();
+</script>
+</body>
+</html>

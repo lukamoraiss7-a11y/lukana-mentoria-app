@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contrato de Prestação de Serviços — Cliente Final</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --tinta:#2C2825; --ouro:#B8925A; --claro:#F5F1EA; --linha:#D8D2C7;
+  --fraco:#6E675E; --papel:#FFFFFF;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+@page{size:A4;margin:13mm 12mm 12mm}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{
+  font:10.5pt/1.45 'Inter',-apple-system,'Helvetica Neue',Arial,sans-serif;
+  color:var(--tinta);background:var(--papel);
+}
+.folha{max-width:186mm;margin:0 auto;padding:10mm 0}
+
+/* cabecalho */
+.topo{display:flex;justify-content:space-between;align-items:flex-end;
+  border-bottom:1.5pt solid var(--tinta);padding-bottom:5pt}
+.marca{font:600 15pt/1 'Cormorant Garamond',Georgia,serif;letter-spacing:.22em;
+  text-transform:uppercase}
+.marca small{display:block;font:400 6.5pt/1 'Inter',sans-serif;letter-spacing:.34em;
+  color:var(--fraco);margin-top:3pt}
+.doc{text-align:right}
+.doc h1{font:600 13pt/1.15 'Cormorant Garamond',Georgia,serif;letter-spacing:.04em;
+  text-transform:uppercase}
+.doc .cod{font-size:7pt;letter-spacing:.2em;color:var(--ouro);font-weight:600;
+  text-transform:uppercase;margin-top:2pt}
+.regua{height:2.5pt;background:var(--ouro);margin-bottom:9pt}
+.sub{font-size:8.5pt;color:var(--fraco);margin:-4pt 0 9pt;font-style:italic}
+
+/* blocos de identificacao */
+.ident{display:grid;gap:0;border:.75pt solid var(--linha);margin-bottom:10pt}
+.ident .l{display:grid;border-bottom:.75pt solid var(--linha)}
+.ident .l:last-child{border-bottom:none}
+.ident .c{padding:5pt 6pt;border-right:.75pt solid var(--linha);min-height:26pt}
+.ident .c:last-child{border-right:none}
+.ident .r{display:block;font-size:6.5pt;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--fraco);font-weight:600;margin-bottom:3pt}
+
+/* secoes */
+h2{font:600 9pt/1.2 'Inter',sans-serif;letter-spacing:.16em;text-transform:uppercase;
+  background:var(--claro);border-left:3pt solid var(--ouro);
+  padding:5pt 7pt;margin:11pt 0 6pt;break-after:avoid}
+h3{font:600 8.5pt/1.2 'Inter',sans-serif;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--fraco);margin:8pt 0 4pt;break-after:avoid}
+
+/* listas de verificacao */
+ul.chk{list-style:none}
+ul.chk li{display:flex;gap:6pt;align-items:flex-start;padding:3.2pt 0;
+  border-bottom:.5pt dotted var(--linha);break-inside:avoid}
+ul.chk li:last-child{border-bottom:none}
+ul.chk li::before{content:'';flex:0 0 auto;width:9pt;height:9pt;margin-top:1.5pt;
+  border:.9pt solid var(--tinta);border-radius:1pt}
+.duas{column-count:2;column-gap:9mm}
+.duas li{break-inside:avoid}
+
+/* tabelas */
+table{width:100%;border-collapse:collapse;font-size:8.5pt;break-inside:auto}
+thead{display:table-header-group}
+th{background:var(--claro);border:.75pt solid var(--linha);padding:4pt 5pt;
+  font-size:6.5pt;letter-spacing:.12em;text-transform:uppercase;font-weight:600;
+  text-align:left}
+td{border:.75pt solid var(--linha);padding:5pt;height:22pt;vertical-align:top}
+tr{break-inside:avoid}
+td.v{text-align:center;width:26pt}
+.quad{display:inline-block;width:9pt;height:9pt;border:.9pt solid var(--tinta);
+  border-radius:1pt;vertical-align:-1pt}
+.grade th.gir{height:64pt;white-space:nowrap;vertical-align:bottom;padding:3pt 0;
+  text-align:center;width:17pt}
+.grade th.gir span{writing-mode:vertical-rl;transform:rotate(180deg);
+  font-size:6.2pt;letter-spacing:.06em}
+.grade td.v{width:17pt;padding:3pt}
+.grade td:first-child{font-size:8pt}
+
+/* campo preenchivel dentro do texto corrido */
+.pre{display:inline-block;min-width:var(--w,110pt);border-bottom:.7pt solid var(--tinta);
+  height:10pt;vertical-align:baseline;margin:0 1.5pt}
+
+/* texto juridico */
+.jur p{text-align:justify;margin-bottom:5pt;font-size:9.5pt;line-height:1.5}
+.jur p.cl{font-weight:600;margin-top:9pt;break-after:avoid}
+.jur p.par{padding-left:11pt}
+.jur .partes{background:var(--claro);border-left:3pt solid var(--ouro);padding:8pt 10pt;
+  margin-bottom:9pt}
+.jur .partes p{margin-bottom:6pt}
+.jur .partes p:last-child{margin-bottom:0}
+.nota{border:.75pt dashed var(--ouro);padding:7pt 9pt;font-size:8pt;margin:9pt 0;
+  color:var(--fraco);break-inside:avoid}
+.nota b{color:var(--tinta)}
+
+/* linhas para escrever */
+.pauta{border:.75pt solid var(--linha);padding:6pt 7pt;min-height:var(--h,54pt);
+  background:repeating-linear-gradient(transparent,transparent 17pt,var(--linha) 17pt,var(--linha) 17.6pt);
+  background-position:0 9pt}
+.legenda{font-size:7.5pt;color:var(--fraco);margin:5pt 0 0}
+
+/* assinaturas */
+.assina{margin-top:13pt;break-inside:avoid;page-break-inside:avoid}
+.assina .g{display:grid;gap:9mm;margin-top:14pt}
+.assina .g.n2{grid-template-columns:1fr 1fr}
+.assina .g.n3{grid-template-columns:1fr 1fr 1fr}
+.assina .f{border-top:.9pt solid var(--tinta);padding-top:4pt;text-align:center}
+.assina .f b{display:block;font-size:8pt;font-weight:600}
+.assina .f span{display:block;font-size:7pt;color:var(--fraco);margin-top:1pt}
+
+/* rodape */
+.rodape{margin-top:14pt;padding-top:5pt;border-top:.75pt solid var(--linha);
+  display:flex;justify-content:space-between;font-size:6.8pt;color:var(--fraco);
+  letter-spacing:.08em;text-transform:uppercase}
+.aviso{background:var(--claro);border-left:3pt solid var(--ouro);padding:6pt 8pt;
+  font-size:8pt;margin:8pt 0;break-inside:avoid}
+.quebra{break-before:page}
+@media print{.folha{padding:0}.naoimprime{display:none!important}}
+
+/* logo do proprio usuario */
+.marca img{max-height:52pt;max-width:190pt;display:block}
+
+/* barra de personalizacao — nunca sai na impressao */
+.barra{position:fixed;right:14px;bottom:14px;display:flex;gap:8px;z-index:9}
+.barra button{background:var(--tinta);color:#fff;border:0;border-radius:5px;
+  padding:9px 15px;font:600 12px Inter,sans-serif;cursor:pointer}
+.barra button.sec{background:#fff;color:var(--tinta);border:1px solid var(--linha)}
+.painel{position:fixed;inset:0;background:rgba(20,18,16,.55);display:none;
+  align-items:center;justify-content:center;z-index:10;padding:20px}
+.painel.on{display:flex}
+.painel .cx{background:#fff;border-radius:8px;padding:22px;width:400px;max-width:100%;
+  max-height:90vh;overflow:auto;font-family:'Inter',sans-serif}
+.painel h4{font:600 13px/1.3 Inter,sans-serif;margin-bottom:3px}
+.painel p.aj{font-size:11.5px;color:var(--fraco);margin-bottom:15px;line-height:1.45}
+.painel label{display:block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--fraco);font-weight:600;margin:11px 0 4px}
+.painel input[type=text]{width:100%;border:1px solid var(--linha);border-radius:5px;
+  padding:8px 10px;font:13px Inter,sans-serif;color:var(--tinta)}
+.painel input[type=file]{width:100%;font:12px Inter,sans-serif;margin-top:3px}
+.painel .acoes{display:flex;gap:8px;margin-top:18px}
+.painel .acoes button{flex:1}
+.painel .lim{background:none;border:0;color:var(--fraco);font-size:11.5px;
+  text-decoration:underline;cursor:pointer;margin-top:9px;padding:0}
+</style>
+</head>
+<body>
+<div class="folha">
+  <div class="topo">
+    <div class="marca" id="marca">SUA MARCA<small>MARCENARIA</small></div>
+    <div class="doc"><h1>Contrato de Prestação de Serviços — Cliente Final</h1><div class="cod">DOC-08</div></div>
+  </div>
+  <div class="regua"></div>
+  <p class="sub">Modelo para venda de móveis planejados ao consumidor final.</p>
+<div class="nota"><b>Antes de usar:</b> este é um modelo de referência, não uma peça pronta. Contrato produz obrigação — prazos, multas, garantias e foro precisam ser conferidos por advogado à luz da sua operação, do seu regime tributário e da legislação vigente. Preencher os campos não substitui essa revisão.</div><div class="jur"><div class="partes"><h3>Das partes</h3>
+<p><b>CONTRATADA:</b> <span class="pre" style="--w:200pt"></span>, pessoa jurídica de direito privado, inscrita no
+CNPJ sob o n.º <span class="pre" style="--w:120pt"></span>, com sede em <span class="pre" style="--w:230pt"></span>, neste ato representada por seu
+administrador <span class="pre" style="--w:180pt"></span>, portador da CIRG n.º <span class="pre" style="--w:90pt"></span> e inscrito no CPF sob o
+n.º <span class="pre" style="--w:110pt"></span>.</p>
+<p><b>CONTRATANTE:</b> <span class="pre" style="--w:200pt"></span>, portador(a) da CIRG n.º <span class="pre" style="--w:90pt"></span>, inscrito(a) no
+CPF sob o n.º <span class="pre" style="--w:110pt"></span>, residente e domiciliado(a) em <span class="pre" style="--w:250pt"></span>.</p>
+<p><b>LOCAL DA OBRA:</b> <span class="pre" style="--w:300pt"></span>.</p>
+</div><p>As partes acima identificadas têm, entre si, justo e acordado o presente Contrato de Prestação de Serviços, que se regerá pelas cláusulas e condições a seguir expostas.</p></div><div class="jur"><h2>DO OBJETO</h2><p class="cl">Cláusula Primeira: A CONTRATADA compromete-se a confeccionar, produzir, montar e instalar os móveis planejados referentes aos ambientes e especificações descritos no Anexo I.</p><p class="par">§ 1º: O contrato abrange a fabricação dos móveis conforme o projeto, caderno técnico e orçamento aprovados, incluindo a mão de obra completa de instalação, sem custos adicionais ao CONTRATANTE.</p><p class="par">§ 2º: O escopo dos serviços, ambientes, materiais e ferragens, bem como a lista de itens incluídos e não incluídos, é aquele descrito na Proposta Comercial e na Apresentação da Proposta, que integram este contrato como Anexos. O projeto definitivo e os detalhamentos internos serão desenvolvidos pela equipe técnica da CONTRATADA. <b>Qualquer item não expressamente previsto como incluído será considerado excluído</b>, ainda que conste do projeto arquitetônico do cliente.</p><h2>DO VALOR E DO PAGAMENTO</h2><p class="cl">Cláusula Segunda: Pelo objeto deste contrato, o CONTRATANTE pagará à CONTRATADA o valor total de R$ <span class="pre" style="--w:90pt"></span> (<span class="pre" style="--w:200pt"></span>).</p><p class="par">§ 1º: O pagamento será efetuado da seguinte forma: a) R$ <span class="pre" style="--w:80pt"></span> a título de entrada, no ato da assinatura, por transferência eletrônica; e b) R$ <span class="pre" style="--w:80pt"></span> em <span class="pre" style="--w:30pt"></span> parcelas mensais, iguais e sucessivas de R$ <span class="pre" style="--w:70pt"></span> cada, com vencimento da primeira em <span class="pre" style="--w:30pt"></span> dias corridos contados do pagamento da entrada.</p><p class="par">§ 2º: Os pagamentos deverão ser realizados nas datas estipuladas, independentemente do faturamento ou da entrega de notas fiscais.</p><p class="par">§ 3º: O inadimplemento de qualquer parcela acarretará o vencimento antecipado do saldo devedor, com multa moratória de <span class="pre" style="--w:30pt"></span>% sobre o valor em atraso, juros de mora de 1% ao mês pro rata die, correção monetária pelo IGP-M/FGV apenas com variação positiva, custas de cobrança e honorários advocatícios de <span class="pre" style="--w:30pt"></span>%, além da suspensão dos trabalhos até a quitação do débito.</p><p class="par">§ 4º: Caso o projeto aprovado seja modificado por solicitação ou com anuência do CONTRATANTE durante a execução, a CONTRATADA poderá atualizar o valor do contrato conforme a alteração, mediante aditivo contratual, podendo haver reajuste também do prazo de entrega.</p><p class="cl">Cláusula Terceira: O CONTRATANTE declara ter aprovado o memorial descritivo e o orçamento apresentados, mostrando-se de acordo com o projeto fornecido pela CONTRATADA.</p><h2>DA MEDIÇÃO, ELABORAÇÃO E ALTERAÇÃO DO CADERNO TÉCNICO</h2><p class="cl">Cláusula Quarta: A CONTRATADA compromete-se a concluir os serviços observando as disposições desta cláusula, que só poderão ser alteradas mediante acordo prévio e expresso entre as partes.</p><p class="par">§ 1º: A medição somente poderá ser solicitada quando os ambientes estiverem em condições adequadas, com execução prévia de piso, pedras, esquadrias e demais elementos construtivos necessários à aferição correta das dimensões.</p><p class="par">§ 2º: Quando determinado ambiente não previr a instalação de um desses elementos, bastará que os demais requisitos essenciais estejam concluídos — gesso, paredes, pontos elétricos e hidráulicos — para que a medição seja considerada viável.</p><p class="par">§ 3º: A partir da solicitação formal, a CONTRATADA terá <span class="pre" style="--w:30pt"></span> dias úteis para visitar a obra e verificar as condições. Estando adequadas, inicia-se novo prazo de <span class="pre" style="--w:30pt"></span> dias úteis para a conclusão da medição.</p><p class="par">§ 4º: Concluída a medição, a CONTRATADA terá <span class="pre" style="--w:30pt"></span> dias úteis para apresentar o Caderno Técnico Parcial dos ambientes medidos.</p><p class="par">§ 5º: Havendo ajustes solicitados pelo CONTRATANTE, a CONTRATADA apresentará nova versão em até <span class="pre" style="--w:30pt"></span> dias úteis contados da devolução com as observações. Enquanto pendentes definições do CONTRATANTE, o prazo fica suspenso.</p><p class="par">§ 6º: <b>O prazo de <span class="pre" style="--w:35pt"></span> dias úteis para produção, entrega e instalação somente se inicia após a aprovação definitiva e final do Caderno Técnico de todos os ambientes</b>, sem nenhuma pendência de revisão, confirmada expressamente e por escrito pelo CONTRATANTE.</p><p class="par">§ 7º: Impossibilidade superveniente não imputável à CONTRATADA — obra inacabada, restrição de acesso, ausência de responsável, interdição do local, falta de energia — suspende automaticamente o cômputo do prazo. Conforme a extensão da suspensão, o prazo poderá ser retomado do ponto em que parou ou recomeçar integralmente, sem que isso caracterize descumprimento contratual.</p><h2>DAS OBRIGAÇÕES DO CONTRATANTE</h2><p class="cl">Cláusula Quinta: Constituem obrigações do CONTRATANTE:</p><p class="par">a) <b>Disponibilizar o local pronto para a montagem</b>, concluído em obra civil, limpo e livre de entulhos. Adiada a montagem por obra inconclusa, nova data será agendada conforme disponibilidade da CONTRATADA, com carência de até <span class="pre" style="--w:30pt"></span> dias corridos. Não sendo possível instalar dentro da carência, incidirá multa moratória de <span class="pre" style="--w:35pt"></span>% do valor total da obra por dia de atraso na disponibilização do local, limitada a <span class="pre" style="--w:30pt"></span> dias.</p><p class="par">b) <b>Fornecer plantas e informações técnicas</b> — hidráulicas, elétricas, de aquecimento, refrigeração e gás. A ausência dessas informações desobriga a CONTRATADA de responsabilidade por danos a sistemas ocultos.</p><p class="par">c) <b>Acompanhar a montagem</b>, pessoalmente ou por pessoa de confiança indicada, nas datas e horários combinados.</p><p class="par">d) <b>Reconhecer as condições estruturais do local</b>: a CONTRATADA não responde por problemas decorrentes de reboco frágil, alvenaria de má qualidade, falta de prumo, desníveis acentuados ou falta de esquadro que inviabilizem a instalação.</p><h2>DAS OBRIGAÇÕES DA CONTRATADA</h2><p class="cl">Cláusula Sexta: Constituem obrigações da CONTRATADA:</p><p class="par">a) <b>Cumprimento de prazos</b>: atender, nos prazos ajustados, as solicitações referentes a fabricação, entrega, montagem e instalação, e prestar assistência técnica quanto a defeitos de fabricação. O atraso injustificado sujeita a CONTRATADA a multa de <span class="pre" style="--w:35pt"></span>% ao dia sobre o valor dos móveis em atraso, limitada a <span class="pre" style="--w:30pt"></span>% desse valor, além de juros de 1% ao mês pro rata die.</p><p class="par">b) <b>Comunicar caso fortuito ou força maior</b> por escrito, antes do vencimento do prazo, acordando novo prazo se necessário.</p><p class="par">c) <b>Qualidade na montagem</b>: executar com a melhor técnica e observando as normas de segurança, ressalvando-se que pequenos empenos, desníveis e desajustes são comuns na marcenaria pela natureza dos materiais e das construções, comprometendo-se a CONTRATADA a minimizá-los.</p><p class="par">d) <b>Responder por vícios e danos</b> decorrentes de fabricação, transporte ou montagem, procedendo aos reparos ou substituições dentro do prazo de garantia.</p><p class="par">e) <b>Materiais, mão de obra e garantia</b>: fornecer todos os materiais e a mão de obra especializada. A CONTRATADA concede garantia pelo prazo total de <span class="pre" style="--w:35pt"></span> anos contados da conclusão da montagem, assim detalhada: ferragens (dobradiças, corrediças, parafusos, suportes) <span class="pre" style="--w:30pt"></span> anos; trilhos e kits de portas de correr <span class="pre" style="--w:30pt"></span> anos; painéis de MDF <span class="pre" style="--w:30pt"></span> anos; fitas de borda <span class="pre" style="--w:30pt"></span> anos; fechaduras e trancas <span class="pre" style="--w:30pt"></span> anos.</p><p class="par">f) <b>Limitações da garantia</b>: não abrange mau uso ou uso inadequado — exposição excessiva à água ou à luz solar direta, cargas acima do especificado sobre bancadas, prateleiras, gavetas ou racks, e uso diverso do originalmente previsto. Nesses casos os reparos serão cobrados. A garantia não cobre alterações naturais de coloração dos materiais ao longo do tempo, nem danos por pragas ou infiltrações.</p><p class="par">g) <b>Conformidade com o projeto aprovado</b>: entregar conforme as especificações do projeto e do memorial descritivo aprovados.</p><p class="par">§ 1º: Alterações durante a execução somente com anuência prévia e expressa do CONTRATANTE, preferencialmente por aditivo escrito, sujeitas a reajuste de prazos e valores. A CONTRATADA reserva-se o direito de não acatar solicitações que comprometam a viabilidade técnica, estética ou o cronograma.</p><p class="par">§ 2º: Consideram-se caso fortuito ou força maior, exemplificativamente: eventos climáticos, greves que afetem transporte, interrupção de energia, problemas estruturais do prédio ou condomínio, elevadores inoperantes, interdições de acesso e defeito em material fornecido por terceiros. Nessas hipóteses os prazos são prorrogados pelo tempo necessário, sem multa contra a CONTRATADA.</p><h2>DA RESCISÃO</h2><p class="cl">Cláusula Sétima: Optando o CONTRATANTE por rescindir sem justificativa legal ou por mera conveniência, deverá ressarcir a CONTRATADA por todas as despesas já incorridas com materiais, fabricação e mão de obra, retendo-se no mínimo <span class="pre" style="--w:30pt"></span>% dos pagamentos realizados, sem prejuízo dessas despesas.</p><p class="par">§ Único: Havendo rescisão por justa causa motivada por descumprimento da outra parte, os valores pagos serão devolvidos à parte lesada, deduzidos os gastos comprovados com materiais e mão de obra até a data da rescisão.</p><h2>DO USO DA IMAGEM</h2><p class="cl">Cláusula Oitava: O CONTRATANTE autoriza, de forma gratuita e irrevogável, que a CONTRATADA fotografe, filme ou registre os produtos de marcenaria executados, podendo utilizar tais registros em portfólios, redes sociais, sites, catálogos, folders e demais meios de divulgação profissional.</p><p class="cl">Cláusula Nona: A autorização restringe-se à divulgação profissional da CONTRATADA, vedada a utilização para fins comerciais diversos.</p><p class="cl">Cláusula Décima: A CONTRATADA compromete-se a não divulgar dados pessoais, informações de segurança ou imagens que identifiquem diretamente o domicílio do CONTRATANTE.</p><p class="cl">Cláusula Décima Primeira: A CONTRATADA poderá mencionar fornecedores, marcas e parceiros envolvidos, desde que isso não implique obrigação de aquisição ou fidelidade por parte do CONTRATANTE.</p><h2>CONDIÇÕES DE INSTALAÇÃO</h2><p class="cl">Cláusula Décima Segunda: Solicitações de serviço adicional ou assistência técnica deverão ser feitas diretamente ao departamento responsável da CONTRATADA.</p><p class="cl">Cláusula Décima Terceira: A instalação somente será iniciada quando o ambiente atender, cumulativamente: (i) obra civil concluída, sem reformas em andamento; (ii) ambiente limpo e livre de entulhos e móveis antigos; (iii) acesso desobstruído ao imóvel, inclusive elevadores, escadas, vagas de carga e portaria; (iv) energia elétrica adequada para uso de ferramentas; (v) chave disponível ou pessoa autorizada a acompanhar os serviços.</p><p class="par">§ 1º: Não sendo possível instalar por ausência de qualquer dessas condições, a CONTRATADA suspenderá os trabalhos e aguardará regularização, reagendando conforme sua disponibilidade de agenda, sem que isso caracterize atraso contratual.</p><p class="par">§ 2º: Nesses casos o CONTRATANTE poderá responder por custos adicionais de deslocamento e logística, permanecendo obrigado ao pagamento na forma contratada.</p><p class="par">§ 3º: Enquanto o local não for disponibilizado em condições por culpa do CONTRATANTE ou de terceiros por ele contratados, os prazos ficam suspensos.</p><p class="par">§ 4º: Constatada impossibilidade ou risco excessivo para transporte das peças por escadas, elevadores ou vias de acesso, a CONTRATADA poderá recusar-se a realizá-lo, negociando as partes solução alternativa — içamento, munck, desmontagem parcial — cujos custos e prazos adicionais são de responsabilidade do CONTRATANTE.</p><p class="cl">Cláusula Décima Quarta: Alteração na obra civil ou nos pontos de instalação feita após a conferência de medidas, não prevista no projeto executivo, é de inteira responsabilidade do CONTRATANTE e pode implicar custos adicionais.</p><p class="cl">Cláusula Décima Quinta: Os instaladores da CONTRATADA não estão autorizados a executar serviços fora do escopo deste contrato, tais como instalações elétricas, hidráulicas ou adaptações em outros itens da obra.</p><p class="cl">Cláusula Décima Sexta: A instalação e conexão de aparelhos elétricos ou eletrônicos embutidos são de exclusiva responsabilidade do CONTRATANTE.</p><p class="cl"><b>Cláusula Décima Sétima: Após a assinatura do caderno técnico e a aprovação final do projeto, este passa a ser definitivo e imutável.</b> Fica vedada qualquer alteração de medidas, layout, materiais, acabamentos ou estrutura, salvo aditivo contratual escrito e assinado por ambas as partes, no qual serão ajustados os novos prazos e valores.</p><h2>DISPOSIÇÕES FINAIS</h2><p class="cl">Cláusula Décima Oitava: A tolerância de uma parte quanto ao descumprimento de cláusulas deste contrato não configura novação ou renúncia, sendo mera liberalidade.</p><p class="cl">Cláusula Décima Nona: Fica eleito o Foro da Comarca de <span class="pre" style="--w:160pt"></span> para dirimir quaisquer dúvidas ou litígios oriundos deste contrato, com renúncia a qualquer outro.</p><p class="par">As Partes admitem como válida a assinatura física ou eletrônica, com utilização de certificados digitais emitidos ou não pela ICP-Brasil, na forma do artigo 10 da MP n.º 2.200-2/2001.</p></div><div class="jur"><p style="margin-top:11pt;font-size:9.5pt"><span class="pre" style="--w:160pt"></span>, <span class="pre" style="--w:30pt"></span> de <span class="pre" style="--w:110pt"></span> de <span class="pre" style="--w:50pt"></span>.</p></div><div class="assina"><h2>Assinaturas</h2><div class="g n2"><div class="f"><b>CONTRATADA</b><span>Razão social, CNPJ e representante</span></div><div class="f"><b>CONTRATANTE</b><span>Nome e CPF</span></div></div></div><h3 style="margin-top:13pt">Testemunhas</h3><table><thead><tr><th style="width:46%">Nome</th><th style="width:26%">CPF</th><th>Assinatura</th></tr></thead><tbody><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>
+  <div class="rodape"><span>DOC-08 · versão 1.0</span>
+    <span><span data-empresa>Sua Marca</span> · <span data-cidade>Cidade / UF</span></span></div>
+</div>
+
+<div class="barra naoimprime">
+  <button class="sec" onclick="abrirMarca()">Personalizar marca</button>
+  <button onclick="window.print()">Imprimir / Salvar em PDF</button>
+</div>
+<div class="painel naoimprime" id="painel">
+  <div class="cx">
+    <h4>Coloque a sua marca</h4>
+    <p class="aj">Preencha uma vez: vale para os sete documentos neste navegador.
+       Envie um logo em PNG ou JPG, ou deixe em branco para usar o nome em texto.</p>
+    <label>Nome da empresa</label>
+    <input type="text" id="f_nome" placeholder="Sua Marcenaria">
+    <label>Linha de apoio</label>
+    <input type="text" id="f_sub" placeholder="MARCENARIA">
+    <label>Cidade / UF</label>
+    <input type="text" id="f_cidade" placeholder="Campo Grande / MS">
+    <label>Logo (opcional)</label>
+    <input type="file" id="f_logo" accept="image/png,image/jpeg,image/svg+xml">
+    <button class="lim" onclick="limparLogo()">remover logo e voltar ao nome em texto</button>
+    <div class="acoes">
+      <button class="sec" onclick="fecharMarca()">Cancelar</button>
+      <button onclick="salvarMarca()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var CHAVE='lkn-doc-marca';
+  var pad={nome:'SUA MARCA',sub:'MARCENARIA',cidade:'Cidade / UF',logo:''};
+  function ler(){try{return Object.assign({},pad,JSON.parse(localStorage.getItem(CHAVE)||'{}'))}
+                 catch(e){return Object.assign({},pad)}}
+  function aplicar(){
+    var m=ler(), alvo=document.getElementById('marca');
+    alvo.innerHTML = m.logo
+      ? '<img src="'+m.logo+'" alt="">'
+      : m.nome+'<small>'+m.sub+'</small>';
+    document.querySelectorAll('[data-empresa]').forEach(function(e){e.textContent=m.nome});
+    document.querySelectorAll('[data-cidade]').forEach(function(e){e.textContent=m.cidade});
+    ['nome','sub','cidade'].forEach(function(k){
+      var i=document.getElementById('f_'+k); if(i) i.value=m[k];
+    });
+  }
+  window.abrirMarca=function(){document.getElementById('painel').classList.add('on')};
+  window.fecharMarca=function(){document.getElementById('painel').classList.remove('on')};
+  window.salvarMarca=function(){
+    var m=ler();
+    m.nome=document.getElementById('f_nome').value.trim()||pad.nome;
+    m.sub=document.getElementById('f_sub').value.trim();
+    m.cidade=document.getElementById('f_cidade').value.trim()||pad.cidade;
+    var f=document.getElementById('f_logo').files[0];
+    if(f){
+      var r=new FileReader();
+      r.onload=function(){m.logo=r.result;localStorage.setItem(CHAVE,JSON.stringify(m));
+                          aplicar();fecharMarca()};
+      r.readAsDataURL(f); return;
+    }
+    localStorage.setItem(CHAVE,JSON.stringify(m));aplicar();fecharMarca();
+  };
+  window.limparLogo=function(){
+    var m=ler();m.logo='';localStorage.setItem(CHAVE,JSON.stringify(m));aplicar();
+  };
+  document.addEventListener('DOMContentLoaded',aplicar);
+})();
+</script>
+</body>
+</html>
