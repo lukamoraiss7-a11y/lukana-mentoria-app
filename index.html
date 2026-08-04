@@ -520,15 +520,13 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
 </div>
 <script>
 const F=[
-  {id:"app",name:"Ferramentas APM (app)",url:"ferramentas.html",type:"html",desc:"As 9 planilhas em um app só: você lança os números e ele devolve diagnóstico, semáforo e o que fazer hoje. Financeiro, precificação, KPI 25/50/75/100, kanban, PCP, checklists, CRM e estoque.",mods:[1,2,3],sz:""},
+  {id:"app",name:"Ferramentas APM",url:"ferramentas.html",type:"html",destaque:true,desc:"As 9 planilhas em um app só: você lança os números e ele devolve diagnóstico, semáforo e o que fazer hoje. Financeiro, precificação, KPI 25/50/75/100, kanban, PCP, checklists, CRM e estoque.",mods:[1,2,3],sz:""},
   {id:"d",name:"Diagnóstico Financeiro",file:"diagnostico_financeiro_pro.xlsx",type:"xlsx",desc:"Mapeamento completo do financeiro: custos, margem e estrutura.",mods:[1],sz:"21 KB"},
   {id:"p",name:"Precificação v2",file:"precificacao_pro.xlsx",type:"xlsx",desc:"Calculadora de preço por m² + complexidade + variáveis.",mods:[1],sz:"12 KB"},
   {id:"c",name:"CRM Simplificado",file:"crm_simplificado_pro.xlsx",type:"xlsx",desc:"Gestão de leads, funil comercial e acompanhamento por origem.",mods:[2],sz:"11 KB"},
   {id:"pcp",name:"PCP Simplificado",file:"pcp_simplificado_pro.xlsx",type:"xlsx",desc:"Controle de projetos, etapas e cronograma 60 dias úteis.",mods:[3],sz:"12 KB"},
   {id:"k",name:"Painel de Indicadores",file:"painel_indicadores_pro.xlsx",type:"xlsx",desc:"KPI 25/50/75/100 + aderência ao cronograma + comercial.",mods:[3],sz:"13 KB"},
   {id:"e",name:"Controle de Estoque",file:"controle_estoque_pro.xlsx",type:"xlsx",desc:"Gestão de material: entrada, saída e estoque mínimo por item.",mods:[3],sz:"14 KB"},
-  {id:"f",name:"FAB — Maquinário",file:"FAB-mach.pdf",type:"pdf",desc:"Referência técnica de maquinário para marcenaria.",mods:[3],sz:"138 KB"},
-  {id:"r",name:"Projeto Mentoria",file:"Projeto_Mentoria_Marceneiros.pdf",type:"pdf",desc:"Documento de estrutura e visão geral da mentoria.",mods:[],sz:"6 KB"},
   {id:"fx",name:"Fluxograma Produtivo",url:"apm-fluxograma.html",type:"html",desc:"Do caderno técnico aprovado à entrega em obra — cada etapa, responsável e prazo esperado.",mods:[3],sz:""},
   {id:"chk",name:"Checklist por Etapa",file:"checklist_por_etapa_pro.xlsx",type:"xlsx",desc:"Verificação por etapa (corte, pré-montagem, expedição, instalação) — elimina retrabalho na origem.",mods:[3],sz:"12 KB"},
   {id:"kan",name:"Kanban de Produção",file:"kanban_producao_pro.xlsx",type:"xlsx",desc:"Quadro visual por ambiente/projeto nos 9 checkpoints de fábrica e obra.",mods:[3],sz:"9 KB"},
@@ -714,13 +712,19 @@ function renderMat(){
   const adm=getAdminData();
   const admMats=adm.materials||[];
   const bm={};
-  F.filter(f=>f.mods.length).forEach(f=>f.mods.forEach(id=>{(bm[id]=bm[id]||[]).push(f);}));
+  /* O app tem bloco proprio no topo. Sem isso ele repetia em tres fases na
+     lista de materiais. Dentro de cada fase (smd) ele continua aparecendo. */
+  const destaque=F.filter(f=>f.destaque);
+  F.filter(f=>!f.destaque&&f.mods.length).forEach(f=>f.mods.forEach(id=>{(bm[id]=bm[id]||[]).push(f);}));
   admMats.filter(f=>f.faseId!==''&&f.faseId!==null&&f.faseId!==undefined).forEach(f=>{
     const id=parseInt(f.faseId);if(!isNaN(id)){(bm[id]=bm[id]||[]).push({...f,_isAdm:true});}
   });
-  const gn=F.filter(f=>!f.mods.length);
+  const gn=F.filter(f=>!f.destaque&&!f.mods.length);
   const gnAdm=admMats.filter(f=>f.faseId===''||f.faseId===null||f.faseId===undefined);
   let h='';
+  if(destaque.length){
+    h+=`<div style="margin-bottom:26px;"><div class="mh"><span style="font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#C9A84C;border:1px solid rgba(201,168,76,.35);padding:2px 8px;border-radius:4px;">APP</span><span class="mtn" style="margin-left:9px;">A ferramenta</span></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;">${destaque.map(f=>fcrd(f,false)).join('')}</div></div>`;
+  }
   Object.keys(bm).map(Number).sort((a,b)=>a-b).forEach(id=>{
     const mi=M[id];if(!mi)return;
     const lbl=mi.id<6?'F'+(mi.id+1):'B'+(mi.id-5);
