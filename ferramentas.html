@@ -1620,6 +1620,34 @@ function msgGate(m,t){
  const el=$('#gmsg');if(!el)return;
  el.innerHTML=`<div class="alert a-${t==='red'?'red':'blu'}"><span class="ic">${t==='red'?'🔴':'🔵'}</span><div>${esc(m)}</div></div>`;
 }
+/* ══════════ NIVEL 2: O UPSELL ══════════
+   Ter conta da acesso as aulas, nao as ferramentas. Quem libera e o
+   Luka, inserindo linha em `acesso` com ferramentas = true. Sem esta
+   checagem, todo aluno da mentoria entraria aqui de graca. */
+async function temFerramentas(){
+ const {data,error}=await sb.from('acesso').select('ferramentas').eq('user_id',USER.id).maybeSingle();
+ if(error){
+  /* Tabela ausente ou politica errada. Falhamos fechado de proposito:
+     liberar no erro transforma qualquer problema de banco em porta
+     aberta, e silenciosa. A mensagem diz o que fazer. */
+  console.error('acesso',error);
+  return {ok:false,infra:error.message};
+ }
+ return {ok:!!(data&&data.ferramentas)};
+}
+function telaSemAcesso(infra){
+ document.body.insertAdjacentHTML('beforeend',`
+ <div class="gate" id="gate"><div class="gate-box">
+  <div class="gate-brand"><div class="sb-icon">A</div>
+   <div><div class="sb-name">APM</div><div class="sb-sub">Ferramentas</div></div></div>
+  <h1>${infra?'Acesso indisponível':'Seu plano não inclui as ferramentas'}</h1>
+  <p>${infra
+    ? 'Não foi possível confirmar seu acesso. Se você é o administrador: rode o <b>supabase-setup.sql</b> no SQL Editor — a tabela <code>acesso</code> e as políticas precisam existir.<br><br><span style="opacity:.6">'+esc(infra)+'</span>'
+    : 'O app de ferramentas é um módulo separado da mentoria. Sua conta tem acesso às aulas e aos materiais, mas não às ferramentas.<br><br>Para liberar, fale com o instrutor.'}</p>
+  <button class="btn" onclick="sair()">Sair da conta</button>
+ </div></div>`);
+}
+
 async function sair(){
  if(!confirm('Sair da conta neste navegador?'))return;
  await sb.auth.signOut();
@@ -1647,6 +1675,8 @@ function iniciarUI(){
  try{ sess=(await sb.auth.getSession()).data.session }catch(e){ console.error(e) }
  if(!sess){telaLogin();return}
  USER=sess.user;REMOTO=true;
+ const acc=await temFerramentas();
+ if(!acc.ok){telaSemAcesso(acc.infra);return}
  try{ await puxar() }
  catch(e){ SYNC='bad';console.error('load',e);
    alert('Entrou, mas não consegui carregar seus dados do servidor. Usando o que está neste navegador. Se o problema persistir, confira se a tabela e as políticas de acesso foram criadas.') }

@@ -6,6 +6,7 @@
 <title>APM — Alta Performance na Marcenaria | Área de Membros</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.111.0/dist/umd/supabase.min.js"></script>
 <style>
 :root {
   --navy:#0F0F0F;--navy-light:#1A1A1A;--navy-mid:#242424;--navy-deep:#0F0F0F;
@@ -261,6 +262,20 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
 .adm-btn{background:var(--accent);color:#0F0F0F;font-family:'Inter',sans-serif;font-size:12px;font-weight:700;border:none;border-radius:4px;padding:10px 20px;cursor:pointer;letter-spacing:.5px;text-transform:uppercase;width:100%;}
 .adm-btn:hover{opacity:.9;}
 .adm-err{font-size:11px;color:var(--vermelho);margin-top:8px;}
+
+/* Porta de entrada do aluno. Cobre a tela inteira ate haver sessao:
+   o conteudo da area de membros nao chega a ser montado sem login. */
+.gate{position:fixed;inset:0;background:var(--navy);display:flex;align-items:center;justify-content:center;padding:24px;z-index:999;}
+.gate-box{background:var(--navy-light);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:36px 32px;width:400px;max-width:100%;}
+.gate-mark{font-size:9px;font-weight:700;letter-spacing:3.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;}
+.gate-box h1{font-size:20px;font-weight:600;color:var(--text-primary);margin-bottom:8px;}
+.gate-box p{font-size:12.5px;line-height:1.55;color:var(--text-secondary);margin-bottom:20px;}
+.gate-lbl{display:block;font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;}
+.gate-msg{font-size:12px;line-height:1.5;margin-top:14px;padding:10px 12px;border-radius:4px;display:none;}
+.gate-msg.on{display:block;}
+.gate-msg.ok{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);color:#86efac;}
+.gate-msg.err{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#fca5a5;}
+.gate-foot{font-size:11px;color:var(--text-muted);margin-top:18px;line-height:1.5;}
 .adm-tabs{display:flex;gap:0;margin-bottom:20px;border-bottom:1px solid #333;}
 .adm-tab{font-size:12px;font-weight:500;color:var(--text-muted);padding:10px 16px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s;}
 .adm-tab.on{color:var(--accent);border-bottom-color:var(--accent);}
@@ -320,6 +335,12 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
       <div class="nav-it"><svg class="nav-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12.5V14l1.5-.5L6 12H12a1 1 0 001-1V4a1 1 0 00-1-1H4a1 1 0 00-1 1v7a1 1 0 001 1z" stroke-linejoin="round"/></svg>Suporte</div>
       <div class="nav-it" id="nav-admin" style="display:none;" onclick="sv('admin')"><svg class="nav-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="7" width="10" height="8" rx="1"/><path d="M5 7V5a3 3 0 016 0v2"/></svg>Admin</div>
     </nav>
+    <div class="sb-lock">
+      <button class="lock-btn" onclick="sairConta()" title="Sair da conta neste navegador">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 14H3a1 1 0 01-1-1V3a1 1 0 011-1h3"/><path d="M10.5 5L13.5 8l-3 3"/><path d="M13.5 8H6"/></svg>
+        <span>Sair</span>
+      </button>
+    </div>
     <div class="sb-lock">
       <button class="lock-btn" id="lock-btn" onclick="toggleAdmin()">
         <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="7" width="10" height="8" rx="1"/><path d="M5 7V5a3 3 0 016 0v2"/></svg>
@@ -988,14 +1009,84 @@ function renderAdminLists(){
     :`<div class="adm-empty">Nenhum comentário adicionado ainda.</div>`;
 }
 
-// Restore admin state on load
-if(isAdmin()){
-  document.getElementById('lock-btn').classList.add('active');
-  document.getElementById('lock-label').textContent='Admin Ativo';
-  document.getElementById('nav-admin').style.display='flex';
+/* ══════════ ACESSO DO ALUNO ══════════
+   Mesma conta do app de ferramentas: um Supabase, um login. O que
+   separa os dois produtos e a tabela `acesso`, checada la, nao aqui —
+   aqui basta ter conta, porque as aulas sao o nivel 1. */
+const SUPA={
+  url : 'https://frqoxmerrfucprtgvghm.supabase.co',
+  anon: 'sb_publishable_RqQh3AFRXdYPvElZglLCHA_76PbkpmG'   // chave PUBLICAVEL, nunca a sb_secret_
+};
+let sb=null, ALUNO=null;
+
+function telaLogin(msg,tipo){
+  const app=document.querySelector('.app'); if(app)app.style.display='none';
+  document.body.insertAdjacentHTML('beforeend',`
+  <div class="gate" id="gate"><div class="gate-box">
+    <div class="gate-mark">Ecossistema Aresta</div>
+    <h1>Área de Membros</h1>
+    <p>Acesso exclusivo dos alunos da mentoria. Informe o e-mail do seu cadastro —
+       enviamos um link de acesso, sem senha.</p>
+    <label class="gate-lbl" for="ge">E-mail</label>
+    <input class="adm-input" id="ge" type="email" placeholder="voce@email.com.br" autocomplete="email">
+    <button class="adm-btn" id="gb" onclick="enviarLink()">Receber link de acesso</button>
+    <div class="gate-msg ${tipo||''} ${msg?'on':''}" id="gmsg">${msg||''}</div>
+    <div class="gate-foot">Não recebeu? O link pode cair em promoções ou spam.
+       Abra o e-mail nesta mesma máquina.</div>
+  </div></div>`);
+  const i=document.getElementById('ge');
+  if(i){i.focus();i.addEventListener('keydown',e=>{if(e.key==='Enter')enviarLink()});}
+}
+function msgGate(m,t){
+  const el=document.getElementById('gmsg');if(!el)return;
+  el.textContent=m;el.className='gate-msg on '+(t||'');
+}
+async function enviarLink(){
+  const em=(document.getElementById('ge').value||'').trim();
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){msgGate('E-mail inválido.','err');return;}
+  const b=document.getElementById('gb');
+  b.disabled=true;b.textContent='Enviando…';
+  const {error}=await sb.auth.signInWithOtp({email:em,options:{emailRedirectTo:location.href.split('#')[0]}});
+  b.disabled=false;b.textContent='Receber link de acesso';
+  if(error){msgGate('Não foi possível enviar: '+error.message,'err');return;}
+  msgGate('Link enviado para '+em+'. Abra o e-mail e clique no link.','ok');
+}
+async function sairConta(){
+  if(!confirm('Sair da conta neste navegador?'))return;
+  await sb.auth.signOut();location.reload();
 }
 
-init();sv('dashboard');
+async function boot(){
+  if(!window.supabase){
+    /* Sem a biblioteca nao ha como validar sessao. Fechar e o certo:
+       liberar por conveniencia entregaria a area inteira a qualquer um. */
+    telaLogin('Não foi possível carregar o login. Recarregue a página.','err');
+    return;
+  }
+  sb=window.supabase.createClient(SUPA.url,SUPA.anon);
+  let sess=null;
+  try{ sess=(await sb.auth.getSession()).data.session; }catch(e){ console.error(e); }
+  if(!sess){telaLogin();return;}
+  ALUNO=sess.user;
+  /* Sessao valida: desfaz o que o gate tenha escondido. Sem isto, entrar
+     depois de a tela de login ter aparecido deixa a area em branco. */
+  const g=document.getElementById('gate'); if(g)g.remove();
+  const app=document.querySelector('.app'); if(app)app.style.display='';
+
+  const av=document.querySelector('.u-av'), nm=document.querySelector('.u-name');
+  if(av)av.textContent=(ALUNO.email||'?').charAt(0).toUpperCase();
+  if(nm)nm.textContent=ALUNO.email;
+
+  // Restore admin state on load
+  if(isAdmin()){
+    document.getElementById('lock-btn').classList.add('active');
+    document.getElementById('lock-label').textContent='Admin Ativo';
+    document.getElementById('nav-admin').style.display='flex';
+  }
+  init();sv('dashboard');
+  sb.auth.onAuthStateChange(ev=>{if(ev==='SIGNED_OUT')location.reload();});
+}
+boot();
 </script>
 </body>
 </html>
