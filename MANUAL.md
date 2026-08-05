@@ -7,7 +7,11 @@ Endereço: **mentoria-app-self.vercel.app**
 
 ## Antes da primeira turma — três coisas, nesta ordem
 
-### 1. Rodar o SQL (uma vez, 2 minutos)
+### 1. Rodar o SQL — ✅ **FEITO em 05/08/2026**
+
+Já executado em produção e conferido: as três tabelas com RLS ligado, as três funções
+fora do alcance dos alunos, e `lukamoraiss7@gmail.com` como admin. **Não precisa rodar
+de novo** — o passo abaixo fica como referência para reinstalar ou conferir.
 
 Sem isso o app de ferramentas bloqueia todo mundo — de propósito, porque liberar
 quando o banco falha vira porta aberta silenciosa.
@@ -47,15 +51,14 @@ para entrar — e ninguém vê mensagem de erro, só uma caixa de entrada vazia.
 
 **Não abra turma sem isso.** É a falha que estraga o primeiro dia.
 
-### 3. Tornar sua conta administradora
+### 3. Tornar sua conta administradora — ✅ **FEITO em 05/08/2026**
 
-Primeiro crie a sua própria conta (passo abaixo), depois rode no SQL Editor:
+`lukamoraiss7@gmail.com` já é admin e já tem as ferramentas. Para tornar outra conta
+admin no futuro:
 
 ```sql
-select public.tornar_admin('seu@email.com');
+select public.tornar_admin('outro@email.com');
 ```
-
-Isso já te dá as ferramentas junto.
 
 ---
 
