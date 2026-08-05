@@ -423,15 +423,17 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
         <div id="adm-login-area" style="display:none;">
           <div class="adm-login">
             <div class="adm-login-title">Acesso Administrador</div>
-            <input type="password" class="adm-input" id="adm-pwd" placeholder="Senha" onkeydown="if(event.key==='Enter')doLogin()">
-            <button class="adm-btn" onclick="doLogin()">Entrar</button>
-            <div class="adm-err" id="adm-err" style="display:none;">Senha incorreta.</div>
+            <p style="font-size:12.5px;line-height:1.6;color:var(--text-secondary);">
+              Esta conta não é administradora. Para tornar uma conta admin, rode no
+              SQL Editor do Supabase:<br><br>
+              <code style="color:var(--accent);font-size:12px;">select public.tornar_admin('voce@email.com');</code>
+            </p>
           </div>
         </div>
         <div id="adm-panel-area" style="display:none;">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
             <div style="font-family:'Inter',sans-serif;font-size:24px;font-weight:700;">Painel Admin</div>
-            <button class="bg" onclick="adminLogout()">Sair do Admin</button>
+            <div style="font-size:11px;color:var(--text-muted);">Publicado para todos os alunos</div>
           </div>
           <div class="adm-tabs">
             <div class="adm-tab on" onclick="admTab('materiais',this)">Materiais</div>
@@ -866,41 +868,44 @@ function sv(name){
   document.querySelector('.content').scrollTop=0;
 }
 
-/* ---- ADMIN ---- */
-const ADM_PASS='apm2026';
-function isAdmin(){return localStorage.getItem('apm_admin_auth')==='1';}
-function getAdminData(){try{return JSON.parse(localStorage.getItem('apm_admin_data')||'{}');}catch(e){return {};}}
-function saveAdminData(d){localStorage.setItem('apm_admin_data',JSON.stringify(d));}
+/* ---- ADMIN ----
+   Ser admin e uma flag na conta do Supabase (`acesso.admin`), nao uma
+   senha no HTML. E o que o admin publica vai para a tabela `conteudo`,
+   que todo aluno le — antes ficava no localStorage dele e nao chegava
+   a ninguem. A trava real esta na politica do banco; esconder o botao
+   aqui e so cortesia visual. */
+let EH_ADMIN=false;
+let CONTEUDO={materials:[],videos:[],links:[],comments:[]};
 
-function toggleAdmin(){
-  if(isAdmin()){if(confirm('Sair do modo admin?'))adminLogout();}
-  else sv('admin');
+function isAdmin(){return EH_ADMIN;}
+function getAdminData(){return CONTEUDO;}
+
+/* Uma linha do banco no formato que as telas ja esperam. */
+function daLinha(r){return Object.assign({},r.dados,{_id:r.id,faseId:r.fase_id});}
+
+async function carregarConteudo(){
+  const vazio={materials:[],videos:[],links:[],comments:[]};
+  const {data,error}=await sb.from('conteudo').select('id,tipo,fase_id,dados').order('criado_em');
+  if(error){console.error('conteudo',error);CONTEUDO=vazio;return;}
+  const fora=Object.assign({},vazio);
+  (data||[]).forEach(r=>{if(fora[r.tipo])fora[r.tipo].push(daLinha(r));});
+  CONTEUDO=fora;
+}
+async function publicar(tipo,faseId,dados){
+  const {data,error}=await sb.from('conteudo')
+    .insert({tipo,fase_id:faseId===''?null:String(faseId),dados}).select('id,tipo,fase_id,dados').single();
+  if(error){alert('Não foi possível publicar: '+error.message);return false;}
+  CONTEUDO[tipo].push(daLinha(data));
+  return true;
+}
+async function despublicar(tipo,id){
+  const {error}=await sb.from('conteudo').delete().eq('id',id);
+  if(error){alert('Não foi possível remover: '+error.message);return false;}
+  CONTEUDO[tipo]=CONTEUDO[tipo].filter(i=>i._id!==id);
+  return true;
 }
 
-function doLogin(){
-  const pwd=document.getElementById('adm-pwd').value;
-  if(pwd===ADM_PASS){
-    localStorage.setItem('apm_admin_auth','1');
-    document.getElementById('adm-err').style.display='none';
-    document.getElementById('adm-pwd').value='';
-    document.getElementById('lock-btn').classList.add('active');
-    document.getElementById('lock-label').textContent='Admin Ativo';
-    document.getElementById('nav-admin').style.display='flex';
-    document.getElementById('adm-login-area').style.display='none';
-    document.getElementById('adm-panel-area').style.display='block';
-    renderAdminLists();
-  } else {
-    document.getElementById('adm-err').style.display='block';
-  }
-}
-
-function adminLogout(){
-  localStorage.removeItem('apm_admin_auth');
-  document.getElementById('lock-btn').classList.remove('active');
-  document.getElementById('lock-label').textContent='Acesso Admin';
-  document.getElementById('nav-admin').style.display='none';
-  sv('dashboard');
-}
+function toggleAdmin(){sv('admin');}
 
 function admTab(name,el){
   document.querySelectorAll('.adm-tab').forEach(t=>t.classList.remove('on'));
@@ -909,73 +914,61 @@ function admTab(name,el){
   document.getElementById('adm-'+name).classList.add('on');
 }
 
-function uid(){return Math.random().toString(36).slice(2,10);}
-
-function admAddMaterial(){
+async function admAddMaterial(){
   const name=document.getElementById('am-name').value.trim();
   const url=document.getElementById('am-url').value.trim();
   const desc=document.getElementById('am-desc').value.trim();
   const type=document.getElementById('am-type').value;
   const faseId=document.getElementById('am-fase').value;
   if(!name||!url){alert('Nome e URL são obrigatórios.');return;}
-  const d=getAdminData();d.materials=d.materials||[];
-  d.materials.push({_id:uid(),name,url,desc,type,faseId,sz:'',addedAt:new Date().toISOString()});
-  saveAdminData(d);
+  if(!await publicar('materials',faseId,{name,url,desc,type,sz:''}))return;
   document.getElementById('am-name').value='';
   document.getElementById('am-url').value='';
   document.getElementById('am-desc').value='';
   renderAdminLists();renderMat();
 }
 
-function admAddVideo(){
+async function admAddVideo(){
   const title=document.getElementById('av-title').value.trim();
   const url=document.getElementById('av-url').value.trim();
   const faseId=document.getElementById('av-fase').value;
   if(!title||!url){alert('Título e URL são obrigatórios.');return;}
-  const d=getAdminData();d.videos=d.videos||[];
-  d.videos.push({_id:uid(),title,url,faseId,addedAt:new Date().toISOString()});
-  saveAdminData(d);
+  if(!await publicar('videos',faseId,{title,url}))return;
   document.getElementById('av-title').value='';
   document.getElementById('av-url').value='';
   renderAdminLists();
 }
 
-function admAddLink(){
+async function admAddLink(){
   const title=document.getElementById('al-title').value.trim();
   const url=document.getElementById('al-url').value.trim();
   const desc=document.getElementById('al-desc').value.trim();
   const faseId=document.getElementById('al-fase').value;
   if(!title||!url){alert('Título e URL são obrigatórios.');return;}
-  const d=getAdminData();d.links=d.links||[];
-  d.links.push({_id:uid(),title,url,desc,faseId,addedAt:new Date().toISOString()});
-  saveAdminData(d);
+  if(!await publicar('links',faseId,{title,url,desc}))return;
   document.getElementById('al-title').value='';
   document.getElementById('al-url').value='';
   document.getElementById('al-desc').value='';
   renderAdminLists();
 }
 
-function admAddComment(){
+async function admAddComment(){
   const text=document.getElementById('ac-text').value.trim();
   const faseId=document.getElementById('ac-fase').value;
   if(!text){alert('Texto é obrigatório.');return;}
-  const d=getAdminData();d.comments=d.comments||[];
-  d.comments.push({_id:uid(),text,faseId,addedAt:new Date().toISOString()});
-  saveAdminData(d);
+  if(!await publicar('comments',faseId,{text}))return;
   document.getElementById('ac-text').value='';
   renderAdminLists();
 }
 
-function admDel(type,id){
-  const d=getAdminData();
-  d[type]=(d[type]||[]).filter(i=>i._id!==id);
-  saveAdminData(d);renderAdminLists();renderMat();
+async function admDel(type,id){
+  if(!await despublicar(type,id))return;
+  renderAdminLists();renderMat();
 }
 
-function admDelMatSec(id){
-  const d=getAdminData();
-  d.materials=(d.materials||[]).filter(i=>i._id!==id);
-  saveAdminData(d);renderMat();
+async function admDelMatSec(id){
+  if(!await despublicar('materials',id))return;
+  renderMat();
 }
 
 function faseLabel(fid){
@@ -1077,7 +1070,14 @@ async function boot(){
   if(av)av.textContent=(ALUNO.email||'?').charAt(0).toUpperCase();
   if(nm)nm.textContent=ALUNO.email;
 
-  // Restore admin state on load
+  /* Quem e admin, e o que ja foi publicado. Se a consulta falhar, segue
+     como aluno comum e sem conteudo extra — o app abre de qualquer jeito. */
+  try{
+    const {data}=await sb.from('acesso').select('admin').eq('user_id',ALUNO.id).maybeSingle();
+    EH_ADMIN=!!(data&&data.admin);
+  }catch(e){ console.error('acesso',e); }
+  await carregarConteudo();
+
   if(isAdmin()){
     document.getElementById('lock-btn').classList.add('active');
     document.getElementById('lock-label').textContent='Admin Ativo';

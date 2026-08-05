@@ -128,11 +128,82 @@ revoke all on function public.liberar_ferramentas(text, text) from public, anon,
 revoke all on function public.bloquear_ferramentas(text)       from public, anon, authenticated;
 
 -- ═══════════════════════════════════════════════════════════════
+-- ADMIN DE VERDADE
+--
+-- Antes a senha do painel estava escrita no HTML público, e o que
+-- era cadastrado por ele ficava no localStorage do próprio navegador
+-- — ou seja, nenhum aluno via. Agora admin é uma flag na conta.
+--
+--   select public.tornar_admin('voce@email.com');
+-- ═══════════════════════════════════════════════════════════════
+alter table public.acesso add column if not exists admin boolean not null default false;
+
+create or replace function public.tornar_admin(p_email text)
+returns text
+language plpgsql
+security definer
+set search_path = public, auth
+as $$
+declare v_id uuid;
+begin
+  select id into v_id from auth.users where lower(email) = lower(trim(p_email));
+  if v_id is null then
+    return 'nao encontrei usuario com o e-mail ' || p_email;
+  end if;
+  insert into public.acesso (user_id, ferramentas, admin, liberado_em)
+       values (v_id, true, true, now())
+  on conflict (user_id) do update
+    set admin = true, ferramentas = true;
+  return p_email || ' agora e admin e tem as ferramentas';
+end $$;
+
+revoke all on function public.tornar_admin(text) from public, anon, authenticated;
+
+
+-- ═══════════════════════════════════════════════════════════════
+-- CONTEÚDO PUBLICADO — o que o admin cadastra e todo aluno vê
+--
+-- Uma linha por item. `dados` guarda o payload de cada tipo, então
+-- acrescentar campo no futuro não pede migração.
+-- ═══════════════════════════════════════════════════════════════
+create table if not exists public.conteudo (
+  id        uuid primary key default gen_random_uuid(),
+  tipo      text        not null check (tipo in ('materials','videos','links','comments')),
+  fase_id   text,
+  dados     jsonb       not null default '{}'::jsonb,
+  criado_em timestamptz not null default now()
+);
+
+alter table public.conteudo enable row level security;
+
+drop policy if exists "aluno le o conteudo"     on public.conteudo;
+drop policy if exists "admin publica conteudo"  on public.conteudo;
+drop policy if exists "admin remove conteudo"   on public.conteudo;
+
+-- Qualquer aluno logado lê. É esse o ponto: o que você publica chega.
+create policy "aluno le o conteudo"
+  on public.conteudo for select to authenticated
+  using (true);
+
+-- Escrever, só admin. A checagem é no banco, não no navegador —
+-- botão escondido no front não é controle de acesso.
+create policy "admin publica conteudo"
+  on public.conteudo for insert to authenticated
+  with check (exists (select 1 from public.acesso a
+                       where a.user_id = auth.uid() and a.admin));
+
+create policy "admin remove conteudo"
+  on public.conteudo for delete to authenticated
+  using (exists (select 1 from public.acesso a
+                  where a.user_id = auth.uid() and a.admin));
+
+
+-- ═══════════════════════════════════════════════════════════════
 -- Conferência. As duas tabelas precisam vir com rowsecurity = true,
 -- e as duas funções não podem ter EXECUTE para authenticated.
 -- ═══════════════════════════════════════════════════════════════
 -- select tablename, rowsecurity from pg_tables
---  where tablename in ('dados','acesso');
+--  where tablename in ('dados','acesso','conteudo');
 --
 -- select p.proname, has_function_privilege('authenticated', p.oid, 'execute') as aluno_executa
 --   from pg_proc p join pg_namespace n on n.oid = p.pronamespace
