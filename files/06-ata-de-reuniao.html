@@ -135,19 +135,34 @@ td[contenteditable]{min-height:22pt}
 @media print{.folha{padding:0}.naoimprime{display:none!important}}
 
 /* logo do proprio usuario */
-.marca img{max-height:52pt;max-width:190pt;display:block}
+/* A logo se acomoda sozinha ao espaco do cabecalho: ocupa a altura disponivel,
+   nunca passa da largura e nunca distorce, seja ela quadrada ou faixa larga. */
+.marca img{display:block;height:52pt;width:auto;max-width:190pt;
+  object-fit:contain;object-position:left center}
 
 /* barra de personalizacao — nunca sai na impressao */
 .barra{position:fixed;right:14px;bottom:14px;display:flex;gap:8px;z-index:9;
-  align-items:center}
+  align-items:center;flex-wrap:wrap;justify-content:flex-end;max-width:calc(100% - 28px)}
 .barra button{background:var(--tinta);color:#fff;border:0;border-radius:5px;
-  padding:9px 15px;font:600 12px Inter,sans-serif;cursor:pointer}
+  padding:9px 15px;font:600 12px Inter,sans-serif;cursor:pointer;white-space:nowrap}
 .barra button.sec{background:#fff;color:var(--tinta);border:1px solid var(--linha)}
 /* recado curto de que o preenchimento foi guardado; some sozinho */
 .barra .estado{font:500 11px Inter,sans-serif;color:var(--fraco);background:#fff;
   border:1px solid var(--linha);border-radius:5px;padding:5px 9px;
   opacity:0;transition:opacity .25s;pointer-events:none}
 .barra .estado.on{opacity:1}
+/* aviso juridico — informa na abertura da tela e nunca vai para o papel */
+.legal{position:fixed;inset:0;background:rgba(20,18,16,.55);display:none;
+  align-items:center;justify-content:center;z-index:11;padding:20px}
+.legal.on{display:flex}
+.legal .cx{background:#fff;border-radius:8px;padding:22px 24px;width:460px;
+  max-width:100%;max-height:90vh;overflow:auto;font-family:'Inter',sans-serif}
+.legal h4{font:600 13px/1.3 Inter,sans-serif;letter-spacing:.02em;margin-bottom:9px}
+.legal p{font-size:12.5px;line-height:1.55;color:var(--fraco)}
+.legal p b{color:var(--tinta)}
+.legal .acoes{display:flex;justify-content:flex-end;margin-top:18px}
+.legal .acoes button{background:var(--tinta);color:#fff;border:0;border-radius:5px;
+  padding:9px 18px;font:600 12px Inter,sans-serif;cursor:pointer}
 .painel{position:fixed;inset:0;background:rgba(20,18,16,.55);display:none;
   align-items:center;justify-content:center;z-index:10;padding:20px}
 .painel.on{display:flex}
@@ -192,6 +207,7 @@ td[contenteditable]{min-height:22pt}
 
 <div class="barra naoimprime">
   <span class="estado" id="estado"></span>
+  <button class="sec" id="b_legal" style="display:none" onclick="abrirLegal()">Aviso legal</button>
   <button class="sec" onclick="limparPreenchimento()">Limpar preenchimento</button>
   <button class="sec" onclick="abrirMarca()">Personalizar marca</button>
   <button onclick="window.print()">Imprimir / Salvar em PDF</button>
@@ -236,6 +252,36 @@ td[contenteditable]{min-height:22pt}
   }
   window.abrirMarca=function(){document.getElementById('painel').classList.add('on')};
   window.fecharMarca=function(){document.getElementById('painel').classList.remove('on')};
+  /* Espaco da logo no cabecalho: 190pt x 52pt. Redesenhamos nessa proporcao a
+     ~290 dpi, que e o que o papel aproveita. Logo de camera ou de arquivo de
+     marca vem com megabytes que nao cabem no localStorage e nao melhoram a
+     impressao. So reduz: ampliar bitmap nao inventa detalhe — quem cuida de
+     logo pequena e o CSS, que a estica ate a altura do cabecalho. */
+  var LOGO_W=760, LOGO_H=208;
+  function ajustarLogo(arq,pronto){
+    var r=new FileReader();
+    r.onload=function(){
+      var img=new Image();
+      img.onload=function(){
+        if(!img.width||!img.height){pronto(r.result);return}   /* SVG sem medida */
+        var e=Math.min(1,LOGO_W/img.width,LOGO_H/img.height);
+        var w=Math.max(1,Math.round(img.width*e)), h=Math.max(1,Math.round(img.height*e));
+        try{
+          var c=document.createElement('canvas'); c.width=w; c.height=h;
+          c.getContext('2d').drawImage(img,0,0,w,h);
+          pronto(c.toDataURL('image/png'));
+          aviso(e<1?'logo ajustada para '+w+'x'+h:'logo aplicada');
+        }catch(err){pronto(r.result)}
+      };
+      img.onerror=function(){pronto(r.result)};
+      img.src=r.result;
+    };
+    r.readAsDataURL(arq);
+  }
+  function gravar(m){
+    try{localStorage.setItem(CHAVE,JSON.stringify(m));return true}
+    catch(e){aviso('nao coube no navegador: use um logo menor');return false}
+  }
   window.salvarMarca=function(){
     var m=ler();
     m.nome=document.getElementById('f_nome').value.trim()||pad.nome;
@@ -243,22 +289,19 @@ td[contenteditable]{min-height:22pt}
     m.cidade=document.getElementById('f_cidade').value.trim()||pad.cidade;
     var f=document.getElementById('f_logo').files[0];
     if(f){
-      var r=new FileReader();
-      r.onload=function(){m.logo=r.result;localStorage.setItem(CHAVE,JSON.stringify(m));
-                          aplicar();fecharMarca()};
-      r.readAsDataURL(f); return;
+      ajustarLogo(f,function(dados){m.logo=dados;gravar(m);aplicar();fecharMarca()});
+      return;
     }
-    localStorage.setItem(CHAVE,JSON.stringify(m));aplicar();fecharMarca();
+    gravar(m);aplicar();fecharMarca();
   };
   window.limparPreenchimento=function(){
     if(!confirm('Apagar tudo o que foi preenchido nesta tela?'))return;
     document.querySelectorAll('[contenteditable]').forEach(function(e){e.textContent=''});
     document.querySelectorAll('input.cx').forEach(function(e){e.checked=false});
-    try{localStorage.removeItem(CHAVE_P)}catch(e){}
     aviso('preenchimento apagado');
   };
   window.limparLogo=function(){
-    var m=ler();m.logo='';localStorage.setItem(CHAVE,JSON.stringify(m));aplicar();
+    var m=ler();m.logo='';gravar(m);aplicar();
   };
   /* Torna o documento preenchivel na tela sem mexer em cada ponto do gerador:
      celula de tabela vazia e area pautada aceitam digitacao, e o quadradinho
@@ -277,65 +320,29 @@ td[contenteditable]{min-height:22pt}
     });
   }
 
-  /* Preenchimento fica guardado neste navegador, por documento. Sem isso o
-     aluno digita a obra inteira, fecha a aba e perde tudo. Chave pelo nome do
-     arquivo: cada documento guarda o seu. */
-  var CHAVE_P='lkn-doc-preenchido:'+(location.pathname.split('/').pop()||'doc');
-  var relogio;
+  /* O preenchimento NAO e guardado. Estes sao modelos: quem digita, imprime na
+     mesma sessao. Guardar CPF de cliente e valor de contrato no navegador cria
+     deposito de dado pessoal em maquina de terceiro sem controle de quem apaga.
+     So a marca do usuario persiste. */
 
-  function campos(){
-    return {ed:[].slice.call(document.querySelectorAll('[contenteditable]')),
-            cx:[].slice.call(document.querySelectorAll('input.cx'))};
-  }
-  /* Guardamos texto puro, nunca HTML: o que volta do localStorage entra como
-     texto e quebra de linha, sem chance de virar marcacao. */
-  function escreverTexto(el,txt){
-    el.textContent='';
-    String(txt).split('\n').forEach(function(linha,i){
-      if(i)el.appendChild(document.createElement('br'));
-      el.appendChild(document.createTextNode(linha));
-    });
-  }
-  function salvar(){
-    var c=campos();
-    try{
-      localStorage.setItem(CHAVE_P,JSON.stringify({
-        n:c.ed.length, m:c.cx.length,
-        t:c.ed.map(function(e){return e.innerText}),
-        v:c.cx.map(function(e){return e.checked?1:0})
-      }));
-      aviso('salvo');
-    }catch(e){aviso('nao foi possivel salvar');}
-  }
-  function restaurar(){
-    var b;
-    try{b=JSON.parse(localStorage.getItem(CHAVE_P)||'null')}catch(e){return}
-    if(!b)return;
-    var c=campos();
-    /* Documento revisado desde o ultimo preenchimento: os campos mudaram de
-       lugar e o texto salvo cairia na linha errada. Melhor nao restaurar. */
-    if(b.n!==c.ed.length||b.m!==c.cx.length)return;
-    c.ed.forEach(function(e,i){escreverTexto(e,b.t[i]||'')});
-    c.cx.forEach(function(e,i){e.checked=!!b.v[i]});
-  }
-  function agendar(){clearTimeout(relogio);relogio=setTimeout(salvar,400)}
   function aviso(txt){
     var e=document.getElementById('estado'); if(!e)return;
     e.textContent=txt; e.classList.add('on');
-    clearTimeout(e._t); e._t=setTimeout(function(){e.classList.remove('on')},1800);
+    clearTimeout(e._t); e._t=setTimeout(function(){e.classList.remove('on')},2200);
   }
-  function vigiar(){
-    document.addEventListener('input',function(ev){
-      var a=ev.target;
-      if(a&&(a.isContentEditable||(a.classList&&a.classList.contains('cx'))))agendar();
-    });
-    document.addEventListener('change',function(ev){
-      var a=ev.target;
-      if(a&&a.classList&&a.classList.contains('cx'))agendar();
-    });
+
+  /* Aviso juridico: informa na abertura, nunca no papel. Se ficasse no corpo do
+     documento, sairia impresso dentro do contrato entregue ao cliente. */
+  function legal(){
+    var cx=document.getElementById('legal'); if(!cx)return;
+    var b=document.getElementById('b_legal'); if(b)b.style.display='';
+    cx.classList.add('on');
   }
+  window.abrirLegal=function(){var e=document.getElementById('legal');if(e)e.classList.add('on')};
+  window.fecharLegal=function(){var e=document.getElementById('legal');if(e)e.classList.remove('on')};
+
   document.addEventListener('DOMContentLoaded',function(){
-    aplicar();preenchivel();restaurar();vigiar();
+    aplicar();preenchivel();legal();
   });
 })();
 </script>
