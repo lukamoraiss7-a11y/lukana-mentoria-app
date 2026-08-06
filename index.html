@@ -693,12 +693,33 @@ function badge(s){
 }
 function pstyle(p){const c=PK[p]||'#888';return`background:${c}16;border:1px solid ${c}38;color:${c};`;}
 
+/* ---- QUEM COMPROU O QUE ----
+   FASES vem de `acesso.fases` e guarda o id do modulo (0 a 7), o mesmo
+   que o `conteudo.fase_id` do banco. A trava de verdade e a politica de
+   RLS: video e material de fase nao comprada nao saem do banco. O que
+   esta aqui e a parte visivel — a fase continua na trilha, com cadeado,
+   porque ver o que nao comprou e o que vende a fase seguinte. */
+let FASES=[];
+let SEM_GATE=false;
+function liberada(id){return EH_ADMIN||SEM_GATE||FASES.indexOf(String(id))>=0;}
+/* A etiqueta passa a significar uma coisa so': "Bloqueado" = nao esta no
+   plano dele. Sem isto o selo nao serve para nada — no arquivo toda fase
+   fora a primeira ja nasce `s:'locked'`, entao uma fase comprada diria
+   "Bloqueado" e abriria mesmo assim. Fase comprada que ainda nao tem
+   progresso vira "Disponivel"; quem ja esta em andamento ou concluida
+   mantem o proprio estado. Nenhum texto de aula muda. */
+function stat(m){
+  if(SEM_GATE)return m.s;              /* SQL ainda nao rodou: tela identica a de antes */
+  if(!liberada(m.id))return'locked';
+  return m.s==='locked'?'available':m.s;
+}
+
 function card(m){
   const cls=PC[m.p]||'visao';
   const lbl=flabel(m);
   const obj=m.o.length>105?m.o.slice(0,102)+'...':m.o;
-  return`<div class="mc${m.s==='locked'?' lk':''}" onclick="smd(${m.id})">
-    <div class="ct ${cls}${m.s==='completed'?' done':''}">
+  return`<div class="mc${stat(m)==='locked'?' lk':''}" onclick="smd(${m.id})">
+    <div class="ct ${cls}${stat(m)==='completed'?' done':''}">
       <div class="cn">${lbl}</div>
       <div class="ctm"><div class="cpb"><div class="cpa"></div></div><div class="cpp">${m.p}</div></div>
     </div>
@@ -706,7 +727,7 @@ function card(m){
       <div class="cw">${m.id<6?'Fase '+(m.id+1):m.t.split('—')[0].trim()} · ${m.p}</div>
       <div class="ctt">${m.t}</div>
       <div class="cd">${obj}</div>
-      <div class="cf"><div class="cdur"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.4"><circle cx="8" cy="8" r="6"/><polyline points="8,5 8,8 10.5,9.5"/></svg>${m.dur}</div>${badge(m.s)}</div>
+      <div class="cf"><div class="cdur"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.4"><circle cx="8" cy="8" r="6"/><polyline points="8,5 8,8 10.5,9.5"/></svg>${m.dur}</div>${badge(stat(m))}</div>
     </div>
   </div>`;
 }
@@ -759,7 +780,10 @@ function renderMat(){
   /* O app tem bloco proprio no topo. Sem isso ele repetia em tres fases na
      lista de materiais. Dentro de cada fase (smd) ele continua aparecendo. */
   const destaque=F.filter(f=>f.destaque);
-  F.filter(f=>!f.destaque&&f.mods.length).forEach(f=>f.mods.forEach(id=>{(bm[id]=bm[id]||[]).push(f);}));
+  /* Material de fase nao comprada nao entra na lista. O que vem do banco
+     ja chega filtrado pela politica de RLS; o F e' fixo no arquivo, entao
+     o corte tem de ser aqui. */
+  F.filter(f=>!f.destaque&&f.mods.length).forEach(f=>f.mods.forEach(id=>{if(liberada(id))(bm[id]=bm[id]||[]).push(f);}));
   admMats.filter(f=>f.faseId!==''&&f.faseId!==null&&f.faseId!==undefined).forEach(f=>{
     const id=parseInt(f.faseId);if(!isNaN(id)){(bm[id]=bm[id]||[]).push({...f,_isAdm:true});}
   });
@@ -778,15 +802,51 @@ function renderMat(){
     h+=`<div style="margin-bottom:26px;"><div class="mh"><span style="font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);border:1px solid rgba(255,255,255,.08);padding:2px 8px;border-radius:4px;">GERAL</span><span class="mtn" style="margin-left:9px;">Documentos Gerais</span></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;">${[...gn,...gnAdm].map(f=>fcrd(f,isAdmin()&&!!f._isAdm)).join('')}</div></div>`;
   }
   document.getElementById('mat').innerHTML=h||'<p style="color:var(--text-muted);font-size:13px;">Nenhum material disponível.</p>';
-  // update count
-  const total=F.length+(adm.materials||[]).length;
-  document.getElementById('mat-count').textContent=total;
+  /* Conta o que ele ve, nao o que existe. Dizer "24 materiais" para quem
+     enxerga 6 e' so gerar duvida no suporte. Set porque o mesmo arquivo
+     aparece em mais de uma fase e nao pode contar duas vezes. */
+  const vis=new Set(destaque);
+  Object.keys(bm).forEach(id=>bm[id].forEach(f=>vis.add(f)));
+  gn.forEach(f=>vis.add(f));gnAdm.forEach(f=>vis.add(f));
+  document.getElementById('mat-count').textContent=vis.size;
+}
+
+/* Fase que o aluno nao comprou. Mostra o que a fase entrega — e' o que
+   vende a proxima — e nada do que foi publicado nela: nem video, nem
+   material, nem nota do instrutor. Isso aqui e' a cortesia visual; a
+   trava esta na politica de `conteudo` no banco. Usa as mesmas classes
+   das outras telas, nao ha CSS novo. */
+function smdBloqueada(m,bloco){
+  const prev=m.id>0?m.id-1:null;const next=m.id<M.length-1?m.id+1:null;
+  document.getElementById('mc').innerHTML=`
+    <div class="dh">
+      <div class="dbc" onclick="sv('trilha')"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="10,2 4,8 10,14"/></svg>Trilha de Aulas</div>
+      <div class="dpb" style="${pstyle(m.p)}">${m.p}</div>
+      <div class="dtt">${m.t}</div>
+      <div class="do">${m.o}</div>
+      <div class="dm"><div class="mt">${bloco}</div><div class="mt">${m.dur}</div>${badge('locked')}</div>
+    </div>
+    <div class="xc" style="margin-bottom:13px;">
+      <div class="xt">Esta fase não está no seu plano</div>
+      <div style="font-size:12px;color:var(--text-secondary);line-height:1.7;">
+        As aulas, os materiais e as notas do instrutor desta fase ficam liberados assim que ela for incluída.
+        Fale com a mentoria para liberar.
+      </div>
+    </div>
+    <div class="xc"><div class="xt">O que esta fase cobre</div>${m.tp.map(t=>`<div class="ti"><div class="td"></div><div class="tt">${t}</div></div>`).join('')}</div>
+    ${m.d?`<div class="dc2" style="margin-top:13px;"><div class="dl">Entregáveis ao Final</div><div class="dxt">${m.d}</div></div>`:''}
+    <div class="mnv">
+      ${prev!==null?`<button class="bg" onclick="smd(${prev})">← ${M[prev].t}</button>`:'<div></div>'}
+      ${next!==null?`<button class="bgo" onclick="smd(${next})">${M[next].t} →</button>`:'<div></div>'}
+    </div>`;
+  sv('module');
 }
 
 function smd(id){
   const m=M[id];
   const lbl=flabel(m);
   const bloco=['','Fundamentos & Rentabilidade','Máquina Comercial & Operação','Liderança, Escala & Bônus'][m.ph];
+  if(!liberada(m.id)){smdBloqueada(m,bloco);return;}
   const mf=F.filter(f=>f.mods.includes(m.id));
   const adm=getAdminData();
   const admMatsForPhase=(adm.materials||[]).filter(f=>parseInt(f.faseId)===m.id);
@@ -814,7 +874,7 @@ function smd(id){
       <div class="dpb" style="${pstyle(m.p)}">${m.p}</div>
       <div class="dtt">${m.t}</div>
       <div class="do">${m.o}</div>
-      <div class="dm"><div class="mt">${bloco}</div><div class="mt">${m.dur}</div>${badge(m.s)}</div>
+      <div class="dm"><div class="mt">${bloco}</div><div class="mt">${m.dur}</div>${badge(stat(m))}</div>
     </div>
     ${videosHtml}
     <div class="va">
@@ -830,7 +890,7 @@ function smd(id){
         <div class="xc"><div class="xt">Sobre a Fase</div><div style="font-size:12px;color:var(--text-secondary);line-height:1.7;">
           <div style="margin-bottom:5px;"><strong style="color:var(--text-primary)">Pilar:</strong> ${m.p}</div>
           <div style="margin-bottom:5px;"><strong style="color:var(--text-primary)">Bloco:</strong> ${bloco}</div>
-          <div><strong style="color:var(--text-primary)">Status:</strong> ${m.s==='completed'?'Concluída ✓':m.s==='current'?'Em andamento':m.s==='available'?'Disponível':'Bloqueada'}</div>
+          <div><strong style="color:var(--text-primary)">Status:</strong> ${stat(m)==='completed'?'Concluída ✓':stat(m)==='current'?'Em andamento':stat(m)==='available'?'Disponível':'Bloqueada'}</div>
         </div></div>
       </div>
     </div>
@@ -1073,8 +1133,18 @@ async function boot(){
   /* Quem e admin, e o que ja foi publicado. Se a consulta falhar, segue
      como aluno comum e sem conteudo extra — o app abre de qualquer jeito. */
   try{
-    const {data}=await sb.from('acesso').select('admin').eq('user_id',ALUNO.id).maybeSingle();
-    EH_ADMIN=!!(data&&data.admin);
+    const {data,error}=await sb.from('acesso').select('admin,fases').eq('user_id',ALUNO.id).maybeSingle();
+    if(error&&/fases/.test(error.message||'')){
+      /* `fases-por-aluno.sql` ainda nao rodou. Sem a coluna, a politica do
+         banco tambem e' a antiga e o conteudo esta aberto — trancar so na
+         tela deixaria o app mentindo. Volta ao comportamento anterior. */
+      SEM_GATE=true;
+      const r=await sb.from('acesso').select('admin').eq('user_id',ALUNO.id).maybeSingle();
+      EH_ADMIN=!!(r.data&&r.data.admin);
+    }else{
+      EH_ADMIN=!!(data&&data.admin);
+      FASES=(data&&data.fases)||[];
+    }
   }catch(e){ console.error('acesso',e); }
   await carregarConteudo();
 
