@@ -72,7 +72,43 @@ Supabase → **Authentication** → **Users** → **Add user** → **Create new 
 - Marque **Auto Confirm User**
 - **Não** use "Send invite" — isso dispara e-mail e queima cota
 
-Criar conta dá acesso **só às aulas**. É o nível 1.
+Criar conta só deixa **entrar**. Sem liberar fase, ele vê a trilha inteira bloqueada.
+O passo seguinte é obrigatório.
+
+### Liberar as fases que o aluno comprou
+
+Criar a conta **não** dá mais as aulas todas. Você diz quais fases ele comprou:
+
+```sql
+select public.liberar_fases('aluno@email.com', '{1,3}');
+```
+
+O número é o que você usa para vender: **1 a 6** são as fases, **7** é o Bônus 1 e
+**8** é o Bônus 2. Vendeu a Fase 2 depois? Passe o conjunto **completo**, porque a
+função substitui a lista, não soma:
+
+```sql
+select public.liberar_fases('aluno@email.com', '{1,2,3}');
+```
+
+Turma que comprou o programa inteiro:
+
+```sql
+select public.liberar_fases('aluno@email.com', '{1,2,3,4,5,6,7,8}');
+```
+
+Tirar tudo: `select public.bloquear_fases('aluno@email.com');`
+
+Ver quem tem o quê, por e-mail: `select * from public.listar_acessos();`
+
+O aluno continua vendo na trilha as fases que não comprou — apagadas, com o selo
+**Bloqueado**. Clicando, ele vê o que a fase cobre e os entregáveis, e nada do que foi
+publicado nela. É de propósito: ver o que está perdendo é o que vende a fase seguinte.
+
+Material que você cadastrar como **Geral** aparece para todo aluno, tenha ele qualquer
+fase. Use isso para recado e documento que vale para a turma inteira.
+
+Você (admin) vê todas as fases sempre, mesmo com a lista vazia.
 
 ### Liberar as ferramentas para quem pagou o upsell
 
@@ -114,15 +150,21 @@ era verdade: ficava salvo só no seu navegador e nenhum aluno via.
 
 ---
 
-## Os dois níveis, resumidos
+## Os níveis, resumidos
 
 | Nível | O que abre | Como se libera |
 |---|---|---|
-| **1 — Aulas** | Área de membros: trilha, 6 fases, materiais | Basta criar a conta |
-| **2 — Ferramentas** | App de 10 módulos | `liberar_ferramentas(...)` na mão |
+| **1 — Entrar** | A área de membros, a trilha e o que for cadastrado como Geral | Basta criar a conta |
+| **2 — Fases** | As aulas, materiais e notas das fases compradas | `liberar_fases(email,'{1,3}')` |
+| **3 — Ferramentas** | App de 10 módulos | `liberar_ferramentas(...)` na mão |
 
-Um aluno sem o nível 2 que abrir o app de ferramentas vê "Seu plano não inclui as
-ferramentas" e um botão de sair.
+Um aluno sem o nível 3 que abrir o app de ferramentas vê "Seu plano não inclui as
+ferramentas" e um botão de sair. Uma fase fora do nível 2 aparece na trilha com o selo
+Bloqueado e abre a tela "Esta fase não está no seu plano".
+
+**Criar a conta não libera aula nenhuma.** Desde 06/08/2026 é preciso rodar
+`liberar_fases` também — se esquecer, o aluno entra e não vê aula, e vai achar que
+quebrou.
 
 ---
 
@@ -153,6 +195,9 @@ empresa.
 ## Se der problema
 
 **"Acesso indisponível" no app de ferramentas** → o SQL não foi rodado. Volte ao passo 1.
+
+**Aluno entrou e não vê aula nenhuma** → falta o `liberar_fases` dele. Confira com
+`select * from public.listar_acessos();` — se a coluna `fases` estiver vazia, é isso.
 
 **Aluno não recebe o link** → quase sempre é o SMTP (passo 2). Se já estiver configurado,
 peça para olhar em promoções e spam, e confirme que ele abre o e-mail na mesma máquina.
