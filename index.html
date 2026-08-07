@@ -797,6 +797,15 @@ function pstyle(p){const c=PK[p]||'#888';return`background:${c}16;border:1px sol
 let FASES=[];
 let SEM_GATE=false;
 function liberada(id){return EH_ADMIN||SEM_GATE||FASES.indexOf(String(id))>=0;}
+/* O app de ferramentas nao e' fase: e' produto a parte, flag propria
+   (`acesso.ferramentas`), tudo-ou-nada, combina com qualquer conjunto de
+   fases. Aqui isto so' decide o que a tela mostra — a trava de verdade
+   continua dentro do `ferramentas.html`, que falha fechado. Por isso o
+   padrao e' `true`: se a consulta falhar, o card aparece como antes e
+   quem nao tem esbarra no gate de la', em vez de eu trancar por engano
+   quem pagou. */
+let TEM_APP=true;
+function appLiberado(){return EH_ADMIN||TEM_APP;}
 /* A etiqueta passa a significar uma coisa so': "Bloqueado" = nao esta no
    plano dele. Sem isto o selo nao serve para nada — no arquivo toda fase
    fora a primeira ja nasce `s:'locked'`, entao uma fase comprada diria
@@ -975,6 +984,33 @@ function renderVenda(){
   if(sbp)sbp.innerHTML=`<span style="color:var(--accent-light);cursor:pointer;" onclick="sv('trilha')">${tem} de ${M.length} fases liberadas →</span>`;
 }
 
+/* Os 10 modulos do app, so' o nome. Espelha o `NAV` do `ferramentas.html`
+   — se um modulo entrar la', acrescente aqui. E' vitrine: o nome do
+   modulo e' o que da vontade, e nome nao abre nada. */
+const APP_MODS=['Painel Executivo','Diagnóstico Financeiro','Precificação','Simulador de Cenários','KPI 25/50/75/100 + Aderência','Kanban de Produção','PCP & Gargalos','Checklists por Etapa','CRM Comercial','Controle de Estoque'];
+
+/* O app nao e' fase, entao nao entra no `blocoFechado`: o que ele
+   entrega sao modulos, nao arquivos, e o texto tem de dizer isso. Fora
+   isso e' a mesma tela. Sem este bloco o card aparecia com ACESSAR
+   normal, o aluno clicava, saia da area de membros e batia numa parede
+   sem botao nenhum — o pior lugar possivel para descobrir que nao
+   comprou. */
+function blocoAppFechado(){
+  return`<div style="margin-bottom:26px;">
+    <div class="mh"><span style="font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent-light);border:1px solid rgba(201,168,76,.42);background:rgba(201,168,76,.14);padding:2px 8px;border-radius:4px;">APP</span><span class="mtn" style="margin-left:9px;display:inline-flex;align-items:center;gap:7px;">${ICO_LOCK}Ferramentas APM <span style="font-weight:400;font-size:11.5px;color:var(--text-muted);">(bloqueado)</span></span></div>
+    <div class="vnd" style="margin-bottom:0;">
+      <div class="vnd-p" style="margin-bottom:15px;">
+        As 9 planilhas em um app só, mais o simulador de cenários: você lança os números e ele devolve diagnóstico, semáforo e o que fazer hoje.
+        O app é um produto separado das fases — combina com qualquer conjunto delas, e a sua conta ainda não tem.
+      </div>
+      <div style="margin-bottom:15px;">${APP_MODS.map(t=>`<span class="vlk">${ICO_LOCK}${t}</span>`).join('')}</div>
+      <div class="vnd-cta">
+        <a class="vb" href="${ctaHref('Quero meu acesso ao app de ferramentas da mentoria APM')}" target="_blank" rel="noopener">${ICO_ZAP}Quero meu acesso</a>
+      </div>
+    </div>
+  </div>`;
+}
+
 /* O lugar da fase fechada na lista de materiais. Nao lista arquivo
    nenhum — nem podia, a politica do banco nao entrega — mas ocupa o
    espaco dela com o convite. O numero de material so' entra quando a
@@ -1015,7 +1051,9 @@ function renderMat(){
   const gnAdm=admMats.filter(f=>f.faseId===''||f.faseId===null||f.faseId===undefined);
   let h='';
   if(destaque.length){
-    h+=`<div style="margin-bottom:26px;"><div class="mh"><span style="font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#C9A84C;border:1px solid rgba(201,168,76,.35);padding:2px 8px;border-radius:4px;">APP</span><span class="mtn" style="margin-left:9px;">A ferramenta</span></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;">${destaque.map(f=>fcrd(f,false)).join('')}</div></div>`;
+    h+=appLiberado()
+      ?`<div style="margin-bottom:26px;"><div class="mh"><span style="font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#C9A84C;border:1px solid rgba(201,168,76,.35);padding:2px 8px;border-radius:4px;">APP</span><span class="mtn" style="margin-left:9px;">A ferramenta</span></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;">${destaque.map(f=>fcrd(f,false)).join('')}</div></div>`
+      :blocoAppFechado();
   }
   /* Varre as 8 na ordem, nao so' as que tem material. Fase fechada entra
      no lugar dela — entre a 3 e a 5, nao empurrada para o rodape — porque
@@ -1035,7 +1073,7 @@ function renderMat(){
   /* Conta o que ele ve, nao o que existe. Dizer "24 materiais" para quem
      enxerga 6 e' so gerar duvida no suporte. Set porque o mesmo arquivo
      aparece em mais de uma fase e nao pode contar duas vezes. */
-  const vis=new Set(destaque);
+  const vis=new Set(appLiberado()?destaque:[]);
   Object.keys(bm).forEach(id=>bm[id].forEach(f=>vis.add(f)));
   gn.forEach(f=>vis.add(f));gnAdm.forEach(f=>vis.add(f));
   document.getElementById('mat-count').textContent=vis.size;
@@ -1107,7 +1145,12 @@ function smd(id){
   const allMats=[...mf,...admMatsForPhase];
   const fh=allMats.length?`<div class="xc" style="margin-bottom:13px;"><div class="xt">Materiais desta Fase</div>${allMats.map(f=>{
     const x=f.type==='xlsx';const c=x?'#22c55e':f.type==='pdf'?'#ef4444':'#C9A84C';
-    const dlBtn=fbtn(f,'padding:4px 10px;font-size:9px;');
+    /* O app aparece nas fases 2, 3 e 4. Sem o `if` abaixo o botao dizia
+       ACESSAR para quem nao comprou o app, levava para fora da area de
+       membros e terminava numa parede. Agora ele pede o acesso daqui. */
+    const dlBtn=(f.id==='app'&&!appLiberado())
+      ?`<a class="vb" style="padding:5px 11px;font-size:9.5px;" href="${ctaHref('Quero meu acesso ao app de ferramentas da mentoria APM')}" target="_blank" rel="noopener">${ICO_LOCK}Liberar</a>`
+      :fbtn(f,'padding:4px 10px;font-size:9px;');
     return`<div style="display:flex;align-items:center;gap:9px;padding:8px 9px;background:var(--navy-mid);border-radius:4px;margin-bottom:5px;">${fileIc(f.type,c)}<div style="flex:1;"><div style="font-size:13px;font-weight:500;">${f.name}</div><div style="font-size:10px;color:var(--text-muted);">${f.desc||''}</div></div>${dlBtn}</div>`;
   }).join('')}</div>`:'';
 
@@ -1549,17 +1592,22 @@ async function boot(){
   /* Quem e admin, e o que ja foi publicado. Se a consulta falhar, segue
      como aluno comum e sem conteudo extra — o app abre de qualquer jeito. */
   try{
-    const {data,error}=await sb.from('acesso').select('admin,fases').eq('user_id',ALUNO.id).maybeSingle();
+    const {data,error}=await sb.from('acesso').select('admin,fases,ferramentas').eq('user_id',ALUNO.id).maybeSingle();
     if(error&&/fases/.test(error.message||'')){
       /* `fases-por-aluno.sql` ainda nao rodou. Sem a coluna, a politica do
          banco tambem e' a antiga e o conteudo esta aberto — trancar so na
          tela deixaria o app mentindo. Volta ao comportamento anterior. */
       SEM_GATE=true;
-      const r=await sb.from('acesso').select('admin').eq('user_id',ALUNO.id).maybeSingle();
+      const r=await sb.from('acesso').select('admin,ferramentas').eq('user_id',ALUNO.id).maybeSingle();
       EH_ADMIN=!!(r.data&&r.data.admin);
+      TEM_APP=!!(r.data&&r.data.ferramentas);
     }else{
       EH_ADMIN=!!(data&&data.admin);
       FASES=(data&&data.fases)||[];
+      /* Sem linha em `acesso` o aluno nao tem o app. Distinguir "linha
+         ausente" de "erro de consulta" importa: erro cai no catch e
+         mantem o padrao aberto, aqui a resposta veio e disse nao. */
+      TEM_APP=!!(data&&data.ferramentas);
     }
   }catch(e){ console.error('acesso',e); }
   await carregarConteudo();

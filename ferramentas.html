@@ -163,6 +163,13 @@ h4:first-child{margin-top:0}
 .gate .f{margin-bottom:12px}
 .gate .btn{width:100%;padding:11px;justify-content:center;text-align:center;font-size:13px}
 .gate-msg{margin-top:16px}
+/* Parede de quem nao comprou o app. Precisa de mais largura que a caixa
+   de login: aqui nao ha um campo, ha uma vitrine com os 10 modulos. */
+.gate-box.venda{max-width:600px}
+.gate .vmods{margin:18px 0 22px}
+.gate .vlk{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.03);border:1px dashed rgba(201,168,76,.3);color:var(--text-secondary);font-size:11px;padding:5px 10px;border-radius:4px;margin:0 5px 5px 0}
+.gate .vb{display:inline-flex;align-items:center;justify-content:center;gap:6px;width:100%;background:var(--accent);color:var(--navy);border:none;padding:12px;border-radius:4px;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;text-decoration:none;margin-bottom:10px}
+.gate .vb:hover{filter:brightness(1.12)}
 .sync{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--text-muted);margin-top:4px}
 .sync i{width:6px;height:6px;border-radius:50%;background:var(--text-muted);display:block;flex-shrink:0}
 .sync.ok i{background:var(--verde)}.sync.bad i{background:var(--vermelho)}.sync.wait i{background:var(--amarelo)}
@@ -1635,15 +1642,36 @@ async function temFerramentas(){
  }
  return {ok:!!(data&&data.ferramentas)};
 }
+/* Para onde vai quem quer comprar o app. Mesmo numero do `index.html`
+   (`const VENDA` de la'). Sao dois arquivos independentes, entao o
+   numero aparece nos dois — mudou um, mude o outro. */
+const VENDA={wa:'5567992517818',email:'lukamoraiss7@gmail.com'};
+function ctaHref(assunto){
+ const quem=(typeof USER!=='undefined'&&USER&&USER.email)?USER.email:'';
+ const txt=assunto+(quem?' — meu e-mail de acesso e '+quem:'');
+ if(VENDA.wa)return'https://wa.me/'+VENDA.wa+'?text='+encodeURIComponent(txt);
+ return'mailto:'+VENDA.email+'?subject='+encodeURIComponent(assunto)+'&body='+encodeURIComponent(txt);
+}
+
+/* Duas telas diferentes no mesmo lugar, e a diferenca importa.
+   `infra` e' problema de banco: nao ha nada a vender, so' a instrucao de
+   conserto. Sem `infra` e' aluno que nao comprou — e ai a tela mostra o
+   que ele esta perdendo e como pedir, em vez do antigo "fale com o
+   instrutor", que nao dizia nem com quem nem por onde. */
 function telaSemAcesso(infra){
+ const mods=NAV.filter(n=>n.id).map(n=>n.t||n.n);
+ const ico='<svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" style="flex-shrink:0"><rect x="3.5" y="7" width="9" height="7" rx="1.2"/><path d="M5.5 7V5a2.5 2.5 0 015 0v2"/></svg>';
+ const zap='<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 14l1-3.2A6 6 0 118 14H2z"/></svg>';
  document.body.insertAdjacentHTML('beforeend',`
- <div class="gate" id="gate"><div class="gate-box">
+ <div class="gate" id="gate"><div class="gate-box${infra?'':' venda'}">
   <div class="gate-brand"><div class="sb-icon">A</div>
    <div><div class="sb-name">APM</div><div class="sb-sub">Ferramentas</div></div></div>
-  <h1>${infra?'Acesso indisponível':'Seu plano não inclui as ferramentas'}</h1>
+  <h1>${infra?'Acesso indisponível':'O app de ferramentas ainda não está no seu plano'}</h1>
   <p>${infra
     ? 'Não foi possível confirmar seu acesso. Se você é o administrador: rode o <b>supabase-setup.sql</b> no SQL Editor — a tabela <code>acesso</code> e as políticas precisam existir.<br><br><span style="opacity:.6">'+esc(infra)+'</span>'
-    : 'O app de ferramentas é um módulo separado da mentoria. Sua conta tem acesso às aulas e aos materiais, mas não às ferramentas.<br><br>Para liberar, fale com o instrutor.'}</p>
+    : 'São as 9 planilhas em um app só, mais o simulador de cenários: você lança os números e ele devolve diagnóstico, semáforo e o que fazer hoje.<br><br>É um produto separado das fases — combina com qualquer conjunto delas, e a sua conta ainda não tem.'}</p>
+  ${infra?'':`<div class="vmods">${mods.map(t=>`<span class="vlk">${ico}${t}</span>`).join('')}</div>
+  <a class="vb" href="${ctaHref('Quero meu acesso ao app de ferramentas da mentoria APM')}" target="_blank" rel="noopener">${zap}Quero meu acesso</a>`}
   <button class="btn" onclick="sair()">Sair da conta</button>
  </div></div>`);
 }
