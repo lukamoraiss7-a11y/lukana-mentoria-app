@@ -440,6 +440,7 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
             <div class="adm-tab" onclick="admTab('videos',this)">Vídeos</div>
             <div class="adm-tab" onclick="admTab('links',this)">Links</div>
             <div class="adm-tab" onclick="admTab('comentarios',this)">Comentários</div>
+            <div class="adm-tab" onclick="admTab('acessos',this)">Acessos</div>
           </div>
 
           <div class="adm-section on" id="adm-materiais">
@@ -534,6 +535,28 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
             </div>
             <div class="adm-section-head">Comentários Adicionados</div>
             <div class="adm-list" id="adm-cmt-list"></div>
+          </div>
+
+          <!-- Quem pode ver o que. Marque as fases vendidas e salve; a
+               conversao para o id interno acontece no banco, nao aqui. -->
+          <div class="adm-section" id="adm-acessos">
+            <div class="adm-form">
+              <div class="adm-form-title">Liberar acesso por e-mail</div>
+              <input type="text" class="adm-input" id="ax-email" placeholder="E-mail do mentorado (a conta precisa existir no Supabase)">
+              <div style="font-size:11px;color:var(--text-muted);margin:2px 0 9px;">Marque o que ele comprou. O que ficar desmarcado aparece na trilha com cadeado.</div>
+              <div id="ax-fases" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:7px;margin-bottom:12px;"></div>
+              <label style="display:flex;align-items:center;gap:9px;background:var(--navy-mid);border:1px solid rgba(201,168,76,.35);border-radius:4px;padding:10px 13px;cursor:pointer;margin-bottom:12px;">
+                <input type="checkbox" id="ax-ferr">
+                <span style="font-size:13px;">App Ferramentas APM<span style="color:var(--text-muted);font-size:11px;"> — vendido à parte, combina com qualquer fase</span></span>
+              </label>
+              <div class="adm-row" style="grid-template-columns:auto auto 1fr;align-items:center;gap:10px;">
+                <button class="adm-add-btn" onclick="admSalvarAcesso()">Salvar acesso</button>
+                <button class="adm-add-btn" style="background:transparent;color:var(--text-secondary);border:1px solid #333;" onclick="admMarcarTudo()">Marcar tudo</button>
+                <span id="ax-msg" style="font-size:12px;"></span>
+              </div>
+            </div>
+            <div class="adm-section-head">Quem tem o quê</div>
+            <div class="adm-list" id="ax-list"></div>
           </div>
         </div>
       </div>
@@ -954,6 +977,91 @@ function admTab(name,el){
   el.classList.add('on');
   document.querySelectorAll('.adm-section').forEach(s=>s.classList.remove('on'));
   document.getElementById('adm-'+name).classList.add('on');
+  if(name==='acessos')admAbrirAcessos();
+}
+
+/* ---- ACESSOS: quem pode ver o que ----
+   O painel manda o numero que voce usa para vender (1 a 6 as fases, 7 e 8
+   os bonus). Quem converte para o id interno do modulo e o banco, dentro
+   da funcao — se essa conta subisse para ca, um dia liberaria a fase
+   errada sem dar erro nenhum.
+
+   `admin_definir_acesso` pode ser chamada pelo navegador, ao contrario de
+   `liberar_fases`. Ela se defende sozinha: a primeira coisa que faz e
+   conferir se quem chamou e admin, e explodir se nao for. Esconder a aba
+   aqui e cortesia visual; a trava e no banco. */
+function axNomeFase(n){
+  const m=M[n-1];
+  if(!m)return'Fase '+n;
+  return n<=6 ? 'Fase '+n+' — '+(m.t.split('—')[1]||'').trim()
+              : 'Bônus '+(n-6)+' — '+(m.t.split('—')[1]||'').trim();
+}
+function axMontarCheckboxes(){
+  const box=document.getElementById('ax-fases');
+  if(!box||box.dataset.pronto)return;
+  box.innerHTML=[1,2,3,4,5,6,7,8].map(n=>
+    `<label style="display:flex;align-items:center;gap:8px;background:var(--navy-mid);border:1px solid #333;border-radius:4px;padding:9px 11px;cursor:pointer;">
+       <input type="checkbox" class="ax-f" value="${n}">
+       <span style="font-size:12px;">${axNomeFase(n)}</span>
+     </label>`).join('');
+  box.dataset.pronto='1';
+}
+function axMsg(t,cor){
+  const el=document.getElementById('ax-msg');
+  if(el){el.textContent=t;el.style.color=cor||'var(--text-muted)';}
+}
+function axMarcadas(){
+  return [...document.querySelectorAll('.ax-f')].filter(c=>c.checked).map(c=>parseInt(c.value));
+}
+function admMarcarTudo(){
+  const todas=axMarcadas().length===8;
+  document.querySelectorAll('.ax-f').forEach(c=>c.checked=!todas);
+}
+function axCarregarNoForm(email,fases,ferr){
+  document.getElementById('ax-email').value=email;
+  document.querySelectorAll('.ax-f').forEach(c=>c.checked=fases.indexOf(parseInt(c.value))>=0);
+  document.getElementById('ax-ferr').checked=!!ferr;
+  axMsg('Editando '+email+'. Altere e salve.','var(--accent)');
+  document.querySelector('.content').scrollTop=0;
+}
+async function admAbrirAcessos(){
+  axMontarCheckboxes();
+  const lista=document.getElementById('ax-list');
+  if(!lista)return;
+  lista.innerHTML='<div class="adm-empty">Carregando…</div>';
+  const {data,error}=await sb.rpc('admin_listar_acessos');
+  if(error){
+    /* Falhar aberto aqui seria mostrar uma lista vazia e o admin
+       concluir que ninguem tem acesso a nada. Melhor dizer o que houve. */
+    lista.innerHTML='<div class="adm-empty">Não consegui carregar: '+error.message+'</div>';
+    return;
+  }
+  const linhas=(data||[]);
+  if(!linhas.length){lista.innerHTML='<div class="adm-empty">Nenhuma conta cadastrada.</div>';return;}
+  lista.innerHTML=linhas.map(r=>{
+    const fs=(r.fases||[]);
+    const resumo=fs.length? fs.map(n=>n<=6?'F'+n:'B'+(n-6)).join(' · ') : 'nenhuma fase';
+    const extras=[r.ferramentas?'App':null, r.admin?'Admin':null].filter(Boolean).join(' · ');
+    return `<div class="adm-item">
+      <div class="adm-item-info">
+        <div class="adm-item-name">${r.email}</div>
+        <div class="adm-item-meta">${resumo}${extras?' · '+extras:''}</div>
+      </div>
+      <button class="adm-del" style="color:var(--accent);border-color:rgba(201,168,76,.4);"
+        onclick='axCarregarNoForm(${JSON.stringify(r.email)},${JSON.stringify(fs)},${r.ferramentas?1:0})'>Editar</button>
+    </div>`;
+  }).join('');
+}
+async function admSalvarAcesso(){
+  const email=(document.getElementById('ax-email').value||'').trim();
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){axMsg('E-mail inválido.','#ef4444');return;}
+  const fases=axMarcadas(), ferr=document.getElementById('ax-ferr').checked;
+  if(!fases.length&&!ferr&&!confirm('Salvar sem nenhuma fase e sem o app? '+email+' vai entrar e não conseguir abrir nada.'))return;
+  axMsg('Salvando…');
+  const {data,error}=await sb.rpc('admin_definir_acesso',{p_email:email,p_fases:fases,p_ferramentas:ferr});
+  if(error){axMsg('Não salvou: '+error.message,'#ef4444');return;}
+  axMsg(String(data||'acesso atualizado'),'#10B981');
+  admAbrirAcessos();
 }
 
 async function admAddMaterial(){
