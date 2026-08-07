@@ -75,31 +75,32 @@ Supabase → **Authentication** → **Users** → **Add user** → **Create new 
 Criar conta só deixa **entrar**. Sem liberar fase, ele vê a trilha inteira bloqueada.
 O passo seguinte é obrigatório.
 
-### Liberar as fases que o aluno comprou
+### Liberar as fases que o aluno comprou — **pelo painel**
 
-Criar a conta **não** dá mais as aulas todas. Você diz quais fases ele comprou:
+Menu lateral → **Admin** → aba **Acessos**.
+
+1. Digite o e-mail do mentorado (a conta já precisa existir no Supabase)
+2. Marque as fases que ele comprou — em qualquer combinação: só a 1; 1, 3 e 5; só a 4
+3. Marque **App Ferramentas APM** se ele comprou o app
+4. **Salvar acesso**
+
+Embaixo, "Quem tem o quê" lista todas as contas com o que cada uma tem. O botão
+**Editar** carrega a pessoa no formulário — mude o que precisa e salve de novo.
+
+**O que estiver desmarcado é retirado.** O formulário é o retrato final do acesso da
+pessoa, não um acréscimo. Vendeu a Fase 2 para quem já tinha a 1? Deixe a 1 marcada
+também.
+
+O app é vendido à parte e combina com qualquer coisa: só o app sem fase nenhuma, ou app
+mais as fases que você quiser.
+
+**Pelo SQL Editor também funciona**, se preferir ou se o painel estiver fora do ar:
 
 ```sql
 select public.liberar_fases('aluno@email.com', '{1,3}');
+select public.bloquear_fases('aluno@email.com');
+select * from public.listar_acessos();
 ```
-
-O número é o que você usa para vender: **1 a 6** são as fases, **7** é o Bônus 1 e
-**8** é o Bônus 2. Vendeu a Fase 2 depois? Passe o conjunto **completo**, porque a
-função substitui a lista, não soma:
-
-```sql
-select public.liberar_fases('aluno@email.com', '{1,2,3}');
-```
-
-Turma que comprou o programa inteiro:
-
-```sql
-select public.liberar_fases('aluno@email.com', '{1,2,3,4,5,6,7,8}');
-```
-
-Tirar tudo: `select public.bloquear_fases('aluno@email.com');`
-
-Ver quem tem o quê, por e-mail: `select * from public.listar_acessos();`
 
 O aluno continua vendo na trilha as fases que não comprou — apagadas, com o selo
 **Bloqueado**. Clicando, ele vê o que a fase cobre e os entregáveis, e nada do que foi
