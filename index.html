@@ -452,7 +452,6 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
       <div class="view" id="view-materiais">
         <div style="margin-bottom:21px;"><div style="font-family:'Inter',sans-serif;font-size:24px;font-weight:700;margin-bottom:5px;">Materiais & Planilhas</div><div style="font-size:13px;color:var(--text-secondary);">Ferramentas práticas por fase. Baixe, preencha e aplique na sua operação.</div></div>
         <div id="mat"></div>
-        <div id="vnd-mat"></div>
       </div>
 
       <div class="view" id="view-admin">
@@ -961,8 +960,8 @@ function init(){
    "0 fases fechadas". */
 function renderVenda(){
   const fx=fechadas(), faixa=document.getElementById('vnd-faixa'),
-        cxMat=document.getElementById('vnd-mat'), sbp=document.getElementById('sb-plano');
-  if(!fx.length){[faixa,cxMat,sbp].forEach(e=>{if(e)e.innerHTML='';});return;}
+        sbp=document.getElementById('sb-plano');
+  if(!fx.length){[faixa,sbp].forEach(e=>{if(e)e.innerHTML='';});return;}
   const tem=M.length-fx.length, nm=matFechados();
   const nomes=fx.map(rotuloFase).join(' · ');
   const href=ctaHref('Quero liberar as '+fx.length+' fases que faltam no meu acesso da mentoria APM');
@@ -973,14 +972,29 @@ function renderVenda(){
     </div>
     <a class="vb" href="${href}" target="_blank" rel="noopener">${ICO_ZAP}Liberar o restante</a>
   </div>`;
-  if(cxMat)cxMat.innerHTML=nm?`<div class="vfx" style="margin:8px 0 0;">
-    <div style="flex:1;min-width:230px;">
-      <div class="vfx-t">${nm} ${nm===1?'material está':'materiais estão'} fora do seu plano</div>
-      <div class="vfx-s">Já publicados, prontos para usar, em ${fx.length===1?'1 fase':fx.length+' fases'} que você ainda não tem.</div>
-    </div>
-    <a class="vb" href="${href}" target="_blank" rel="noopener">${ICO_ZAP}Quero acesso</a>
-  </div>`:'';
   if(sbp)sbp.innerHTML=`<span style="color:var(--accent-light);cursor:pointer;" onclick="sv('trilha')">${tem} de ${M.length} fases liberadas →</span>`;
+}
+
+/* O lugar da fase fechada na lista de materiais. Nao lista arquivo
+   nenhum — nem podia, a politica do banco nao entrega — mas ocupa o
+   espaco dela com o convite. O numero de material so' entra quando a
+   RPC de contagem existe e e' maior que zero. */
+function blocoFechado(mi,lbl){
+  const n=nMat(mi.id);
+  return`<div style="margin-bottom:26px;">
+    <div class="mh"><span class="mtg" style="background:rgba(201,168,76,.14);color:var(--accent-light);border:1px solid rgba(201,168,76,.42);">${lbl}</span><span class="mtn" style="display:inline-flex;align-items:center;gap:7px;">${ICO_LOCK}${mi.t} <span style="font-weight:400;font-size:11.5px;color:var(--text-muted);">${mi.id<6?'(bloqueada)':'(bloqueado)'}</span></span></div>
+    <div class="vnd" style="margin-bottom:0;">
+      <div class="vnd-p" style="margin-bottom:15px;">
+        Você está a um clique de descobrir tudo o que esta fase entrega.
+        Veja a ementa, os resultados esperados e solicite a liberação caso faça sentido para o seu negócio.
+        ${n?`<br><span style="color:var(--accent-light);">${n===1?'1 material já publicado aqui dentro':n+' materiais já publicados aqui dentro'} — não abrem no seu plano.</span>`:''}
+      </div>
+      <div class="vnd-cta">
+        <a class="vb" href="${ctaHref('Quero meu acesso à '+rotuloFase(mi)+' da mentoria APM')}" target="_blank" rel="noopener">${ICO_ZAP}Quero meu acesso</a>
+        <button class="vb vb2" onclick="smd(${mi.id})">Ver a ementa desta fase →</button>
+      </div>
+    </div>
+  </div>`;
 }
 
 function renderMat(){
@@ -1003,9 +1017,15 @@ function renderMat(){
   if(destaque.length){
     h+=`<div style="margin-bottom:26px;"><div class="mh"><span style="font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#C9A84C;border:1px solid rgba(201,168,76,.35);padding:2px 8px;border-radius:4px;">APP</span><span class="mtn" style="margin-left:9px;">A ferramenta</span></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;">${destaque.map(f=>fcrd(f,false)).join('')}</div></div>`;
   }
-  Object.keys(bm).map(Number).sort((a,b)=>a-b).forEach(id=>{
-    const mi=M[id];if(!mi)return;
-    const lbl=mi.id<6?'F'+(mi.id+1):'B'+(mi.id-5);
+  /* Varre as 8 na ordem, nao so' as que tem material. Fase fechada entra
+     no lugar dela — entre a 3 e a 5, nao empurrada para o rodape — porque
+     e' o buraco no meio da lista que incomoda e faz pedir acesso. Fase
+     comprada sem material publicado continua nao aparecendo: ali nao ha
+     nada a dizer nem a vender. */
+  M.forEach(mi=>{
+    const id=mi.id, lbl=id<6?'F'+(id+1):'B'+(id-5);
+    if(!SEM_GATE&&!liberada(id)){h+=blocoFechado(mi,lbl);return;}
+    if(!bm[id])return;
     h+=`<div style="margin-bottom:26px;"><div class="mh"><span class="mtg">${lbl}</span><span class="mtn">${mi.t}</span></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;">${bm[id].map(f=>fcrd(f,isAdmin()&&!!f._isAdm)).join('')}</div></div>`;
   });
   if(gn.length||gnAdm.length){
