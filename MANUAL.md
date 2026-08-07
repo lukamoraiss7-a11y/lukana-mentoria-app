@@ -110,6 +110,30 @@ fase. Use isso para recado e documento que vale para a turma inteira.
 
 Você (admin) vê todas as fases sempre, mesmo com a lista vazia.
 
+### Incluir ou tirar um arquivo de uma fase
+
+Entre com a sua conta, menu lateral → **Admin** → aba **Materiais**. Os 23 arquivos
+das fases estão listados lá, cada um com a fase a que pertence e um **✕** para remover.
+
+Para incluir: preencha nome, URL, descrição, escolha o tipo e a fase, e clique em
+Adicionar Material. Ele aparece na hora para todo aluno que tenha aquela fase.
+
+**Hoje o campo é URL, não upload.** Para uma ferramenta nova você precisa de um
+endereço que já exista — um link do Drive, por exemplo. Upload direto pelo painel entra
+junto com o bucket privado (ver a seção seguinte).
+
+Se escolher **Geral (todas as fases)**, o arquivo aparece para qualquer aluno,
+independente do que ele comprou.
+
+### O que ainda não está trancado nos arquivos
+
+A lista respeita a fase comprada: quem não tem a Fase 4 não recebe o PCP do banco, nem
+vê o card. Mas o arquivo em si continua acessível por URL direta — quem tiver o link de
+`/files/pcp_simplificado_pro.xlsx` baixa sem estar logado.
+
+Fechar isso é mover os arquivos para um bucket privado do Supabase Storage, com pasta
+por fase e link assinado que expira. É a mesma mudança que traz o upload pelo painel.
+
 ### Liberar as ferramentas para quem pagou o upsell
 
 SQL Editor:
