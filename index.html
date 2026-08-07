@@ -542,31 +542,13 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
   </main>
 </div>
 <script>
+/* Só o atalho para o app mora aqui. Os 23 arquivos por fase sairam deste
+   array e foram para a tabela `conteudo` (migrar-ferramentas-para-tabela.sql):
+   escritos no HTML, o painel Admin nao conseguia incluir nem excluir nenhum
+   deles. O app fica porque nao e arquivo — quem manda no acesso dele e a flag
+   `acesso.ferramentas`, nao a fase. */
 const F=[
-  {id:"app",name:"Ferramentas APM",url:"ferramentas.html",type:"html",destaque:true,desc:"As 9 planilhas em um app só, mais o simulador de cenários: você lança os números e ele devolve diagnóstico, semáforo e o que fazer hoje. Painel executivo, financeiro, precificação, simulador, KPI 25/50/75/100, kanban, PCP, checklists, CRM e estoque.",mods:[1,2,3],sz:""},
-  {id:"d",name:"Diagnóstico Financeiro",file:"diagnostico_financeiro_pro.xlsx",type:"xlsx",desc:"Mapeamento completo do financeiro: custos, margem e estrutura.",mods:[1],sz:"21 KB"},
-  {id:"p",name:"Precificação v2",file:"precificacao_pro.xlsx",type:"xlsx",desc:"Calculadora de preço por m² + complexidade + variáveis.",mods:[1],sz:"12 KB"},
-  {id:"c",name:"CRM Simplificado",file:"crm_simplificado_pro.xlsx",type:"xlsx",desc:"Gestão de leads, funil comercial e acompanhamento por origem.",mods:[2],sz:"11 KB"},
-  {id:"pcp",name:"PCP Simplificado",file:"pcp_simplificado_pro.xlsx",type:"xlsx",desc:"Controle de projetos, etapas e cronograma 60 dias úteis.",mods:[3],sz:"12 KB"},
-  {id:"k",name:"Painel de Indicadores",file:"painel_indicadores_pro.xlsx",type:"xlsx",desc:"KPI 25/50/75/100 + aderência ao cronograma + comercial.",mods:[3],sz:"13 KB"},
-  {id:"e",name:"Controle de Estoque",file:"controle_estoque_pro.xlsx",type:"xlsx",desc:"Gestão de material: entrada, saída e estoque mínimo por item.",mods:[3],sz:"14 KB"},
-  {id:"fx",name:"Fluxograma Produtivo",url:"apm-fluxograma.html",type:"html",desc:"Do caderno técnico aprovado à entrega em obra — cada etapa, responsável e prazo esperado.",mods:[3],sz:""},
-  {id:"chk",name:"Checklist por Etapa",file:"checklist_por_etapa_pro.xlsx",type:"xlsx",desc:"Verificação por etapa (corte, pré-montagem, expedição, instalação) — elimina retrabalho na origem.",mods:[3],sz:"12 KB"},
-  {id:"kan",name:"Kanban de Produção",file:"kanban_producao_pro.xlsx",type:"xlsx",desc:"Quadro visual por ambiente/projeto nos 9 checkpoints de fábrica e obra.",mods:[3],sz:"9 KB"},
-  {id:"cm",name:"Cronograma Mestre",url:"apm-cronograma.html",type:"html",desc:"Calculadora do ciclo de 60 dias úteis — datas-alvo por bloco a partir da aprovação do caderno técnico.",mods:[3],sz:""},
-  {id:"doc8",name:"Contrato — Cliente Final",file:"08-contrato-cliente-final.html",type:"html",desc:"Modelo de contrato de venda de móveis planejados ao consumidor final, com campos em branco.",mods:[0],sz:"27 KB"},
-  {id:"doc9",name:"Contrato de Trabalho CLT",file:"09-contrato-trabalho-clt.html",type:"html",desc:"Contrato individual por prazo indeterminado: função, jornada, confidencialidade e rescisão.",mods:[0],sz:"23 KB"},
-  {id:"doc10",name:"Contrato — Prestador de Serviços",file:"10-contrato-prestador.html",type:"html",desc:"Dois modelos em um: prestador pessoa física e pessoa jurídica, com garantia pessoal do representante.",mods:[0],sz:"28 KB"},
-  {id:"doc11",name:"Regulamento Interno",file:"11-regulamento-interno.html",type:"html",desc:"Valores, organização, direitos, deveres, disciplina e ciência assinada por cada colaborador.",mods:[4],sz:"16 KB"},
-  {id:"doc12",name:"Termo de Uso de Imagem",file:"12-autorizacao-uso-imagem.html",type:"html",desc:"Autorização individual de uso de imagem, com nota sobre guarda dos dados pela LGPD.",mods:[4],sz:"13 KB"},
-  {id:"doc1",name:"Checklist para Orçamento",file:"01-checklist-orcamento.html",type:"html",desc:"O que o projeto executivo precisa conter antes de você orçar. Planta baixa, layout, vistas, ambientes e estado da obra.",mods:[2],sz:"14 KB"},
-  {id:"doc2",name:"Checklist de Projeto de Arquitetura",file:"02-checklist-projeto-arquitetura.html",type:"html",desc:"Grade de materiais e definições, ambiente por ambiente. Item indefinido não entra em produção.",mods:[2],sz:"16 KB"},
-  {id:"doc6",name:"Ata de Reunião",file:"06-ata-de-reuniao.html",type:"html",desc:"Assuntos, definições, alterações solicitadas e pendências — cada uma com dono e prazo.",mods:[2],sz:"12 KB"},
-  {id:"doc3",name:"Levantamento Técnico e Status da Obra",file:"03-levantamento-e-status-obra.html",type:"html",desc:"As duas conferências que andam juntas: instalações levantadas e obra pronta para receber marcenaria.",mods:[3],sz:"18 KB"},
-  {id:"doc4",name:"Protocolo de Detalhamentos",file:"04-protocolo-detalhamentos.html",type:"html",desc:"Entrega do escritório técnico para a fábrica, com assinatura de recebimento e controle de revisões.",mods:[3],sz:"12 KB"},
-  {id:"doc5",name:"Checklist de Montagem e Logística",file:"05-checklist-montagem-logistica.html",type:"html",desc:"Da conferência na fábrica à saída da obra: conduta, embalagem, transporte, montagem e entrega.",mods:[3],sz:"16 KB"},
-  {id:"doc7",name:"Entrega Técnica",file:"07-entrega-tecnica.html",type:"html",desc:"Termo de inspeção por ambiente, recebimento, garantia e assinaturas das quatro partes.",mods:[3],sz:"16 KB"},
-  {id:"kpi4",name:"KPI 25/50/75/100",file:"kpi_25_50_75_100_pro.xlsx",type:"xlsx",desc:"Aderência a cronograma por ambiente — % planejado x % real, semáforo automático.",mods:[3],sz:"12 KB"}
+  {id:"app",name:"Ferramentas APM",url:"ferramentas.html",type:"html",destaque:true,desc:"As 9 planilhas em um app só, mais o simulador de cenários: você lança os números e ele devolve diagnóstico, semáforo e o que fazer hoje. Painel executivo, financeiro, precificação, simulador, KPI 25/50/75/100, kanban, PCP, checklists, CRM e estoque.",mods:[1,2,3],sz:""}
 ];
 
 const M=[
