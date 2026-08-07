@@ -470,6 +470,47 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
               </div>
               <button class="adm-add-btn" onclick="admAddMaterial()">Adicionar Material</button>
             </div>
+
+            <!-- Upload de verdade: o arquivo vai para o bucket privado, na
+                 pasta da fase. Sem depender de link do Drive. -->
+            <div class="adm-form">
+              <div class="adm-form-title">Subir arquivo novo</div>
+              <input type="file" class="adm-input" id="au-file" style="padding:8px 12px;cursor:pointer;">
+              <input type="text" class="adm-input" id="au-name" placeholder="Nome que o aluno vê (em branco usa o nome do arquivo)">
+              <input type="text" class="adm-input" id="au-desc" placeholder="Descrição breve">
+              <select class="adm-select" id="au-fase">
+                <option value="">Geral (todas as fases)</option>
+                <option value="0">Fase 1 — Fundamentos</option>
+                <option value="1">Fase 2 — Rentabilidade</option>
+                <option value="2">Fase 3 — Máquina Comercial</option>
+                <option value="3">Fase 4 — Operação</option>
+                <option value="4">Fase 5 — Liderança</option>
+                <option value="5">Fase 6 — Escala</option>
+                <option value="6">Bônus 1 — Marketing</option>
+                <option value="7">Bônus 2 — IA</option>
+              </select>
+              <div class="adm-row" style="grid-template-columns:auto 1fr;align-items:center;gap:10px;">
+                <button class="adm-add-btn" onclick="admSubirArquivo()">Subir e publicar</button>
+                <span id="au-msg" style="font-size:12px;"></span>
+              </div>
+            </div>
+
+            <!-- Uso unico: leva os arquivos que ainda estao na web aberta para
+                 dentro do bucket. Some da tela quando nao houver mais nenhum. -->
+            <div class="adm-form" id="au-migrar-box" style="display:none;border-color:rgba(201,168,76,.35);">
+              <div class="adm-form-title">Migrar arquivos para o bucket privado</div>
+              <div style="font-size:12px;color:var(--text-secondary);line-height:1.7;margin-bottom:11px;">
+                <span id="au-migrar-qtd">0</span> arquivos ainda são servidos por URL aberta —
+                quem tiver o link baixa sem estar logado. Este botão copia cada um para o bucket,
+                na pasta da fase, e reaponta o registro. Os arquivos atuais continuam no ar até
+                serem removidos do site.
+              </div>
+              <div class="adm-row" style="grid-template-columns:auto 1fr;align-items:center;gap:10px;">
+                <button class="adm-add-btn" onclick="admMigrarParaBucket()">Migrar agora</button>
+                <span id="au-migrar-msg" style="font-size:12px;"></span>
+              </div>
+            </div>
+
             <div class="adm-section-head">Materiais Adicionados</div>
             <div class="adm-list" id="adm-mat-list"></div>
           </div>
@@ -749,8 +790,36 @@ function fbxCls(t){return t==='xlsx'?'bxl':t==='pdf'?'bxp':t==='video'?'bxv':'bx
 const ICO_DL='<svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v8M4 10l4 4 4-4"/><path d="M2 14h12"/></svg>';
 const ICO_OPEN='<svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2.5h5.5v5.5"/><path d="M13.5 2.5L7 9"/><path d="M6.5 4H3a1 1 0 00-1 1v8a1 1 0 001 1h8a1 1 0 001-1v-3.5"/></svg>';
 
+/* Arquivo no bucket privado: o aluno nunca recebe endereco fixo. O link e
+   assinado no clique e expira. Quem nao tem a fase nao consegue nem gerar o
+   link — a politica do Storage e a mesma de `conteudo`.
+   Os dois casos de baixo (file / url) continuam valendo para o que ainda
+   nao migrou: durante a migracao as duas formas convivem. */
+async function abrirDoBucket(ev,path,abrirNaAba,nome){
+  ev.preventDefault();
+  /* A aba precisa ser aberta agora, no gesto do clique. Depois do await o
+     navegador trata window.open como popup e bloqueia. */
+  const aba=abrirNaAba?window.open('','_blank','noopener'):null;
+  const el=ev.currentTarget, antes=el.innerHTML;
+  el.innerHTML='abrindo…';
+  const opc=abrirNaAba?{}:{download:nome||true};
+  const {data,error}=await sb.storage.from('materiais').createSignedUrl(path,60,opc);
+  el.innerHTML=antes;
+  if(error||!data){
+    if(aba)aba.close();
+    alert('Não consegui abrir este arquivo: '+((error&&error.message)||'sem permissão para a fase dele'));
+    return false;
+  }
+  if(aba)aba.location=data.signedUrl; else location.href=data.signedUrl;
+  return false;
+}
+
 function fbtn(f,extra){
   const st=extra?` style="${extra}"`:'';
+  if(f.path){
+    const abre=f.type==='html';
+    return`<a href="#" onclick='return abrirDoBucket(event,${JSON.stringify(f.path)},${abre?1:0},${JSON.stringify(f.name||'')})' class="bdl"${st}>${abre?ICO_OPEN+'Abrir':ICO_DL+'Baixar'}</a>`;
+  }
   if(f.file&&f.type==='html')return`<a href="files/${f.file}" target="_blank" rel="noopener" class="bdl"${st}>${ICO_OPEN}Abrir</a>`;
   if(f.file)return`<a href="files/${f.file}" download class="bdl"${st}>${ICO_DL}Baixar</a>`;
   if(f.url)return`<a href="${f.url}" target="_blank" rel="noopener" class="bdl"${st}>${ICO_OPEN}Acessar</a>`;
@@ -1128,9 +1197,86 @@ function faseLabel(fid){
   return m.t;
 }
 
+/* ---- ARQUIVO NO BUCKET PRIVADO ----
+   O upload roda no navegador do admin, com a sessao dele: a politica
+   `admin escreve arquivo` e quem autoriza. A pasta e a fase — e' isso que
+   a politica de leitura compara com `acesso.fases`. Fase vazia vai para
+   `geral/`, que todo aluno logado le. */
+function auMsg(t,cor){const e=document.getElementById('au-msg');if(e){e.textContent=t;e.style.color=cor||'var(--text-muted)';}}
+function auPasta(faseId){return faseId===''||faseId===null||faseId===undefined?'geral':String(parseInt(faseId));}
+function auTipo(nome){
+  const ext=(nome.split('.').pop()||'').toLowerCase();
+  return ext==='xlsx'||ext==='xls'?'xlsx':ext==='pdf'?'pdf':ext==='html'||ext==='htm'?'html':'link';
+}
+/* Nome de objeto no Storage nao aceita acento nem espaco sem dor de cabeca. */
+function auSlug(nome){
+  return nome.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^A-Za-z0-9._-]+/g,'-').replace(/^-+|-+$/g,'').toLowerCase();
+}
+
+async function admSubirArquivo(){
+  const inp=document.getElementById('au-file');
+  const arq=inp&&inp.files&&inp.files[0];
+  if(!arq){auMsg('Escolha um arquivo.','#ef4444');return;}
+  if(arq.size>50*1024*1024){auMsg('Arquivo acima de 50 MB. Suba num link externo.','#ef4444');return;}
+  const faseId=document.getElementById('au-fase').value;
+  const nome=(document.getElementById('au-name').value||'').trim()||arq.name;
+  const desc=(document.getElementById('au-desc').value||'').trim();
+  const destino=auPasta(faseId)+'/'+auSlug(arq.name);
+  auMsg('Subindo…');
+  const up=await sb.storage.from('materiais').upload(destino,arq,{upsert:true,contentType:arq.type||undefined});
+  if(up.error){auMsg('Não subiu: '+up.error.message,'#ef4444');return;}
+  const sz=arq.size<1024?arq.size+' B':arq.size<1048576?Math.round(arq.size/1024)+' KB':(arq.size/1048576).toFixed(1)+' MB';
+  if(!await publicar('materials',faseId,{name:nome,type:auTipo(arq.name),desc:desc,sz:sz,path:destino})){
+    auMsg('Subiu o arquivo mas não consegui publicar o registro.','#ef4444');return;
+  }
+  inp.value='';document.getElementById('au-name').value='';document.getElementById('au-desc').value='';
+  auMsg('Publicado: '+nome,'#10B981');
+  renderAdminLists();renderMat();
+}
+
+/* Uso unico. Copia o que ainda esta na web aberta para o bucket. Roda no
+   navegador do admin justamente porque e' de la que da para ler o arquivo
+   publico e escrever no bucket na mesma sessao. */
+async function admMigrarParaBucket(){
+  const pend=(getAdminData().materials||[]).filter(f=>f.file&&!f.path);
+  const msg=(t,c)=>{const e=document.getElementById('au-migrar-msg');if(e){e.textContent=t;e.style.color=c||'var(--text-muted)';}};
+  if(!pend.length){msg('Nada para migrar.');return;}
+  if(!confirm('Copiar '+pend.length+' arquivos para o bucket privado e reapontar cada registro?\n\nOs arquivos atuais continuam no ar até serem removidos do site — dá para conferir antes.'))return;
+  let ok=0;const falhas=[];
+  for(let i=0;i<pend.length;i++){
+    const f=pend[i];
+    msg('Migrando '+(i+1)+' de '+pend.length+': '+f.name+'…');
+    try{
+      const r=await fetch('files/'+f.file);
+      if(!r.ok)throw new Error('files/'+f.file+' respondeu '+r.status);
+      const blob=await r.blob();
+      const destino=auPasta(f.faseId)+'/'+f.file;
+      const up=await sb.storage.from('materiais').upload(destino,blob,{upsert:true,contentType:blob.type||undefined});
+      if(up.error)throw up.error;
+      const d={name:f.name,type:f.type,desc:f.desc||'',sz:f.sz||'',path:destino};
+      if(f.origem)d.origem=f.origem;
+      const u=await sb.from('conteudo').update({dados:d}).eq('id',f._id);
+      if(u.error)throw u.error;
+      ok++;
+    }catch(e){falhas.push(f.name+' → '+(e.message||e));}
+  }
+  await carregarConteudo();renderMat();renderAdminLists();
+  if(falhas.length){
+    msg(ok+' migrados, '+falhas.length+' falharam.','#ef4444');
+    alert('Falharam:\n\n'+falhas.join('\n'));
+  }else{
+    msg(ok+' arquivos migrados. Agora estão no bucket privado.','#10B981');
+  }
+}
+
 function renderAdminLists(){
   const d=getAdminData();
   const mats=d.materials||[];
+  /* A caixa de migracao so existe enquanto sobrar arquivo na web aberta. */
+  const pend=mats.filter(f=>f.file&&!f.path).length;
+  const box=document.getElementById('au-migrar-box');
+  if(box){box.style.display=pend?'block':'none';
+          const q=document.getElementById('au-migrar-qtd');if(q)q.textContent=pend;}
   const vids=d.videos||[];
   const lnks=d.links||[];
   const cmts=d.comments||[];

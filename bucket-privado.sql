@@ -30,17 +30,21 @@ drop policy if exists "admin escreve arquivo"                on storage.objects;
 drop policy if exists "admin atualiza arquivo"               on storage.objects;
 drop policy if exists "admin apaga arquivo"                  on storage.objects;
 
--- LER: admin sempre; aluno so se a pasta do arquivo estiver entre as
--- fases dele. Sem linha em `acesso`, nao le nada — inclusive quem
--- criou conta e ainda nao comprou.
+-- LER: admin sempre; a pasta `geral/` para qualquer aluno logado (mesma
+-- regra do conteudo com `fase_id` nulo); as demais so se a pasta estiver
+-- entre as fases dele. Sem a excecao do `geral`, um arquivo geral exigiria
+-- fase e ninguem sem compra abriria — furo silencioso.
 create policy "aluno le arquivo da fase que comprou"
   on storage.objects for select to authenticated
   using (
     bucket_id = 'materiais'
-    and exists (
-      select 1 from public.acesso a
-       where a.user_id = auth.uid()
-         and (a.admin or (storage.foldername(name))[1] = any(a.fases))
+    and (
+      (storage.foldername(name))[1] = 'geral'
+      or exists (
+        select 1 from public.acesso a
+         where a.user_id = auth.uid()
+           and (a.admin or (storage.foldername(name))[1] = any(a.fases))
+      )
     )
   );
 
