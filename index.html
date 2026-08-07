@@ -510,8 +510,8 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
                  pasta da fase. Sem depender de link do Drive. -->
             <div class="adm-form">
               <div class="adm-form-title">Subir arquivo novo</div>
-              <input type="file" class="adm-input" id="au-file" style="padding:8px 12px;cursor:pointer;">
-              <input type="text" class="adm-input" id="au-name" placeholder="Nome que o aluno vê (em branco usa o nome do arquivo)">
+              <input type="file" class="adm-input" id="au-file" multiple style="padding:8px 12px;cursor:pointer;">
+              <input type="text" class="adm-input" id="au-name" placeholder="Nome que o aluno vê (em branco: título do HTML, ou o nome do arquivo)">
               <input type="text" class="adm-input" id="au-desc" placeholder="Descrição breve">
               <select class="adm-select" id="au-fase">
                 <option value="">Geral (todas as fases)</option>
@@ -1436,24 +1436,54 @@ function auSlug(nome){
   return nome.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^A-Za-z0-9._-]+/g,'-').replace(/^-+|-+$/g,'').toLowerCase();
 }
 
+function auTamanho(b){return b<1024?b+' B':b<1048576?Math.round(b/1024)+' KB':(b/1048576).toFixed(1)+' MB';}
+
+/* Nome que o aluno ve. Num HTML, o <title> ja e' o titulo do modulo —
+   melhor que "f5-01-como-contratar-certo.html". Le so o comeco do arquivo:
+   nao precisa carregar 200 KB para achar uma tag do <head>. */
+async function auNomeDoArquivo(arq){
+  if(!/\.html?$/i.test(arq.name))return arq.name.replace(/\.[^.]+$/,'');
+  try{
+    const t=await arq.slice(0,4096).text();
+    const m=t.match(/<title>([^<]+)<\/title>/i);
+    if(m&&m[1].trim())return m[1].trim();
+  }catch(e){}
+  return arq.name.replace(/\.[^.]+$/,'');
+}
+
+/* Aceita varios arquivos de uma vez. Com um so, o campo de nome vale;
+   com varios, cada um recebe o proprio titulo — senao os 32 entrariam
+   com o mesmo nome. */
 async function admSubirArquivo(){
   const inp=document.getElementById('au-file');
-  const arq=inp&&inp.files&&inp.files[0];
-  if(!arq){auMsg('Escolha um arquivo.','#ef4444');return;}
-  if(arq.size>50*1024*1024){auMsg('Arquivo acima de 50 MB. Suba num link externo.','#ef4444');return;}
+  const arqs=inp&&inp.files?Array.from(inp.files):[];
+  if(!arqs.length){auMsg('Escolha um arquivo.','#ef4444');return;}
+  const grande=arqs.find(a=>a.size>50*1024*1024);
+  if(grande){auMsg('"'+grande.name+'" passa de 50 MB. Suba num link externo.','#ef4444');return;}
   const faseId=document.getElementById('au-fase').value;
-  const nome=(document.getElementById('au-name').value||'').trim()||arq.name;
   const desc=(document.getElementById('au-desc').value||'').trim();
-  const destino=auPasta(faseId)+'/'+auSlug(arq.name);
-  auMsg('Subindo…');
-  const up=await sb.storage.from('materiais').upload(destino,arq,{upsert:true,contentType:arq.type||undefined});
-  if(up.error){auMsg('Não subiu: '+up.error.message,'#ef4444');return;}
-  const sz=arq.size<1024?arq.size+' B':arq.size<1048576?Math.round(arq.size/1024)+' KB':(arq.size/1048576).toFixed(1)+' MB';
-  if(!await publicar('materials',faseId,{name:nome,type:auTipo(arq.name),desc:desc,sz:sz,path:destino})){
-    auMsg('Subiu o arquivo mas não consegui publicar o registro.','#ef4444');return;
+  const nomeManual=(document.getElementById('au-name').value||'').trim();
+  let ok=0;const falhas=[];
+  for(let i=0;i<arqs.length;i++){
+    const arq=arqs[i];
+    const nome=(arqs.length===1&&nomeManual)?nomeManual:await auNomeDoArquivo(arq);
+    auMsg(arqs.length>1?('Subindo '+(i+1)+' de '+arqs.length+': '+nome+'…'):'Subindo…');
+    try{
+      const destino=auPasta(faseId)+'/'+auSlug(arq.name);
+      const up=await sb.storage.from('materiais').upload(destino,arq,{upsert:true,contentType:arq.type||undefined});
+      if(up.error)throw up.error;
+      if(!await publicar('materials',faseId,{name:nome,type:auTipo(arq.name),desc:desc,sz:auTamanho(arq.size),path:destino}))
+        throw new Error('arquivo subiu, registro não');
+      ok++;
+    }catch(e){falhas.push(arq.name+' → '+(e.message||e));}
   }
   inp.value='';document.getElementById('au-name').value='';document.getElementById('au-desc').value='';
-  auMsg('Publicado: '+nome,'#10B981');
+  if(falhas.length){
+    auMsg(ok+' publicado'+(ok===1?'':'s')+', '+falhas.length+' falhou'+(falhas.length===1?'':'ram')+'.','#ef4444');
+    alert('Falharam:\n\n'+falhas.join('\n'));
+  }else{
+    auMsg(ok===1?'Publicado.':ok+' materiais publicados.','#10B981');
+  }
   renderAdminLists();renderMat();
 }
 
