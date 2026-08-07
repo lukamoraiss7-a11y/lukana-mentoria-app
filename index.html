@@ -110,6 +110,33 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
 .sa{background:rgba(136,153,180,.07);color:var(--text-muted);border:1px solid rgba(255,255,255,.08);}
 .sl{background:rgba(255,255,255,.03);color:var(--text-muted);border:1px solid #333;}
 
+/* VENDA — o que o aluno ainda nao comprou.
+   Cinza morto some da tela: fase fechada tem de ser a coisa mais visivel
+   da lista, senao ela nao vende nada. Dourado com borda viva, o mesmo
+   dourado do resto da marca. Nada aqui abre conteudo — sao so os avisos
+   e os botoes que levam ao contato. */
+.su{background:rgba(201,168,76,.13);color:var(--accent-light);border:1px solid rgba(201,168,76,.42);}
+.vnd{background:linear-gradient(135deg,rgba(201,168,76,.10),rgba(201,168,76,.03));border:1px solid rgba(201,168,76,.34);border-radius:6px;padding:22px;margin-bottom:13px;position:relative;overflow:hidden;}
+.vnd::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold-gradient);}
+.vnd-h{font-family:'Inter',sans-serif;font-size:19px;font-weight:700;color:var(--text-primary);margin-bottom:7px;display:flex;align-items:center;gap:8px;}
+.vnd-p{font-size:12.5px;color:var(--text-secondary);line-height:1.75;margin-bottom:15px;}
+.vnd-n{display:flex;gap:26px;flex-wrap:wrap;margin-bottom:16px;padding:13px 0;border-top:1px solid rgba(201,168,76,.16);border-bottom:1px solid rgba(201,168,76,.16);}
+.vnd-nv{font-family:'Inter',sans-serif;font-size:23px;font-weight:700;color:var(--accent-light);line-height:1;}
+.vnd-nl{font-size:9.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--text-muted);margin-top:5px;}
+.vnd-cta{display:flex;gap:9px;flex-wrap:wrap;}
+.vb{display:inline-flex;align-items:center;gap:6px;background:var(--gold-gradient);color:var(--navy);border:none;padding:10px 19px;border-radius:4px;font-family:'Inter',sans-serif;font-size:11.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:filter .15s;}
+.vb:hover{filter:brightness(1.12);}
+.vb2{background:transparent;color:var(--accent-light);border:1px solid rgba(201,168,76,.4);}
+.vb2:hover{background:rgba(201,168,76,.09);filter:none;}
+/* Entregavel que ele nao tem: o nome aparece, o arquivo nao. E o nome
+   que da vontade — "Calculadora de Margem" trancada vende melhor do que
+   uma tela vazia dizendo "sem acesso". */
+.vlk{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.03);border:1px dashed rgba(201,168,76,.3);color:var(--text-secondary);font-size:11px;padding:5px 10px;border-radius:4px;margin:0 5px 5px 0;}
+/* Faixa do topo do dashboard e do fim dos materiais. */
+.vfx{display:flex;align-items:center;gap:16px;flex-wrap:wrap;background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.26);border-left:3px solid var(--gold-gradient);border-radius:5px;padding:15px 19px;margin-bottom:22px;}
+.vfx-t{font-family:'Inter',sans-serif;font-size:14px;font-weight:700;margin-bottom:3px;}
+.vfx-s{font-size:11.5px;color:var(--text-secondary);line-height:1.6;}
+
 /* Dashboard */
 .hero{background:#1A1A1A;border:1px solid rgba(200,146,42,.14);border-radius:18px;padding:34px 38px;margin-bottom:26px;position:relative;overflow:hidden;}
 .hero::before{content:'';position:absolute;top:-80px;right:-60px;width:400px;height:400px;background:radial-gradient(circle,rgba(200,146,42,.07),transparent 70%);pointer-events:none;}
@@ -212,7 +239,11 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
 
 /* Trilha Accordion */
 .fa{background:var(--navy-light);border:1px solid #333;border-radius:4px;overflow:hidden;margin-bottom:13px;}
-.fa-header{display:grid;grid-template-columns:80px 1fr auto 24px;align-items:center;gap:14px;padding:18px 22px;cursor:pointer;transition:background .15s;}
+/* Cinco colunas: a quarta e' o selo da fase fechada. Ela existe sempre,
+   vazia quando a fase esta liberada — se o selo entrasse como item extra
+   num grid de quatro, ele quebrava para a linha de baixo e levava o
+   chevron junto. */
+.fa-header{display:grid;grid-template-columns:80px 1fr auto auto 24px;align-items:center;gap:14px;padding:18px 22px;cursor:pointer;transition:background .15s;}
 .fa-header:hover{background:rgba(255,255,255,.025);}
 .fa.open>.fa-header{border-bottom:1px solid #333;}
 .fa-num{font-size:10px;font-weight:800;color:var(--accent);letter-spacing:1px;}
@@ -351,6 +382,7 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
       <div class="prow">Progresso<span class="pval">0%</span></div>
       <div class="ptrk"><div class="pfil"></div></div>
       <div class="psub">0 de 6 fases concluídas</div>
+      <div class="psub" id="sb-plano" style="margin-top:4px;"></div>
     </div>
   </aside>
   <main class="main">
@@ -368,6 +400,9 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
     <div class="content">
 
       <div class="view active" id="view-dashboard">
+        <!-- Faixa do plano. Só aparece para quem tem fase fechada; quem
+             comprou tudo (e o admin) não vê nada aqui. -->
+        <div id="vnd-faixa"></div>
         <div class="hero">
           <div class="he">Área de Membros · Alta Performance na Marcenaria</div>
           <div class="hh">Do plano <span class="tg">à realidade.</span></div>
@@ -417,6 +452,7 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
       <div class="view" id="view-materiais">
         <div style="margin-bottom:21px;"><div style="font-family:'Inter',sans-serif;font-size:24px;font-weight:700;margin-bottom:5px;">Materiais & Planilhas</div><div style="font-size:13px;color:var(--text-secondary);">Ferramentas práticas por fase. Baixe, preencha e aplique na sua operação.</div></div>
         <div id="mat"></div>
+        <div id="vnd-mat"></div>
       </div>
 
       <div class="view" id="view-admin">
@@ -703,11 +739,17 @@ function faCard(m){
   const title=m.t.split('—')[1]?.trim()||m.t;
   const pilares=FA_PILARES[m.id]||[];
   const tools=m.d.split('. ').map(t=>t.replace(/\.$/, '').trim()).filter(Boolean);
+  /* A trilha mostra o programa inteiro para todo mundo, comprado ou nao.
+     E' de proposito: o conteudo da fase fechada e' o argumento de venda
+     dela. O que muda e' o selo no cabecalho e o botao do rodape. */
+  const fechada=!SEM_GATE&&!liberada(m.id);
+  const n=fechada?nMat(m.id):null;
   return`<div class="fa" id="fa-${m.id}">
     <div class="fa-header" onclick="toggleFa(${m.id})">
       <span class="fa-num">${num}</span>
       <span class="fa-title">${title}</span>
       <span class="fa-tag">${m.o}</span>
+      ${fechada?seloVenda():'<span></span>'}
       <svg class="fa-chev" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="2,5 8,11 14,5"/></svg>
     </div>
     <div class="fa-body">
@@ -717,7 +759,10 @@ function faCard(m){
       <div class="fa-sec">Ferramentas & Entregáveis</div>
       <div class="fa-tools">${tools.map(t=>`<span class="fa-tool">${t}</span>`).join('')}</div>
       ${m.marco?`<div class="fa-marco"><strong>Marco de Progressão</strong>${m.marco}</div>`:''}
-      <button class="fa-btn" onclick="smd(${m.id})">Abrir Fase →</button>
+      ${fechada
+        ?`<div style="margin-top:14px;font-size:12px;color:var(--accent-light);display:flex;align-items:center;gap:6px;">${ICO_LOCK}${n?(n===1?'1 material já publicado nesta fase — não abre no seu plano.':n+' materiais já publicados nesta fase — não abrem no seu plano.'):'Esta fase não está no seu plano.'}</div>
+           <a class="vb" style="margin-top:11px;" href="${ctaHref('Quero liberar a '+rotuloFase(m)+' da mentoria APM')}" target="_blank" rel="noopener">${ICO_ZAP}Liberar esta fase</a>`
+        :`<button class="fa-btn" onclick="smd(${m.id})">Abrir Fase →</button>`}
     </div>
   </div>`;
 }
@@ -737,6 +782,11 @@ function badge(s){
   if(s==='available')return'<span class="sb sa">Disponível</span>';
   return'<span class="sb sl">Bloqueado</span>';
 }
+/* Selo da fase que ele nao comprou. Separado do `badge` porque os dois
+   "locked" nao sao a mesma coisa: um e' ordem da trilha, o outro e' o
+   plano dele. Este aqui e' o unico que precisa chamar atencao. */
+function seloVenda(){return`<span class="sb su" style="display:inline-flex;align-items:center;gap:4px;">${ICO_LOCK}Liberar</span>`;}
+function badgeM(m){return(!SEM_GATE&&!liberada(m.id))?seloVenda():badge(stat(m));}
 function pstyle(p){const c=PK[p]||'#888';return`background:${c}16;border:1px solid ${c}38;color:${c};`;}
 
 /* ---- QUEM COMPROU O QUE ----
@@ -760,11 +810,67 @@ function stat(m){
   return m.s==='locked'?'available':m.s;
 }
 
+/* ---- PARA ONDE VAI QUEM QUER COMPRAR ----
+   Um lugar so'. Trocar o numero aqui muda todos os botoes da area de
+   membros. `wa` e' o WhatsApp em formato internacional, so' digito:
+   55 + DDD + numero, sem +, sem espaco, sem traco. Ex.: 5567999998888.
+   Com `wa` vazio o botao cai para e-mail — feio, mas nunca quebrado. */
+const VENDA={
+  wa:'5567992517818',
+  email:'lukamoraiss7@gmail.com'
+};
+function ctaHref(assunto){
+  /* `ALUNO` e' `let`, entao nao existe em `window` — checar por la' daria
+     sempre vazio e a mensagem chegaria sem o e-mail, que e' justamente o
+     que o Luka precisa para achar a conta e liberar. */
+  const quem=(typeof ALUNO!=='undefined'&&ALUNO&&ALUNO.email)?ALUNO.email:'';
+  const txt=assunto+(quem?' — meu e-mail de acesso e '+quem:'');
+  if(VENDA.wa)return'https://wa.me/'+VENDA.wa+'?text='+encodeURIComponent(txt);
+  return'mailto:'+VENDA.email+'?subject='+encodeURIComponent(assunto)+'&body='+encodeURIComponent(txt);
+}
+const ICO_ZAP='<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 14l1-3.2A6 6 0 118 14H2z"/></svg>';
+const ICO_LOCK='<svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" style="flex-shrink:0"><rect x="3.5" y="7" width="9" height="7" rx="1.2"/><path d="M5.5 7V5a2.5 2.5 0 015 0v2"/></svg>';
+
+/* ---- QUANTO MATERIAL ELE ESTA' DEIXANDO NA MESA ----
+   A politica de RLS nao deixa o material de fase fechada sair do banco —
+   e' o certo. Mas o numero pode sair: saber que existem 12 planilhas
+   prontas na Fase 4 e' exatamente o que da vontade de comprar, e um
+   numero nao e' o arquivo. Vem da RPC `contagem_por_fase`
+   (mentoria-app/contagem-por-fase.sql).
+   Se a RPC nao existir, o objeto fica vazio e a tela some com os numeros
+   em vez de mostrar zero: dizer "0 materiais" numa fase fechada mataria
+   a venda que esta pagina inteira existe para fazer. */
+let CONT={};
+function nMat(id){const n=CONT[String(id)];return typeof n==='number'?n:null;}
+function temContagem(){return Object.keys(CONT).length>0;}
+async function carregarContagem(){
+  try{
+    const {data,error}=await sb.rpc('contagem_por_fase');
+    if(error||!data)return;
+    data.forEach(r=>{CONT[String(r.fase_id)]=Number(r.total)||0;});
+  }catch(e){ console.warn('contagem_por_fase indisponivel',e); }
+}
+/* Fases que ele nao tem, e quantos materiais moram la' dentro. */
+function fechadas(){return SEM_GATE||EH_ADMIN?[]:M.filter(m=>!liberada(m.id));}
+function matFechados(){return fechadas().reduce((s,m)=>s+(nMat(m.id)||0),0);}
+function rotuloFase(m){return m.id<6?'Fase '+(m.id+1):'Bônus '+(m.id-5);}
+/* Entregaveis da fase: a lista vem do proprio arquivo (`m.d`), nao do
+   banco. E' texto de vitrine, nao material — pode ser mostrado trancado. */
+function entregaveis(m){return m.d.split('. ').map(t=>t.replace(/\.$/,'').trim()).filter(Boolean);}
+
 function card(m){
   const cls=PC[m.p]||'visao';
   const lbl=flabel(m);
   const obj=m.o.length>105?m.o.slice(0,102)+'...':m.o;
-  return`<div class="mc${stat(m)==='locked'?' lk':''}" onclick="smd(${m.id})">
+  /* Fase fechada nao e' apagada com `.lk`: apagar esconde da vista
+     justamente o que precisa ser desejado. Ela fica legivel, com o
+     rodape trocado pelo numero de material que existe la' dentro. */
+  const fechada=!SEM_GATE&&!liberada(m.id);
+  const n=fechada?nMat(m.id):null;
+  const rodape=(fechada&&n)
+    ?`<div class="cdur" style="color:var(--accent-light);">${ICO_LOCK}${n} ${n===1?'material':'materiais'} aqui dentro</div>`
+    :`<div class="cdur"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.4"><circle cx="8" cy="8" r="6"/><polyline points="8,5 8,8 10.5,9.5"/></svg>${m.dur}</div>`;
+  return`<div class="mc${stat(m)==='locked'&&!fechada?' lk':''}" onclick="smd(${m.id})">
     <div class="ct ${cls}${stat(m)==='completed'?' done':''}">
       <div class="cn">${lbl}</div>
       <div class="ctm"><div class="cpb"><div class="cpa"></div></div><div class="cpp">${m.p}</div></div>
@@ -773,7 +879,7 @@ function card(m){
       <div class="cw">${m.id<6?'Fase '+(m.id+1):m.t.split('—')[0].trim()} · ${m.p}</div>
       <div class="ctt">${m.t}</div>
       <div class="cd">${obj}</div>
-      <div class="cf"><div class="cdur"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.4"><circle cx="8" cy="8" r="6"/><polyline points="8,5 8,8 10.5,9.5"/></svg>${m.dur}</div>${badge(stat(m))}</div>
+      <div class="cf">${rodape}${badgeM(m)}</div>
     </div>
   </div>`;
 }
@@ -845,6 +951,36 @@ function init(){
     <div class="plg">${p.tp.map(t=>`<div class="plt">${t}</div>`).join('')}</div>
   </div>`).join('');
   renderMat();
+  renderVenda();
+}
+
+/* ---- O QUE FALTA NO PLANO DELE ----
+   Tres lugares, a mesma conta: faixa no topo do dashboard, rodape da
+   aba Materiais e linha na barra lateral. Quem comprou tudo — e o
+   admin — nao ve nenhum dos tres: a faixa some, nao fica dizendo
+   "0 fases fechadas". */
+function renderVenda(){
+  const fx=fechadas(), faixa=document.getElementById('vnd-faixa'),
+        cxMat=document.getElementById('vnd-mat'), sbp=document.getElementById('sb-plano');
+  if(!fx.length){[faixa,cxMat,sbp].forEach(e=>{if(e)e.innerHTML='';});return;}
+  const tem=M.length-fx.length, nm=matFechados();
+  const nomes=fx.map(rotuloFase).join(' · ');
+  const href=ctaHref('Quero liberar as '+fx.length+' fases que faltam no meu acesso da mentoria APM');
+  if(faixa)faixa.innerHTML=`<div class="vfx">
+    <div style="flex:1;min-width:230px;">
+      <div class="vfx-t">Seu acesso hoje: ${tem} de ${M.length} fases</div>
+      <div class="vfx-s">${fx.length} ${fx.length===1?'fase continua fechada':'fases continuam fechadas'}${nm?' — e '+nm+(nm===1?' material já publicado não abre':' materiais já publicados não abrem')+' para você':''}.<br>${nomes}</div>
+    </div>
+    <a class="vb" href="${href}" target="_blank" rel="noopener">${ICO_ZAP}Liberar o restante</a>
+  </div>`;
+  if(cxMat)cxMat.innerHTML=nm?`<div class="vfx" style="margin:8px 0 0;">
+    <div style="flex:1;min-width:230px;">
+      <div class="vfx-t">${nm} ${nm===1?'material está':'materiais estão'} fora do seu plano</div>
+      <div class="vfx-s">Já publicados, prontos para usar, em ${fx.length===1?'1 fase':fx.length+' fases'} que você ainda não tem.</div>
+    </div>
+    <a class="vb" href="${href}" target="_blank" rel="noopener">${ICO_ZAP}Quero acesso</a>
+  </div>`:'';
+  if(sbp)sbp.innerHTML=`<span style="color:var(--accent-light);cursor:pointer;" onclick="sv('trilha')">${tem} de ${M.length} fases liberadas →</span>`;
 }
 
 function renderMat(){
@@ -892,23 +1028,47 @@ function renderMat(){
    das outras telas, nao ha CSS novo. */
 function smdBloqueada(m,bloco){
   const prev=m.id>0?m.id-1:null;const next=m.id<M.length-1?m.id+1:null;
+  const ent=entregaveis(m);
+  const n=nMat(m.id);
+  const falta=fechadas().length;
+  const nome=rotuloFase(m);
+  /* Os tres numeros da vitrine. O de material so' entra se a RPC de
+     contagem existir — mostrar "0 materiais" numa fase que ele nao pode
+     abrir e' o contrario do efeito que esta tela procura. */
+  const numeros=[
+    ['Tópicos de aula',m.tp.length],
+    ['Entregáveis',ent.length],
+    ['Horas de trabalho',m.dur.replace(' aula + ','+').replace(' prática','')]
+  ].concat((n!==null&&n>0)?[['Materiais prontos',n]]:[]);
   document.getElementById('mc').innerHTML=`
     <div class="dh">
       <div class="dbc" onclick="sv('trilha')"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="10,2 4,8 10,14"/></svg>Trilha de Aulas</div>
       <div class="dpb" style="${pstyle(m.p)}">${m.p}</div>
       <div class="dtt">${m.t}</div>
       <div class="do">${m.o}</div>
-      <div class="dm"><div class="mt">${bloco}</div><div class="mt">${m.dur}</div>${badge('locked')}</div>
+      <div class="dm"><div class="mt">${bloco}</div><div class="mt">${m.dur}</div>${seloVenda()}</div>
     </div>
-    <div class="xc" style="margin-bottom:13px;">
-      <div class="xt">Esta fase não está no seu plano</div>
-      <div style="font-size:12px;color:var(--text-secondary);line-height:1.7;">
-        As aulas, os materiais e as notas do instrutor desta fase ficam liberados assim que ela for incluída.
-        Fale com a mentoria para liberar.
+
+    <div class="vnd">
+      <div class="vnd-h">${ICO_LOCK}${nome} está fechada no seu plano</div>
+      <div class="vnd-p">
+        Tudo que está descrito abaixo já existe, gravado e pronto${n?', com '+n+(n===1?' material':' materiais')+' publicado'+(n===1?'':'s')+' esperando':''}.
+        O que separa você disso é uma liberação — e ela é imediata assim que a fase entra no seu plano.
+      </div>
+      <div class="vnd-n">
+        ${numeros.map(([l,v])=>`<div><div class="vnd-nv">${v}</div><div class="vnd-nl">${l}</div></div>`).join('')}
+      </div>
+      <div class="vnd-cta">
+        <a class="vb" href="${ctaHref('Quero liberar a '+nome+' da mentoria APM')}" target="_blank" rel="noopener">${ICO_ZAP}Liberar a ${nome}</a>
+        ${falta>1?`<a class="vb vb2" href="${ctaHref('Quero a mentoria APM completa — as '+falta+' fases que faltam no meu acesso')}" target="_blank" rel="noopener">Quero as ${falta} fases que faltam</a>`:''}
       </div>
     </div>
+
     <div class="xc"><div class="xt">O que esta fase cobre</div>${m.tp.map(t=>`<div class="ti"><div class="td"></div><div class="tt">${t}</div></div>`).join('')}</div>
-    ${m.d?`<div class="dc2" style="margin-top:13px;"><div class="dl">Entregáveis ao Final</div><div class="dxt">${m.d}</div></div>`:''}
+    ${ent.length?`<div class="dc2"><div class="dl">O que você leva desta fase</div>
+      <div style="margin-top:10px;">${ent.map(t=>`<span class="vlk">${ICO_LOCK}${t}</span>`).join('')}</div>
+      <div style="font-size:11px;color:var(--text-muted);margin-top:9px;">Ferramenta pronta, não teoria. Todas trancadas até a fase entrar no seu plano.</div></div>`:''}
+    ${m.marco?`<div class="marco"><div class="marco-label">Onde você chega no fim desta fase</div><div class="marco-text">${m.marco}</div></div>`:''}
     <div class="mnv">
       ${prev!==null?`<button class="bg" onclick="smd(${prev})">← ${M[prev].t}</button>`:'<div></div>'}
       ${next!==null?`<button class="bgo" onclick="smd(${next})">${M[next].t} →</button>`:'<div></div>'}
@@ -1383,6 +1543,10 @@ async function boot(){
     }
   }catch(e){ console.error('acesso',e); }
   await carregarConteudo();
+  /* Depois do `acesso`, porque o numero so' interessa para quem tem fase
+     fechada. Falha silenciosa: sem a RPC a area abre igual, so' sem os
+     numeros de material nas telas de fase fechada. */
+  await carregarContagem();
 
   if(isAdmin()){
     document.getElementById('lock-btn').classList.add('active');
