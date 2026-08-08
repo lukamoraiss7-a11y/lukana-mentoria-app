@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MÓDULO 3 — FEEDBACK: O MÉTODO CORTE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --tinta:#2C2825; --ouro:#B8925A; --claro:#F5F1EA; --linha:#D8D2C7;
+  --fraco:#6E675E; --papel:#FFFFFF; --caixa:#FAF8F4;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+@page{size:A4;margin:14mm 13mm 13mm}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact;scroll-behavior:smooth}
+body{font:11pt/1.62 'Inter',-apple-system,'Helvetica Neue',Arial,sans-serif;
+  color:var(--tinta);background:var(--claro)}
+.folha{max-width:196mm;margin:0 auto;padding:14mm 10mm 20mm;background:var(--papel);
+  box-shadow:0 1px 3px rgba(0,0,0,.06)}
+
+/* cabecalho */
+.topo{display:flex;justify-content:space-between;align-items:flex-end;
+  border-bottom:1.5pt solid var(--tinta);padding-bottom:6pt;gap:12pt;flex-wrap:wrap}
+.marca{font:600 15pt/1 'Cormorant Garamond',Georgia,serif;letter-spacing:.22em;
+  text-transform:uppercase;outline:none}
+.marca small{display:block;font:400 6.5pt/1 'Inter',sans-serif;letter-spacing:.34em;
+  color:var(--fraco);margin-top:3pt}
+.marca:focus{background:#FFF6DF}
+.doc{text-align:right}
+.doc .fase{font-size:7pt;letter-spacing:.2em;color:var(--ouro);font-weight:600;
+  text-transform:uppercase}
+.doc .cod{font-size:7pt;letter-spacing:.18em;color:var(--fraco);margin-top:2pt}
+.regua{height:2.5pt;background:var(--ouro);margin:0 0 14pt}
+
+/* tipografia */
+h1{font:600 21pt/1.18 'Cormorant Garamond',Georgia,serif;letter-spacing:.01em;
+  margin:0 0 3pt}
+h1 + .lead{font-size:10.5pt;color:var(--fraco);font-style:italic;margin-bottom:14pt;
+  padding-bottom:10pt;border-bottom:.75pt solid var(--linha)}
+h2{font:600 10.5pt/1.25 'Inter',sans-serif;letter-spacing:.13em;text-transform:uppercase;
+  background:var(--claro);border-left:3pt solid var(--ouro);padding:6pt 8pt;
+  margin:22pt 0 9pt;break-after:avoid;page-break-after:avoid}
+h3{font:600 11.5pt/1.3 'Cormorant Garamond',Georgia,serif;letter-spacing:.02em;
+  margin:15pt 0 5pt;break-after:avoid;page-break-after:avoid}
+h4{font:600 8.5pt/1.25 'Inter',sans-serif;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--fraco);margin:12pt 0 4pt;break-after:avoid}
+p{margin:0 0 8pt;text-align:left}
+strong{font-weight:600}
+em{font-style:italic}
+a{color:var(--ouro);text-decoration:none}
+hr{border:none;border-top:.75pt solid var(--linha);margin:16pt 0}
+
+/* listas */
+ul,ol{margin:0 0 9pt 16pt}
+li{margin-bottom:3.5pt}
+ul.chk{list-style:none;margin-left:0}
+ul.chk li{display:flex;gap:7pt;align-items:flex-start;padding:3.5pt 0;
+  border-bottom:.5pt dotted var(--linha);break-inside:avoid}
+ul.chk li::before{content:"";flex:0 0 9.5pt;height:9.5pt;margin-top:2.5pt;
+  border:.9pt solid var(--tinta);border-radius:1pt;background:#fff}
+
+/* citacao / destaque */
+blockquote{border-left:2.5pt solid var(--ouro);background:var(--caixa);
+  padding:9pt 12pt;margin:11pt 0;break-inside:avoid}
+blockquote p:last-child{margin-bottom:0}
+
+/* codigo / templates ascii */
+pre{background:var(--caixa);border:.75pt solid var(--linha);border-radius:2pt;
+  padding:10pt 11pt;margin:11pt 0;overflow-x:auto;break-inside:avoid;
+  font:9pt/1.42 'SFMono-Regular',Menlo,Consolas,'Courier New',monospace;
+  white-space:pre;color:#332F2A}
+code{font:9.2pt/1.4 'SFMono-Regular',Menlo,Consolas,monospace;
+  background:var(--claro);padding:1pt 3pt;border-radius:2pt}
+pre code{background:none;padding:0;font-size:inherit}
+
+/* tabelas */
+.tabwrap{overflow-x:auto;margin:11pt 0}
+table{border-collapse:collapse;width:100%;font-size:9.3pt;break-inside:avoid}
+th{background:var(--claro);text-align:left;font-weight:600;font-size:7.5pt;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--fraco);
+  padding:5.5pt 7pt;border:.75pt solid var(--linha)}
+td{padding:5.5pt 7pt;border:.75pt solid var(--linha);vertical-align:top;line-height:1.42}
+tbody tr:nth-child(even){background:#FCFBF9}
+
+/* indice */
+.indice{background:var(--caixa);border:.75pt solid var(--linha);padding:11pt 13pt;
+  margin:0 0 18pt;break-inside:avoid}
+.indice h4{margin-top:0}
+.indice ol{margin:0 0 0 15pt;font-size:9.5pt;column-gap:18pt}
+.indice li{margin-bottom:2.5pt}
+.indice a{color:var(--tinta)}
+.indice a:hover{color:var(--ouro)}
+
+/* rodape */
+.rodape{margin-top:22pt;padding-top:6pt;border-top:.75pt solid var(--linha);
+  display:flex;justify-content:space-between;font-size:7.5pt;color:var(--fraco);
+  letter-spacing:.06em;gap:10pt;flex-wrap:wrap}
+
+/* navegacao entre modulos (some na impressao) */
+.nav{max-width:196mm;margin:0 auto 10mm;padding:0 10mm;display:flex;
+  justify-content:space-between;gap:10pt;font-size:9pt}
+.nav a{display:inline-block;padding:6pt 11pt;border:.75pt solid var(--linha);
+  background:var(--papel);border-radius:2pt;color:var(--tinta)}
+.nav a:hover{border-color:var(--ouro);color:var(--ouro)}
+.topbar{max-width:196mm;margin:0 auto;padding:8mm 10mm 0;display:flex;
+  justify-content:space-between;font-size:9pt}
+.topbar a{color:var(--fraco)}
+.topbar a:hover{color:var(--ouro)}
+
+@media print{
+  body{background:#fff}
+  .folha{box-shadow:none;padding:0;max-width:none}
+  .nav,.topbar{display:none}
+  .indice{break-after:page}
+}
+@media (max-width:640px){
+  body{font-size:11.5pt}
+  .folha{padding:8mm 5mm 14mm}
+  pre{font-size:7.6pt}
+  table{font-size:8.6pt}
+  .doc{text-align:left}
+}
+</style>
+</head>
+<body>
+
+<div class="folha">
+  <div class="topo">
+    <div class="marca" contenteditable="true" spellcheck="false">SUA MARCA<small>MARCENARIA</small></div>
+    <div class="doc"><div class="fase">Fase 5 — Liderança</div><div class="cod">FASE 5 · MÓDULO 03</div></div>
+  </div>
+  <div class="regua"></div>
+
+  <h1>MÓDULO 3 — FEEDBACK: O MÉTODO CORTE</h1>
+  <div class="lead">A ferramenta oficial de correção — e a espinha dorsal da liderança</div>
+  <div class="indice"><h4>Neste módulo</h4><ol><li><a href="#por-que-corte">Por que "CORTE"</a></li><li><a href="#o-problema-que-o-corte-resolve">O problema que o CORTE resolve</a></li><li><a href="#os-4-tipos-de-conversa-e-por-que-confundir-arruina-tudo">Os 4 tipos de conversa (e por que confundir arruína tudo)</a></li><li><a href="#quando-aplicar-o-corte-a-tabela-de-decisao">Quando aplicar o CORTE — a tabela de decisão</a></li><li><a href="#como-aplicar-cada-letra-com-exemplos">Como aplicar cada letra — com exemplos</a></li><li><a href="#script-completo-corte-verbal-degrau-1">SCRIPT COMPLETO — CORTE verbal (degrau 1)</a></li><li><a href="#script-completo-corte-com-registro-degrau-2">SCRIPT COMPLETO — CORTE com registro (degrau 2)</a></li><li><a href="#formulario-de-registro-de-corte-anexo-a">FORMULÁRIO DE REGISTRO DE CORTE (Anexo A)</a></li><li><a href="#a-escada-disciplinar">A Escada Disciplinar</a></li><li><a href="#reconhecimento-o-outro-lado-que-ninguem-treina">Reconhecimento: o outro lado que ninguém treina</a></li><li><a href="#situacoes-dificeis-scripts-prontos">Situações difíceis — scripts prontos</a></li><li><a href="#erros-comuns-na-aplicacao-do-corte">Erros comuns na aplicação do CORTE</a></li><li><a href="#como-treinar-seus-lideres-no-corte">Como treinar seus líderes no CORTE</a></li><li><a href="#indicador-do-modulo-como-saber-se-o-corte-esta-funcionando">Indicador do módulo: como saber se o CORTE está funcionando</a></li><li><a href="#exercicios-do-modulo-3">Exercícios do Módulo 3</a></li><li><a href="#frases-de-impacto-do-modulo-3">Frases de impacto do Módulo 3</a></li><li><a href="#entregavel-do-modulo-3">Entregável do Módulo 3</a></li></ol></div>
+  <hr>
+<h2 id="por-que-corte">Por que "CORTE"</h2>
+<p>Na marcenaria, o corte é a primeira operação. Se o corte sai errado por 3 milímetros, você só descobre na montagem — e aí o retrabalho custa dez vezes mais do que teria custado ajustar a máquina.</p>
+<p><strong>Com gente é igual.</strong> O desvio pequeno, corrigido na hora, custa 5 minutos de conversa. O mesmo desvio, ignorado por seis meses, custa uma demissão, um processo trabalhista e o clima da equipe.</p>
+<p>CORTE é o método de feedback estruturado. Cinco letras, cinco etapas, sempre na mesma ordem:</p>
+<pre>C — CLAREZA          O que aconteceu? Fato concreto, sem generalizar.
+O — OBJETIVO         Qual foi o impacto real? Prazo, custo, cliente, qualidade.
+R — RESPONSABILIDADE O que você consegue fazer diferente daqui pra frente?
+T — TRANSFORMAÇÃO    Qual ação concreta e rastreável sai desta conversa?
+E — EVOLUÇÃO         Como isso melhora daqui pra frente?</pre>
+<p>Não é punição. É correção com direção.</p>
+<hr>
+<h2 id="o-problema-que-o-corte-resolve">O problema que o CORTE resolve</h2>
+<p>A maioria dos donos de PME dá feedback de dois jeitos, e os dois estão errados.</p>
+<h3 id="jeito-errado-n-1-o-silencio-que-explode">Jeito errado nº 1 — O silêncio que explode</h3>
+<p>Você não fala nada por três meses. Vai acumulando. Aí a pessoa comete o erro pela décima vez e você explode — sobre tudo de uma vez, com voz alterada, provavelmente na frente de alguém.</p>
+<p><strong>O que a pessoa entende:</strong> que você é instável. Ela não consegue processar dez críticas de uma vez, então processa uma só: <em>"o chefe surtou comigo."</em> Nada muda, e ela ainda sai da conversa se sentindo injustiçada — porque, do ponto de vista dela, você nunca tinha falado nada.</p>
+<h3 id="jeito-errado-n-2-o-sanduiche-de-elogio">Jeito errado nº 2 — O sanduíche de elogio</h3>
+<p>"Você é ótimo, mas tem esse detalhe aqui, mas no geral você é ótimo."</p>
+<p><strong>O que a pessoa entende:</strong> "sou ótimo." O miolo da conversa se perde entre os dois elogios. Você sai achando que deu feedback; ela sai achando que foi elogiada. Duas semanas depois nada mudou e você se irrita porque "eu já falei isso".</p>
+<p>Você falou. Ela não ouviu — porque você embrulhou de um jeito que dava pra não ouvir.</p>
+<blockquote><p><strong>Frase pra colar na parede:</strong> <em>"Feedback que não muda comportamento não foi feedback. Foi desabafo."</em></p></blockquote>
+<hr>
+<h2 id="os-4-tipos-de-conversa-e-por-que-confundir-arruina-tudo">Os 4 tipos de conversa (e por que confundir arruína tudo)</h2>
+<div class="tabwrap"><table><thead><tr><th>Tipo</th><th>Quando usar</th><th>Erro comum</th></tr></thead><tbody><tr><td><strong>Correção (CORTE)</strong></td><td>Desvio de padrão, falha de execução, comportamento fora do valor</td><td>Usar quando o problema é de processo</td></tr><tr><td><strong>Reconhecimento</strong></td><td>Alguém fez certo, especialmente quando foi difícil</td><td>Não fazer. Ou fazer genérico ("tá indo bem")</td></tr><tr><td><strong>Desenvolvimento</strong></td><td>Pessoa está bem, quer crescer. É sobre o futuro, não sobre erro</td><td>Misturar com correção e confundir a pessoa</td></tr><tr><td><strong>Revisão de processo</strong></td><td>O erro é do sistema, não da pessoa</td><td>Aplicar CORTE em quem foi vítima de processo ruim</td></tr></tbody></table></div>
+<p><strong>A distinção mais importante da liderança:</strong></p>
+<blockquote><p><strong>Se a mesma falha acontece com pessoas diferentes, não é falha de pessoa. É falha de processo.</strong></p></blockquote>
+<p>Se três montadores diferentes esqueceram o mesmo item, o problema não são os três montadores — é a inexistência de um checklist. Aplicar CORTE nos três é injusto e não resolve. E pior: ensina a equipe que aqui se leva bronca por falha da empresa. Em pouco tempo ninguém mais reporta nada.</p>
+<p><strong>Teste rápido antes de aplicar CORTE:</strong></p>
+<ol><li>Essa pessoa foi treinada nisso? (Se não → treinamento, não CORTE)</li><li>O padrão está escrito em algum lugar? (Se não → escreva o padrão primeiro)</li><li>Ela tinha a ferramenta/informação para acertar? (Se não → é problema seu)</li><li>Outras pessoas erram o mesmo? (Se sim → é processo)</li></ol>
+<p>Só passa nos quatro? Aí é CORTE.</p>
+<hr>
+<h2 id="quando-aplicar-o-corte-a-tabela-de-decisao">Quando aplicar o CORTE — a tabela de decisão</h2>
+<div class="tabwrap"><table><thead><tr><th>Situação</th><th>Resposta</th><th>Observação</th></tr></thead><tbody><tr><td>Falha pontual com fato concreto — 1ª vez</td><td><strong>CORTE verbal</strong></td><td>Aplicar em até <strong>48h</strong> do evento</td></tr><tr><td>Mesma falha — 2ª ocorrência no mês</td><td><strong>CORTE com registro</strong></td><td>Citar a ocorrência anterior; a ação do <strong>T</strong> tem que mudar</td></tr><tr><td>3ª ocorrência ou padrão crônico</td><td><strong>Advertência formal</strong></td><td>O CORTE já foi usado — agora é escalada disciplinar</td></tr><tr><td>Falha de processo, não de pessoa</td><td><strong>Revisão de processo</strong></td><td>Não aplicar CORTE — padrão inexistente não pode ser cobrado</td></tr><tr><td>Impacto financeiro grave ou no cliente</td><td><strong>CORTE + registro obrigatório</strong></td><td>O <strong>O</strong> recebe peso dobrado — quantifique em R$</td></tr><tr><td>Violação de valor (fofoca, humilhação, mentira)</td><td><strong>CORTE com registro direto</strong></td><td>Pula o degrau 1. Valor não tem período de adaptação</td></tr><tr><td>Desvio de material, agressão, fraude</td><td><strong>Degrau 3 direto</strong></td><td>Falta grave. Não passa pelo CORTE</td></tr></tbody></table></div>
+<h3 id="a-regra-das-48-horas">A regra das 48 horas</h3>
+<p>Feedback perde 50% da força a cada 48 horas. Depois de uma semana, a pessoa nem lembra direito do que aconteceu — e a conversa vira discussão sobre a memória de cada um, não sobre o comportamento.</p>
+<p><strong>Se passou de 5 dias e você não falou, deixa pra lá.</strong> Espera a próxima ocorrência e aí fala na hora. Feedback atrasado gera ressentimento sem gerar mudança.</p>
+<hr>
+<h2 id="como-aplicar-cada-letra-com-exemplos">Como aplicar cada letra — com exemplos</h2>
+<h3 id="c-clareza-o-fato-so-o-fato">C — CLAREZA: o fato, só o fato</h3>
+<p>O erro que mata essa etapa é <strong>generalizar</strong>. "Você sempre", "você nunca", "você é desorganizado".</p>
+<p>Generalização faz duas coisas ruins: a pessoa consegue refutar (basta lembrar uma vez em que não foi assim, e a conversa vira debate), e ela ataca a identidade, não o comportamento — o que aciona defesa imediata.</p>
+<div class="tabwrap"><table><thead><tr><th>❌ Errado</th><th>✅ Certo</th></tr></thead><tbody><tr><td>"Você é desorganizado"</td><td>"Ontem, a bancada 3 ficou com ferramenta espalhada até o fim do turno"</td></tr><tr><td>"Você sempre atrasa"</td><td>"Essa semana você chegou 7h50 na terça, quarta e quinta. O horário é 7h30"</td></tr><tr><td>"Você não se importa com o cliente"</td><td>"Na obra do [cliente], você saiu sem varrer o quarto e o cliente ligou reclamando"</td></tr><tr><td>"Sua qualidade caiu"</td><td>"Nas últimas 3 obras voltaram 6 portas pra regulagem. Antes voltava 1"</td></tr></tbody></table></div>
+<p><strong>Estrutura da fala:</strong></p>
+<pre>"[Quando]. [O que aconteceu, observável]. [O padrão é]."</pre>
+<p><strong>Exemplo real completo:</strong></p>
+<blockquote><p><em>"Na montagem de ontem, na obra do Bairro Chácara, faltou conferir as medidas finais antes de instalar o painel da TV. O nosso padrão é conferir e fotografar antes de fixar."</em></p></blockquote>
+<h3 id="o-objetivo-o-impacto-de-preferencia-em-numero">O — OBJETIVO: o impacto, de preferência em número</h3>
+<p>Essa é a etapa que <strong>mais gente pula</strong> e é a que faz a pessoa entender por que aquilo importa.</p>
+<p>Sem o impacto, todo feedback soa como implicância. Com o impacto, vira informação.</p>
+<div class="tabwrap"><table><thead><tr><th>Tipo de impacto</th><th>Como quantificar</th></tr></thead><tbody><tr><td>Prazo</td><td>"Atrasou a obra em 2 dias" / "empurrou a próxima montagem"</td></tr><tr><td>Custo</td><td>"Custou 4h de retrabalho + deslocamento = R$ 320"</td></tr><tr><td>Cliente</td><td>"O cliente ligou reclamando e agora está inseguro com o resto da obra"</td></tr><tr><td>Colega</td><td>"O montador teve que voltar num sábado por causa disso"</td></tr><tr><td>Qualidade</td><td>"Saiu fora do padrão que a gente vende"</td></tr></tbody></table></div>
+<p><strong>Sempre que possível, use R$.</strong> Número transforma abstração em consequência.</p>
+<p><strong>Exemplo real completo:</strong></p>
+<blockquote><p><em>"Isso causou retrabalho de 4 horas, mais um deslocamento extra de equipe. Deu R$ 320 de custo direto, e a montagem da obra seguinte atrasou meio dia. O cliente percebeu."</em></p></blockquote>
+<p><strong>Dica:</strong> se você não consegue dizer o impacto, pergunte-se se o feedback é necessário. Comportamento sem impacto talvez seja só um jeito diferente do seu — e isso não é motivo pra correção.</p>
+<h3 id="r-responsabilidade-a-pergunta-que-transfere-a-autoria">R — RESPONSABILIDADE: a pergunta que transfere a autoria</h3>
+<p>Aqui você para de falar e <strong>pergunta</strong>. É a etapa mais desconfortável para o dono, porque exige silêncio.</p>
+<pre>"O que você consegue fazer diferente daqui pra frente?"</pre>
+<p>E aí você <strong>cala a boca</strong>. Conta até dez mentalmente. O silêncio é a ferramenta.</p>
+<p><strong>Por que funciona:</strong> ação que a pessoa propõe tem 5 vezes mais chance de ser executada que ação que você impõe. Quando você dá a solução, ela cumpre por obediência — e obediência não sobrevive à sua ausência. Quando ela propõe, ela cumpre por compromisso.</p>
+<p><strong>Se a pessoa não souber responder:</strong></p>
+<blockquote><p><em>"Sem problema, pensa comigo. O que causou isso na sua visão?"</em></p></blockquote>
+<p><strong>Se ela começar a se justificar</strong> (é o mais comum):</p>
+<blockquote><p><em>"Entendi o contexto. Mesmo com esse contexto, o que dá pra fazer diferente da próxima vez?"</em></p></blockquote>
+<p>Você valida o contexto e devolve a responsabilidade. Não briga com a justificativa — atravessa ela.</p>
+<p><strong>Se ela jogar a culpa em outra pessoa:</strong></p>
+<blockquote><p><em>"Pode ser que tenha essa parte também, e eu vou verificar. Agora quero falar da sua parte. O que estava na sua mão?"</em></p></blockquote>
+<h3 id="t-transformacao-a-acao-com-prazo-e-forma-de-verificar">T — TRANSFORMAÇÃO: a ação com prazo e forma de verificar</h3>
+<p>Esse é o coração do método. Sem T, você teve uma conversa. Com T, você tem um acordo.</p>
+<p><strong>Toda ação precisa de três coisas:</strong></p>
+<ol><li><strong>O quê</strong> — concreto, verificável</li><li><strong>A partir de quando</strong> — data, não "a partir de agora"</li><li><strong>Como eu vou saber</strong> — evidência observável</li></ol>
+<div class="tabwrap"><table><thead><tr><th>❌ Vago</th><th>✅ Rastreável</th></tr></thead><tbody><tr><td>"Vou prestar mais atenção"</td><td>"A partir de hoje: foto de conferência de medida antes da carga sair, mandada no grupo"</td></tr><tr><td>"Vou me organizar melhor"</td><td>"Toda sexta às 16h eu deixo a bancada limpa e a ferramenta no painel — o encarregado confere"</td></tr><tr><td>"Não vai acontecer de novo"</td><td>"Antes de fechar a embalagem eu marco o checklist item por item e assino"</td></tr><tr><td>"Vou tentar chegar mais cedo"</td><td>"A partir de segunda eu bato ponto até 7h30. Se atrasar, aviso antes das 7h"</td></tr></tbody></table></div>
+<p><strong>A frase de fechamento do T:</strong></p>
+<blockquote><p><em>"Então ficou: [repete a ação]. Começa [quando]. Eu vou olhar isso [como/quando]. Tá combinado?"</em></p></blockquote>
+<p>Peça a confirmação verbal. "Tá combinado?" e espere o "tá". Esse "tá" é o contrato.</p>
+<h3 id="e-evolucao-o-fechamento-que-da-direcao">E — EVOLUÇÃO: o fechamento que dá direção</h3>
+<p>Só use se for <strong>genuíno</strong>. Elogio automático destrói a força do método.</p>
+<p>O E não é "mas você é bom viu". O E é mostrar <strong>por que essa correção é importante pra trajetória da pessoa</strong>.</p>
+<div class="tabwrap"><table><thead><tr><th>Situação</th><th>Fechamento adequado</th></tr></thead><tbody><tr><td>Pessoa boa, erro pontual</td><td>"Você tem técnica. Esse detalhe é o que separa execução boa do padrão que a gente vende."</td></tr><tr><td>Pessoa em desenvolvimento</td><td>"Isso aqui é o que vai te levar pra próxima faixa. Não é detalhe, é o que muda."</td></tr><tr><td>Pessoa com potencial de liderança</td><td>"Quando você resolve isso sozinho, você começa a poder responder por outros."</td></tr><tr><td>Situação grave, sem espaço pra elogio</td><td>"Eu tô te falando porque acredito que dá pra corrigir. Se eu não acreditasse, a gente não estaria conversando."</td></tr></tbody></table></div>
+<p><strong>Quando NÃO usar o E:</strong> se a pessoa está no degrau 2 ou 3, ou se o comportamento foi violação de valor, encerre no T. Um E fora de hora comunica que o assunto não era tão sério assim.</p>
+<hr>
+<h2 id="script-completo-corte-verbal-degrau-1">SCRIPT COMPLETO — CORTE verbal (degrau 1)</h2>
+<h3 id="duracao-5-a-8-minutos-local-reservado-postura-sentado-sem-pr">Duração: 5 a 8 minutos. Local: reservado. Postura: sentado, sem pressa.</h3>
+<pre>═══════════════════════════════════════════════════════════════
+ABERTURA — 20 segundos
+═══════════════════════════════════════════════════════════════
+"[Nome], tem 5 minutos? Quero falar de uma coisa da obra de ontem."
+
+[Sente. Não fale em pé, não fale no corredor, não fale com o celular
+na mão. A postura comunica antes da palavra.]
+
+═══════════════════════════════════════════════════════════════
+C — CLAREZA — 30 segundos
+═══════════════════════════════════════════════════════════════
+"Ontem, na montagem da obra do [cliente], o painel foi fixado sem a
+conferência final de medida. O nosso padrão é conferir e fotografar
+antes de fixar."
+
+[Pausa de 2 segundos. Não continue emendando.]
+
+═══════════════════════════════════════════════════════════════
+O — OBJETIVO — 30 segundos
+═══════════════════════════════════════════════════════════════
+"O que isso causou: a gente teve que voltar hoje de manhã, foram
+4 horas de dois montadores mais o deslocamento. Deu uns R$ 320 de
+custo direto. E a obra da tarde escorregou meio dia."
+
+[Pausa. Deixe o número assentar.]
+
+═══════════════════════════════════════════════════════════════
+R — RESPONSABILIDADE — 2 a 3 minutos (a parte mais longa)
+═══════════════════════════════════════════════════════════════
+"O que você consegue fazer diferente daqui pra frente?"
+
+[SILÊNCIO. Conte até 10. Não preencha.]
+
+→ Se justificar: "Entendi o contexto. Mesmo assim, o que dá pra
+  fazer diferente?"
+→ Se culpar outro: "Vou verificar essa parte. Agora quero a sua parte."
+→ Se travar: "Pensa comigo — o que causou isso, na sua visão?"
+
+═══════════════════════════════════════════════════════════════
+T — TRANSFORMAÇÃO — 1 minuto
+═══════════════════════════════════════════════════════════════
+"Beleza. Então ficou assim: a partir de hoje, antes de fixar qualquer
+painel, você confere a medida e manda a foto no grupo da obra.
+Eu vou acompanhar isso nas próximas 3 obras. Tá combinado?"
+
+[ESPERE O "TÁ". Não siga sem a confirmação verbal.]
+
+═══════════════════════════════════════════════════════════════
+E — EVOLUÇÃO — 20 segundos
+═══════════════════════════════════════════════════════════════
+"Você tem mão boa, isso não está em discussão. Esse tipo de detalhe
+é o que separa quem monta de quem é referência de montagem aqui."
+
+"Alguma coisa que você precisa de mim pra isso funcionar?"
+
+[Essa última pergunta é ouro. Às vezes a resposta é "preciso de uma
+trena melhor" — e aí o problema nunca foi a pessoa.]
+═══════════════════════════════════════════════════════════════</pre>
+<p><strong>Tempo total: 5 a 8 minutos. Nunca mais que 15.</strong> Conversa longa vira sermão, e sermão gera defesa.</p>
+<hr>
+<h2 id="script-completo-corte-com-registro-degrau-2">SCRIPT COMPLETO — CORTE com registro (degrau 2)</h2>
+<h3 id="duracao-15-a-20-minutos-com-formulario-com-assinatura">Duração: 15 a 20 minutos. Com formulário. Com assinatura.</h3>
+<pre>═══════════════════════════════════════════════════════════════
+PREPARAÇÃO (antes da conversa)
+═══════════════════════════════════════════════════════════════
+[ ] Formulário parcialmente preenchido: data, ocorrência anterior,
+    fato e impacto
+[ ] Sala reservada, porta fechada
+[ ] Presente: o líder direto. O dono, se o líder for novo no papel
+[ ] Nunca faça no fim do expediente de sexta
+
+═══════════════════════════════════════════════════════════════
+ABERTURA — tom mais formal que o degrau 1
+═══════════════════════════════════════════════════════════════
+"[Nome], essa conversa é diferente da que a gente teve dia [X].
+Ela vai ser registrada por escrito e você vai assinar no final —
+não é advertência, é registro. Vou te explicar por quê."
+
+[Transparência total desde o primeiro segundo. Surpresa aqui gera
+sensação de armadilha e a pessoa se fecha.]
+
+═══════════════════════════════════════════════════════════════
+C — CLAREZA (com histórico)
+═══════════════════════════════════════════════════════════════
+"No dia [data anterior] a gente conversou sobre [fato 1] e você se
+comprometeu com [ação combinada]. Ontem, [fato 2] — a mesma coisa."
+
+[Mostre o registro anterior se houver. Fato, não interpretação.]
+
+═══════════════════════════════════════════════════════════════
+O — OBJETIVO (acumulado)
+═══════════════════════════════════════════════════════════════
+"Somando as duas vezes: [impacto total, em R$ e em dias].
+E tem um segundo impacto: quando a gente combina uma coisa e ela
+não acontece, isso afeta a confiança da equipe no combinado."
+
+═══════════════════════════════════════════════════════════════
+R — RESPONSABILIDADE (mais profundo que no degrau 1)
+═══════════════════════════════════════════════════════════════
+"A ação que a gente combinou não funcionou. Quero entender:
+ela era difícil de fazer, ou não foi feita?"
+
+[Essa pergunta é crítica. Distingue INCAPACIDADE de INDISPOSIÇÃO —
+e o tratamento é totalmente diferente.]
+
+→ Se "era difícil": o problema é processo/ferramenta/treino.
+  Ajuste a ação, não a pessoa.
+→ Se "não foi feita": é compromisso. Aprofunde:
+  "O que precisa mudar pra dessa vez acontecer?"
+
+═══════════════════════════════════════════════════════════════
+T — TRANSFORMAÇÃO (com acompanhamento formal)
+═══════════════════════════════════════════════════════════════
+"Ação: [nova ação, mais específica que a anterior].
+Prazo de acompanhamento: vamos nos falar de novo dia [data, 15 dias].
+Nessa conversa eu vou olhar [evidência específica]."
+
+"E preciso ser claro contigo: se acontecer uma terceira vez, o
+próximo passo é advertência formal. Não é ameaça, é como funciona
+aqui e eu prefiro que você saiba."
+
+═══════════════════════════════════════════════════════════════
+REGISTRO
+═══════════════════════════════════════════════════════════════
+"Vou preencher aqui com você, você lê e assina. Sua assinatura é
+de ciência do conteúdo, não de concordância. Se você discorda de
+alguma coisa, eu escrevo a sua versão aqui embaixo."
+
+[⭐ Esse detalhe elimina 90% da resistência à assinatura. E é
+juridicamente mais seguro.]
+
+═══════════════════════════════════════════════════════════════
+FECHAMENTO
+═══════════════════════════════════════════════════════════════
+"Eu tô registrando porque quero que fique claro e porque quero que
+dê certo. Se eu tivesse desistido, não estaria aqui gastando esse
+tempo. Combinado?"
+═══════════════════════════════════════════════════════════════</pre>
+<hr>
+<h2 id="formulario-de-registro-de-corte-anexo-a">FORMULÁRIO DE REGISTRO DE CORTE (Anexo A)</h2>
+<h3 id="imprima-use-a-partir-do-degrau-2-arquive-por-colaborador">Imprima. Use a partir do degrau 2. Arquive por colaborador.</h3>
+<pre>═══════════════════════════════════════════════════════════════
+      REGISTRO DE CORTE — [NOME DA EMPRESA]
+═══════════════════════════════════════════════════════════════
+
+Data: ____/____/______        Hora: ______
+
+Colaborador: _________________________  Função: _______________
+
+Líder que aplicou: ___________________________________________
+
+Número da ocorrência:   ( ) 1ª    ( ) 2ª    ( ) 3ª
+Ocorrência anterior em: ____/____/______  (registro em anexo)
+
+───────────────────────────────────────────────────────────────
+C — FATO (o que aconteceu — objetivo, sem adjetivo)
+───────────────────────────────────────────────────────────────
+_______________________________________________________________
+_______________________________________________________________
+_______________________________________________________________
+
+Padrão/valor da empresa que não foi cumprido:
+_______________________________________________________________
+
+───────────────────────────────────────────────────────────────
+O — IMPACTO REAL
+───────────────────────────────────────────────────────────────
+Prazo:    _____________________________________________________
+Custo:    R$ __________  (detalhe: ____________________________)
+Cliente:  _____________________________________________________
+Equipe:   _____________________________________________________
+
+───────────────────────────────────────────────────────────────
+R — O QUE O COLABORADOR SE COMPROMETEU A MUDAR
+(escrever com as palavras dele)
+───────────────────────────────────────────────────────────────
+_______________________________________________________________
+_______________________________________________________________
+
+───────────────────────────────────────────────────────────────
+T — AÇÃO DEFINIDA
+───────────────────────────────────────────────────────────────
+Ação:              ____________________________________________
+Início:            ____/____/______
+Como será verificado: _________________________________________
+Quem verifica:     ____________________________________________
+
+───────────────────────────────────────────────────────────────
+PRAZO DE ACOMPANHAMENTO
+───────────────────────────────────────────────────────────────
+Nova conversa marcada para: ____/____/______
+Realizada em: ____/____/______   Resultado: ( ) Resolvido
+                                            ( ) Parcial
+                                            ( ) Não resolvido → degrau 3
+
+───────────────────────────────────────────────────────────────
+VERSÃO DO COLABORADOR (se houver discordância)
+───────────────────────────────────────────────────────────────
+_______________________________________________________________
+_______________________________________________________________
+
+───────────────────────────────────────────────────────────────
+CIÊNCIA
+───────────────────────────────────────────────────────────────
+Declaro que tomei ciência do conteúdo deste registro.
+(A assinatura indica ciência, não necessariamente concordância.)
+
+Colaborador: _________________________  Data: ____/____/______
+
+Líder:       _________________________  Data: ____/____/______
+
+Testemunha (se o colaborador recusar assinar):
+             _________________________  Data: ____/____/______
+═══════════════════════════════════════════════════════════════</pre>
+<p><strong>Se o colaborador se recusar a assinar:</strong> não force. Escreva no formulário <em>"colaborador optou por não assinar; conteúdo lido em voz alta na presença de [testemunha]"</em>, assine você e a testemunha. Vale igual.</p>
+<hr>
+<h2 id="a-escada-disciplinar">A Escada Disciplinar</h2>
+<div class="tabwrap"><table><thead><tr><th>#</th><th>Degrau</th><th>O que é</th><th>Quem aciona</th><th>Registro</th></tr></thead><tbody><tr><td><strong>1</strong></td><td>CORTE verbal</td><td>Feedback estruturado, sem registro no prontuário. 1ª ocorrência.</td><td>Líder imediato</td><td>Anotação pessoal do líder</td></tr><tr><td><strong>2</strong></td><td>CORTE com registro</td><td>Formulário preenchido, colaborador ciente e assina. 2ª ocorrência.</td><td>Líder + dono</td><td>Formulário arquivado</td></tr><tr><td><strong>3</strong></td><td>Advertência formal</td><td>Documento CLT, assinatura, arquivo funcional.</td><td>Dono (+ apoio jurídico/contábil)</td><td>Advertência escrita</td></tr><tr><td><strong>4</strong></td><td>Suspensão ou desligamento</td><td>Baseado em histórico documentado.</td><td><strong>Decisão exclusiva do dono</strong></td><td>Processo formal</td></tr></tbody></table></div>
+<h3 id="as-3-regras-da-escada">As 3 regras da escada</h3>
+<p><strong>Regra 1 — Não se pula degrau.</strong> Exceto em falta grave (desvio de material, agressão, fraude, conduta ética), que vai direto ao degrau 3 ou 4.</p>
+<p><strong>Regra 2 — Cada degrau exige que o anterior tenha sido aplicado E registrado.</strong> Se você não registrou o degrau 2, você não tem degrau 3 — juridicamente e moralmente.</p>
+<p><strong>Regra 3 — A escada zera.</strong> Defina o prazo: sugestão de <strong>12 meses sem reincidência zera o histórico daquele tipo de falha</strong>. Sem isso, um erro de 2022 pesa em 2026 e a pessoa nunca se recupera. Escreva a regra no seu regulamento interno.</p>
+<h3 id="ponto-de-atencao-juridico">⚠️ Ponto de atenção jurídico</h3>
+<p>O degrau 3 exige processo CLT correto (advertência escrita, assinada, com fato específico e data). Se você não tem RH, <strong>defina quem faz esse papel</strong> — o contador, um escritório de RH terceirizado ou você mesmo com modelo validado por advogado. Escada disciplinar sem o degrau 3 funcionando morre no degrau 2, e aí o degrau 4 (desligamento) fica sem lastro documental — que é exatamente o que gera processo trabalhista.</p>
+<hr>
+<h2 id="reconhecimento-o-outro-lado-que-ninguem-treina">Reconhecimento: o outro lado que ninguém treina</h2>
+<p>Se você só usa o CORTE, em seis meses sua equipe associa "conversa com o líder" a "problema". E aí ninguém mais quer falar com você.</p>
+<p><strong>A proporção que funciona: 4 reconhecimentos para cada 1 correção.</strong> Não é para ser bonzinho — é matemática de motivação. Quem só ouve o que está errado para de tentar acertar coisas novas.</p>
+<h3 id="como-reconhecer-direito-o-metodo-3f">Como reconhecer direito — o método 3F</h3>
+<div class="tabwrap"><table><thead><tr><th>Letra</th><th>O que é</th><th>Exemplo</th></tr></thead><tbody><tr><td><strong>F — Fato</strong></td><td>Específico, não genérico</td><td>"Ontem você pegou o erro de medida no painel antes de cortar"</td></tr><tr><td><strong>F — Feito</strong></td><td>Qual foi o efeito</td><td>"Isso evitou perder uma chapa inteira e refazer, uns R$ 400"</td></tr><tr><td><strong>F — Frente</strong></td><td>Por que importa daqui pra frente</td><td>"É exatamente esse olho que a gente precisa em todo mundo aqui"</td></tr></tbody></table></div>
+<p><strong>Regra do reconhecimento:</strong> corrige em particular, reconhece em público. E reconheça <strong>o comportamento</strong>, não a pessoa — "você foi caprichoso naquele acabamento" ensina mais que "você é um bom funcionário".</p>
+<p><strong>Erro comum:</strong> reconhecer só resultado grande. Reconheça o comportamento que você quer ver repetido, mesmo em coisa pequena. É assim que se instala padrão.</p>
+<hr>
+<h2 id="situacoes-dificeis-scripts-prontos">Situações difíceis — scripts prontos</h2>
+<h3 id="situacao-1-a-pessoa-chora">Situação 1 — A pessoa chora</h3>
+<pre>[Não continue o feedback. Pare.]
+
+"Tá tudo bem. Quer um minuto? Eu espero."
+[Silêncio. Não peça desculpa pelo feedback. Não retire o que disse.]
+
+Depois de 1-2 minutos:
+"Quer continuar agora ou prefere a gente retomar amanhã de manhã?"
+
+[Se ela escolher continuar, continue no tom normal. Se pedir amanhã,
+MARQUE a hora agora — não deixe em aberto.]</pre>
+<p><strong>Nunca:</strong> abraçar, dizer "não é nada demais", ou desfazer o feedback. Isso ensina que chorar cancela a cobrança.</p>
+<h3 id="situacao-2-a-pessoa-fica-agressiva-ou-levanta-a-voz">Situação 2 — A pessoa fica agressiva ou levanta a voz</h3>
+<pre>[Baixe seu tom. Nunca acompanhe a escalada.]
+
+"Percebo que você ficou incomodado. Isso é natural.
+Mas dessa forma a gente não resolve.
+Vou te dar 10 minutos. A gente volta às [hora] e continua."
+
+[Levante e saia. Não negocie, não discuta, não retruque.]
+
+Ao retomar:
+"Antes de continuar: eu quero ouvir a sua versão inteira, sem
+interromper. Pode falar."
+[Ouça de verdade. Depois retome o CORTE do ponto onde parou.]</pre>
+<p><strong>Se a agressividade se repetir ou virar ofensa pessoal:</strong> isso é um novo fato, mais grave que o original. Vira degrau 2 ou 3 por si só.</p>
+<h3 id="situacao-3-mas-o-fulano-faz-a-mesma-coisa-e-voce-nao-fala-na">Situação 3 — "Mas o Fulano faz a mesma coisa e você não fala nada"</h3>
+<pre>"Se ele faz, é problema meu e eu vou resolver — e você não vai
+ficar sabendo, porque conversa minha com ele é dele.
+Agora estou falando com você, sobre o que é seu.
+Vamos voltar: o que dá pra fazer diferente?"</pre>
+<p><strong>E depois vá resolver.</strong> Se ele estiver certo e você não falar com o Fulano, você acabou de provar que ele estava certo — e a sua autoridade acabou.</p>
+<h3 id="situacao-4-a-pessoa-nega-o-fato">Situação 4 — A pessoa nega o fato</h3>
+<pre>"Pode ser que a gente esteja vendo coisas diferentes. Me conta
+como foi da sua perspectiva."
+
+[Ouça inteiro. Não interrompa.]
+
+→ Se ela tem razão: "Você tem razão, eu estava com a informação
+  errada. Desculpa. Obrigado por me corrigir." — e encerre.
+  Isso FORTALECE sua autoridade, não enfraquece.
+
+→ Se continua divergindo sobre fato objetivo:
+  "A gente tem versões diferentes. Vou verificar [como]. Se eu
+  estiver errado, eu volto aqui e te falo. Se estiver certo,
+  a gente retoma essa conversa."</pre>
+<h3 id="situacao-5-feedback-em-alguem-mais-velho-ou-mais-experiente-">Situação 5 — Feedback em alguém mais velho ou mais experiente que você</h3>
+<pre>"[Nome], você tem mais tempo de marcenaria que eu e eu reconheço
+isso. Não estou aqui pra te ensinar ofício.
+Estou aqui pra falar de um padrão da empresa que não foi cumprido,
+e isso é responsabilidade minha independente de tempo de casa.
+[Segue o CORTE normalmente.]"</pre>
+<p><strong>Não peça desculpa por liderar.</strong> Reconheça a experiência e siga.</p>
+<h3 id="situacao-6-a-pessoa-promete-e-nao-cumpre-pela-terceira-vez">Situação 6 — A pessoa promete e não cumpre pela terceira vez</h3>
+<p>Aqui você para de tratar como falha de execução e trata como <strong>falha de compromisso</strong>:</p>
+<pre>"Essa é a terceira vez que a gente combina e não acontece.
+Eu não vou combinar uma quarta. Vou te fazer uma pergunta
+direta e quero uma resposta direta:
+
+Você quer estar aqui?"
+
+[Silêncio. Deixe pesar.]
+
+→ Se sim: "Então preciso que a próxima combinação seja cumprida.
+  A partir daqui é advertência formal. Estou sendo claro?"
+→ Se hesita: "Pensa até amanhã e me dá a resposta. Se não for
+  aqui, a gente conversa numa saída organizada, sem briga."</pre>
+<hr>
+<h2 id="erros-comuns-na-aplicacao-do-corte">Erros comuns na aplicação do CORTE</h2>
+<div class="tabwrap"><table><thead><tr><th>#</th><th>Erro</th><th>Consequência</th></tr></thead><tbody><tr><td>1</td><td>Dar feedback com raiva</td><td>Vira briga. <strong>Regra: se você está bravo, espere 4 horas.</strong></td></tr><tr><td>2</td><td>Feedback em público</td><td>Humilhação. Destrói a pessoa e assusta o resto.</td></tr><tr><td>3</td><td>Pular o <strong>O</strong> (impacto)</td><td>Soa como implicância. Ninguém muda por implicância.</td></tr><tr><td>4</td><td>Dar a solução no lugar do <strong>R</strong></td><td>Vira obediência, não compromisso. Não sobrevive à sua ausência.</td></tr><tr><td>5</td><td>Não fechar o <strong>T</strong> com data</td><td>Conversa boa, zero mudança.</td></tr><tr><td>6</td><td>Não fazer o acompanhamento marcado</td><td>Ensina que combinação com você não vale.</td></tr><tr><td>7</td><td>Aplicar CORTE em falha de processo</td><td>Injusto. Mata o reporte de problemas.</td></tr><tr><td>8</td><td>Acumular e explodir</td><td>A pessoa não processa. Só lembra da explosão.</td></tr><tr><td>9</td><td>Sanduíche de elogio</td><td>O miolo se perde.</td></tr><tr><td>10</td><td>Só corrigir, nunca reconhecer</td><td>Equipe passa a evitar o líder.</td></tr><tr><td>11</td><td>Aplicar em uns e não em outros</td><td>Mata a legitimidade da ferramenta inteira.</td></tr><tr><td>12</td><td>Registrar sem avisar que está registrando</td><td>Sensação de traição. Nunca faça registro escondido.</td></tr></tbody></table></div>
+<hr>
+<h2 id="como-treinar-seus-lideres-no-corte">Como treinar seus líderes no CORTE</h2>
+<p>O CORTE não funciona se só você usa. Treinamento obrigatório para todo líder.</p>
+<h3 id="programa-de-treinamento-3-encontros-de-90-minutos">Programa de treinamento — 3 encontros de 90 minutos</h3>
+<p><strong>Encontro 1 — Entender</strong></p>
+<ul><li>Apresentar o método e a tabela de decisão</li><li>Cada líder traz 2 situações reais da equipe dele</li><li>Em grupo: classificar cada uma (é CORTE? é processo? é qual degrau?)</li><li>Tarefa: observar a semana e anotar 3 situações candidatas</li></ul>
+<p><strong>Encontro 2 — Praticar (o mais importante)</strong></p>
+<ul><li>Role-play em trios: um aplica, um recebe, um observa com checklist</li><li>3 rodadas, trocando papéis</li><li>Cenários prontos: o que chora, o que fica bravo, o que nega o fato</li><li>Feedback do observador usando o próprio CORTE (meta-treino)</li></ul>
+<p><strong>Encontro 3 — Calibrar</strong></p>
+<ul><li>Cada líder traz 1 CORTE real que aplicou</li><li>Análise em grupo: o que funcionou, o que faltou</li><li>Alinhar régua: o mesmo comportamento gera o mesmo degrau em todas as áreas?</li></ul>
+<h3 id="checklist-do-observador-usar-no-role-play">Checklist do observador (usar no role-play)</h3>
+<pre>[ ] Escolheu local reservado
+[ ] Começou pelo fato, não pelo julgamento
+[ ] O fato foi específico (data, local, o quê)
+[ ] Citou o padrão/valor da empresa
+[ ] Quantificou o impacto
+[ ] PERGUNTOU e ficou em silêncio (contou até 10)
+[ ] Não deu a solução antes da pessoa tentar
+[ ] Fechou com ação + data + como verificar
+[ ] Pediu confirmação verbal ("tá combinado?")
+[ ] Fechamento genuíno (ou nenhum, se não coubesse)
+[ ] Durou menos de 15 minutos
+[ ] Perguntou "precisa de algo meu?"</pre>
+<hr>
+<h2 id="indicador-do-modulo-como-saber-se-o-corte-esta-funcionando">Indicador do módulo: como saber se o CORTE está funcionando</h2>
+<div class="tabwrap"><table><thead><tr><th>Indicador</th><th>Frequência</th><th>Meta</th></tr></thead><tbody><tr><td>CORTEs aplicados no mês, por área</td><td>Mensal</td><td>Não é "quanto menos melhor". Zero CORTE significa que ninguém está corrigindo nada.</td></tr><tr><td>% de CORTEs com acompanhamento realizado na data</td><td>Mensal</td><td>&gt; 90%. Se cai, o método virou teatro.</td></tr><tr><td>Reincidência (2ª ocorrência do mesmo tipo)</td><td>Mensal</td><td>&lt; 25%. Acima disso, o <strong>T</strong> está mal formulado.</td></tr><tr><td>Proporção reconhecimento : correção</td><td>Mensal</td><td>≥ 4:1</td></tr><tr><td>Distribuição por líder</td><td>Mensal</td><td>Se um líder nunca aplica e outro aplica demais, calibre a régua</td></tr></tbody></table></div>
+<p><strong>Sinal de alerta:</strong> se os CORTEs estão concentrados em 2 ou 3 pessoas da equipe, ou você tem um problema de contratação, ou você tem um problema de tolerância seletiva.</p>
+<hr>
+<h2 id="exercicios-do-modulo-3">Exercícios do Módulo 3</h2>
+<h3 id="exercicio-1-reescreva-5-broncas-30-min">Exercício 1 — Reescreva 5 broncas (30 min)</h3>
+<p>Pegue 5 coisas que você já disse pra alguém da equipe do jeito errado. Reescreva no formato CORTE completo, com as 5 letras.</p>
+<h3 id="exercicio-2-aplicacao-real-esta-semana">Exercício 2 — Aplicação real (esta semana)</h3>
+<p>Aplique 1 CORTE verbal completo em uma situação real. Cronometre. Depois anote: onde você travou? Pulou alguma letra? Deu a solução antes da hora?</p>
+<h3 id="exercicio-3-auditoria-de-tolerancia-20-min">Exercício 3 — Auditoria de tolerância (20 min)</h3>
+<p>Liste 3 comportamentos que você tolera hoje. Para cada um: qual degrau ele deveria estar? Há quanto tempo você tolera? Escolha 1 e aplique esta semana.</p>
+<h3 id="exercicio-4-teste-processo-pessoa-15-min">Exercício 4 — Teste processo × pessoa (15 min)</h3>
+<p>Liste os 5 erros mais frequentes da sua operação nos últimos 60 dias. Para cada um, aplique o teste de 4 perguntas. Quantos são processo, não pessoa? (Na maioria das marcenarias, 3 de 5.)</p>
+<h3 id="exercicio-5-banco-de-reconhecimento-10-min-semana">Exercício 5 — Banco de reconhecimento (10 min/semana)</h3>
+<p>Toda sexta, escreva 3 comportamentos específicos que você viu na semana e que quer ver repetidos. Reconheça na segunda, nominalmente, na reunião.</p>
+<hr>
+<h2 id="frases-de-impacto-do-modulo-3">Frases de impacto do Módulo 3</h2>
+<ul><li><em>"Feedback que não muda comportamento não foi feedback. Foi desabafo."</em></li><li><em>"Corte errado no início vira retrabalho lá na frente. Com gente é igual."</em></li><li><em>"Corrige em particular. Reconhece em público. Humilha nunca."</em></li><li><em>"Se três pessoas diferentes cometem o mesmo erro, o problema não são as três pessoas."</em></li><li><em>"Feedback sem ação documentada é conversa."</em></li><li><em>"Quando você dá a solução, cria obediência. Quando você pergunta, cria compromisso."</em></li><li><em>"Se você está bravo, espere 4 horas. O feedback que você daria agora custa mais caro que o problema."</em></li><li><em>"Não avisar alguém que ele está indo mal é a forma mais cruel de gentileza."</em></li><li><em>"Ninguém deveria ser demitido sem ter ouvido, por escrito, que estava a caminho disso."</em></li></ul>
+<hr>
+<h2 id="entregavel-do-modulo-3">Entregável do Módulo 3</h2>
+<ol><li>Formulário de Registro de CORTE impresso e disponível.</li><li>Pelo menos 1 CORTE aplicado e (se degrau 2) arquivado.</li><li>Regra de "zeramento" da escada definida por escrito.</li><li>Definição de quem faz o papel de RH no degrau 3.</li><li>Líderes treinados nos 3 encontros.</li></ol>
+<p><strong>Próximo módulo:</strong> Plano de carreira — porque corrigir sem mostrar pra onde a pessoa está indo é só cobrança.</p>
+
+  <div class="rodape"><span>FASE 5 · MÓDULO 03 · Fase 5 — Liderança</span><span>Material de formação em gestão para donos de PME</span></div>
+</div>
+
+<script>
+// mantem a marca digitada pelo usuario neste navegador
+(function(){
+  var m=document.querySelector('.marca');
+  var k='mkt-marca';
+  try{ var s=localStorage.getItem(k); if(s) m.innerHTML=s; }catch(e){}
+  m.addEventListener('blur',function(){ try{localStorage.setItem(k,m.innerHTML);}catch(e){} });
+})();
+</script>
+</body>
+</html>

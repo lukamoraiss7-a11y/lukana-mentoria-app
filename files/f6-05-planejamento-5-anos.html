@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MÓDULO 5 — PLANEJAMENTO DE 5 ANOS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --tinta:#2C2825; --ouro:#B8925A; --claro:#F5F1EA; --linha:#D8D2C7;
+  --fraco:#6E675E; --papel:#FFFFFF; --caixa:#FAF8F4;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+@page{size:A4;margin:14mm 13mm 13mm}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact;scroll-behavior:smooth}
+body{font:11pt/1.62 'Inter',-apple-system,'Helvetica Neue',Arial,sans-serif;
+  color:var(--tinta);background:var(--claro)}
+.folha{max-width:196mm;margin:0 auto;padding:14mm 10mm 20mm;background:var(--papel);
+  box-shadow:0 1px 3px rgba(0,0,0,.06)}
+
+/* cabecalho */
+.topo{display:flex;justify-content:space-between;align-items:flex-end;
+  border-bottom:1.5pt solid var(--tinta);padding-bottom:6pt;gap:12pt;flex-wrap:wrap}
+.marca{font:600 15pt/1 'Cormorant Garamond',Georgia,serif;letter-spacing:.22em;
+  text-transform:uppercase;outline:none}
+.marca small{display:block;font:400 6.5pt/1 'Inter',sans-serif;letter-spacing:.34em;
+  color:var(--fraco);margin-top:3pt}
+.marca:focus{background:#FFF6DF}
+.doc{text-align:right}
+.doc .fase{font-size:7pt;letter-spacing:.2em;color:var(--ouro);font-weight:600;
+  text-transform:uppercase}
+.doc .cod{font-size:7pt;letter-spacing:.18em;color:var(--fraco);margin-top:2pt}
+.regua{height:2.5pt;background:var(--ouro);margin:0 0 14pt}
+
+/* tipografia */
+h1{font:600 21pt/1.18 'Cormorant Garamond',Georgia,serif;letter-spacing:.01em;
+  margin:0 0 3pt}
+h1 + .lead{font-size:10.5pt;color:var(--fraco);font-style:italic;margin-bottom:14pt;
+  padding-bottom:10pt;border-bottom:.75pt solid var(--linha)}
+h2{font:600 10.5pt/1.25 'Inter',sans-serif;letter-spacing:.13em;text-transform:uppercase;
+  background:var(--claro);border-left:3pt solid var(--ouro);padding:6pt 8pt;
+  margin:22pt 0 9pt;break-after:avoid;page-break-after:avoid}
+h3{font:600 11.5pt/1.3 'Cormorant Garamond',Georgia,serif;letter-spacing:.02em;
+  margin:15pt 0 5pt;break-after:avoid;page-break-after:avoid}
+h4{font:600 8.5pt/1.25 'Inter',sans-serif;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--fraco);margin:12pt 0 4pt;break-after:avoid}
+p{margin:0 0 8pt;text-align:left}
+strong{font-weight:600}
+em{font-style:italic}
+a{color:var(--ouro);text-decoration:none}
+hr{border:none;border-top:.75pt solid var(--linha);margin:16pt 0}
+
+/* listas */
+ul,ol{margin:0 0 9pt 16pt}
+li{margin-bottom:3.5pt}
+ul.chk{list-style:none;margin-left:0}
+ul.chk li{display:flex;gap:7pt;align-items:flex-start;padding:3.5pt 0;
+  border-bottom:.5pt dotted var(--linha);break-inside:avoid}
+ul.chk li::before{content:"";flex:0 0 9.5pt;height:9.5pt;margin-top:2.5pt;
+  border:.9pt solid var(--tinta);border-radius:1pt;background:#fff}
+
+/* citacao / destaque */
+blockquote{border-left:2.5pt solid var(--ouro);background:var(--caixa);
+  padding:9pt 12pt;margin:11pt 0;break-inside:avoid}
+blockquote p:last-child{margin-bottom:0}
+
+/* codigo / templates ascii */
+pre{background:var(--caixa);border:.75pt solid var(--linha);border-radius:2pt;
+  padding:10pt 11pt;margin:11pt 0;overflow-x:auto;break-inside:avoid;
+  font:9pt/1.42 'SFMono-Regular',Menlo,Consolas,'Courier New',monospace;
+  white-space:pre;color:#332F2A}
+code{font:9.2pt/1.4 'SFMono-Regular',Menlo,Consolas,monospace;
+  background:var(--claro);padding:1pt 3pt;border-radius:2pt}
+pre code{background:none;padding:0;font-size:inherit}
+
+/* tabelas */
+.tabwrap{overflow-x:auto;margin:11pt 0}
+table{border-collapse:collapse;width:100%;font-size:9.3pt;break-inside:avoid}
+th{background:var(--claro);text-align:left;font-weight:600;font-size:7.5pt;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--fraco);
+  padding:5.5pt 7pt;border:.75pt solid var(--linha)}
+td{padding:5.5pt 7pt;border:.75pt solid var(--linha);vertical-align:top;line-height:1.42}
+tbody tr:nth-child(even){background:#FCFBF9}
+
+/* indice */
+.indice{background:var(--caixa);border:.75pt solid var(--linha);padding:11pt 13pt;
+  margin:0 0 18pt;break-inside:avoid}
+.indice h4{margin-top:0}
+.indice ol{margin:0 0 0 15pt;font-size:9.5pt;column-gap:18pt}
+.indice li{margin-bottom:2.5pt}
+.indice a{color:var(--tinta)}
+.indice a:hover{color:var(--ouro)}
+
+/* rodape */
+.rodape{margin-top:22pt;padding-top:6pt;border-top:.75pt solid var(--linha);
+  display:flex;justify-content:space-between;font-size:7.5pt;color:var(--fraco);
+  letter-spacing:.06em;gap:10pt;flex-wrap:wrap}
+
+/* navegacao entre modulos (some na impressao) */
+.nav{max-width:196mm;margin:0 auto 10mm;padding:0 10mm;display:flex;
+  justify-content:space-between;gap:10pt;font-size:9pt}
+.nav a{display:inline-block;padding:6pt 11pt;border:.75pt solid var(--linha);
+  background:var(--papel);border-radius:2pt;color:var(--tinta)}
+.nav a:hover{border-color:var(--ouro);color:var(--ouro)}
+.topbar{max-width:196mm;margin:0 auto;padding:8mm 10mm 0;display:flex;
+  justify-content:space-between;font-size:9pt}
+.topbar a{color:var(--fraco)}
+.topbar a:hover{color:var(--ouro)}
+
+@media print{
+  body{background:#fff}
+  .folha{box-shadow:none;padding:0;max-width:none}
+  .nav,.topbar{display:none}
+  .indice{break-after:page}
+}
+@media (max-width:640px){
+  body{font-size:11.5pt}
+  .folha{padding:8mm 5mm 14mm}
+  pre{font-size:7.6pt}
+  table{font-size:8.6pt}
+  .doc{text-align:left}
+}
+</style>
+</head>
+<body>
+
+<div class="folha">
+  <div class="topo">
+    <div class="marca" contenteditable="true" spellcheck="false">SUA MARCA<small>MARCENARIA</small></div>
+    <div class="doc"><div class="fase">Fase 6 — Escala</div><div class="cod">FASE 6 · MÓDULO 05</div></div>
+  </div>
+  <div class="regua"></div>
+
+  <h1>MÓDULO 5 — PLANEJAMENTO DE 5 ANOS</h1>
+  <div class="lead">Mapa 5×5: visão que cabe numa página e sobrevive ao contato com a realidade</div>
+  <div class="indice"><h4>Neste módulo</h4><ol><li><a href="#por-que-planejar-5-anos-numa-pme">Por que planejar 5 anos numa PME</a></li><li><a href="#o-mapa-5-5">O Mapa 5×5</a></li><li><a href="#como-preencher-cada-dimensao">Como preencher cada dimensão</a></li><li><a href="#dimensao-1-tamanho">DIMENSÃO 1 — TAMANHO</a></li><li><a href="#a-regra-que-impede-o-crescimento-burro">A regra que impede o crescimento burro</a></li><li><a href="#cenarios-sempre-faca-tres">Cenários: sempre faça três</a></li><li><a href="#dimensao-2-produto-e-mercado">DIMENSÃO 2 — PRODUTO E MERCADO</a></li><li><a href="#as-4-perguntas-de-posicionamento">As 4 perguntas de posicionamento</a></li><li><a href="#o-exercicio-da-recusa">O exercício da recusa</a></li><li><a href="#dimensao-3-capacidade">DIMENSÃO 3 — CAPACIDADE</a></li><li><a href="#a-conta-que-quase-ninguem-faz">A conta que quase ninguém faz</a></li><li><a href="#plano-de-capacidade-as-4-alavancas-na-ordem-de-custo">Plano de capacidade — as 4 alavancas, na ordem de custo</a></li><li><a href="#dimensao-4-estrutura-e-gente">DIMENSÃO 4 — ESTRUTURA E GENTE</a></li><li><a href="#organograma-alvo-por-ano">Organograma-alvo por ano</a></li><li><a href="#a-pergunta-que-define-seu-papel">A pergunta que define seu papel</a></li><li><a href="#as-funcoes-que-ainda-nao-existem">As funções que ainda não existem</a></li><li><a href="#dimensao-5-tecnologia-e-capital">DIMENSÃO 5 — TECNOLOGIA E CAPITAL</a></li><li><a href="#roadmap-de-sistemas">Roadmap de sistemas</a></li><li><a href="#plano-de-capital">Plano de capital</a></li><li><a href="#como-transformar-5-anos-em-acao-de-hoje">Como transformar 5 anos em ação de hoje</a></li><li><a href="#cadencia-de-revisao">Cadência de revisão</a></li><li><a href="#como-apresentar-o-plano-a-lideranca">Como apresentar o plano à liderança</a></li><li><a href="#erros-comuns">Erros comuns</a></li><li><a href="#perguntas-que-o-lider-deve-fazer">Perguntas que o líder deve fazer</a></li><li><a href="#exercicios-do-modulo-5">Exercícios do Módulo 5</a></li><li><a href="#frases-de-impacto">Frases de impacto</a></li><li><a href="#entregavel-do-modulo-5">Entregável do Módulo 5</a></li></ol></div>
+  <hr>
+<h2 id="por-que-planejar-5-anos-numa-pme">Por que planejar 5 anos numa PME</h2>
+<p>O contra-argumento é conhecido: <em>"o Brasil muda demais, não dá pra planejar 5 anos"</em>.</p>
+<p>Verdade parcial. Você não vai acertar os números. Mas não é isso que o plano de 5 anos serve pra fazer.</p>
+<p><strong>Ele serve pra três coisas:</strong></p>
+<ol><li><strong>Filtrar decisão de hoje.</strong> Quando aparecer uma oportunidade, você pergunta: isso me leva pra onde eu quero ir? Sem visão, toda oportunidade parece boa — e você vira uma empresa que faz um pouco de tudo.</li><li><strong>Dimensionar investimento.</strong> Máquina, galpão e gente têm ciclo de 3 a 7 anos. Decisão de curto prazo sobre ativo de longo prazo custa caro.</li><li><strong>Alinhar sócios e liderança.</strong> A maior parte das brigas de sociedade em PME é por visões diferentes que nunca foram ditas em voz alta.</li></ol>
+<blockquote><p><strong>Frase pra colar na parede:</strong> <em>"O plano de 5 anos não serve pra acertar o futuro. Serve pra decidir melhor hoje."</em></p></blockquote>
+<hr>
+<h2 id="o-mapa-5-5">O Mapa 5×5</h2>
+<p>Cinco dimensões, horizonte de cinco anos, uma página.</p>
+<pre>═══════════════════════════════════════════════════════════════
+                  MAPA 5×5 — [EMPRESA]
+                  Ano base: ____   Horizonte: ____
+═══════════════════════════════════════════════════════════════
+
+               HOJE      ANO 1     ANO 3     ANO 5
+
+1. TAMANHO
+   Faturamento    ____      ____      ____      ____
+   Nº de pessoas  ____      ____      ____      ____
+   Fat./pessoa    ____      ____      ____      ____
+   Margem líq.    ____      ____      ____      ____
+
+2. PRODUTO E MERCADO
+   O que vendemos ______________________________________
+   Pra quem       ______________________________________
+   Onde           ______________________________________
+   Ticket médio   ____      ____      ____      ____
+
+3. CAPACIDADE
+   m²/mês fábrica ____      ____      ____      ____
+   m²/mês obra    ____      ____      ____      ____
+   Gargalo atual  ______________________________________
+   O que precisa mudar: _________________________________
+
+4. ESTRUTURA E GENTE
+   Organograma-alvo: ____________________________________
+   Funções que ainda não existem: _______________________
+   Meu papel em cada ano: _______________________________
+
+5. TECNOLOGIA E CAPITAL
+   Sistemas: ____________________________________________
+   Investimento previsto: R$ ____ (ano 1) R$ ____ (ano 3)
+   Origem do capital: ___________________________________
+═══════════════════════════════════════════════════════════════</pre>
+<hr>
+<h2 id="como-preencher-cada-dimensao">Como preencher cada dimensão</h2>
+<h2 id="dimensao-1-tamanho">DIMENSÃO 1 — TAMANHO</h2>
+<h2 id="a-regra-que-impede-o-crescimento-burro">A regra que impede o crescimento burro</h2>
+<blockquote><p><strong>Faturamento por pessoa tem que crescer mais rápido que faturamento total.</strong></p></blockquote>
+<p>Se não crescer, você não está escalando — está engordando.</p>
+<pre>❌ CRESCIMENTO BURRO
+   Hoje:  R$ 5,0M / 28 pessoas = R$ 179k por pessoa
+   Ano 5: R$ 11,0M / 61 pessoas = R$ 180k por pessoa
+   → Faturamento +120%. Complexidade +118%. Margem: igual ou pior.
+
+✅ CRESCIMENTO INTELIGENTE
+   Hoje:  R$ 5,0M / 28 pessoas = R$ 179k por pessoa
+   Ano 5: R$ 11,0M / 40 pessoas = R$ 275k por pessoa
+   → Faturamento +120%. Pessoas +43%. Margem sobe.</pre>
+<p><strong>A diferença entre os dois cenários é o lucro.</strong> No segundo, você tem 21 pessoas a menos na folha produzindo o mesmo — algo em torno de R$ 1,5M/ano de custo evitado.</p>
+<p><strong>Como se consegue:</strong> processo, padronização (níveis 1/2/3 do Módulo 1), automação, mix de produto e eliminação de retrabalho. Não se consegue trabalhando mais.</p>
+<h2 id="cenarios-sempre-faca-tres">Cenários: sempre faça três</h2>
+<p>Nunca faça um plano só. Faça três e saiba o gatilho de cada um.</p>
+<pre>CENÁRIO CONSERVADOR (probabilidade ~30%)
+Crescimento de ____% ao ano. Sem expansão geográfica.
+Gatilho: mercado retrai, crédito aperta, obra civil desacelera.
+O que fazemos: focar em margem, cortar cauda ruim, segurar
+investimento, preservar caixa.
+
+CENÁRIO BASE (probabilidade ~50%)
+Crescimento de ____% ao ano. É o que a gente planeja.
+O que fazemos: [plano principal]
+
+CENÁRIO AGRESSIVO (probabilidade ~20%)
+Crescimento de ____% ao ano. Exige capital e gente.
+Gatilho: [ex: fechar 2 contratos corporativos, entrar
+incorporadora grande no mercado]
+O que fazemos: acelerar contratação, antecipar investimento
+em capacidade, buscar capital.</pre>
+<p><strong>Escreva o gatilho de cada cenário.</strong> Sem gatilho, você não sabe quando mudar de plano — e vai continuar no cenário base quando a realidade já mudou.</p>
+<hr>
+<h2 id="dimensao-2-produto-e-mercado">DIMENSÃO 2 — PRODUTO E MERCADO</h2>
+<h2 id="as-4-perguntas-de-posicionamento">As 4 perguntas de posicionamento</h2>
+<pre>1. O QUE A GENTE VENDE DE VERDADE?
+   Não é "móvel sob medida". É o que o cliente compra:
+   previsibilidade? status? solução de espaço? tranquilidade?
+   → Escreva em uma frase. Essa frase governa preço e comunicação.
+
+2. PRA QUEM?
+   Perfil de cliente ideal, com número: faixa de renda, tipo de
+   imóvel, momento de vida, ticket, quem influencia a decisão.
+   → E quem NÃO é seu cliente. Essa parte é mais importante.
+
+3. POR QUE ELE ESCOLHE VOCÊ E NÃO O OUTRO?
+   Se a resposta for "qualidade" ou "atendimento", você não tem
+   posicionamento — todo mundo diz isso.
+   → Precisa ser algo verificável e difícil de copiar.
+
+4. O QUE A GENTE NÃO FAZ?
+   A lista do que você recusa é o que define a empresa.</pre>
+<h2 id="o-exercicio-da-recusa">O exercício da recusa</h2>
+<p>Escreva os cinco tipos de trabalho que você não vai mais aceitar em 5 anos:</p>
+<pre>1. ________________________  Por quê: ______________
+2. ________________________  Por quê: ______________
+3. ________________________  Por quê: ______________
+4. ________________________  Por quê: ______________
+5. ________________________  Por quê: ______________</pre>
+<p>Exemplos comuns em marcenaria: obra fora do raio de X km · obra abaixo de R$ Y de ticket · cliente que não aceita o protocolo · reforma pontual de móvel de terceiro · obra com prazo abaixo do ciclo padrão · assistência de móvel que não é seu.</p>
+<p><strong>Cada recusa dessa libera capacidade pra o que dá margem.</strong> E a maioria das PMEs nunca fez essa lista — aceita tudo e reclama que não sobra tempo pro que importa.</p>
+<hr>
+<h2 id="dimensao-3-capacidade">DIMENSÃO 3 — CAPACIDADE</h2>
+<h2 id="a-conta-que-quase-ninguem-faz">A conta que quase ninguém faz</h2>
+<p>Antes de prometer crescimento, calcule se cabe.</p>
+<pre>CAPACIDADE ATUAL
+
+FÁBRICA
+  Pessoas na produção: ____
+  m² por pessoa/mês:   ____   (com denominador declarado!)
+  Capacidade fábrica:  ____ m²/mês
+
+MONTAGEM
+  Pessoas na montagem: ____
+  m² por pessoa/mês:   ____
+  Capacidade montagem: ____ m²/mês
+
+⚠ A ENTREGA É A MENOR DAS DUAS. Sempre.
+
+CAPACIDADE EFETIVA: ____ m²/mês
+Faturamento equivalente: ____ m² × R$ ____ /m² = R$ ______/mês
+Teto anual de faturamento com a estrutura atual: R$ ______</pre>
+<p><strong>Se a sua meta de ano 3 está acima do teto atual, você precisa de um plano de capacidade — e ele leva de 12 a 24 meses pra maturar.</strong> Não dá pra decidir em novembro que quer crescer 40% no ano seguinte.</p>
+<h2 id="plano-de-capacidade-as-4-alavancas-na-ordem-de-custo">Plano de capacidade — as 4 alavancas, na ordem de custo</h2>
+<pre>ALAVANCA 1 — PRODUTIVIDADE (custo baixo, prazo 3-6 meses)
+   Aumentar m²/pessoa sem contratar.
+   Como: eliminar retrabalho, explorar o gargalo, padronizar
+   níveis 1/2/3, POPs, reduzir espera.
+   Ganho típico: 15% a 30%.
+
+ALAVANCA 2 — TERCEIRIZAÇÃO (custo médio, prazo 1-3 meses)
+   Terceirizar o que não é seu diferencial: pintura, laca,
+   corte de chapa, vidro, serralheria.
+   Cuidado: qualidade e prazo saem do seu controle.
+
+ALAVANCA 3 — GENTE (custo alto, prazo 6-12 meses)
+   Contratar NO GARGALO. Lembre da rampa de 4-6 meses.
+   Custo real = salário × 1,8 (encargos) + custo de formação.
+
+ALAVANCA 4 — MÁQUINA E ESPAÇO (custo altíssimo, prazo 6-18 meses)
+   Só depois das três anteriores, e só no gargalo.</pre>
+<p><strong>A ordem importa.</strong> Quem começa pela alavanca 4 gasta R$ 200 mil e não entrega um metro quadrado a mais — porque investiu onde já sobrava.</p>
+<hr>
+<h2 id="dimensao-4-estrutura-e-gente">DIMENSÃO 4 — ESTRUTURA E GENTE</h2>
+<h2 id="organograma-alvo-por-ano">Organograma-alvo por ano</h2>
+<p>Desenhe o organograma que a empresa precisa ter em cada marco, não o que ela tem.</p>
+<pre>HOJE (28 pessoas)              ANO 3 (40 pessoas)
+CEO                            CEO
+├ Coord. Projetos              ├ Diretor de Operações
+├ Ger. Fábrica                 │  ├ Ger. Fábrica
+│  └ Encarregado               │  │  ├ PCP
+├ Coord. Obras                 │  │  └ Encarregado de Pátio
+└ (adm terceirizado)           │  └ Coord. Obras
+                               │     └ Encarregado de Instalação
+                               ├ Coord. Projetos
+                               │  └ 3 projetistas
+                               ├ Gestor Comercial
+                               │  ├ SDR
+                               │  └ 2 closers
+                               └ Gestor Adm/Financeiro</pre>
+<h2 id="a-pergunta-que-define-seu-papel">A pergunta que define seu papel</h2>
+<pre>MEU PAPEL EM CADA ANO
+Hoje:   ______________________________________________
+Ano 1:  ______________________________________________
+Ano 3:  ______________________________________________
+Ano 5:  ______________________________________________
+
+O QUE EU PRECISO PARAR DE FAZER PARA CHEGAR LÁ
+Ano 1: ______________________________________________
+Ano 3: ______________________________________________</pre>
+<p><strong>Se o seu papel é igual nos quatro,</strong> você não tem um plano de crescimento. Tem um plano de fazer mais do mesmo.</p>
+<h2 id="as-funcoes-que-ainda-nao-existem">As funções que ainda não existem</h2>
+<p>Liste as funções que a empresa vai precisar e ainda não tem. Ao lado: quando contratar, quanto custa, e se dá pra formar internamente.</p>
+<div class="tabwrap"><table><thead><tr><th>Função</th><th>Quando</th><th>Custo anual</th><th>Formar ou contratar?</th><th>Candidato interno</th></tr></thead><tbody><tr><td></td><td></td><td></td><td></td><td></td></tr></tbody></table></div>
+<p><strong>Regra:</strong> função de liderança leva de 12 a 24 meses pra formar internamente. Se você vai precisar de um gestor de fábrica no ano 3, comece a formar no ano 1.</p>
+<hr>
+<h2 id="dimensao-5-tecnologia-e-capital">DIMENSÃO 5 — TECNOLOGIA E CAPITAL</h2>
+<h2 id="roadmap-de-sistemas">Roadmap de sistemas</h2>
+<div class="tabwrap"><table><thead><tr><th>Estágio</th><th>O que ter</th><th>Quando</th></tr></thead><tbody><tr><td><strong>Base</strong></td><td>ERP com obras, cronograma e KPI · CRM comercial · financeiro integrado</td><td>Ano 1</td></tr><tr><td><strong>Controle</strong></td><td>Centro de custo por obra · margem por obra automática · painel executivo</td><td>Ano 1–2</td></tr><tr><td><strong>Eficiência</strong></td><td>Otimização de plano de corte · apontamento de produção · gestão de estoque</td><td>Ano 2–3</td></tr><tr><td><strong>Escala</strong></td><td>Integração comercial→projeto→produção · portal do cliente · BI</td><td>Ano 3–5</td></tr></tbody></table></div>
+<p><strong>Regra de ouro dos sistemas:</strong> nunca implante sistema pra resolver problema de processo. Sistema em cima de processo bagunçado só deixa a bagunça mais cara e mais rápida.</p>
+<h2 id="plano-de-capital">Plano de capital</h2>
+<pre>NECESSIDADE DE CAPITAL POR ANO
+                        Ano 1    Ano 2    Ano 3    Ano 4    Ano 5
+Capital de giro         ______   ______   ______   ______   ______
+Máquina e equipamento   ______   ______   ______   ______   ______
+Espaço/obra civil       ______   ______   ______   ______   ______
+Sistema                 ______   ______   ______   ______   ______
+TOTAL                   ______   ______   ______   ______   ______
+
+ORIGEM
+Geração própria (lucro reinvestido)     ______
+Financiamento (taxa: ____ prazo: ____)  ______
+Aporte de sócio                         ______</pre>
+<p><strong>Regra da PME:</strong> crescimento saudável se financia com lucro reinvestido. Se o plano só fecha com dívida, ou a margem está baixa demais ou o crescimento está rápido demais.</p>
+<p><strong>Teste de segurança da dívida:</strong> parcela mensal total ≤ 25% do EBITDA médio dos últimos 12 meses. Acima disso, um trimestre ruim vira crise.</p>
+<hr>
+<h2 id="como-transformar-5-anos-em-acao-de-hoje">Como transformar 5 anos em ação de hoje</h2>
+<pre>5 ANOS  →  visão e filtro de decisão
+   ↓
+3 ANOS  →  capacidade, estrutura e investimento
+   ↓
+1 ANO   →  meta anual (Método 1-3-9)
+   ↓
+90 DIAS →  prioridades com dono (Módulo 9)
+   ↓
+SEMANA  →  reunião tática
+   ↓
+DIA     →  reunião de 15 minutos</pre>
+<p><strong>Se algum elo dessa corrente estiver quebrado, o plano de 5 anos não chega no chão.</strong> E plano que não chega no chão é enfeite.</p>
+<hr>
+<h2 id="cadencia-de-revisao">Cadência de revisão</h2>
+<div class="tabwrap"><table><thead><tr><th>Quando</th><th>O quê</th><th>Muda o quê</th></tr></thead><tbody><tr><td><strong>Trimestral</strong></td><td>Progresso das prioridades</td><td>Ações, não a visão</td></tr><tr><td><strong>Semestral</strong></td><td>Premissas do plano ainda valem?</td><td>Cenário (conservador/base/agressivo)</td></tr><tr><td><strong>Anual</strong></td><td>Revisão completa do Mapa 5×5</td><td>Números, capacidade, estrutura</td></tr><tr><td><strong>Quando muda algo grande</strong></td><td>Revisão emergencial</td><td>Tudo, se necessário</td></tr></tbody></table></div>
+<p><strong>Gatilhos de revisão emergencial:</strong> perda de cliente acima de 15% do faturamento · saída de pessoa-chave · mudança regulatória ou tributária relevante · entrada de concorrente grande · variação de mais de 20% no custo de matéria-prima · crise de crédito no setor de construção.</p>
+<hr>
+<h2 id="como-apresentar-o-plano-a-lideranca">Como apresentar o plano à liderança</h2>
+<p>Não mande PDF. Apresente, discuta e peça compromisso.</p>
+<pre>ROTEIRO DE APRESENTAÇÃO (90 min)
+
+1. ONDE ESTAMOS (15 min)
+   Os 7 números de hoje. Sem enfeite. Inclusive os ruins.
+
+2. PARA ONDE VAMOS (20 min)
+   O Mapa 5×5. Uma página, na tela.
+   Foco: o que muda no dia a dia de cada um.
+
+3. POR QUE ESSE CAMINHO (15 min)
+   A tese. Por que não os outros caminhos.
+
+4. O QUE MUDA NO ANO 1 (20 min)
+   A meta anual, as 3 alavancas, os 9 RCs.
+   Quem responde por cada um.
+
+5. O QUE EU PRECISO DE VOCÊS (10 min)
+   Compromisso explícito, um a um, em voz alta.
+
+6. O QUE VOCÊS PRECISAM DE MIM (10 min)
+   Ouça e anote. Cumpra.</pre>
+<p><strong>O item 6 é o que separa apresentação de compromisso.</strong> Se você só fala e não pergunta, o plano é seu — e vai ser executado como coisa sua.</p>
+<hr>
+<h2 id="erros-comuns">Erros comuns</h2>
+<div class="tabwrap"><table><thead><tr><th>#</th><th>Erro</th><th>Consequência</th></tr></thead><tbody><tr><td>1</td><td>Plano de 5 anos só com faturamento</td><td>Cresce e empobrece</td></tr><tr><td>2</td><td>Não calcular faturamento por pessoa</td><td>Crescimento burro</td></tr><tr><td>3</td><td>Um cenário só</td><td>Sem gatilho pra mudar de plano</td></tr><tr><td>4</td><td>Não calcular capacidade</td><td>Promete o que não cabe</td></tr><tr><td>5</td><td>Investir na alavanca 4 antes da 1</td><td>Gasta muito e entrega igual</td></tr><tr><td>6</td><td>Não escrever o que não se faz</td><td>Aceita tudo, foca em nada</td></tr><tr><td>7</td><td>Papel do dono igual nos 5 anos</td><td>Não é plano de crescimento</td></tr><tr><td>8</td><td>Sistema pra resolver problema de processo</td><td>Bagunça mais cara e mais rápida</td></tr><tr><td>9</td><td>Crescimento que só fecha com dívida</td><td>Um trimestre ruim vira crise</td></tr><tr><td>10</td><td>Plano que não desce até a semana</td><td>Enfeite</td></tr><tr><td>11</td><td>Não revisar</td><td>Ficção com data</td></tr><tr><td>12</td><td>Não apresentar à liderança</td><td>Plano do dono, executado como coisa do dono</td></tr></tbody></table></div>
+<hr>
+<h2 id="perguntas-que-o-lider-deve-fazer">Perguntas que o líder deve fazer</h2>
+<ol><li>Meu faturamento por pessoa cresce mais rápido que meu faturamento total no plano?</li><li>Qual é o teto de faturamento da minha estrutura atual? Já calculei?</li><li>O que eu vou parar de fazer em cada ano?</li><li>Que funções vão existir em 3 anos que não existem hoje? Quem eu começo a formar hoje?</li><li>Meu plano fecha com lucro reinvestido ou depende de dívida?</li><li>Quais são os 5 tipos de trabalho que eu não vou mais aceitar?</li><li>Se eu perguntar a cada líder pra onde a empresa vai, as respostas batem?</li></ol>
+<hr>
+<h2 id="exercicios-do-modulo-5">Exercícios do Módulo 5</h2>
+<h3 id="exercicio-1-mapa-5-5-3h-com-a-lideranca">Exercício 1 — Mapa 5×5 (3h, com a liderança)</h3>
+<p>Preencha as cinco dimensões. Uma página. Não avance pro próximo exercício sem terminar.</p>
+<h3 id="exercicio-2-teste-do-crescimento-inteligente-30-min">Exercício 2 — Teste do crescimento inteligente (30 min)</h3>
+<p>Calcule faturamento por pessoa hoje e no ano 5 do seu plano. Se não crescer pelo menos 40%, refaça.</p>
+<h3 id="exercicio-3-teto-da-estrutura-atual-1h">Exercício 3 — Teto da estrutura atual (1h)</h3>
+<p>Calcule capacidade de fábrica e montagem separadamente. Ache a menor. Calcule o teto de faturamento.</p>
+<h3 id="exercicio-4-lista-de-recusa-30-min">Exercício 4 — Lista de recusa (30 min)</h3>
+<p>Cinco tipos de trabalho que você não vai mais aceitar. Calcule quanto de capacidade isso libera.</p>
+<h3 id="exercicio-5-tres-cenarios-1h">Exercício 5 — Três cenários (1h)</h3>
+<p>Escreva os três cenários com o gatilho de cada um.</p>
+<h3 id="exercicio-6-meu-papel-20-min">Exercício 6 — Meu papel (20 min)</h3>
+<p>Escreva o que você faz hoje e o que vai fazer nos anos 1, 3 e 5. E o que precisa parar de fazer.</p>
+<h3 id="exercicio-7-apresentacao-90-min">Exercício 7 — Apresentação (90 min)</h3>
+<p>Apresente à liderança seguindo o roteiro. Colha compromisso um a um.</p>
+<hr>
+<h2 id="frases-de-impacto">Frases de impacto</h2>
+<ul><li><em>"O plano de 5 anos não serve pra acertar o futuro. Serve pra decidir melhor hoje."</em></li><li><em>"Se o faturamento por pessoa não cresce, você não está escalando. Está engordando."</em></li><li><em>"A lista do que você recusa define a empresa mais que a lista do que você faz."</em></li><li><em>"Nunca implante sistema pra resolver problema de processo. Você só deixa a bagunça mais cara e mais rápida."</em></li><li><em>"Se o seu papel é igual nos cinco anos, você não tem plano de crescimento. Tem plano de fazer mais do mesmo."</em></li><li><em>"Se o plano só fecha com dívida, ou a margem está baixa demais ou o crescimento está rápido demais."</em></li><li><em>"Função de liderança leva de 12 a 24 meses pra formar. Se precisa no ano 3, comece no ano 1."</em></li><li><em>"Plano que não desce até a reunião de segunda é enfeite."</em></li></ul>
+<hr>
+<h2 id="entregavel-do-modulo-5">Entregável do Módulo 5</h2>
+<ol><li>Mapa 5×5 preenchido em uma página.</li><li>Três cenários com gatilhos escritos.</li><li>Cálculo do teto de capacidade atual.</li><li>Plano de capacidade com as 4 alavancas na ordem.</li><li>Organograma-alvo por ano, com funções a formar.</li><li>Lista de recusa.</li><li>Plano apresentado à liderança, com compromissos colhidos.</li></ol>
+<p><strong>Próximo módulo:</strong> Backup operacional — garantir que a empresa continue funcionando sem você e sem ninguém em específico.</p>
+
+  <div class="rodape"><span>FASE 6 · MÓDULO 05 · Fase 6 — Escala</span><span>Material de formação em gestão para donos de PME</span></div>
+</div>
+
+<script>
+// mantem a marca digitada pelo usuario neste navegador
+(function(){
+  var m=document.querySelector('.marca');
+  var k='mkt-marca';
+  try{ var s=localStorage.getItem(k); if(s) m.innerHTML=s; }catch(e){}
+  m.addEventListener('blur',function(){ try{localStorage.setItem(k,m.innerHTML);}catch(e){} });
+})();
+</script>
+</body>
+</html>

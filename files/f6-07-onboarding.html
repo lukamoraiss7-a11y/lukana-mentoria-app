@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MÓDULO 7 — ONBOARDING</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --tinta:#2C2825; --ouro:#B8925A; --claro:#F5F1EA; --linha:#D8D2C7;
+  --fraco:#6E675E; --papel:#FFFFFF; --caixa:#FAF8F4;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+@page{size:A4;margin:14mm 13mm 13mm}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact;scroll-behavior:smooth}
+body{font:11pt/1.62 'Inter',-apple-system,'Helvetica Neue',Arial,sans-serif;
+  color:var(--tinta);background:var(--claro)}
+.folha{max-width:196mm;margin:0 auto;padding:14mm 10mm 20mm;background:var(--papel);
+  box-shadow:0 1px 3px rgba(0,0,0,.06)}
+
+/* cabecalho */
+.topo{display:flex;justify-content:space-between;align-items:flex-end;
+  border-bottom:1.5pt solid var(--tinta);padding-bottom:6pt;gap:12pt;flex-wrap:wrap}
+.marca{font:600 15pt/1 'Cormorant Garamond',Georgia,serif;letter-spacing:.22em;
+  text-transform:uppercase;outline:none}
+.marca small{display:block;font:400 6.5pt/1 'Inter',sans-serif;letter-spacing:.34em;
+  color:var(--fraco);margin-top:3pt}
+.marca:focus{background:#FFF6DF}
+.doc{text-align:right}
+.doc .fase{font-size:7pt;letter-spacing:.2em;color:var(--ouro);font-weight:600;
+  text-transform:uppercase}
+.doc .cod{font-size:7pt;letter-spacing:.18em;color:var(--fraco);margin-top:2pt}
+.regua{height:2.5pt;background:var(--ouro);margin:0 0 14pt}
+
+/* tipografia */
+h1{font:600 21pt/1.18 'Cormorant Garamond',Georgia,serif;letter-spacing:.01em;
+  margin:0 0 3pt}
+h1 + .lead{font-size:10.5pt;color:var(--fraco);font-style:italic;margin-bottom:14pt;
+  padding-bottom:10pt;border-bottom:.75pt solid var(--linha)}
+h2{font:600 10.5pt/1.25 'Inter',sans-serif;letter-spacing:.13em;text-transform:uppercase;
+  background:var(--claro);border-left:3pt solid var(--ouro);padding:6pt 8pt;
+  margin:22pt 0 9pt;break-after:avoid;page-break-after:avoid}
+h3{font:600 11.5pt/1.3 'Cormorant Garamond',Georgia,serif;letter-spacing:.02em;
+  margin:15pt 0 5pt;break-after:avoid;page-break-after:avoid}
+h4{font:600 8.5pt/1.25 'Inter',sans-serif;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--fraco);margin:12pt 0 4pt;break-after:avoid}
+p{margin:0 0 8pt;text-align:left}
+strong{font-weight:600}
+em{font-style:italic}
+a{color:var(--ouro);text-decoration:none}
+hr{border:none;border-top:.75pt solid var(--linha);margin:16pt 0}
+
+/* listas */
+ul,ol{margin:0 0 9pt 16pt}
+li{margin-bottom:3.5pt}
+ul.chk{list-style:none;margin-left:0}
+ul.chk li{display:flex;gap:7pt;align-items:flex-start;padding:3.5pt 0;
+  border-bottom:.5pt dotted var(--linha);break-inside:avoid}
+ul.chk li::before{content:"";flex:0 0 9.5pt;height:9.5pt;margin-top:2.5pt;
+  border:.9pt solid var(--tinta);border-radius:1pt;background:#fff}
+
+/* citacao / destaque */
+blockquote{border-left:2.5pt solid var(--ouro);background:var(--caixa);
+  padding:9pt 12pt;margin:11pt 0;break-inside:avoid}
+blockquote p:last-child{margin-bottom:0}
+
+/* codigo / templates ascii */
+pre{background:var(--caixa);border:.75pt solid var(--linha);border-radius:2pt;
+  padding:10pt 11pt;margin:11pt 0;overflow-x:auto;break-inside:avoid;
+  font:9pt/1.42 'SFMono-Regular',Menlo,Consolas,'Courier New',monospace;
+  white-space:pre;color:#332F2A}
+code{font:9.2pt/1.4 'SFMono-Regular',Menlo,Consolas,monospace;
+  background:var(--claro);padding:1pt 3pt;border-radius:2pt}
+pre code{background:none;padding:0;font-size:inherit}
+
+/* tabelas */
+.tabwrap{overflow-x:auto;margin:11pt 0}
+table{border-collapse:collapse;width:100%;font-size:9.3pt;break-inside:avoid}
+th{background:var(--claro);text-align:left;font-weight:600;font-size:7.5pt;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--fraco);
+  padding:5.5pt 7pt;border:.75pt solid var(--linha)}
+td{padding:5.5pt 7pt;border:.75pt solid var(--linha);vertical-align:top;line-height:1.42}
+tbody tr:nth-child(even){background:#FCFBF9}
+
+/* indice */
+.indice{background:var(--caixa);border:.75pt solid var(--linha);padding:11pt 13pt;
+  margin:0 0 18pt;break-inside:avoid}
+.indice h4{margin-top:0}
+.indice ol{margin:0 0 0 15pt;font-size:9.5pt;column-gap:18pt}
+.indice li{margin-bottom:2.5pt}
+.indice a{color:var(--tinta)}
+.indice a:hover{color:var(--ouro)}
+
+/* rodape */
+.rodape{margin-top:22pt;padding-top:6pt;border-top:.75pt solid var(--linha);
+  display:flex;justify-content:space-between;font-size:7.5pt;color:var(--fraco);
+  letter-spacing:.06em;gap:10pt;flex-wrap:wrap}
+
+/* navegacao entre modulos (some na impressao) */
+.nav{max-width:196mm;margin:0 auto 10mm;padding:0 10mm;display:flex;
+  justify-content:space-between;gap:10pt;font-size:9pt}
+.nav a{display:inline-block;padding:6pt 11pt;border:.75pt solid var(--linha);
+  background:var(--papel);border-radius:2pt;color:var(--tinta)}
+.nav a:hover{border-color:var(--ouro);color:var(--ouro)}
+.topbar{max-width:196mm;margin:0 auto;padding:8mm 10mm 0;display:flex;
+  justify-content:space-between;font-size:9pt}
+.topbar a{color:var(--fraco)}
+.topbar a:hover{color:var(--ouro)}
+
+@media print{
+  body{background:#fff}
+  .folha{box-shadow:none;padding:0;max-width:none}
+  .nav,.topbar{display:none}
+  .indice{break-after:page}
+}
+@media (max-width:640px){
+  body{font-size:11.5pt}
+  .folha{padding:8mm 5mm 14mm}
+  pre{font-size:7.6pt}
+  table{font-size:8.6pt}
+  .doc{text-align:left}
+}
+</style>
+</head>
+<body>
+
+<div class="folha">
+  <div class="topo">
+    <div class="marca" contenteditable="true" spellcheck="false">SUA MARCA<small>MARCENARIA</small></div>
+    <div class="doc"><div class="fase">Fase 6 — Escala</div><div class="cod">FASE 6 · MÓDULO 07</div></div>
+  </div>
+  <div class="regua"></div>
+
+  <h1>MÓDULO 7 — ONBOARDING</h1>
+  <div class="lead">Método 7/30/60/90: os primeiros 90 dias decidem os próximos 3 anos</div>
+  <div class="indice"><h4>Neste módulo</h4><ol><li><a href="#por-que-isso-vale-dinheiro">Por que isso vale dinheiro</a></li><li><a href="#o-onboarding-tipico-de-marcenaria-e-o-que-ele-custa">O onboarding típico de marcenaria (e o que ele custa)</a></li><li><a href="#o-metodo-7-30-60-90">O Método 7/30/60/90</a></li><li><a href="#antes-do-dia-1-a-preparacao-o-que-ninguem-faz">ANTES DO DIA 1 — A preparação (o que ninguém faz)</a></li><li><a href="#checklist-da-vespera">Checklist da véspera</a></li><li><a href="#a-mensagem-da-vespera-custa-30-segundos-muda-tudo">A mensagem da véspera (custa 30 segundos, muda tudo)</a></li><li><a href="#dia-1-o-dia-que-mais-marca">DIA 1 — O dia que mais marca</a></li><li><a href="#roteiro-completo">Roteiro completo</a></li><li><a href="#dia-7-pertencer">DIA 7 — PERTENCER</a></li><li><a href="#objetivo">Objetivo</a></li><li><a href="#o-que-precisa-ter-acontecido">O que precisa ter acontecido</a></li><li><a href="#conversa-do-dia-7-20-min-com-o-lider-direto">Conversa do dia 7 (20 min, com o líder direto)</a></li><li><a href="#dia-30-executar">DIA 30 — EXECUTAR</a></li><li><a href="#objetivo">Objetivo</a></li><li><a href="#o-que-precisa-ter-acontecido">O que precisa ter acontecido</a></li><li><a href="#avaliacao-formal-do-dia-30">Avaliação formal do dia 30</a></li><li><a href="#a-regra-mais-importante-do-dia-30">A regra mais importante do dia 30</a></li><li><a href="#dia-60-contribuir">DIA 60 — CONTRIBUIR</a></li><li><a href="#objetivo">Objetivo</a></li><li><a href="#o-que-precisa-ter-acontecido">O que precisa ter acontecido</a></li><li><a href="#conversa-do-dia-60-30-min">Conversa do dia 60 (30 min)</a></li><li><a href="#dia-90-integrar">DIA 90 — INTEGRAR</a></li><li><a href="#objetivo">Objetivo</a></li><li><a href="#avaliacao-formal-do-dia-90">Avaliação formal do dia 90</a></li><li><a href="#a-conversa-do-dia-90-45-min-o-que-muda">A conversa do dia 90 (45 min) — o que muda</a></li><li><a href="#o-papel-do-padrinho-no-onboarding">O papel do PADRINHO no onboarding</a></li><li><a href="#onboarding-de-lider-e-diferente">Onboarding de LÍDER (é diferente)</a></li><li><a href="#erros-comuns">Erros comuns</a></li><li><a href="#perguntas-que-o-lider-deve-fazer">Perguntas que o líder deve fazer</a></li><li><a href="#exercicios-do-modulo-7">Exercícios do Módulo 7</a></li><li><a href="#frases-de-impacto">Frases de impacto</a></li><li><a href="#entregavel-do-modulo-7">Entregável do Módulo 7</a></li></ol></div>
+  <hr>
+<h2 id="por-que-isso-vale-dinheiro">Por que isso vale dinheiro</h2>
+<p>Dado que vale a pena guardar: <strong>a decisão de ficar ou sair é tomada nos primeiros 45 dias.</strong> Não conscientemente — mas a pessoa já sabe, nesse período, se vai construir carreira ali ou se está de passagem.</p>
+<p>E o que define isso não é salário. É se ela sentiu que:</p>
+<ol><li>Sabia o que fazer</li><li>Tinha com quem contar</li><li>Estava indo bem ou mal</li><li>O trabalho dela importava</li></ol>
+<p><strong>Nenhuma dessas quatro coisas acontece por acaso.</strong> As quatro são construídas por processo — ou destruídas pela falta dele.</p>
+<h2 id="o-onboarding-tipico-de-marcenaria-e-o-que-ele-custa">O onboarding típico de marcenaria (e o que ele custa)</h2>
+<pre>DIA 1
+07:30 — Chega. Ninguém esperava.
+07:45 — Encarregado: "espera aí que eu já te atendo"
+08:30 — "Fica com o [fulano] que ele te mostra"
+08:31 — O fulano está no meio de uma peça e mal cumprimenta
+Almoço — Come sozinho
+14:00 — Fica olhando, sem tarefa
+17:30 — Vai embora sem saber se foi bem
+
+DIA 5  — Ainda não sabe o nome de metade das pessoas
+DIA 15 — Errou porque ninguém explicou. Levou bronca.
+DIA 30 — Já está procurando outro emprego
+DIA 60 — Sai. Ou fica desengajado, que é pior.</pre>
+<p><strong>Custo:</strong> você gastou uma contratação inteira (R$ 8k a R$ 15k entre processo, salário e encargos do período) e vai gastar de novo. E a fama circula na cidade.</p>
+<blockquote><p><strong>Frase pra colar na parede:</strong> <em>"Todo mundo entra querendo dar certo. Se em 90 dias a pessoa não deu, na maioria das vezes o problema foi o que a empresa fez — ou deixou de fazer."</em></p></blockquote>
+<hr>
+<h2 id="o-metodo-7-30-60-90">O Método 7/30/60/90</h2>
+<p>Quatro marcos. Cada um com objetivo, entregas e uma conversa formal.</p>
+<pre>DIA 7   — PERTENCER    "Eu sei onde estou e quem é quem"
+DIA 30  — EXECUTAR     "Eu consigo fazer sozinho o básico"
+DIA 60  — CONTRIBUIR   "Eu entrego valor sem ser puxado"
+DIA 90  — INTEGRAR     "Eu sou parte disso e sei pra onde vou"</pre>
+<hr>
+<h2 id="antes-do-dia-1-a-preparacao-o-que-ninguem-faz">ANTES DO DIA 1 — A preparação (o que ninguém faz)</h2>
+<h2 id="checklist-da-vespera">Checklist da véspera</h2>
+<pre>[ ] Estação de trabalho definida e limpa
+[ ] EPI separado no tamanho certo (perguntar antes!)
+[ ] Uniforme entregue ou separado
+[ ] Ferramenta básica separada
+[ ] Armário/escaninho identificado com o NOME dele
+[ ] Acessos criados: sistema, grupo de WhatsApp, e-mail
+[ ] Padrinho designado e AVISADO (com a agenda dele ajustada)
+[ ] Agenda das 2 primeiras semanas impressa
+[ ] Equipe avisada: quem chega, qual função, quando
+[ ] Documentação de admissão pronta pra assinar
+[ ] Almoço do dia 1 combinado com alguém (não deixe comer sozinho)</pre>
+<h2 id="a-mensagem-da-vespera-custa-30-segundos-muda-tudo">A mensagem da véspera (custa 30 segundos, muda tudo)</h2>
+<pre>"Oi [nome], tudo bem? Aqui é o [você].
+Só pra confirmar: amanhã às 7h30, na [endereço].
+Pergunta pelo [padrinho], ele vai te receber.
+Traz [documentos].
+Vai ser um dia tranquilo, de conhecer as pessoas e o lugar —
+não se preocupa em produzir nada.
+Qualquer coisa me chama. Até amanhã!"</pre>
+<p><strong>Por que funciona:</strong> tira a ansiedade da véspera e comunica, antes de tudo, que ali as coisas são organizadas.</p>
+<hr>
+<h2 id="dia-1-o-dia-que-mais-marca">DIA 1 — O dia que mais marca</h2>
+<h2 id="roteiro-completo">Roteiro completo</h2>
+<pre>07:15 — O PADRINHO ESTÁ ESPERANDO NA PORTA
+        Não o recepcionista. Não "chega e pergunta".
+        Alguém esperando, sabendo o nome dele.
+
+07:30 — CAFÉ COM O DONO (20 minutos, obrigatório)
+        Assunto: a história da empresa e por que ela existe.
+        Não fale de regra. Fale de propósito.
+        Roteiro:
+        • Como a empresa começou e por quê
+        • O que a gente vende de verdade (não é móvel)
+        • Os nossos valores, com um exemplo real de cada
+        • Por que eu contratei você especificamente
+        • "O que você quer saber?"
+
+08:00 — TOUR PELA EMPRESA COM O PADRINHO (40 min)
+        Apresentar cada pessoa pelo NOME e pela FUNÇÃO.
+        "Esse é o Carlos, ele cuida da coladeira e é quem
+         resolve quando a fita não gruda."
+        Mostrar: banheiro, vestiário, refeitório, saída de
+        emergência, extintor, bebedouro, ponto.
+
+08:40 — SEGURANÇA (1h, com o responsável)
+        EPI: qual, quando, por quê
+        Riscos de cada máquina
+        O que fazer em caso de acidente
+        Assinatura da ordem de serviço de segurança
+
+09:40 — DOCUMENTAÇÃO E BENEFÍCIOS (30 min)
+        Assinatura, explicação de vale, plano, banco de horas
+        Como funciona o ponto e o horário
+
+10:10 — A FUNÇÃO (1h, com o líder direto)
+        • O que se espera dele
+        • O plano de 7/30/60/90 entregue POR ESCRITO
+        • O número dele (KPI)
+        • Como ele vai receber feedback e quando
+        • "Alguma dúvida sobre o que se espera?"
+
+11:10 — OBSERVAÇÃO ACOMPANHADA
+        Fica com o padrinho, olhando. Sem tarefa ainda.
+
+12:00 — ALMOÇO COM O TIME (nunca sozinho)
+
+13:00 — PRIMEIRA TAREFA SIMPLES E CONCLUÍVEL
+        Uma coisa que ele consegue terminar hoje e ver o resultado.
+        Isso importa muito: a sensação de ter contribuído no dia 1.
+
+16:30 — FECHAMENTO DO DIA COM O PADRINHO (15 min)
+        "Como foi? O que te surpreendeu? Alguma dúvida?
+         Amanhã a gente faz [X]."
+
+17:00 — MENSAGEM DO DONO NO FIM DO DIA
+        "E aí, como foi o primeiro dia? Qualquer coisa me chama."</pre>
+<p><strong>Custo do dia 1 bem feito:</strong> cerca de 4 horas de tempo de outras pessoas. <strong>Retorno:</strong> a diferença entre 19 meses e 7 meses de permanência média.</p>
+<hr>
+<h2 id="dia-7-pertencer">DIA 7 — PERTENCER</h2>
+<h2 id="objetivo">Objetivo</h2>
+<p>A pessoa sabe onde está, quem é quem, e não se sente perdida.</p>
+<h2 id="o-que-precisa-ter-acontecido">O que precisa ter acontecido</h2>
+<pre>[ ] Conhece o nome e a função de todos com quem interage
+[ ] Sabe onde fica tudo (ferramenta, material, banheiro, EPI)
+[ ] Entende o fluxo geral da empresa (do orçamento à entrega)
+[ ] Já executou ao menos 3 tarefas simples do começo ao fim
+[ ] Sabe a quem perguntar cada tipo de dúvida
+[ ] Conhece os valores da empresa e consegue citar 2
+[ ] Sabe qual é o número dele e como é medido</pre>
+<h2 id="conversa-do-dia-7-20-min-com-o-lider-direto">Conversa do dia 7 (20 min, com o líder direto)</h2>
+<pre>1. "Como foi essa primeira semana?"
+2. "O que te surpreendeu — pra bem e pra mal?"
+3. "Tem alguma coisa que você achou estranho no jeito da gente?"
+   → ⭐ Essa pergunta é ouro. Olho novo enxerga o que a gente
+     não enxerga mais. Anote e leve pra reunião de segunda.
+4. "Falta alguma coisa pra você trabalhar bem? Ferramenta, EPI,
+   informação?"
+5. "Você entendeu o que se espera de você? Me conta com suas
+   palavras."
+6. [Feedback do líder: 1 coisa boa observada + 1 ajuste]
+7. "Semana que vem o foco é [X]."</pre>
+<hr>
+<h2 id="dia-30-executar">DIA 30 — EXECUTAR</h2>
+<h2 id="objetivo">Objetivo</h2>
+<p>Faz sozinho o básico da função, sem supervisão constante.</p>
+<h2 id="o-que-precisa-ter-acontecido">O que precisa ter acontecido</h2>
+<pre>[ ] Executa as tarefas do bloco básico da trilha sem supervisão
+[ ] Segue os POPs das tarefas que aprendeu
+[ ] Sabe usar o checklist da etapa dele
+[ ] Reporta problema em vez de esconder ou improvisar
+[ ] Já recebeu ao menos 2 feedbacks estruturados
+[ ] Está dentro do horário e das regras básicas
+[ ] Já foi validado (método 4M, etapa MEDIR) em ao menos 3 tarefas</pre>
+<h2 id="avaliacao-formal-do-dia-30">Avaliação formal do dia 30</h2>
+<pre>═══════════════════════════════════════════════════════════════
+AVALIAÇÃO DE 30 DIAS — [nome]
+Função: __________  Líder: __________  Data: ___/___/___
+
+TÉCNICO                                    Abaixo  No alvo  Acima
+Aprende no ritmo esperado                    ○       ○        ○
+Executa o que já foi ensinado                ○       ○        ○
+Cuidado com material e ferramenta            ○       ○        ○
+Segue o POP / checklist                      ○       ○        ○
+
+COMPORTAMENTO
+Pontualidade e assiduidade                   ○       ○        ○
+Pergunta quando tem dúvida                   ○       ○        ○
+Avisa problema em vez de esconder            ○       ○        ○
+Relação com a equipe                         ○       ○        ○
+Aceita orientação                            ○       ○        ○
+
+TAREFAS VALIDADAS NA TRILHA: ____ de ____
+
+PONTOS FORTES OBSERVADOS (com exemplo):
+1. ______________________________________________________
+2. ______________________________________________________
+
+O QUE PRECISA MELHORAR (com exemplo e impacto):
+1. ______________________________________________________
+2. ______________________________________________________
+
+FOCO DOS PRÓXIMOS 30 DIAS (uma coisa só):
+_________________________________________________________
+
+DECISÃO
+( ) Segue no ritmo esperado
+( ) Segue com atenção em: __________________________
+( ) Não vai dar certo → conversa honesta agora, não no dia 90
+
+Assinaturas: ____________  ____________
+═══════════════════════════════════════════════════════════════</pre>
+<h2 id="a-regra-mais-importante-do-dia-30">A regra mais importante do dia 30</h2>
+<blockquote><p><strong>Se você já sabe no dia 30 que não vai dar certo, fale agora.</strong></p></blockquote>
+<p>Não espere o dia 90. Duas razões:</p>
+<ol><li><strong>Justiça com a pessoa</strong> — ela ainda tem chance de virar, ou de procurar outro lugar sem ter queimado 3 meses.</li><li><strong>Justiça com a empresa</strong> — 60 dias a mais de alguém que não vai ficar custa dinheiro e clima.</li></ol>
+<p><strong>Script:</strong></p>
+<pre>"[Nome], vou ser direto porque acho que é o mais justo.
+Nesses 30 dias, [descreva o fato objetivo].
+Isso me preocupa porque [impacto].
+
+Eu quero que dê certo. Então nos próximos 30 dias o foco é [X],
+e eu vou te acompanhar de perto — a gente conversa toda semana.
+
+Mas quero ser honesto: se isso não mudar, no dia 60 a gente vai
+ter uma conversa diferente. Prefiro te falar agora do que te
+surpreender depois."</pre>
+<hr>
+<h2 id="dia-60-contribuir">DIA 60 — CONTRIBUIR</h2>
+<h2 id="objetivo">Objetivo</h2>
+<p>Entrega valor sem ser puxado. Já é parte do time, não visita.</p>
+<h2 id="o-que-precisa-ter-acontecido">O que precisa ter acontecido</h2>
+<pre>[ ] Produz no ritmo esperado para o nível dele
+[ ] Antecipa problema em vez de só reportar
+[ ] Já sugeriu ao menos 1 melhoria (mesmo pequena)
+[ ] É procurado por colegas para alguma coisa
+[ ] Domina a maior parte da trilha do nível de entrada
+[ ] O número dele está dentro da faixa esperada</pre>
+<h2 id="conversa-do-dia-60-30-min">Conversa do dia 60 (30 min)</h2>
+<pre>1. Revisão do foco definido no dia 30 — cumpriu?
+2. Números dele: como estão
+3. "O que você está achando do trabalho de verdade, agora que
+   já passou a novidade?"
+4. "Tem alguma coisa que você gostaria de fazer aqui e ainda
+   não está fazendo?"
+5. "Como está a relação com o time? Com o padrinho?"
+6. Feedback: 2 pontos fortes + 1 ajuste
+7. Foco dos próximos 30 dias
+8. Prévia da conversa do dia 90: "no dia 90 a gente decide a
+   efetivação e conversa sobre o seu caminho aqui"</pre>
+<hr>
+<h2 id="dia-90-integrar">DIA 90 — INTEGRAR</h2>
+<h2 id="objetivo">Objetivo</h2>
+<p>Efetivação (fim do período de experiência) + início do plano de carreira.</p>
+<h2 id="avaliacao-formal-do-dia-90">Avaliação formal do dia 90</h2>
+<p>Usa o mesmo formulário do dia 30, mais três blocos:</p>
+<pre>BLOCO EXTRA 1 — POSIÇÃO NA MATRIZ DE COMPETÊNCIAS
+Competência              Nível atual   Nível esperado   Gap
+______________________   ____          ____             ____
+______________________   ____          ____             ____
+
+BLOCO EXTRA 2 — POSIÇÃO NA MATRIZ ENTREGA × JEITO
+( ) Referência   ( ) Aposta   ( ) Estrela perigosa   ( ) Desliga
+
+BLOCO EXTRA 3 — DECISÃO
+( ) Efetiva
+( ) Efetiva com plano de melhoria de 60 dias
+( ) Não efetiva → desligamento ao fim do período de experiência
+
+PRIMEIRO PDI (Plano de Desenvolvimento Individual)
+Próximo nível almejado: ______  Prazo realista: ______
+Trilha escolhida: ( ) Técnica ( ) Gestão
+3 lacunas prioritárias:
+1. ____________________  Como fechar: ______________
+2. ____________________  Como fechar: ______________
+3. ____________________  Como fechar: ______________</pre>
+<h2 id="a-conversa-do-dia-90-45-min-o-que-muda">A conversa do dia 90 (45 min) — o que muda</h2>
+<p>Essa conversa não é sobre os 90 dias que passaram. É sobre <strong>os próximos 3 anos</strong>.</p>
+<pre>1. "Vou te dizer a decisão primeiro: você está efetivado."
+   [Diga logo. Não deixe a pessoa em suspense por 40 minutos.]
+
+2. Avaliação: o que você fez bem, o que precisa evoluir
+
+3. "Agora quero falar do seu caminho aqui."
+   Apresente a trilha de níveis da função dele.
+   Mostre onde ele está e onde pode chegar.
+   Mostre os critérios objetivos de cada nível.
+
+4. "Você quer seguir mais na parte técnica ou na parte de
+   liderar gente? Não precisa decidir hoje, mas pensa nisso."
+
+5. Monte o primeiro PDI junto com ele.
+
+6. "O que você precisa de mim?"
+
+7. Data do próximo one-on-one e da próxima avaliação.</pre>
+<hr>
+<h2 id="o-papel-do-padrinho-no-onboarding">O papel do PADRINHO no onboarding</h2>
+<p>Já descrito na Fase 5, Módulo 8. Aqui, especificamente para os 90 dias:</p>
+<div class="tabwrap"><table><thead><tr><th>Período</th><th>Frequência de acompanhamento</th></tr></thead><tbody><tr><td>Semana 1</td><td>O tempo todo</td></tr><tr><td>Semanas 2–4</td><td>Meio período por dia</td></tr><tr><td>Semanas 5–8</td><td>1 hora por dia + disponível</td></tr><tr><td>Semanas 9–12</td><td>Disponível, check diário de 10 min</td></tr></tbody></table></div>
+<p><strong>Reporte semanal do padrinho ao líder (5 minutos):</strong></p>
+<pre>Semana ___:
+O que ele já domina: ____________________
+Onde ele trava: _________________________
+Como está o comportamento: ______________
+Precisa de alguma coisa: ________________</pre>
+<p><strong>Contrapartida do padrinho:</strong> bônus de formação quando o afilhado passa no marco de 90 dias + ajuste da meta de produção dele no período. Sem isso, ele vai priorizar a própria produção e ensinar mal.</p>
+<hr>
+<h2 id="onboarding-de-lider-e-diferente">Onboarding de LÍDER (é diferente)</h2>
+<p>Líder contratado de fora precisa de um onboarding específico. O erro clássico é ele chegar querendo mudar tudo na primeira semana.</p>
+<pre>DIAS 1-30 — ESCUTAR (proibido mudar qualquer coisa)
+[ ] Conversa individual de 30 min com CADA pessoa da equipe
+    Perguntas: o que funciona bem? o que atrapalha? o que
+    você mudaria? o que você espera de mim?
+[ ] Acompanhar cada etapa do processo pessoalmente, executando
+[ ] Ler todos os POPs e indicadores da área
+[ ] Reunião semanal com o dono: o que estou vendo
+
+DIAS 31-60 — DIAGNOSTICAR
+[ ] Apresentar ao dono: o que vi, o que proponho, nessa ordem
+[ ] Escolher no máximo 3 mudanças pros primeiros 90 dias
+[ ] Validar com o dono ANTES de comunicar à equipe
+[ ] Começar a aplicar feedback (CORTE) com a equipe
+
+DIAS 61-90 — EXECUTAR
+[ ] Implantar as 3 mudanças, uma por vez
+[ ] Assumir a condução das reuniões da área
+[ ] Apresentar o plano de 90 dias seguintes</pre>
+<p><strong>A regra dos 30 dias sem mudar nada é inegociável.</strong> Líder que chega mudando perde a equipe antes de entender por que as coisas são como são. E às vezes elas são assim por um bom motivo que ninguém escreveu.</p>
+<hr>
+<h2 id="erros-comuns">Erros comuns</h2>
+<div class="tabwrap"><table><thead><tr><th>#</th><th>Erro</th><th>Consequência</th></tr></thead><tbody><tr><td>1</td><td>Ninguém esperando no dia 1</td><td>Primeira impressão: aqui é desorganizado</td></tr><tr><td>2</td><td>"Fica com o fulano" sem plano</td><td>Aprende vício, se sente estorvo</td></tr><tr><td>3</td><td>Almoçar sozinho no dia 1</td><td>Não pertence</td></tr><tr><td>4</td><td>Não dar tarefa concluível no dia 1</td><td>Sai sem sentir que contribuiu</td></tr><tr><td>5</td><td>Não entregar expectativas por escrito</td><td>Não sabe o que se espera</td></tr><tr><td>6</td><td>Padrinho sem contrapartida nem tempo ajustado</td><td>Ensina mal e com má vontade</td></tr><tr><td>7</td><td>Não fazer as conversas de 7/30/60/90</td><td>Descobre o problema no dia 91</td></tr><tr><td>8</td><td>Segurar até o dia 90 sabendo que não vai dar</td><td>Injusto com os dois lados</td></tr><tr><td>9</td><td>Onboarding só técnico, sem cultura</td><td>A pessoa aprende a fazer, não a pertencer</td></tr><tr><td>10</td><td>Líder novo mudando tudo no dia 5</td><td>Perde a equipe antes de entender</td></tr><tr><td>11</td><td>Não perguntar "o que você achou estranho?"</td><td>Perde o olhar novo, que só existe no dia 7</td></tr><tr><td>12</td><td>Não fazer o PDI no dia 90</td><td>A pessoa não vê caminho e começa a olhar pra fora</td></tr></tbody></table></div>
+<hr>
+<h2 id="perguntas-que-o-lider-deve-fazer">Perguntas que o líder deve fazer</h2>
+<ol><li>Quanto tempo leva pra alguém novo ficar produtivo aqui? Eu sei o número?</li><li>Qual é a permanência média dos contratados nos últimos 24 meses?</li><li>O último contratado teve dia 1 estruturado ou improvisado?</li><li>Meus padrinhos têm meta ajustada e contrapartida?</li><li>Eu faço a conversa do dia 7 e pergunto "o que você achou estranho"?</li><li>Quantas vezes eu segurei alguém até o dia 90 sabendo no dia 30 que não ia dar?</li><li>Meu líder novo teve 30 dias pra só escutar?</li></ol>
+<hr>
+<h2 id="exercicios-do-modulo-7">Exercícios do Módulo 7</h2>
+<h3 id="exercicio-1-autopsia-do-ultimo-contratado-30-min">Exercício 1 — Autópsia do último contratado (30 min)</h3>
+<p>Reconstitua o dia 1 dele. O que aconteceu? Quantos itens do checklist da véspera existiam?</p>
+<h3 id="exercicio-2-monte-o-roteiro-do-dia-1-1h">Exercício 2 — Monte o roteiro do dia 1 (1h)</h3>
+<p>Adapte o roteiro completo à sua realidade. Imprima. Use na próxima contratação.</p>
+<h3 id="exercicio-3-checklist-da-vespera-30-min">Exercício 3 — Checklist da véspera (30 min)</h3>
+<p>Adapte e imprima. Cole na parede do administrativo.</p>
+<h3 id="exercicio-4-plano-7-30-60-90-escrito-1h">Exercício 4 — Plano 7/30/60/90 escrito (1h)</h3>
+<p>Para a função que você mais contrata, escreva as expectativas de cada marco. Entregue por escrito no dia 1.</p>
+<h3 id="exercicio-5-formularios-de-30-e-90-45-min">Exercício 5 — Formulários de 30 e 90 (45 min)</h3>
+<p>Adapte os formulários. Marque as datas na agenda <strong>no dia da contratação</strong> — não confie na memória.</p>
+<h3 id="exercicio-6-meca-continuo">Exercício 6 — Meça (contínuo)</h3>
+<p>Comece a medir: tempo até produtividade plena, permanência média, e turnover de quem tem menos de 6 meses.</p>
+<h3 id="exercicio-7-pergunta-do-olho-novo-20-min">Exercício 7 — Pergunta do olho novo (20 min)</h3>
+<p>No próximo dia 7, pergunte "o que você achou estranho aqui?". Leve as respostas pra reunião de segunda.</p>
+<hr>
+<h2 id="frases-de-impacto">Frases de impacto</h2>
+<ul><li><em>"A decisão de ficar ou sair é tomada nos primeiros 45 dias. Você só descobre no dia 400."</em></li><li><em>"Todo mundo entra querendo dar certo. Se não deu, na maioria das vezes o problema foi o que a empresa fez — ou deixou de fazer."</em></li><li><em>"O dia 1 bem feito custa 4 horas de tempo de outras pessoas. Ele decide se a permanência vai ser 7 ou 19 meses."</em></li><li><em>"Se você já sabe no dia 30 que não vai dar certo, fale no dia 30. Segurar até o 90 é injusto com os dois."</em></li><li><em>"A pergunta 'o que você achou estranho aqui?' só funciona no dia 7. Depois disso, a pessoa já se acostumou."</em></li><li><em>"Líder novo que chega mudando tudo perde a equipe antes de entender por que as coisas são assim."</em></li><li><em>"Ninguém deveria almoçar sozinho no primeiro dia de trabalho."</em></li><li><em>"Onboarding sem cultura ensina a pessoa a fazer. Não ensina a pertencer."</em></li></ul>
+<hr>
+<h2 id="entregavel-do-modulo-7">Entregável do Módulo 7</h2>
+<ol><li>Checklist da véspera impresso e em uso.</li><li>Roteiro do dia 1 adaptado e testado.</li><li>Plano 7/30/60/90 escrito para as 3 funções mais contratadas.</li><li>Formulários de avaliação de 30 e 90 dias.</li><li>Programa de padrinho com contrapartida definida.</li><li>Indicadores de onboarding sendo medidos (tempo de rampa, permanência, turnover &lt; 6 meses).</li></ol>
+<p><strong>Próximo módulo:</strong> Indicadores — o catálogo completo por dimensão.</p>
+
+  <div class="rodape"><span>FASE 6 · MÓDULO 07 · Fase 6 — Escala</span><span>Material de formação em gestão para donos de PME</span></div>
+</div>
+
+<script>
+// mantem a marca digitada pelo usuario neste navegador
+(function(){
+  var m=document.querySelector('.marca');
+  var k='mkt-marca';
+  try{ var s=localStorage.getItem(k); if(s) m.innerHTML=s; }catch(e){}
+  m.addEventListener('blur',function(){ try{localStorage.setItem(k,m.innerHTML);}catch(e){} });
+})();
+</script>
+</body>
+</html>

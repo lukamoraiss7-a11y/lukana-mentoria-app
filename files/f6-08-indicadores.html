@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MÓDULO 8 — INDICADORES</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --tinta:#2C2825; --ouro:#B8925A; --claro:#F5F1EA; --linha:#D8D2C7;
+  --fraco:#6E675E; --papel:#FFFFFF; --caixa:#FAF8F4;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+@page{size:A4;margin:14mm 13mm 13mm}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact;scroll-behavior:smooth}
+body{font:11pt/1.62 'Inter',-apple-system,'Helvetica Neue',Arial,sans-serif;
+  color:var(--tinta);background:var(--claro)}
+.folha{max-width:196mm;margin:0 auto;padding:14mm 10mm 20mm;background:var(--papel);
+  box-shadow:0 1px 3px rgba(0,0,0,.06)}
+
+/* cabecalho */
+.topo{display:flex;justify-content:space-between;align-items:flex-end;
+  border-bottom:1.5pt solid var(--tinta);padding-bottom:6pt;gap:12pt;flex-wrap:wrap}
+.marca{font:600 15pt/1 'Cormorant Garamond',Georgia,serif;letter-spacing:.22em;
+  text-transform:uppercase;outline:none}
+.marca small{display:block;font:400 6.5pt/1 'Inter',sans-serif;letter-spacing:.34em;
+  color:var(--fraco);margin-top:3pt}
+.marca:focus{background:#FFF6DF}
+.doc{text-align:right}
+.doc .fase{font-size:7pt;letter-spacing:.2em;color:var(--ouro);font-weight:600;
+  text-transform:uppercase}
+.doc .cod{font-size:7pt;letter-spacing:.18em;color:var(--fraco);margin-top:2pt}
+.regua{height:2.5pt;background:var(--ouro);margin:0 0 14pt}
+
+/* tipografia */
+h1{font:600 21pt/1.18 'Cormorant Garamond',Georgia,serif;letter-spacing:.01em;
+  margin:0 0 3pt}
+h1 + .lead{font-size:10.5pt;color:var(--fraco);font-style:italic;margin-bottom:14pt;
+  padding-bottom:10pt;border-bottom:.75pt solid var(--linha)}
+h2{font:600 10.5pt/1.25 'Inter',sans-serif;letter-spacing:.13em;text-transform:uppercase;
+  background:var(--claro);border-left:3pt solid var(--ouro);padding:6pt 8pt;
+  margin:22pt 0 9pt;break-after:avoid;page-break-after:avoid}
+h3{font:600 11.5pt/1.3 'Cormorant Garamond',Georgia,serif;letter-spacing:.02em;
+  margin:15pt 0 5pt;break-after:avoid;page-break-after:avoid}
+h4{font:600 8.5pt/1.25 'Inter',sans-serif;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--fraco);margin:12pt 0 4pt;break-after:avoid}
+p{margin:0 0 8pt;text-align:left}
+strong{font-weight:600}
+em{font-style:italic}
+a{color:var(--ouro);text-decoration:none}
+hr{border:none;border-top:.75pt solid var(--linha);margin:16pt 0}
+
+/* listas */
+ul,ol{margin:0 0 9pt 16pt}
+li{margin-bottom:3.5pt}
+ul.chk{list-style:none;margin-left:0}
+ul.chk li{display:flex;gap:7pt;align-items:flex-start;padding:3.5pt 0;
+  border-bottom:.5pt dotted var(--linha);break-inside:avoid}
+ul.chk li::before{content:"";flex:0 0 9.5pt;height:9.5pt;margin-top:2.5pt;
+  border:.9pt solid var(--tinta);border-radius:1pt;background:#fff}
+
+/* citacao / destaque */
+blockquote{border-left:2.5pt solid var(--ouro);background:var(--caixa);
+  padding:9pt 12pt;margin:11pt 0;break-inside:avoid}
+blockquote p:last-child{margin-bottom:0}
+
+/* codigo / templates ascii */
+pre{background:var(--caixa);border:.75pt solid var(--linha);border-radius:2pt;
+  padding:10pt 11pt;margin:11pt 0;overflow-x:auto;break-inside:avoid;
+  font:9pt/1.42 'SFMono-Regular',Menlo,Consolas,'Courier New',monospace;
+  white-space:pre;color:#332F2A}
+code{font:9.2pt/1.4 'SFMono-Regular',Menlo,Consolas,monospace;
+  background:var(--claro);padding:1pt 3pt;border-radius:2pt}
+pre code{background:none;padding:0;font-size:inherit}
+
+/* tabelas */
+.tabwrap{overflow-x:auto;margin:11pt 0}
+table{border-collapse:collapse;width:100%;font-size:9.3pt;break-inside:avoid}
+th{background:var(--claro);text-align:left;font-weight:600;font-size:7.5pt;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--fraco);
+  padding:5.5pt 7pt;border:.75pt solid var(--linha)}
+td{padding:5.5pt 7pt;border:.75pt solid var(--linha);vertical-align:top;line-height:1.42}
+tbody tr:nth-child(even){background:#FCFBF9}
+
+/* indice */
+.indice{background:var(--caixa);border:.75pt solid var(--linha);padding:11pt 13pt;
+  margin:0 0 18pt;break-inside:avoid}
+.indice h4{margin-top:0}
+.indice ol{margin:0 0 0 15pt;font-size:9.5pt;column-gap:18pt}
+.indice li{margin-bottom:2.5pt}
+.indice a{color:var(--tinta)}
+.indice a:hover{color:var(--ouro)}
+
+/* rodape */
+.rodape{margin-top:22pt;padding-top:6pt;border-top:.75pt solid var(--linha);
+  display:flex;justify-content:space-between;font-size:7.5pt;color:var(--fraco);
+  letter-spacing:.06em;gap:10pt;flex-wrap:wrap}
+
+/* navegacao entre modulos (some na impressao) */
+.nav{max-width:196mm;margin:0 auto 10mm;padding:0 10mm;display:flex;
+  justify-content:space-between;gap:10pt;font-size:9pt}
+.nav a{display:inline-block;padding:6pt 11pt;border:.75pt solid var(--linha);
+  background:var(--papel);border-radius:2pt;color:var(--tinta)}
+.nav a:hover{border-color:var(--ouro);color:var(--ouro)}
+.topbar{max-width:196mm;margin:0 auto;padding:8mm 10mm 0;display:flex;
+  justify-content:space-between;font-size:9pt}
+.topbar a{color:var(--fraco)}
+.topbar a:hover{color:var(--ouro)}
+
+@media print{
+  body{background:#fff}
+  .folha{box-shadow:none;padding:0;max-width:none}
+  .nav,.topbar{display:none}
+  .indice{break-after:page}
+}
+@media (max-width:640px){
+  body{font-size:11.5pt}
+  .folha{padding:8mm 5mm 14mm}
+  pre{font-size:7.6pt}
+  table{font-size:8.6pt}
+  .doc{text-align:left}
+}
+</style>
+</head>
+<body>
+
+<div class="folha">
+  <div class="topo">
+    <div class="marca" contenteditable="true" spellcheck="false">SUA MARCA<small>MARCENARIA</small></div>
+    <div class="doc"><div class="fase">Fase 6 — Escala</div><div class="cod">FASE 6 · MÓDULO 08</div></div>
+  </div>
+  <div class="regua"></div>
+
+  <h1>MÓDULO 8 — INDICADORES</h1>
+  <div class="lead">Catálogo completo: estratégicos, financeiros, operacionais, comerciais, pessoas e qualidade</div>
+  <div class="indice"><h4>Neste módulo</h4><ol><li><a href="#como-usar-este-modulo">Como usar este módulo</a></li><li><a href="#1-indicadores-estrategicos">1. INDICADORES ESTRATÉGICOS</a></li><li><a href="#2-indicadores-financeiros">2. INDICADORES FINANCEIROS</a></li><li><a href="#caixa-e-liquidez">Caixa e liquidez</a></li><li><a href="#resultado-e-margem">Resultado e margem</a></li><li><a href="#custo-e-desperdicio">Custo e desperdício</a></li><li><a href="#3-indicadores-operacionais">3. INDICADORES OPERACIONAIS</a></li><li><a href="#produtividade">Produtividade</a></li><li><a href="#prazo-e-fluxo">Prazo e fluxo</a></li><li><a href="#suprimentos-e-estoque">Suprimentos e estoque</a></li><li><a href="#maquina-e-manutencao">Máquina e manutenção</a></li><li><a href="#4-indicadores-comerciais">4. INDICADORES COMERCIAIS</a></li><li><a href="#funil">Funil</a></li><li><a href="#valor">Valor</a></li><li><a href="#carteira-e-recompra">Carteira e recompra</a></li><li><a href="#5-indicadores-de-pessoas">5. INDICADORES DE PESSOAS</a></li><li><a href="#6-indicadores-de-qualidade">6. INDICADORES DE QUALIDADE</a></li><li><a href="#como-escolher-os-seus-o-filtro-final">Como escolher os seus (o filtro final)</a></li><li><a href="#estrutura-recomendada-por-porte">Estrutura recomendada por porte</a></li><li><a href="#o-comportamento-que-cada-indicador-induz-tabela-de-seguranca">O comportamento que cada indicador induz (tabela de segurança)</a></li><li><a href="#modelo-de-dicionario-de-indicadores">Modelo de Dicionário de Indicadores</a></li><li><a href="#erros-comuns">Erros comuns</a></li><li><a href="#exercicios-do-modulo-8">Exercícios do Módulo 8</a></li><li><a href="#frases-de-impacto">Frases de impacto</a></li><li><a href="#entregavel-do-modulo-8">Entregável do Módulo 8</a></li></ol></div>
+  <hr>
+<h2 id="como-usar-este-modulo">Como usar este módulo</h2>
+<p>Este é um <strong>catálogo de consulta</strong>, não uma lista pra implantar inteira. A regra continua sendo a do Módulo 3: no máximo 7 números no painel executivo e 1 número-mestre por função.</p>
+<p>Use aqui para:</p>
+<ol><li>Escolher o indicador certo pra cada situação</li><li>Ver a fórmula exata e a referência de mercado</li><li>Entender qual comportamento cada indicador induz</li></ol>
+<p><strong>Regra de ouro:</strong> todo indicador que você adota, alguém deixa de fazer outra coisa pra medir. Se não vai mudar decisão, não adote.</p>
+<hr>
+<h2 id="1-indicadores-estrategicos">1. INDICADORES ESTRATÉGICOS</h2>
+<p><em>Frequência: mensal ou trimestral · Quem olha: dono e liderança</em></p>
+<div class="tabwrap"><table><thead><tr><th>Indicador</th><th>Fórmula</th><th>Referência (marcenaria premium)</th><th>Para que serve</th></tr></thead><tbody><tr><td><strong>Faturamento por pessoa</strong></td><td>Faturamento 12m ÷ nº total de pessoas</td><td>R$ 220k a R$ 350k/ano</td><td>O melhor indicador único de eficiência empresarial</td></tr><tr><td><strong>Margem líquida</strong></td><td>Lucro líquido ÷ faturamento</td><td>8% a 15%</td><td>Saúde real do negócio</td></tr><tr><td><strong>Crescimento sustentável</strong></td><td>Δ faturamento/pessoa vs. Δ faturamento total</td><td>O 1º deve crescer mais</td><td>Distingue escala de engorda</td></tr><tr><td><strong>Concentração de cliente</strong></td><td>Faturamento do maior cliente ÷ total</td><td>&lt; 20%</td><td>Risco existencial</td></tr><tr><td><strong>Concentração de fornecedor</strong></td><td>Compras do maior fornecedor ÷ total</td><td>&lt; 40%</td><td>Risco de ruptura</td></tr><tr><td><strong>Índice de dependência do dono</strong></td><td>Nº de decisões/dia que passam pelo dono</td><td>Cair todo trimestre</td><td>Maturidade da estrutura</td></tr><tr><td><strong>Cobertura de backup</strong></td><td>Funções críticas com 2+ pessoas ÷ total críticas</td><td>100%</td><td>Continuidade operacional</td></tr><tr><td><strong>Idade média da carteira</strong></td><td>Meses desde a última compra dos clientes ativos</td><td>Depende do ciclo</td><td>Potencial de recompra</td></tr><tr><td><strong>Participação de mercado local</strong></td><td>Faturamento ÷ mercado estimado da cidade</td><td>Saber o número</td><td>Espaço de crescimento sem expandir</td></tr></tbody></table></div>
+<hr>
+<h2 id="2-indicadores-financeiros">2. INDICADORES FINANCEIROS</h2>
+<p><em>Frequência: semanal (caixa) e mensal (resultado) · Quem olha: dono e financeiro</em></p>
+<h2 id="caixa-e-liquidez">Caixa e liquidez</h2>
+<div class="tabwrap"><table><thead><tr><th>Indicador</th><th>Fórmula</th><th>Referência</th><th>Alerta</th></tr></thead><tbody><tr><td><strong>Caixa projetado 90 dias</strong></td><td>Saldo + entradas previstas − saídas previstas, semana a semana</td><td>Sempre positivo</td><td>Qualquer semana negativa</td></tr><tr><td><strong>Meses de folga de caixa</strong></td><td>Caixa disponível ÷ custo fixo mensal</td><td>≥ 3 meses</td><td>&lt; 1,5 mês</td></tr><tr><td><strong>Ciclo financeiro</strong></td><td>PMR + PME − PMP (dias)</td><td>Quanto menor, melhor</td><td>Positivo alto = financia cliente</td></tr><tr><td><strong>PMR</strong> (prazo médio de recebimento)</td><td>(Contas a receber ÷ faturamento) × 30</td><td>Depende da política</td><td>&gt; PMP</td></tr><tr><td><strong>PMP</strong> (prazo médio de pagamento)</td><td>(Contas a pagar ÷ compras) × 30</td><td>≥ PMR</td><td>&lt; PMR</td></tr><tr><td><strong>Inadimplência</strong></td><td>Valor vencido ÷ carteira total</td><td>&lt; 3%</td><td>&gt; 5%</td></tr><tr><td><strong>Endividamento sobre EBITDA</strong></td><td>Dívida total ÷ EBITDA 12m</td><td>&lt; 2x</td><td>&gt; 3x</td></tr><tr><td><strong>Parcela de dívida sobre EBITDA</strong></td><td>Parcela mensal ÷ EBITDA mensal</td><td>&lt; 25%</td><td>&gt; 35%</td></tr></tbody></table></div>
+<h2 id="resultado-e-margem">Resultado e margem</h2>
+<div class="tabwrap"><table><thead><tr><th>Indicador</th><th>Fórmula</th><th>Referência</th><th>Comentário</th></tr></thead><tbody><tr><td><strong>Margem de contribuição</strong></td><td>(Receita − custo variável) ÷ receita</td><td>32% a 45%</td><td>O número que diz se o modelo funciona</td></tr><tr><td><strong>Margem por obra</strong></td><td>Idem, obra a obra</td><td>Ordene e olhe a cauda</td><td>Onde mora a informação estratégica</td></tr><tr><td><strong>Ponto de equilíbrio</strong></td><td>Custo fixo ÷ margem de contribuição %</td><td>Saber o número</td><td>Quanto precisa faturar pra não perder</td></tr><tr><td><strong>Folha sobre faturamento</strong></td><td>Folha total (com encargos) ÷ faturamento</td><td>28% a 38%</td><td>Acima de 42% é insustentável</td></tr><tr><td><strong>Custo de material sobre faturamento</strong></td><td>Material ÷ faturamento</td><td>30% a 40%</td><td>Sobe com desperdício e desconto</td></tr><tr><td><strong>Custo fixo sobre faturamento</strong></td><td>Custo fixo ÷ faturamento</td><td>&lt; 20%</td><td>Alavancagem operacional</td></tr><tr><td><strong>EBITDA</strong></td><td>Lucro operacional + depreciação + amortização</td><td>12% a 20%</td><td>Geração de caixa da operação</td></tr></tbody></table></div>
+<h2 id="custo-e-desperdicio">Custo e desperdício</h2>
+<div class="tabwrap"><table><thead><tr><th>Indicador</th><th>Fórmula</th><th>Referência</th></tr></thead><tbody><tr><td><strong>Custo de material por m²</strong></td><td>R$ de material ÷ m² produzidos</td><td>Tendência de queda</td></tr><tr><td><strong>Aproveitamento de chapa</strong></td><td>m² aproveitados ÷ m² comprados</td><td>&gt; 85%</td></tr><tr><td><strong>Custo de retrabalho</strong></td><td>R$ de refazer ÷ custo de produção</td><td>&lt; 4%</td></tr><tr><td><strong>Custo de assistência técnica</strong></td><td>R$ de AT ÷ faturamento</td><td>&lt; 1,5%</td></tr><tr><td><strong>Custo logístico por obra</strong></td><td>Frete + deslocamento ÷ valor da obra</td><td>&lt; 3%</td></tr></tbody></table></div>
+<hr>
+<h2 id="3-indicadores-operacionais">3. INDICADORES OPERACIONAIS</h2>
+<p><em>Frequência: diária e semanal · Quem olha: gerente de fábrica, coordenador de obras</em></p>
+<h2 id="produtividade">Produtividade</h2>
+<div class="tabwrap"><table><thead><tr><th>Indicador</th><th>Fórmula</th><th>Referência</th><th>⚠ Cuidado</th></tr></thead><tbody><tr><td><strong>m² por pessoa/mês</strong></td><td>m² montados e aceitos ÷ nº de pessoas</td><td>Declare o denominador!</td><td>Bancada, fábrica, fábrica+obra e empresa toda dão números muito diferentes</td></tr><tr><td><strong>Ambientes por semana</strong></td><td>Ambientes concluídos ÷ semana</td><td>Sua própria série</td><td>Só compara com você mesmo</td></tr><tr><td><strong>Capacidade instalada</strong></td><td>Pessoas × m²/pessoa/mês</td><td>Separe fábrica e montagem</td><td>A entrega é a menor das duas</td></tr><tr><td><strong>Ocupação do gargalo</strong></td><td>Horas produtivas do gargalo ÷ horas disponíveis</td><td>&gt; 90%</td><td>Ocupação fora do gargalo não importa</td></tr></tbody></table></div>
+<h2 id="prazo-e-fluxo">Prazo e fluxo</h2>
+<div class="tabwrap"><table><thead><tr><th>Indicador</th><th>Fórmula</th><th>Referência</th></tr></thead><tbody><tr><td><strong>Aderência ao cronograma</strong></td><td>% real de avanço − % planejado</td><td>Verde ≥ 0 · Vermelho &lt; −25</td></tr><tr><td><strong>Tempo de ciclo total</strong></td><td>Dias do caderno aprovado à entrega</td><td>60 dias úteis (padrão sob medida)</td></tr><tr><td><strong>Tempo de ciclo por etapa</strong></td><td>Dias por etapa</td><td>Meça média <strong>e pior caso</strong></td></tr><tr><td><strong>Miolo de fábrica (25%→75%)</strong></td><td>Dias úteis</td><td>Média 15, teto 20</td></tr><tr><td><strong>% de espera no ciclo</strong></td><td>Dias de espera ÷ dias totais</td><td>Costuma ser 30% a 50%</td></tr><tr><td><strong>Aging de obra</strong></td><td>Obras paradas há mais de X dias</td><td>Zero acima de 15 dias sem causa</td></tr></tbody></table></div>
+<h2 id="suprimentos-e-estoque">Suprimentos e estoque</h2>
+<div class="tabwrap"><table><thead><tr><th>Indicador</th><th>Fórmula</th><th>Referência</th></tr></thead><tbody><tr><td><strong>Material disponível no dia D</strong></td><td>Ordens com 100% do material no início ÷ total</td><td>≥ 95%</td></tr><tr><td><strong>Ruptura de item crítico</strong></td><td>Nº de paradas por falta</td><td>0</td></tr><tr><td><strong>Giro de estoque</strong></td><td>Custo de material 12m ÷ estoque médio</td><td>&gt; 8x/ano</td></tr><tr><td><strong>Acurácia de inventário</strong></td><td>Contagem física ÷ registro</td><td>&gt; 95%</td></tr><tr><td><strong>Prazo médio de fornecedor</strong></td><td>Dias do pedido ao recebimento, por fornecedor</td><td>Mapear por item</td></tr></tbody></table></div>
+<h2 id="maquina-e-manutencao">Máquina e manutenção</h2>
+<div class="tabwrap"><table><thead><tr><th>Indicador</th><th>Fórmula</th><th>Referência</th></tr></thead><tbody><tr><td><strong>Disponibilidade de máquina</strong></td><td>Horas disponíveis ÷ horas planejadas</td><td>&gt; 95% no gargalo</td></tr><tr><td><strong>Paradas não planejadas</strong></td><td>Nº e horas/mês</td><td>Tendência de queda</td></tr><tr><td><strong>% de manutenção preventiva</strong></td><td>Preventiva ÷ (preventiva + corretiva)</td><td>&gt; 70%</td></tr></tbody></table></div>
+<hr>
+<h2 id="4-indicadores-comerciais">4. INDICADORES COMERCIAIS</h2>
+<p><em>Frequência: semanal e mensal · Quem olha: dono e gestor comercial</em></p>
+<h2 id="funil">Funil</h2>
+<div class="tabwrap"><table><thead><tr><th>Indicador</th><th>Fórmula</th><th>Referência sob medida</th></tr></thead><tbody><tr><td><strong>Leads por origem</strong></td><td>Contagem, separada por origem</td><td>Sempre separado</td></tr><tr><td><strong>Taxa de conversão por origem</strong></td><td>Fechados ÷ leads, por origem</td><td>Indicação 35-50% · Pago 5-12%</td></tr><tr><td><strong>Taxa de conversão de proposta</strong></td><td>Fechados ÷ propostas enviadas</td><td>15% a 30%</td></tr><tr><td><strong>Ciclo de venda</strong></td><td>Dias do 1º contato ao contrato</td><td>30 a 90 dias</td></tr><tr><td><strong>Nº de reuniões qualificadas</strong></td><td>Reuniões com ICP</td><td>Indicador de direção</td></tr><tr><td><strong>Taxa de no-show</strong></td><td>Reuniões não realizadas ÷ agendadas</td><td>&lt; 15%</td></tr></tbody></table></div>
+<h2 id="valor">Valor</h2>
+<div class="tabwrap"><table><thead><tr><th>Indicador</th><th>Fórmula</th><th>Referência</th></tr></thead><tbody><tr><td><strong>Ticket médio</strong></td><td>Faturamento ÷ nº de contratos</td><td>Sua própria série</td></tr><tr><td><strong>Margem vendida no mês</strong></td><td>Σ margem das obras fechadas</td><td>Meta própria</td></tr><tr><td><strong>Desconto médio</strong></td><td>Média do % de desconto sobre tabela</td><td>&lt; 5%</td></tr><tr><td><strong>Ticket por origem</strong></td><td>Ticket médio separado por canal</td><td>Revela o canal premium</td></tr><tr><td><strong>CAC por origem</strong></td><td>Custo do canal ÷ clientes gerados</td><td>Compare com margem</td></tr><tr><td><strong>Payback do CAC</strong></td><td>CAC ÷ margem por cliente</td><td>&lt; 1 obra</td></tr></tbody></table></div>
+<h2 id="carteira-e-recompra">Carteira e recompra</h2>
+<div class="tabwrap"><table><thead><tr><th>Indicador</th><th>Fórmula</th><th>Referência</th></tr></thead><tbody><tr><td><strong>% de venda por indicação</strong></td><td>Contratos por indicação ÷ total</td><td>&gt; 25%</td></tr><tr><td><strong>Taxa de recompra</strong></td><td>Clientes que compraram 2+ vezes ÷ total</td><td>Depende do ciclo</td></tr><tr><td><strong>Valor da carteira dormente</strong></td><td>Clientes de 5+ anos × ticket médio</td><td>Potencial não trabalhado</td></tr></tbody></table></div>
+<hr>
+<h2 id="5-indicadores-de-pessoas">5. INDICADORES DE PESSOAS</h2>
+<p><em>Frequência: mensal · Quem olha: dono</em></p>
+<div class="tabwrap"><table><thead><tr><th>Indicador</th><th>Fórmula</th><th>Referência</th><th>O que revela</th></tr></thead><tbody><tr><td><strong>Turnover geral</strong></td><td>(Desligamentos ÷ headcount médio) × 100, anualizado</td><td>&lt; 25%/ano</td><td>Saúde geral</td></tr><tr><td><strong>Turnover &lt; 6 meses</strong></td><td>Desligamentos com menos de 6 meses ÷ contratações</td><td>&lt; 20%</td><td>Problema de <strong>contratação ou onboarding</strong></td></tr><tr><td><strong>Turnover 1 a 3 anos</strong></td><td>Idem, faixa 1-3 anos</td><td>&lt; 15%</td><td>Problema de <strong>liderança ou carreira</strong></td></tr><tr><td><strong>Turnover dos melhores</strong></td><td>Saída de gente da caixa 8/9 do 9Box</td><td>0</td><td><strong>Alerta máximo</strong> — investigue já</td></tr><tr><td><strong>Tempo até produtividade plena</strong></td><td>Dias da entrada à validação do marco de 90</td><td>Reduzir 30%/ano</td><td>Eficácia do onboarding</td></tr><tr><td><strong>Permanência média</strong></td><td>Média de meses dos contratados nos últimos 24m</td><td>Crescente</td><td>Saúde do ciclo inteiro</td></tr><tr><td><strong>Absenteísmo</strong></td><td>Horas de falta ÷ horas contratadas</td><td>&lt; 3%</td><td>Clima e saúde</td></tr><tr><td><strong>Horas extras</strong></td><td>Horas extras ÷ horas normais</td><td>&lt; 10%</td><td>Dimensionamento e planejamento</td></tr><tr><td><strong>Horas de treinamento</strong></td><td>Horas de treino ÷ pessoas ÷ mês</td><td>4h a 8h</td><td>Investimento em capacidade</td></tr><tr><td><strong>Cobertura da matriz</strong></td><td>Competências críticas com 2+ validados ÷ total</td><td>100%</td><td>Redundância</td></tr><tr><td><strong>Multiplicadores ativos</strong></td><td>Pessoas que já formaram alguém</td><td>≥ 1 por área</td><td>Capacidade de escalar formação</td></tr><tr><td><strong>CORTEs aplicados</strong></td><td>Nº/mês por área</td><td>Nem zero, nem alto demais</td><td>Se zero, ninguém corrige nada</td></tr><tr><td><strong>Reincidência de CORTE</strong></td><td>2ª ocorrência do mesmo tipo ÷ total</td><td>&lt; 25%</td><td>Qualidade do <strong>T</strong> do CORTE</td></tr><tr><td><strong>Proporção reconhecimento : correção</strong></td><td>Nº de reconhecimentos ÷ CORTEs</td><td>≥ 4:1</td><td>Equilíbrio da liderança</td></tr><tr><td><strong>Acidentes com afastamento</strong></td><td>Nº/mês</td><td>0</td><td>⚠ Nunca premie zero acidente</td></tr><tr><td><strong>Quase-acidentes reportados</strong></td><td>Nº/mês</td><td>Crescente é bom</td><td>Cultura de segurança real</td></tr></tbody></table></div>
+<hr>
+<h2 id="6-indicadores-de-qualidade">6. INDICADORES DE QUALIDADE</h2>
+<p><em>Frequência: semanal e mensal · Quem olha: fábrica, obra, pós-venda</em></p>
+<div class="tabwrap"><table><thead><tr><th>Indicador</th><th>Fórmula</th><th>Referência</th><th>Comentário</th></tr></thead><tbody><tr><td><strong>Retrabalho</strong></td><td>Horas de retrabalho ÷ horas produtivas</td><td>&lt; 4%</td><td>Classifique pela causa</td></tr><tr><td><strong>Retrabalho por causa</strong></td><td>Ocorrências e R$, por causa raiz</td><td>80/20 sempre aparece</td><td>Projeto/fábrica/montagem/material/cliente</td></tr><tr><td><strong>Erros de projeto</strong></td><td>Ocorrências atribuídas ao caderno técnico</td><td>≤ 1 por 10 ambientes</td><td>O de maior alavancagem</td></tr><tr><td><strong>Cargas completas</strong></td><td>Cargas sem item faltante ÷ total</td><td>100%</td><td>Zero tolerância</td></tr><tr><td><strong>Montagens reagendadas</strong></td><td>Por obra não pronta</td><td>≤ 1/mês</td><td>Mede o comercial, não a obra</td></tr><tr><td><strong>Chamados de assistência</strong></td><td>Nº ÷ obras entregues</td><td>&lt; 0,5</td><td>O termômetro mais honesto</td></tr><tr><td><strong>Reincidência de AT</strong></td><td>Chamados que retornam no mesmo item ÷ total</td><td>0</td><td>Se &gt;0, a causa raiz não foi resolvida</td></tr><tr><td><strong>Tempo de resolução de AT</strong></td><td>Dias da abertura ao encerramento</td><td>≤ 7 dias</td><td>Percepção do cliente</td></tr><tr><td><strong>NPS / nota de entrega</strong></td><td>Pesquisa de 1 pergunta na entrega</td><td>≥ 8</td><td>Feita por quem não montou</td></tr><tr><td><strong>Índice de primeira entrega perfeita</strong></td><td>Obras sem nenhum retorno ÷ total</td><td>&gt; 70%</td><td>O indicador que resume tudo</td></tr><tr><td><strong>Rodadas de revisão de caderno</strong></td><td>Média de idas e vindas com cliente</td><td>≤ 2</td><td>Qualidade do briefing</td></tr></tbody></table></div>
+<hr>
+<h2 id="como-escolher-os-seus-o-filtro-final">Como escolher os seus (o filtro final)</h2>
+<pre>PARA CADA INDICADOR QUE VOCÊ CONSIDERAR:
+
+1. Que decisão eu tomo diferente se ele mudar?
+2. Quem age quando fica vermelho?
+3. Quanto custa levantar por semana? (&gt; 10 min = simplifique)
+4. Eu confio na fonte?
+5. Alguém pode melhorar esse número prejudicando a empresa?
+   → Se sim, qual é a trava (indicador de apoio)?
+
+Passou nos cinco → adote.
+Reprovou em qualquer um → não adote.</pre>
+<h2 id="estrutura-recomendada-por-porte">Estrutura recomendada por porte</h2>
+<div class="tabwrap"><table><thead><tr><th>Porte</th><th>Painel executivo</th><th>Por função</th><th>Estratégicos</th></tr></thead><tbody><tr><td>Até 10 pessoas</td><td>3 números</td><td>1 por função</td><td>2, trimestrais</td></tr><tr><td>10 a 25 pessoas</td><td>5 a 7 números</td><td>1 mestre + 1 apoio</td><td>4, trimestrais</td></tr><tr><td>25 a 50 pessoas</td><td>7 números</td><td>1 mestre + 2 apoios</td><td>6, trimestrais</td></tr><tr><td>50+ pessoas</td><td>8 números + scorecard por área</td><td>1 mestre + 2 apoios</td><td>8, trimestrais</td></tr></tbody></table></div>
+<hr>
+<h2 id="o-comportamento-que-cada-indicador-induz-tabela-de-seguranca">O comportamento que cada indicador induz (tabela de segurança)</h2>
+<p>Antes de adotar, saiba o que você está comprando.</p>
+<div class="tabwrap"><table><thead><tr><th>Se você medir e cobrar</th><th>As pessoas vão</th><th>Trava necessária</th></tr></thead><tbody><tr><td>Volume produzido</td><td>Produzir rápido e mal</td><td>Índice de retrabalho</td></tr><tr><td>Faturamento</td><td>Dar desconto</td><td>Margem</td></tr><tr><td>Prazo de entrega</td><td>Entregar incompleto ou torto</td><td>Retorno de AT em 30 dias</td></tr><tr><td>Custo de material</td><td>Comprar material pior</td><td>Índice de qualidade / AT</td></tr><tr><td>Nº de orçamentos</td><td>Orçar qualquer coisa</td><td>Taxa de conversão</td></tr><tr><td>Zero acidente</td><td>Esconder acidente</td><td>Quase-acidentes reportados</td></tr><tr><td>Horas trabalhadas</td><td>Esticar o trabalho</td><td>Entrega por período</td></tr><tr><td>Nº de chamados de AT resolvidos</td><td>Abrir chamado desnecessário</td><td>Reincidência + NPS</td></tr><tr><td>Redução de estoque</td><td>Gerar ruptura</td><td>Material disponível no dia D</td></tr><tr><td>Produtividade individual</td><td>Parar de ajudar colega</td><td>Resultado da célula</td></tr></tbody></table></div>
+<p><strong>Essa tabela é o resumo de tudo:</strong> todo indicador induz comportamento, e todo comportamento induzido tem efeito colateral. <strong>A trava não é opcional.</strong></p>
+<hr>
+<h2 id="modelo-de-dicionario-de-indicadores">Modelo de Dicionário de Indicadores</h2>
+<p>Documento obrigatório assim que você passar de 5 indicadores. Sem ele, duas pessoas medem a mesma coisa de jeitos diferentes.</p>
+<pre>═══════════════════════════════════════════════════════════════
+DICIONÁRIO DE INDICADORES — [empresa]  |  Versão ___ | ___/___/___
+═══════════════════════════════════════════════════════════════
+
+INDICADOR: ____________________________________________
+Definição (1 frase): __________________________________
+Fórmula exata: ________________________________________
+Unidade: ______________________________________________
+
+FONTE DO DADO: ________________________________________
+Quem levanta: _________________  Quando: ______________
+Onde é publicado: _____________________________________
+
+FAIXAS
+🟢 Verde:   ____________
+🟡 Amarelo: ____________
+🔴 Vermelho: ___________
+
+DONO DO INDICADOR: ____________________________________
+O que ele faz quando fica vermelho: ___________________
+
+INDICADOR DE APOIO (trava): ___________________________
+
+O QUE NÃO ENTRA NO CÁLCULO (as exclusões):
+______________________________________________________
+⚠ Esse campo evita 90% das discussões sobre número.
+
+HISTÓRICO
+Melhor marca já atingida: ______  Quando: ______
+Média dos últimos 12 meses: ______
+═══════════════════════════════════════════════════════════════</pre>
+<hr>
+<h2 id="erros-comuns">Erros comuns</h2>
+<div class="tabwrap"><table><thead><tr><th>#</th><th>Erro</th><th>Consequência</th></tr></thead><tbody><tr><td>1</td><td>Adotar o catálogo inteiro</td><td>Ninguém mede nada direito</td></tr><tr><td>2</td><td>Indicador sem trava</td><td>Gamificação garantida</td></tr><tr><td>3</td><td>Não ter dicionário</td><td>Cada um calcula de um jeito</td></tr><tr><td>4</td><td>m²/pessoa sem denominador declarado</td><td>Número sem significado</td></tr><tr><td>5</td><td>Comparar com benchmark de outro porte</td><td>Meta irreal</td></tr><tr><td>6</td><td>Só indicadores de resultado</td><td>Descobre tarde demais</td></tr><tr><td>7</td><td>Não medir turnover por faixa de tempo</td><td>Perde o diagnóstico</td></tr><tr><td>8</td><td>Premiar zero acidente</td><td>Esconde acidente</td></tr><tr><td>9</td><td>Média sem pior caso</td><td>A cauda gera toda a reclamação</td></tr><tr><td>10</td><td>Indicador sem dono</td><td>Vermelho eterno</td></tr><tr><td>11</td><td>Coletar manualmente sem conferência</td><td>Série inválida em 6 meses</td></tr><tr><td>12</td><td>Não revisar o conjunto anualmente</td><td>Mede o que importava há 3 anos</td></tr></tbody></table></div>
+<hr>
+<h2 id="exercicios-do-modulo-8">Exercícios do Módulo 8</h2>
+<h3 id="exercicio-1-escolha-por-dimensao-1h">Exercício 1 — Escolha por dimensão (1h)</h3>
+<p>Do catálogo, escolha no máximo: 3 financeiros, 2 operacionais, 1 comercial, 1 de pessoas, 1 de qualidade. Justifique cada escolha com a decisão que ele muda.</p>
+<h3 id="exercicio-2-tabela-de-comportamento-induzido-30-min">Exercício 2 — Tabela de comportamento induzido (30 min)</h3>
+<p>Para cada indicador escolhido, preencha: que comportamento isso induz? Qual é a trava?</p>
+<h3 id="exercicio-3-dicionario-2h">Exercício 3 — Dicionário (2h)</h3>
+<p>Escreva a ficha completa de cada indicador escolhido. O campo "o que não entra no cálculo" é o mais importante.</p>
+<h3 id="exercicio-4-auditoria-de-fonte-1h">Exercício 4 — Auditoria de fonte (1h)</h3>
+<p>Para cada indicador: de onde sai o dado? Alguém já conferiu se está certo? Faça uma conferência manual de um mês.</p>
+<h3 id="exercicio-5-turnover-por-faixa-30-min">Exercício 5 — Turnover por faixa (30 min)</h3>
+<p>Calcule turnover geral, de &lt; 6 meses, de 1-3 anos e dos melhores. Compare. Onde está o seu problema?</p>
+<h3 id="exercicio-6-melhor-marca-30-min">Exercício 6 — Melhor marca (30 min)</h3>
+<p>Para cada indicador, encontre a melhor marca que você já atingiu. Essa é a sua meta — não um número de benchmark.</p>
+<hr>
+<h2 id="frases-de-impacto">Frases de impacto</h2>
+<ul><li><em>"Todo indicador induz comportamento. Todo comportamento induzido tem efeito colateral. A trava não é opcional."</em></li><li><em>"m²/pessoa só significa alguma coisa com o denominador declarado."</em></li><li><em>"Turnover geral te diz que tem problema. Turnover por faixa de tempo te diz qual é."</em></li><li><em>"Se você premiar zero acidente, você vai comprar acidente escondido."</em></li><li><em>"O campo 'o que não entra no cálculo' evita 90% das discussões sobre número."</em></li><li><em>"Sua meta é a sua melhor marca já atingida, não um benchmark de outra empresa."</em></li><li><em>"Índice de primeira entrega perfeita é o indicador que resume projeto, produção e montagem num número só."</em></li></ul>
+<hr>
+<h2 id="entregavel-do-modulo-8">Entregável do Módulo 8</h2>
+<ol><li>Conjunto final de indicadores escolhido (máximo 8 no painel).</li><li>Tabela de comportamento induzido + trava para cada um.</li><li>Dicionário de Indicadores completo.</li><li>Auditoria de fonte de cada dado.</li><li>Melhor marca histórica identificada como meta inicial.</li></ol>
+<p><strong>Próximo módulo:</strong> Plano de 90 dias — a unidade de execução que faz tudo isso sair do papel.</p>
+
+  <div class="rodape"><span>FASE 6 · MÓDULO 08 · Fase 6 — Escala</span><span>Material de formação em gestão para donos de PME</span></div>
+</div>
+
+<script>
+// mantem a marca digitada pelo usuario neste navegador
+(function(){
+  var m=document.querySelector('.marca');
+  var k='mkt-marca';
+  try{ var s=localStorage.getItem(k); if(s) m.innerHTML=s; }catch(e){}
+  m.addEventListener('blur',function(){ try{localStorage.setItem(k,m.innerHTML);}catch(e){} });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MÓDULO 1 — PROCESSOS COMO ATIVO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --tinta:#2C2825; --ouro:#B8925A; --claro:#F5F1EA; --linha:#D8D2C7;
+  --fraco:#6E675E; --papel:#FFFFFF; --caixa:#FAF8F4;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+@page{size:A4;margin:14mm 13mm 13mm}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact;scroll-behavior:smooth}
+body{font:11pt/1.62 'Inter',-apple-system,'Helvetica Neue',Arial,sans-serif;
+  color:var(--tinta);background:var(--claro)}
+.folha{max-width:196mm;margin:0 auto;padding:14mm 10mm 20mm;background:var(--papel);
+  box-shadow:0 1px 3px rgba(0,0,0,.06)}
+
+/* cabecalho */
+.topo{display:flex;justify-content:space-between;align-items:flex-end;
+  border-bottom:1.5pt solid var(--tinta);padding-bottom:6pt;gap:12pt;flex-wrap:wrap}
+.marca{font:600 15pt/1 'Cormorant Garamond',Georgia,serif;letter-spacing:.22em;
+  text-transform:uppercase;outline:none}
+.marca small{display:block;font:400 6.5pt/1 'Inter',sans-serif;letter-spacing:.34em;
+  color:var(--fraco);margin-top:3pt}
+.marca:focus{background:#FFF6DF}
+.doc{text-align:right}
+.doc .fase{font-size:7pt;letter-spacing:.2em;color:var(--ouro);font-weight:600;
+  text-transform:uppercase}
+.doc .cod{font-size:7pt;letter-spacing:.18em;color:var(--fraco);margin-top:2pt}
+.regua{height:2.5pt;background:var(--ouro);margin:0 0 14pt}
+
+/* tipografia */
+h1{font:600 21pt/1.18 'Cormorant Garamond',Georgia,serif;letter-spacing:.01em;
+  margin:0 0 3pt}
+h1 + .lead{font-size:10.5pt;color:var(--fraco);font-style:italic;margin-bottom:14pt;
+  padding-bottom:10pt;border-bottom:.75pt solid var(--linha)}
+h2{font:600 10.5pt/1.25 'Inter',sans-serif;letter-spacing:.13em;text-transform:uppercase;
+  background:var(--claro);border-left:3pt solid var(--ouro);padding:6pt 8pt;
+  margin:22pt 0 9pt;break-after:avoid;page-break-after:avoid}
+h3{font:600 11.5pt/1.3 'Cormorant Garamond',Georgia,serif;letter-spacing:.02em;
+  margin:15pt 0 5pt;break-after:avoid;page-break-after:avoid}
+h4{font:600 8.5pt/1.25 'Inter',sans-serif;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--fraco);margin:12pt 0 4pt;break-after:avoid}
+p{margin:0 0 8pt;text-align:left}
+strong{font-weight:600}
+em{font-style:italic}
+a{color:var(--ouro);text-decoration:none}
+hr{border:none;border-top:.75pt solid var(--linha);margin:16pt 0}
+
+/* listas */
+ul,ol{margin:0 0 9pt 16pt}
+li{margin-bottom:3.5pt}
+ul.chk{list-style:none;margin-left:0}
+ul.chk li{display:flex;gap:7pt;align-items:flex-start;padding:3.5pt 0;
+  border-bottom:.5pt dotted var(--linha);break-inside:avoid}
+ul.chk li::before{content:"";flex:0 0 9.5pt;height:9.5pt;margin-top:2.5pt;
+  border:.9pt solid var(--tinta);border-radius:1pt;background:#fff}
+
+/* citacao / destaque */
+blockquote{border-left:2.5pt solid var(--ouro);background:var(--caixa);
+  padding:9pt 12pt;margin:11pt 0;break-inside:avoid}
+blockquote p:last-child{margin-bottom:0}
+
+/* codigo / templates ascii */
+pre{background:var(--caixa);border:.75pt solid var(--linha);border-radius:2pt;
+  padding:10pt 11pt;margin:11pt 0;overflow-x:auto;break-inside:avoid;
+  font:9pt/1.42 'SFMono-Regular',Menlo,Consolas,'Courier New',monospace;
+  white-space:pre;color:#332F2A}
+code{font:9.2pt/1.4 'SFMono-Regular',Menlo,Consolas,monospace;
+  background:var(--claro);padding:1pt 3pt;border-radius:2pt}
+pre code{background:none;padding:0;font-size:inherit}
+
+/* tabelas */
+.tabwrap{overflow-x:auto;margin:11pt 0}
+table{border-collapse:collapse;width:100%;font-size:9.3pt;break-inside:avoid}
+th{background:var(--claro);text-align:left;font-weight:600;font-size:7.5pt;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--fraco);
+  padding:5.5pt 7pt;border:.75pt solid var(--linha)}
+td{padding:5.5pt 7pt;border:.75pt solid var(--linha);vertical-align:top;line-height:1.42}
+tbody tr:nth-child(even){background:#FCFBF9}
+
+/* indice */
+.indice{background:var(--caixa);border:.75pt solid var(--linha);padding:11pt 13pt;
+  margin:0 0 18pt;break-inside:avoid}
+.indice h4{margin-top:0}
+.indice ol{margin:0 0 0 15pt;font-size:9.5pt;column-gap:18pt}
+.indice li{margin-bottom:2.5pt}
+.indice a{color:var(--tinta)}
+.indice a:hover{color:var(--ouro)}
+
+/* rodape */
+.rodape{margin-top:22pt;padding-top:6pt;border-top:.75pt solid var(--linha);
+  display:flex;justify-content:space-between;font-size:7.5pt;color:var(--fraco);
+  letter-spacing:.06em;gap:10pt;flex-wrap:wrap}
+
+/* navegacao entre modulos (some na impressao) */
+.nav{max-width:196mm;margin:0 auto 10mm;padding:0 10mm;display:flex;
+  justify-content:space-between;gap:10pt;font-size:9pt}
+.nav a{display:inline-block;padding:6pt 11pt;border:.75pt solid var(--linha);
+  background:var(--papel);border-radius:2pt;color:var(--tinta)}
+.nav a:hover{border-color:var(--ouro);color:var(--ouro)}
+.topbar{max-width:196mm;margin:0 auto;padding:8mm 10mm 0;display:flex;
+  justify-content:space-between;font-size:9pt}
+.topbar a{color:var(--fraco)}
+.topbar a:hover{color:var(--ouro)}
+
+@media print{
+  body{background:#fff}
+  .folha{box-shadow:none;padding:0;max-width:none}
+  .nav,.topbar{display:none}
+  .indice{break-after:page}
+}
+@media (max-width:640px){
+  body{font-size:11.5pt}
+  .folha{padding:8mm 5mm 14mm}
+  pre{font-size:7.6pt}
+  table{font-size:8.6pt}
+  .doc{text-align:left}
+}
+</style>
+</head>
+<body>
+
+<div class="folha">
+  <div class="topo">
+    <div class="marca" contenteditable="true" spellcheck="false">SUA MARCA<small>MARCENARIA</small></div>
+    <div class="doc"><div class="fase">Fase 6 — Escala</div><div class="cod">FASE 6 · MÓDULO 01</div></div>
+  </div>
+  <div class="regua"></div>
+
+  <h1>MÓDULO 1 — PROCESSOS COMO ATIVO</h1>
+  <div class="lead">Método 1 PÁGINA: documentar sem virar burocracia</div>
+  <div class="indice"><h4>Neste módulo</h4><ol><li><a href="#por-que-processo-e-ativo-e-nao-papel">Por que processo é ativo (e não papel)</a></li><li><a href="#por-que-a-maioria-tenta-e-desiste">Por que a maioria tenta e desiste</a></li><li><a href="#as-5-regras-de-ouro">As 5 regras de ouro</a></li><li><a href="#sop-pop-fluxograma-o-que-e-cada-coisa">SOP × POP × Fluxograma: o que é cada coisa</a></li><li><a href="#etapa-1-desenhar-o-fluxograma-macro">ETAPA 1 — Desenhar o fluxograma macro</a></li><li><a href="#como-fazer-2-horas-com-a-lideranca-na-sala">Como fazer (2 horas, com a liderança na sala)</a></li><li><a href="#fluxograma-macro-modelo-de-marcenaria-sob-medida">Fluxograma macro — modelo de marcenaria sob medida</a></li><li><a href="#etapa-2-escrever-os-pops">ETAPA 2 — Escrever os POPs</a></li><li><a href="#modelo-de-pop-de-1-pagina-copie-e-distribua">Modelo de POP de 1 página (copie e distribua)</a></li><li><a href="#exemplo-preenchido-pop-de-conferencia-de-carga">Exemplo preenchido — POP de conferência de carga</a></li><li><a href="#programa-de-implantacao-1-pop-por-semana">Programa de implantação: 1 POP por semana</a></li><li><a href="#etapa-3-eliminar-gargalos">ETAPA 3 — Eliminar gargalos</a></li><li><a href="#o-principio-que-muda-tudo">O princípio que muda tudo</a></li><li><a href="#como-identificar-o-gargalo-em-1-semana">Como identificar o gargalo em 1 semana</a></li><li><a href="#os-5-passos-para-explorar-o-gargalo-na-ordem">Os 5 passos para explorar o gargalo (na ordem)</a></li><li><a href="#exemplo-marcenaria-de-porte-medio">Exemplo — marcenaria de porte médio</a></li><li><a href="#etapa-4-melhorar-continuamente">ETAPA 4 — Melhorar continuamente</a></li><li><a href="#o-ciclo-de-melhoria-em-1-pagina">O ciclo de melhoria em 1 página</a></li><li><a href="#exemplo-dos-5-porques">Exemplo dos 5 porquês</a></li><li><a href="#onde-procurar-melhoria-as-8-fontes-de-desperdicio-na-marcena">Onde procurar melhoria (as 8 fontes de desperdício na marcenaria)</a></li><li><a href="#como-padronizar-sem-matar-a-flexibilidade">Como padronizar sem matar a flexibilidade</a></li><li><a href="#erros-comuns">Erros comuns</a></li><li><a href="#perguntas-que-o-lider-deve-fazer">Perguntas que o líder deve fazer</a></li><li><a href="#exercicios-do-modulo-1">Exercícios do Módulo 1</a></li><li><a href="#frases-de-impacto">Frases de impacto</a></li><li><a href="#entregavel-do-modulo-1">Entregável do Módulo 1</a></li></ol></div>
+  <hr>
+<h2 id="por-que-processo-e-ativo-e-nao-papel">Por que processo é ativo (e não papel)</h2>
+<p>Se você vendesse a sua marcenaria amanhã, o comprador pagaria por quê?</p>
+<p>Máquina vale o valor de revenda — pouco. Carteira de cliente é frágil, porque cliente de marcenaria compra a cada 5 ou 10 anos. Marca vale alguma coisa na cidade.</p>
+<p><strong>O que realmente vale é a capacidade de produzir com previsibilidade sem depender de pessoas específicas.</strong> E isso só existe se estiver documentado.</p>
+<p>Processo escrito faz cinco coisas que nada mais faz:</p>
+<div class="tabwrap"><table><thead><tr><th>O que faz</th><th>Impacto concreto</th></tr></thead><tbody><tr><td><strong>Transforma o seu jeito em patrimônio</strong></td><td>O conhecimento para de morar na cabeça de alguém</td></tr><tr><td><strong>Reduz o tempo de formação</strong></td><td>De 12 meses pra 5, na média das marcenarias</td></tr><tr><td><strong>Torna o erro corrigível</strong></td><td>Você conserta o processo, não briga com a pessoa</td></tr><tr><td><strong>Permite delegar de verdade</strong></td><td>Sem padrão escrito, delegar é apostar</td></tr><tr><td><strong>Cria a base pra melhorar</strong></td><td>Não dá pra melhorar o que não está definido</td></tr></tbody></table></div>
+<blockquote><p><strong>Frase pra colar na parede:</strong> <em>"Empresa sem processo escrito não é empresa. É um grupo de pessoas que sabe fazer as coisas — e que pode ir embora."</em></p></blockquote>
+<hr>
+<h2 id="por-que-a-maioria-tenta-e-desiste">Por que a maioria tenta e desiste</h2>
+<p>As três armadilhas clássicas:</p>
+<p><strong>1. Manual de 200 páginas.</strong> O dono contrata consultoria, sai um calhamaço, ninguém lê, fica na gaveta. Custou R$ 30 mil e mudou zero.</p>
+<p><strong>2. O dono escrevendo tudo.</strong> Você escreve o POP do corte, do lixamento, da montagem. Leva 4 meses, fica errado em metade (porque você não faz mais aquilo há 5 anos) e ninguém se apropria.</p>
+<p><strong>3. Fluxograma bonito que ninguém usa.</strong> Software caro, diagrama colorido, impresso em A3. E na hora do aperto, todo mundo faz do jeito de sempre.</p>
+<p><strong>A raiz das três:</strong> processo escrito por quem não executa, em formato que não cabe no bolso, sem revisão.</p>
+<hr>
+<h2 id="as-5-regras-de-ouro">As 5 regras de ouro</h2>
+<pre>1. QUEM FAZ, ESCREVE
+   O marceneiro escreve o POP de corte. Não o dono.
+
+2. UMA PÁGINA, NO MÁXIMO
+   Se não cabe em uma página, é mais de um processo.
+
+3. FOTO VALE MAIS QUE PARÁGRAFO
+   Na marcenaria, uma foto do "certo" e uma do "errado"
+   resolvem duas páginas de texto.
+
+4. FICA ONDE SE USA
+   POP de coladeira fica plastificado na coladeira, não numa pasta.
+
+5. TEM DATA E VERSÃO
+   Processo sem data é processo que ninguém sabe se ainda vale.</pre>
+<hr>
+<h2 id="sop-pop-fluxograma-o-que-e-cada-coisa">SOP × POP × Fluxograma: o que é cada coisa</h2>
+<p>Muita gente confunde. A distinção prática:</p>
+<div class="tabwrap"><table><thead><tr><th>Documento</th><th>O que é</th><th>Quando usar</th><th>Tamanho</th></tr></thead><tbody><tr><td><strong>Fluxograma</strong></td><td>O desenho do caminho. Mostra a sequência e quem faz o quê</td><td>Para ver o todo e achar gargalo</td><td>1 página, visual</td></tr><tr><td><strong>SOP</strong> (procedimento operacional padrão)</td><td>O "o quê" de um processo, com responsáveis e critérios de entrada e saída</td><td>Processos que atravessam áreas</td><td>1 a 2 páginas</td></tr><tr><td><strong>POP</strong> (procedimento operacional padronizado)</td><td>O "como" de uma tarefa específica</td><td>Tarefa executada por uma pessoa</td><td>1 página</td></tr><tr><td><strong>Checklist</strong></td><td>A lista de verificação de uma etapa</td><td>Onde erro é caro e a memória falha</td><td>Meia página</td></tr></tbody></table></div>
+<p><strong>Na prática, para uma marcenaria de porte médio (20 a 30 pessoas) você precisa de:</strong></p>
+<ul><li>1 fluxograma macro (do orçamento à entrega)</li><li>5 a 8 SOPs (um por macroetapa)</li><li>20 a 40 POPs (as tarefas críticas)</li><li>8 a 12 checklists</li></ul>
+<p>Nada além disso nos primeiros dois anos.</p>
+<hr>
+<h2 id="etapa-1-desenhar-o-fluxograma-macro">ETAPA 1 — Desenhar o fluxograma macro</h2>
+<p>Antes de escrever qualquer POP, você precisa enxergar o caminho inteiro.</p>
+<h2 id="como-fazer-2-horas-com-a-lideranca-na-sala">Como fazer (2 horas, com a liderança na sala)</h2>
+<ol><li><strong>Cole papel na parede.</strong> Nada de software na primeira versão.</li><li><strong>Escreva o começo e o fim.</strong> Ex: "Lead entra" → "Cliente assina o termo de aceite".</li><li><strong>Peça pra cada líder colar um post-it por etapa que a área dele faz.</strong></li><li><strong>Ordene na linha do tempo.</strong></li><li><strong>Para cada etapa, escreva:</strong> quem faz · o que entra · o que sai · quanto tempo leva · quem é notificado.</li><li><strong>Marque em vermelho:</strong> onde o trabalho para esperando alguém.</li></ol>
+<p><strong>O que você vai descobrir na primeira vez:</strong> entre 30% e 50% do tempo total do processo é <strong>espera</strong>, não trabalho. Espera de aprovação, de material, de definição do cliente, de disponibilidade de equipe.</p>
+<h2 id="fluxograma-macro-modelo-de-marcenaria-sob-medida">Fluxograma macro — modelo de marcenaria sob medida</h2>
+<pre>COMERCIAL
+ [1] Lead entra → [2] Qualificação → [3] Visita/briefing inicial
+ → [4] Orçamento → [5] Negociação → [6] Contrato assinado
+       ⏱ ciclo comercial: ___ dias
+
+PRÉ-PRODUÇÃO
+ [7] Briefing completo (checklist) → ⏸ ESPERA CLIENTE (5 dias)
+ → [8] Solicitação de medição → ⏸ ESPERA OBRA PRONTA
+ → [9] Medição (3+3 dias) → [10] Caderno técnico (10 dias)
+ → ⏸ ESPERA APROVAÇÃO CLIENTE (5 dias) → [11] Revisões (5+5)
+ → [12] Caderno aprovado e assinado
+       ⏱ ciclo pré-produção: ___ dias
+
+SUPRIMENTOS
+ [13] Lista de material → [14] Cotação → [15] Compra
+ → ⏸ ESPERA FORNECEDOR (___ dias) → [16] Recebimento e conferência
+       ⏱ ciclo compras: ___ dias
+
+FÁBRICA  (KPI 25/50/75/100)
+ [17] Material em fábrica (25%) → [18] Plano de corte
+ → [19] Corte (50%) → [20] Fita de borda → [21] Furação
+ → [22] Pré-montagem (75%) → [23] Acabamento
+ → [24] Conferência com checklist → [25] Embalagem (100%)
+       ⏱ ciclo fábrica: ___ dias úteis
+
+LOGÍSTICA E OBRA  (KPI 25/50/75/100)
+ [26] Liberação da obra (checklist) → [27] Carga e transporte
+ → [28] Móveis in loco (25%) → [29] Montagem (50%)
+ → [30] Ajustes e regulagens (75%) → [31] Limpeza (100%)
+       ⏱ ciclo obra: ___ dias
+
+ENTREGA E PÓS
+ [32] Vistoria com cliente → [33] Termo de aceite
+ → [34] Pesquisa de satisfação → [35] Acompanhamento 30 dias
+ → [36] Pedido de indicação</pre>
+<p><strong>Preencha os tempos com dados reais, não com o que deveria ser.</strong> A diferença entre os dois é o seu plano de melhoria.</p>
+<hr>
+<h2 id="etapa-2-escrever-os-pops">ETAPA 2 — Escrever os POPs</h2>
+<h2 id="modelo-de-pop-de-1-pagina-copie-e-distribua">Modelo de POP de 1 página (copie e distribua)</h2>
+<pre>═══════════════════════════════════════════════════════════════
+POP-___  |  [NOME DA TAREFA]
+Versão ___  |  Data ___/___/___  |  Escrito por: ____________
+Revisado por: ____________  |  Próxima revisão: ___/___/___
+═══════════════════════════════════════════════════════════════
+
+PARA QUE SERVE (1 frase)
+_______________________________________________________
+
+QUEM FAZ / QUANDO
+_______________________________________________________
+
+O QUE PRECISA ANTES (entrada)
+[ ] ____________________________________________________
+[ ] ____________________________________________________
+
+MATERIAL E FERRAMENTA
+_______________________________________________________
+
+PASSO A PASSO
+1. ____________________________________________________
+2. ____________________________________________________
+3. ____________________________________________________
+4. ____________________________________________________
+5. ____________________________________________________
+
+⚠ PONTOS CRÍTICOS (onde mais se erra)
+• ____________________________________________________
+• ____________________________________________________
+
+✓ COMO SEI QUE FICOU CERTO (critério de saída)
+• ____________________________________________________
+• ____________________________________________________
+
+✗ O QUE FAZER SE DER ERRADO
+_______________________________________________________
+
+TEMPO PADRÃO: _______     [ FOTO DO CERTO ]  [ FOTO DO ERRADO ]
+═══════════════════════════════════════════════════════════════</pre>
+<h2 id="exemplo-preenchido-pop-de-conferencia-de-carga">Exemplo preenchido — POP de conferência de carga</h2>
+<pre>POP-14 | CONFERÊNCIA DE CARGA ANTES DA SAÍDA
+Versão 2 | 12/06/2026 | Escrito por: Encarregado de Pátio
+
+PARA QUE SERVE
+Impedir que uma carga saia da fábrica sem algum item, evitando
+volta de equipe à obra (custo médio: R$ 400 + meio dia de 2 pessoas).
+
+QUEM FAZ / QUANDO
+Encarregado de Pátio, sempre antes de lacrar a embalagem e nunca
+depois de o caminhão estar carregado.
+
+O QUE PRECISA ANTES
+[ ] Ambiente com status 100% na fábrica (embalado)
+[ ] Lista de itens do ambiente impressa (sai do ERP)
+[ ] Kit de ferragem separado e identificado
+
+PASSO A PASSO
+1. Imprimir a lista de itens do ambiente
+2. Conferir peça por peça, marcando na lista com caneta
+3. Conferir o kit de ferragem contra a lista (contar, não estimar)
+4. Conferir acessórios: perfis, puxadores, LED, vidro, espelho
+5. Fotografar o conjunto completo antes de lacrar
+6. Assinar a lista e anexar à ordem
+7. Enviar a foto no grupo da obra
+
+⚠ PONTOS CRÍTICOS
+• Ferragem: conte a quantidade. "Parece que tá tudo" é onde 80%
+  dos erros acontecem.
+• Perfil de LED e fonte vêm separados — são os mais esquecidos.
+• Peça pequena (prateleira, fundo de gaveta) some entre embalagens.
+
+✓ COMO SEI QUE FICOU CERTO
+• 100% dos itens da lista marcados
+• Foto enviada no grupo
+• Lista assinada e anexada
+
+✗ SE FALTAR ALGUM ITEM
+Não lacre. Avise o Gerente de Fábrica na hora (SLA 2h).
+Se o item não puder ser produzido no dia, o ambiente NÃO sai —
+carga incompleta custa mais que carga atrasada.
+
+TEMPO PADRÃO: 20 min por ambiente</pre>
+<h2 id="programa-de-implantacao-1-pop-por-semana">Programa de implantação: 1 POP por semana</h2>
+<pre>SEMANA 1 — Escolha a tarefa que mais gera erro ou custo
+SEMANA 2 — A pessoa que executa escreve o rascunho (30 min)
+SEMANA 3 — Encarregado revisa junto com ela (20 min)
+SEMANA 4 — Testa com outra pessoa executando só pelo POP
+           → se ela conseguir, está bom. Se travar, o POP está incompleto
+SEMANA 5 — Plastifica e afixa no local de uso</pre>
+<p><strong>Em 30 semanas você tem 30 POPs.</strong> Isso é o manual da casa inteiro de uma marcenaria de porte médio (20 a 30 pessoas) — construído sem parar a produção, sem consultoria e com apropriação real de quem executa.</p>
+<h3 id="como-priorizar-quais-pops-escrever-primeiro">Como priorizar quais POPs escrever primeiro</h3>
+<p>Ordene por esta fórmula:</p>
+<pre>PRIORIDADE = (Frequência da tarefa) × (Custo do erro) × (Nº de pessoas que fazem)</pre>
+<div class="tabwrap"><table><thead><tr><th>Tarefa</th><th>Freq.</th><th>Custo do erro</th><th>Pessoas</th><th>Prioridade</th></tr></thead><tbody><tr><td>Conferência de carga</td><td>Diária</td><td>Alto</td><td>2</td><td>🔴 Primeiro</td></tr><tr><td>Setup de coladeira</td><td>Diária</td><td>Médio</td><td>3</td><td>🔴 Primeiro</td></tr><tr><td>Plano de corte</td><td>Diária</td><td>Alto</td><td>2</td><td>🔴 Primeiro</td></tr><tr><td>Medição em obra</td><td>Semanal</td><td>Muito alto</td><td>2</td><td>🔴 Primeiro</td></tr><tr><td>Liberação de obra pra montagem</td><td>Semanal</td><td>Alto</td><td>3</td><td>🟡 Segundo</td></tr><tr><td>Manutenção preventiva de máquina</td><td>Mensal</td><td>Alto</td><td>1</td><td>🟡 Segundo</td></tr><tr><td>Inventário</td><td>Mensal</td><td>Médio</td><td>1</td><td>🟢 Depois</td></tr></tbody></table></div>
+<hr>
+<h2 id="etapa-3-eliminar-gargalos">ETAPA 3 — Eliminar gargalos</h2>
+<h2 id="o-principio-que-muda-tudo">O princípio que muda tudo</h2>
+<blockquote><p><strong>A capacidade de uma linha é a capacidade do gargalo. Nem um metro quadrado a mais.</strong></p></blockquote>
+<p>Se a bancada produz 200 m²/mês e o corte produz 900 m²/mês, sua fábrica produz <strong>200 m²/mês</strong>. Comprar uma seccionadora nova não vai mudar nada — vai aumentar a capacidade do que já sobra.</p>
+<p><strong>Consequências práticas:</strong></p>
+<div class="tabwrap"><table><thead><tr><th>Regra</th><th>Aplicação</th></tr></thead><tbody><tr><td><strong>1 hora perdida no gargalo é 1 hora perdida na empresa inteira</strong></td><td>O gargalo nunca pode parar. Nem por falta de material, nem por manutenção não planejada, nem por almoço escalonado errado</td></tr><tr><td><strong>1 hora ganha fora do gargalo é ilusão</strong></td><td>Otimizar o corte quando o gargalo é a bancada não entrega nada</td></tr><tr><td><strong>O gargalo nunca deve processar item ruim</strong></td><td>Toda peça que chega no gargalo já deve estar conferida</td></tr><tr><td><strong>Investimento só faz sentido no gargalo</strong></td><td>Ou em transferir carga do gargalo pra outro lugar</td></tr></tbody></table></div>
+<h2 id="como-identificar-o-gargalo-em-1-semana">Como identificar o gargalo em 1 semana</h2>
+<pre>1. Escolha as 5 a 7 etapas da sua produção
+2. Meça, por 5 dias: quantas unidades cada etapa processa por dia
+   (unidade = m², ambiente, chapa — escolha uma e mantenha)
+3. Olhe onde o estoque intermediário se acumula
+   → o gargalo é SEMPRE a etapa logo depois do maior acúmulo
+4. Confirme: qual etapa nunca fica ociosa?</pre>
+<p><strong>Sinal físico infalível na marcenaria:</strong> onde tem pilha de peça esperando, o gargalo é a próxima etapa.</p>
+<h2 id="os-5-passos-para-explorar-o-gargalo-na-ordem">Os 5 passos para explorar o gargalo (na ordem)</h2>
+<pre>PASSO 1 — IDENTIFICAR
+   Qual etapa limita a saída? Meça, não ache.
+
+PASSO 2 — EXPLORAR (de graça)
+   Como tirar mais do gargalo SEM investir?
+   • Escalonar almoço pra o gargalo não parar
+   • Tirar do gargalo tudo que outra pessoa pode fazer
+     (buscar material, limpar, organizar)
+   • Garantir que nada chegue no gargalo sem estar conferido
+   • Setup fora do horário de operação
+   • Manutenção preventiva programada em horário morto
+   → Ganho típico: 15% a 30%. Custo: zero.
+
+PASSO 3 — SUBORDINAR
+   Todo o resto trabalha no ritmo do gargalo.
+   Produzir mais que o gargalo consegue absorver só cria estoque
+   e esconde problema.
+
+PASSO 4 — ELEVAR (aí sim, investir)
+   Contratar, comprar máquina, terceirizar — só depois dos passos 2 e 3.
+
+PASSO 5 — REPETIR
+   O gargalo se moveu. Volte ao passo 1.
+   ⚠ Não deixe a inércia virar o novo gargalo: a regra que você criou
+   pra proteger o gargalo antigo pode estar travando o novo.</pre>
+<h2 id="exemplo-marcenaria-de-porte-medio">Exemplo — marcenaria de porte médio</h2>
+<p><em>(caso ilustrativo, montado a partir de situações recorrentes no setor)</em></p>
+<p><strong>Situação:</strong> dono ia comprar seccionadora de R$ 180 mil pra "aumentar produção".</p>
+<p><strong>Medição de 5 dias:</strong></p>
+<div class="tabwrap"><table><thead><tr><th>Etapa</th><th>Capacidade/mês</th><th>Utilização</th></tr></thead><tbody><tr><td>Corte</td><td>900 m²</td><td>22%</td></tr><tr><td>Fita de borda</td><td>2.000 m²</td><td>10%</td></tr><tr><td>Furação</td><td>700 m²</td><td>28%</td></tr><tr><td><strong>Bancada / pré-montagem</strong></td><td><strong>200 m²</strong></td><td><strong>98%</strong></td></tr><tr><td>Acabamento</td><td>350 m²</td><td>56%</td></tr><tr><td>Montagem em obra</td><td>230 m²</td><td>85%</td></tr></tbody></table></div>
+<p><strong>Gargalo: bancada.</strong> Máquina de corte tinha 5x de folga.</p>
+<p><strong>O que fizeram no passo 2 (exploração, custo zero):</strong></p>
+<ul><li>Tiraram da bancada a tarefa de buscar ferragem (passou pro auxiliar)</li><li>Kit de ferragem pré-separado chegando junto com as peças</li><li>Peças chegando à bancada já conferidas (POP de conferência)</li><li>Escalonamento de almoço</li></ul>
+<p><strong>Resultado:</strong> capacidade da bancada foi de 200 pra 246 m²/mês em 6 semanas. <strong>+23% de saída, R$ 0 investido.</strong></p>
+<p>A seccionadora não foi comprada. O dinheiro foi pra contratar 2 pessoas pra bancada — que era onde o gargalo estava.</p>
+<hr>
+<h2 id="etapa-4-melhorar-continuamente">ETAPA 4 — Melhorar continuamente</h2>
+<h2 id="o-ciclo-de-melhoria-em-1-pagina">O ciclo de melhoria em 1 página</h2>
+<pre>MELHORIA — [nome do problema]  |  Aberta em ___/___/___
+
+1. QUAL É O PROBLEMA (com número)
+   ____________________________________________________
+   Impacto atual: R$ ______/mês ou ___ horas/mês
+
+2. POR QUE ACONTECE (5 porquês — vá até a causa raiz)
+   Por quê? _________________________________________
+   Por quê? _________________________________________
+   Por quê? _________________________________________
+   Por quê? _________________________________________
+   Por quê? _________________________________________  ← causa raiz
+
+3. O QUE VAMOS MUDAR
+   ____________________________________________________
+   Dono: __________  Prazo: ___/___
+
+4. COMO VAMOS SABER SE FUNCIONOU
+   Indicador: _______  Antes: _____  Meta: _____
+
+5. RESULTADO (preencher em 30 dias)
+   Depois: _____  ( )Funcionou → vira POP ( )Não → volta ao passo 2</pre>
+<h2 id="exemplo-dos-5-porques">Exemplo dos 5 porquês</h2>
+<pre>PROBLEMA: 9 itens faltando em obra por mês. Custo: R$ 3.600/mês.
+
+Por que faltou item? → Não foi conferido antes de sair
+Por que não foi conferido? → Não existe checklist de conferência
+Por que não existe? → Nunca foi definido de quem é a tarefa
+Por que nunca foi definido? → A expedição não tem responsável nomeado
+Por que não tem? → A função de Encarregado de Pátio nunca foi criada
+                    ← CAUSA RAIZ
+
+AÇÃO: criar a função + POP de conferência + checklist assinado</pre>
+<p><strong>Se você parasse no primeiro porquê,</strong> teria dado bronca no montador. O problema continuaria.</p>
+<h2 id="onde-procurar-melhoria-as-8-fontes-de-desperdicio-na-marcena">Onde procurar melhoria (as 8 fontes de desperdício na marcenaria)</h2>
+<div class="tabwrap"><table><thead><tr><th>Desperdício</th><th>Como aparece na marcenaria</th><th>Como atacar</th></tr></thead><tbody><tr><td><strong>Espera</strong></td><td>Peça parada esperando a próxima etapa</td><td>Balancear linha pelo ritmo do gargalo</td></tr><tr><td><strong>Transporte</strong></td><td>Peça atravessando a fábrica várias vezes</td><td>Redesenhar layout seguindo o fluxo</td></tr><tr><td><strong>Movimento</strong></td><td>Marceneiro andando pra buscar ferramenta</td><td>Painel de ferramenta no posto</td></tr><tr><td><strong>Estoque</strong></td><td>Chapa e ferragem parados, capital preso</td><td>Estoque mínimo por giro real</td></tr><tr><td><strong>Defeito</strong></td><td>Retrabalho, refugo, assistência técnica</td><td>POP + conferência na origem</td></tr><tr><td><strong>Superprodução</strong></td><td>Produzir antes da hora "pra adiantar"</td><td>Puxar pelo cronograma, não empurrar</td></tr><tr><td><strong>Superprocessamento</strong></td><td>Lixar o que não vai aparecer</td><td>Definir o padrão por superfície</td></tr><tr><td><strong>Talento não usado</strong></td><td>Sênior fazendo tarefa de auxiliar</td><td>Matriz de competência + redistribuição</td></tr></tbody></table></div>
+<p><strong>A mais cara numa marcenaria de porte médio (20 a 30 pessoas) costuma ser a espera</strong>, e ela é invisível porque todo mundo parece ocupado.</p>
+<hr>
+<h2 id="como-padronizar-sem-matar-a-flexibilidade">Como padronizar sem matar a flexibilidade</h2>
+<p>O medo legítimo: <em>"marcenaria sob medida é única. Padronizar mata o diferencial."</em></p>
+<p><strong>Resposta:</strong> você não padroniza o produto. Padroniza o <strong>jeito de fazer</strong>.</p>
+<div class="tabwrap"><table><thead><tr><th>Padronize</th><th>Não padronize</th></tr></thead><tbody><tr><td>Sequência de etapas</td><td>Design do móvel</td></tr><tr><td>Critérios de qualidade</td><td>Solução criativa do projeto</td></tr><tr><td>Ferragem e componentes (kit padrão)</td><td>Layout e acabamento</td></tr><tr><td>Documentos e checklists</td><td>Atendimento ao cliente (personalize)</td></tr><tr><td>Tempos de referência por tipo de ambiente</td><td>Nada mais</td></tr></tbody></table></div>
+<h3 id="a-tecnica-dos-3-niveis-de-padronizacao">A técnica dos 3 níveis de padronização</h3>
+<pre>NÍVEL 1 — ITEM PADRÃO (70% do que você faz)
+   Cozinha padrão, closet padrão, painel padrão.
+   Módulo pré-definido, ferragem definida, tempo conhecido.
+   → Produz rápido, com margem previsível.
+
+NÍVEL 2 — PADRÃO ADAPTADO (25%)
+   Base padrão com alteração de medida ou acabamento.
+   → Tempo com acréscimo conhecido (+15%, +30%).
+
+NÍVEL 3 — SOB MEDIDA PURO (5%)
+   Peça única, curva, marcenaria especial.
+   → Orçado à parte, com margem maior e prazo maior.</pre>
+<p><strong>Ganho:</strong> você não perde o "sob medida" — você para de tratar 100% do trabalho como se fosse peça única. E a margem do nível 1 financia a excelência do nível 3.</p>
+<hr>
+<h2 id="erros-comuns">Erros comuns</h2>
+<div class="tabwrap"><table><thead><tr><th>#</th><th>Erro</th><th>Antídoto</th></tr></thead><tbody><tr><td>1</td><td>Dono escreve todos os POPs</td><td>Quem faz, escreve</td></tr><tr><td>2</td><td>Manual de 200 páginas</td><td>1 página por POP</td></tr><tr><td>3</td><td>POP guardado em pasta</td><td>Fica plastificado no local de uso</td></tr><tr><td>4</td><td>Documentar tudo de uma vez</td><td>1 por semana, 30 semanas</td></tr><tr><td>5</td><td>Investir fora do gargalo</td><td>Meça antes. Explore antes de elevar</td></tr><tr><td>6</td><td>Parar no primeiro "porquê"</td><td>5 porquês até a causa raiz</td></tr><tr><td>7</td><td>POP sem data e versão</td><td>Ninguém sabe se ainda vale</td></tr><tr><td>8</td><td>Nunca revisar</td><td>Auditoria a cada 6 meses (Módulo 13)</td></tr><tr><td>9</td><td>Padronizar o produto em vez do processo</td><td>Padronize o jeito, não o design</td></tr><tr><td>10</td><td>Fluxograma bonito que ninguém usa</td><td>Papel na parede primeiro, digital depois</td></tr><tr><td>11</td><td>Não medir o tempo real das etapas</td><td>Sem tempo real, o fluxograma é ficção</td></tr><tr><td>12</td><td>Achar que documentar resolve — sem treinar</td><td>POP escrito e não treinado é papel</td></tr></tbody></table></div>
+<hr>
+<h2 id="perguntas-que-o-lider-deve-fazer">Perguntas que o líder deve fazer</h2>
+<ol><li>Se a pessoa que faz [tarefa crítica] sair amanhã, alguém consegue fazer só lendo o que está escrito?</li><li>Onde está o meu gargalo hoje? Eu medi ou eu acho?</li><li>Quanto do meu ciclo total é trabalho e quanto é espera?</li><li>Qual foi o último processo que eu <strong>eliminei</strong> (não melhorei — eliminei)?</li><li>Os meus POPs foram escritos por quem executa?</li><li>Quando foi a última vez que eu revisei um processo escrito?</li><li>Se eu contratar 5 pessoas amanhã, o processo aguenta ou eu viro o gargalo de novo?</li></ol>
+<hr>
+<h2 id="exercicios-do-modulo-1">Exercícios do Módulo 1</h2>
+<h3 id="exercicio-1-fluxograma-na-parede-2h-com-a-lideranca">Exercício 1 — Fluxograma na parede (2h, com a liderança)</h3>
+<p>Desenhe o fluxo do orçamento à entrega, com post-its. Marque em vermelho onde o trabalho espera. Some o tempo de espera.</p>
+<h3 id="exercicio-2-encontre-o-gargalo-1-semana">Exercício 2 — Encontre o gargalo (1 semana)</h3>
+<p>Meça a capacidade de cada etapa por 5 dias. Identifique onde acumula estoque. Confirme qual etapa nunca fica ociosa.</p>
+<h3 id="exercicio-3-explore-o-gargalo-sem-gastar-1-semana">Exercício 3 — Explore o gargalo sem gastar (1 semana)</h3>
+<p>Liste 5 coisas que o gargalo faz que outra pessoa poderia fazer. Tire todas. Meça o ganho.</p>
+<h3 id="exercicio-4-priorize-os-pops-30-min">Exercício 4 — Priorize os POPs (30 min)</h3>
+<p>Aplique a fórmula Frequência × Custo do erro × Nº de pessoas. Liste os 10 primeiros.</p>
+<h3 id="exercicio-5-primeiro-pop-1-semana">Exercício 5 — Primeiro POP (1 semana)</h3>
+<p>A pessoa que executa escreve. Você revisa. Testa com outra pessoa. Plastifica e afixa.</p>
+<h3 id="exercicio-6-5-porques-30-min">Exercício 6 — 5 porquês (30 min)</h3>
+<p>Pegue o erro mais frequente do último mês. Vá até a causa raiz. Compare com a ação que você teria tomado no primeiro porquê.</p>
+<h3 id="exercicio-7-classificacao-de-niveis-1h">Exercício 7 — Classificação de níveis (1h)</h3>
+<p>Classifique suas últimas 20 obras em nível 1, 2 ou 3 de padronização. Calcule a margem média de cada nível.</p>
+<hr>
+<h2 id="frases-de-impacto">Frases de impacto</h2>
+<ul><li><em>"Empresa sem processo escrito não é empresa. É um grupo de pessoas que sabe fazer as coisas — e que pode ir embora."</em></li><li><em>"Quem faz, escreve. Se o dono escreve, fica errado e nunca termina."</em></li><li><em>"A capacidade da sua fábrica é a capacidade do gargalo. Nem um metro quadrado a mais."</em></li><li><em>"Uma hora perdida no gargalo é uma hora perdida na empresa inteira. Uma hora ganha fora do gargalo é ilusão."</em></li><li><em>"Antes de comprar máquina, explore o gargalo de graça. O ganho costuma ser 20% e custa zero."</em></li><li><em>"Onde tem pilha de peça esperando, o gargalo é a próxima etapa."</em></li><li><em>"Você não padroniza o produto. Padroniza o jeito de fazer."</em></li><li><em>"Se você para no primeiro porquê, você dá bronca. Se vai até o quinto, você resolve."</em></li></ul>
+<hr>
+<h2 id="entregavel-do-modulo-1">Entregável do Módulo 1</h2>
+<ol><li>Fluxograma macro desenhado, com tempos reais e esperas marcadas.</li><li>Gargalo identificado com medição de 5 dias.</li><li>Plano de exploração do gargalo (ações de custo zero) executado.</li><li>Lista dos 10 POPs prioritários.</li><li>Ao menos 3 POPs escritos por quem executa, testados e afixados.</li><li>Classificação das obras em níveis 1/2/3 de padronização, com margem por nível.</li></ol>
+<p><strong>Próximo módulo:</strong> Metas e OKRs — transformar intenção em número com dono.</p>
+
+  <div class="rodape"><span>FASE 6 · MÓDULO 01 · Fase 6 — Escala</span><span>Material de formação em gestão para donos de PME</span></div>
+</div>
+
+<script>
+// mantem a marca digitada pelo usuario neste navegador
+(function(){
+  var m=document.querySelector('.marca');
+  var k='mkt-marca';
+  try{ var s=localStorage.getItem(k); if(s) m.innerHTML=s; }catch(e){}
+  m.addEventListener('blur',function(){ try{localStorage.setItem(k,m.innerHTML);}catch(e){} });
+})();
+</script>
+</body>
+</html>

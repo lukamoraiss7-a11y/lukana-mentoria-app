@@ -912,16 +912,25 @@ const ICO_OPEN='<svg width="11" height="11" viewBox="0 0 16 16" fill="none" stro
 async function abrirDoBucket(ev,path,abrirNaAba,nome){
   ev.preventDefault();
   /* A aba precisa ser aberta agora, no gesto do clique. Depois do await o
-     navegador trata window.open como popup e bloqueia. */
-  const aba=abrirNaAba?window.open('','_blank','noopener'):null;
+     navegador trata window.open como popup e bloqueia.
+     Sem 'noopener' aqui de proposito: com essa feature o window.open devolve
+     null por especificacao, a referencia se perde e a aba fica em branco
+     enquanto a aba do app e' levada embora pelo `else`. O opener e' fechado
+     na mao logo abaixo, que da a mesma protecao. */
+  const aba=abrirNaAba?window.open('','_blank'):null;
+  if(aba)try{aba.opener=null;}catch(e){}
   const el=ev.currentTarget, antes=el.innerHTML;
   el.innerHTML='abrindo…';
   const opc=abrirNaAba?{}:{download:nome||true};
   const {data,error}=await sb.storage.from('materiais').createSignedUrl(path,60,opc);
   el.innerHTML=antes;
   if(error||!data){
-    if(aba)aba.close();
-    alert('Não consegui abrir este arquivo: '+((error&&error.message)||'sem permissão para a fase dele'));
+    /* Rede de seguranca: o material tambem existe em `files/` com o mesmo
+       nome de arquivo. Se a assinatura falhar — politica da fase, objeto que
+       nao subiu, rede — o aluno abre a copia da web em vez de levar um alerta.
+       Nao vale para o que so existe no bucket: ai o 404 aparece e e' honesto. */
+    const web='files/'+path.split('/').pop();
+    if(aba){aba.location=web;}else{location.href=web;}
     return false;
   }
   if(aba)aba.location=data.signedUrl; else location.href=data.signedUrl;
