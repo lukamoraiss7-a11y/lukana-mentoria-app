@@ -366,6 +366,15 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
       <div class="nav-it"><svg class="nav-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12.5V14l1.5-.5L6 12H12a1 1 0 001-1V4a1 1 0 00-1-1H4a1 1 0 00-1 1v7a1 1 0 001 1z" stroke-linejoin="round"/></svg>Suporte</div>
       <div class="nav-it" id="nav-admin" style="display:none;" onclick="sv('admin')"><svg class="nav-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="7" width="10" height="8" rx="1"/><path d="M5 7V5a3 3 0 016 0v2"/></svg>Admin</div>
     </nav>
+    <!-- Sem isto, quem entrou por link magico nunca sai da dependencia de
+         e-mail: definir senha e' o que faz o acesso ser da conta, e nao
+         do navegador. -->
+    <div class="sb-lock">
+      <button class="lock-btn" onclick="telaSenha()" title="Definir uma senha para entrar de qualquer computador">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="7" width="10" height="8" rx="1"/><path d="M5 7V5a3 3 0 016 0v2"/></svg>
+        <span>Definir senha</span>
+      </button>
+    </div>
     <div class="sb-lock">
       <button class="lock-btn" onclick="sairConta()" title="Sair da conta neste navegador">
         <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 14H3a1 1 0 01-1-1V3a1 1 0 011-1h3"/><path d="M10.5 5L13.5 8l-3 3"/><path d="M13.5 8H6"/></svg>
@@ -631,6 +640,26 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
                 <span id="ax-msg" style="font-size:12px;"></span>
               </div>
             </div>
+
+            <!-- Senha. Sem ela, cadastrar nao libera: o aluno depende de um
+                 e-mail por maquina e o SMTP padrao entrega 2 por hora. Com
+                 senha, ele entra de qualquer computador para sempre. -->
+            <div class="adm-form">
+              <div class="adm-form-title">Senha de acesso</div>
+              <div style="font-size:11px;color:var(--text-muted);margin-bottom:9px;">
+                Usa o e-mail digitado acima. Defina a senha, mande para o mentorado e ele entra
+                de qualquer computador — sem link, sem esperar e-mail.
+              </div>
+              <div class="adm-row" style="grid-template-columns:1fr auto;gap:8px;">
+                <input type="text" class="adm-input" id="ax-senha" placeholder="Senha (mínimo 8 caracteres)" autocomplete="off" style="margin-bottom:0;">
+                <button class="adm-add-btn" style="background:transparent;color:var(--text-secondary);border:1px solid #333;white-space:nowrap;" onclick="admGerarSenha()">Gerar</button>
+              </div>
+              <div class="adm-row" style="grid-template-columns:auto auto 1fr;align-items:center;gap:10px;margin-top:10px;">
+                <button class="adm-add-btn" onclick="admSalvarSenha()">Definir senha</button>
+                <button class="adm-add-btn" style="background:transparent;color:var(--accent-light);border:1px solid rgba(201,168,76,.4);white-space:nowrap;" onclick="admMandarSenha()">Mandar no WhatsApp</button>
+                <span id="ax-smsg" style="font-size:12px;"></span>
+              </div>
+            </div>
             <div class="adm-section-head">Quem tem o quê</div>
             <div class="adm-list" id="ax-list"></div>
           </div>
@@ -760,7 +789,13 @@ function faCard(m){
       ${m.marco?`<div class="fa-marco"><strong>Marco de Progressão</strong>${m.marco}</div>`:''}
       ${fechada
         ?`<div style="margin-top:14px;font-size:12px;color:var(--accent-light);display:flex;align-items:center;gap:6px;">${ICO_LOCK}${n?(n===1?'1 material já publicado nesta fase — não abre no seu plano.':n+' materiais já publicados nesta fase — não abrem no seu plano.'):'Esta fase não está no seu plano.'}</div>
-           <a class="vb" style="margin-top:11px;" href="${ctaHref('Quero liberar a '+rotuloFase(m)+' da mentoria APM')}" target="_blank" rel="noopener">${ICO_ZAP}Liberar esta fase</a>`
+           <div style="margin-top:11px;display:flex;gap:9px;flex-wrap:wrap;">
+             <a class="vb" href="${ctaHref('Quero liberar a '+rotuloFase(m)+' da mentoria APM')}" target="_blank" rel="noopener">${ICO_ZAP}Liberar esta fase</a>
+             <!-- Sem este botao a fase fechada era um beco: o unico
+                  caminho era pedir. Agora ele abre a tela da fase e le a
+                  lista do que existe lá dentro antes de decidir. -->
+             <button class="vb vb2" onclick="smd(${m.id})">Ver o que tem dentro →</button>
+           </div>`
         :`<button class="fa-btn" onclick="smd(${m.id})">Abrir Fase →</button>`}
     </div>
   </div>`;
@@ -849,7 +884,15 @@ const ICO_LOCK='<svg width="12" height="12" viewBox="0 0 16 16" fill="none" stro
    em vez de mostrar zero: dizer "0 materiais" numa fase fechada mataria
    a venda que esta pagina inteira existe para fazer. */
 let CONT={};
-function nMat(id){const n=CONT[String(id)];return typeof n==='number'?n:null;}
+function nMat(id){
+  const n=CONT[String(id)];
+  if(typeof n==='number')return n;
+  /* Sem a contagem, a propria ementa serve de contador. Um SQL a menos
+     para o app ficar completo. */
+  const e=EMENTA[String(id)];
+  if(e){const q=e.filter(i=>i.tipo==='materials').length;return q||null;}
+  return null;
+}
 function temContagem(){return Object.keys(CONT).length>0;}
 async function carregarContagem(){
   try{
@@ -857,6 +900,58 @@ async function carregarContagem(){
     if(error||!data)return;
     data.forEach(r=>{CONT[String(r.fase_id)]=Number(r.total)||0;});
   }catch(e){ console.warn('contagem_por_fase indisponivel',e); }
+}
+
+/* ---- O QUE ELE PODE LER DA FASE QUE NAO COMPROU ----
+   A politica de RLS nao deixa material de fase fechada sair do banco, e
+   isso continua certo: URL, caminho no bucket e descricao ficam presos.
+   Mas uma tela vazia nao vende nada — o aluno olhava a Fase 4 trancada
+   sem saber se ali dentro tem um PDF ou doze planilhas prontas.
+   A RPC `ementa_por_fase` (mentoria-app/ementa-por-fase.sql) devolve
+   SO' o titulo de material, video e link. Titulo nao e' conteudo, e'
+   indice: ler "Planilha de Precificacao por m2" e' o que da vontade de
+   comprar; abrir continua bloqueado. Nota do instrutor fica fora — ali
+   e' aula escrita.
+   Se a RPC nao existir, o objeto fica vazio e as telas voltam ao que
+   eram: fase fechada sem lista. Nada quebra. */
+let EMENTA={};
+async function carregarEmenta(){
+  try{
+    const {data,error}=await sb.rpc('ementa_por_fase');
+    if(error||!data)return;
+    data.forEach(r=>{
+      const k=String(r.fase_id);
+      (EMENTA[k]=EMENTA[k]||[]).push({tipo:r.tipo,titulo:r.titulo});
+    });
+  }catch(e){ console.warn('ementa_por_fase indisponivel',e); }
+}
+const EM_ROTULO={materials:'Material',videos:'Aula em vídeo',links:'Link'};
+/* Lista trancada, legivel, sem botao nenhum. O cadeado nao e' enfeite:
+   e' a unica coisa que o aluno pode fazer com esse item hoje. */
+function listaEmenta(id,titulo){
+  const it=EMENTA[String(id)];
+  if(!it||!it.length)return'';
+  /* Aula primeiro, depois material, depois link — a ordem em que ele
+     usaria. Comeca em 1 de proposito: com `videos:0` o `??`/`||` de
+     fallback trataria a aula como ausente e ela cairia para o fim. */
+  const ordem={videos:1,materials:2,links:3};
+  const linhas=it.slice().sort((a,b)=>(ordem[a.tipo]||9)-(ordem[b.tipo]||9))
+    .map(i=>`<div style="display:flex;align-items:center;gap:9px;padding:8px 10px;background:rgba(255,255,255,.02);border:1px dashed rgba(201,168,76,.22);border-radius:4px;margin-bottom:5px;">
+       <span style="color:var(--accent-light);display:flex;">${ICO_LOCK}</span>
+       <div style="flex:1;min-width:0;">
+         <div style="font-size:12.5px;color:var(--text-secondary);">${i.titulo}</div>
+         <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;">${EM_ROTULO[i.tipo]||i.tipo}</div>
+       </div>
+       <span style="font-size:10px;color:var(--text-muted);white-space:nowrap;">não abre no seu plano</span>
+     </div>`).join('');
+  return`<div class="xc" style="margin-bottom:13px;">
+    <div class="xt">${titulo||'Já publicado nesta fase'}</div>
+    ${linhas}
+    <div style="font-size:11px;color:var(--text-muted);margin-top:9px;">
+      ${it.length===1?'Este item já está':'Estes '+it.length+' itens já estão'} gravado${it.length===1?'':'s'} e no ar.
+      Abrem no minuto em que a fase entra no seu plano.
+    </div>
+  </div>`;
 }
 /* Fases que ele nao tem, e quantos materiais moram la' dentro. */
 function fechadas(){return SEM_GATE||EH_ADMIN?[]:M.filter(m=>!liberada(m.id));}
@@ -1015,6 +1110,10 @@ function blocoAppFechado(){
       <div style="margin-bottom:15px;">${APP_MODS.map(t=>`<span class="vlk">${ICO_LOCK}${t}</span>`).join('')}</div>
       <div class="vnd-cta">
         <a class="vb" href="${ctaHref('Quero meu acesso ao app de ferramentas da mentoria APM')}" target="_blank" rel="noopener">${ICO_ZAP}Quero meu acesso</a>
+        <!-- Entrar e olhar por dentro. O app abre em modo demonstracao,
+             com dados de exemplo e todos os campos travados: ele ve o que
+             a ferramenta faz e nao consegue lancar numero nenhum. -->
+        <a class="vb vb2" href="ferramentas.html" target="_blank" rel="noopener">Ver o app por dentro →</a>
       </div>
     </div>
   </div>`;
@@ -1026,13 +1125,19 @@ function blocoAppFechado(){
    RPC de contagem existe e e' maior que zero. */
 function blocoFechado(mi,lbl){
   const n=nMat(mi.id);
+  /* A lista de titulos entra aqui dentro, no lugar da fase. Antes este
+     bloco era so' convite — o aluno lia "solicite a liberacao" sem
+     nunca saber o que estava pedindo. */
+  const lista=listaEmenta(mi.id,'O que está publicado aqui');
   return`<div style="margin-bottom:26px;">
     <div class="mh"><span class="mtg" style="background:rgba(201,168,76,.14);color:var(--accent-light);border:1px solid rgba(201,168,76,.42);">${lbl}</span><span class="mtn" style="display:inline-flex;align-items:center;gap:7px;">${ICO_LOCK}${mi.t} <span style="font-weight:400;font-size:11.5px;color:var(--text-muted);">${mi.id<6?'(bloqueada)':'(bloqueado)'}</span></span></div>
+    ${lista}
     <div class="vnd" style="margin-bottom:0;">
       <div class="vnd-p" style="margin-bottom:15px;">
-        Você está a um clique de descobrir tudo o que esta fase entrega.
-        Veja a ementa, os resultados esperados e solicite a liberação caso faça sentido para o seu negócio.
-        ${n?`<br><span style="color:var(--accent-light);">${n===1?'1 material já publicado aqui dentro':n+' materiais já publicados aqui dentro'} — não abrem no seu plano.</span>`:''}
+        ${lista
+          ?'Está tudo aí em cima, pronto e no ar. O que separa você do arquivo é a liberação desta fase.'
+          :'Você está a um clique de descobrir tudo o que esta fase entrega. Veja a ementa, os resultados esperados e solicite a liberação caso faça sentido para o seu negócio.'}
+        ${(n&&!lista)?`<br><span style="color:var(--accent-light);">${n===1?'1 material já publicado aqui dentro':n+' materiais já publicados aqui dentro'} — não abrem no seu plano.</span>`:''}
       </div>
       <div class="vnd-cta">
         <a class="vb" href="${ctaHref('Quero meu acesso à '+rotuloFase(mi)+' da mentoria APM')}" target="_blank" rel="noopener">${ICO_ZAP}Quero meu acesso</a>
@@ -1131,6 +1236,7 @@ function smdBloqueada(m,bloco){
       </div>
     </div>
 
+    ${listaEmenta(m.id,'Já publicado nesta fase')}
     <div class="xc"><div class="xt">O que esta fase cobre</div>${m.tp.map(t=>`<div class="ti"><div class="td"></div><div class="tt">${t}</div></div>`).join('')}</div>
     ${ent.length?`<div class="dc2"><div class="dl">O que você leva desta fase</div>
       <div style="margin-top:10px;">${ent.map(t=>`<span class="vlk">${ICO_LOCK}${t}</span>`).join('')}</div>
@@ -1156,9 +1262,11 @@ function smd(id){
     const x=f.type==='xlsx';const c=x?'#22c55e':f.type==='pdf'?'#ef4444':'#C9A84C';
     /* O app aparece nas fases 2, 3 e 4. Sem o `if` abaixo o botao dizia
        ACESSAR para quem nao comprou o app, levava para fora da area de
-       membros e terminava numa parede. Agora ele pede o acesso daqui. */
+       membros e terminava numa parede. Agora ele entra em modo
+       demonstracao: ve os 10 modulos com dados de exemplo e nao consegue
+       lancar numero nenhum. Duas coisas diferentes, dois botoes. */
     const dlBtn=(f.id==='app'&&!appLiberado())
-      ?`<a class="vb" style="padding:5px 11px;font-size:9.5px;" href="${ctaHref('Quero meu acesso ao app de ferramentas da mentoria APM')}" target="_blank" rel="noopener">${ICO_LOCK}Liberar</a>`
+      ?`<a class="vb vb2" style="padding:5px 11px;font-size:9.5px;" href="ferramentas.html" target="_blank" rel="noopener">${ICO_LOCK}Ver por dentro</a>`
       :fbtn(f,'padding:4px 10px;font-size:9px;');
     return`<div style="display:flex;align-items:center;gap:9px;padding:8px 9px;background:var(--navy-mid);border-radius:4px;margin-bottom:5px;">${fileIc(f.type,c)}<div style="flex:1;"><div style="font-size:13px;font-weight:500;">${f.name}</div><div style="font-size:10px;color:var(--text-muted);">${f.desc||''}</div></div>${dlBtn}</div>`;
   }).join('')}</div>`:'';
@@ -1322,6 +1430,11 @@ function axCarregarNoForm(email,fases,ferr){
   document.getElementById('ax-email').value=email;
   document.querySelectorAll('.ax-f').forEach(c=>c.checked=fases.indexOf(parseInt(c.value))>=0);
   document.getElementById('ax-ferr').checked=!!ferr;
+  /* Limpa a senha de propriedade: trocar de aluno com o campo ainda
+     preenchido e clicar em "Definir senha" gravaria a senha de um na
+     conta do outro, sem erro nenhum na tela. */
+  const s=document.getElementById('ax-senha'); if(s)s.value='';
+  axSMsg('');
   axMsg('Editando '+email+'. Altere e salve.','var(--accent)');
   document.querySelector('.content').scrollTop=0;
 }
@@ -1343,15 +1456,73 @@ async function admAbrirAcessos(){
     const fs=(r.fases||[]);
     const resumo=fs.length? fs.map(n=>n<=6?'F'+n:'B'+(n-6)).join(' · ') : 'nenhuma fase';
     const extras=[r.ferramentas?'App':null, r.admin?'Admin':null].filter(Boolean).join(' · ');
+    /* `tem_senha` so' existe depois de `senha-de-acesso.sql`. Se a coluna
+       nao vier (undefined), nao inventa aviso nenhum — dizer "sem senha"
+       para todo mundo por causa de SQL que faltou seria pior que calar. */
+    const semSenha=(r.tem_senha===false)
+      ?`<span style="color:#fca5a5;"> · sem senha (só entra por link)</span>`:'';
     return `<div class="adm-item">
       <div class="adm-item-info">
         <div class="adm-item-name">${r.email}</div>
-        <div class="adm-item-meta">${resumo}${extras?' · '+extras:''}</div>
+        <div class="adm-item-meta">${resumo}${extras?' · '+extras:''}${semSenha}</div>
       </div>
       <button class="adm-del" style="color:var(--accent);border-color:rgba(201,168,76,.4);"
         onclick='axCarregarNoForm(${JSON.stringify(r.email)},${JSON.stringify(fs)},${r.ferramentas?1:0})'>Editar</button>
     </div>`;
   }).join('');
+}
+
+/* ---- SENHA PELO PAINEL ----
+   `admin_definir_senha` (senha-de-acesso.sql) escreve o hash bcrypt em
+   `auth.users` e confere por dentro se quem chamou e' admin. A senha
+   nunca volta do banco: quem a conhece e' quem acabou de digitar aqui.
+   Por isso o campo fica `type="text"` — o Luka precisa LER o que vai
+   mandar para o aluno, e esconder com asterisco so' geraria senha
+   digitada errada e aluno na porta. */
+function axSMsg(t,cor){
+  const el=document.getElementById('ax-smsg');
+  if(el){el.textContent=t;el.style.color=cor||'var(--text-muted)';}
+}
+function admGerarSenha(){
+  /* Sem I/l/0/O/1: senha ditada no WhatsApp e digitada errada volta como
+     "nao consigo entrar", que e' o problema que isto veio resolver. */
+  const abc='abcdefghjkmnpqrstuvwxyz', ABC='ABCDEFGHJKLMNPQRSTUVWXYZ', num='23456789';
+  const pega=s=>s[Math.floor(Math.random()*s.length)];
+  let s=pega(ABC)+pega(abc)+pega(num);
+  for(let i=0;i<7;i++)s+=pega(abc+ABC+num);
+  document.getElementById('ax-senha').value=s;
+  axSMsg('Senha gerada. Clique em Definir senha e depois mande para ele.','var(--accent)');
+}
+async function admSalvarSenha(){
+  const email=(document.getElementById('ax-email').value||'').trim();
+  const senha=(document.getElementById('ax-senha').value||'').trim();
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){axSMsg('Preencha o e-mail no campo acima.','#ef4444');return;}
+  if(senha.length<8){axSMsg('A senha precisa de no mínimo 8 caracteres.','#ef4444');return;}
+  axSMsg('Salvando…');
+  const {data,error}=await sb.rpc('admin_definir_senha',{p_email:email,p_senha:senha});
+  if(error){
+    const faltaSQL=/does not exist|could not find/i.test(error.message||'');
+    axSMsg(faltaSQL
+      ? 'Rode antes o mentoria-app/senha-de-acesso.sql no SQL Editor.'
+      : 'Não salvou: '+error.message,'#ef4444');
+    return;
+  }
+  axSMsg(String(data||'senha definida'),'#10B981');
+  admAbrirAcessos();
+}
+/* Abre o WhatsApp com a mensagem pronta. Nao envia nada sozinho — quem
+   aperta enviar e' o Luka, na tela dele. */
+function admMandarSenha(){
+  const email=(document.getElementById('ax-email').value||'').trim();
+  const senha=(document.getElementById('ax-senha').value||'').trim();
+  if(!email||!senha){axSMsg('Preencha o e-mail e a senha antes.','#ef4444');return;}
+  const url=location.href.split('#')[0].replace(/[^/]*$/,'');
+  const txt='Seu acesso à mentoria APM está liberado.\n\n'
+    +'Área de membros: '+url+'\n'
+    +'E-mail: '+email+'\n'
+    +'Senha: '+senha+'\n\n'
+    +'Entra de qualquer computador. Se quiser, troque a senha em "Definir senha", na barra lateral.';
+  window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank','noopener');
 }
 async function admSalvarAcesso(){
   const email=(document.getElementById('ax-email').value||'').trim();
@@ -1570,41 +1741,121 @@ const SUPA={
 };
 let sb=null, ALUNO=null;
 
+/* ---- LOGIN: SENHA PRIMEIRO, LINK COMO PLANO B ----
+   O link magico sozinho amarrava o acesso ao NAVEGADOR, nao a conta: o
+   aluno entrava na fabrica, ia para casa e precisava de outro e-mail.
+   Com o SMTP padrao do Supabase (2 e-mails por hora no projeto inteiro)
+   isso transformava o Luka em porteiro manual.
+   Agora cadastrar ja e' liberar: o admin define a senha no painel
+   (aba Acessos) e o aluno entra de qualquer maquina, quantas vezes
+   quiser. O link por e-mail fica para quem esqueceu a senha e para o
+   primeiro acesso de conta antiga, que ainda nao tem senha. */
 function telaLogin(msg,tipo){
   const app=document.querySelector('.app'); if(app)app.style.display='none';
   document.body.insertAdjacentHTML('beforeend',`
   <div class="gate" id="gate"><div class="gate-box">
     <div class="gate-mark">Ecossistema Aresta</div>
     <h1>Área de Membros</h1>
-    <p>Acesso exclusivo dos alunos da mentoria. Informe o e-mail do seu cadastro —
-       enviamos um link de acesso, sem senha.</p>
+    <p>Acesso exclusivo dos alunos da mentoria. Entre com o e-mail do seu
+       cadastro e a senha que você recebeu.</p>
     <label class="gate-lbl" for="ge">E-mail</label>
     <input class="adm-input" id="ge" type="email" placeholder="voce@email.com.br" autocomplete="email">
-    <button class="adm-btn" id="gb" onclick="enviarLink()">Receber link de acesso</button>
+    <label class="gate-lbl" for="gs" style="margin-top:10px;">Senha</label>
+    <input class="adm-input" id="gs" type="password" placeholder="sua senha" autocomplete="current-password">
+    <button class="adm-btn" id="gb" onclick="entrarComSenha()">Entrar</button>
     <div class="gate-msg ${tipo||''} ${msg?'on':''}" id="gmsg">${msg||''}</div>
-    <div class="gate-foot">Não recebeu? O link pode cair em promoções ou spam.
-       Abra o e-mail nesta mesma máquina.</div>
+    <div class="gate-foot">
+      Ainda não tem senha, ou esqueceu?
+      <a href="#" onclick="enviarLink();return false;" style="color:var(--accent-light);">Receber um link de acesso por e-mail</a>
+      — ele funciona uma vez, no navegador em que você abrir o e-mail.
+      Depois de entrar, defina uma senha em <b>Definir senha</b>, na barra lateral.
+    </div>
   </div></div>`);
-  const i=document.getElementById('ge');
-  if(i){i.focus();i.addEventListener('keydown',e=>{if(e.key==='Enter')enviarLink()});}
+  const e=document.getElementById('ge'), s=document.getElementById('gs');
+  if(e){e.focus();}
+  [e,s].forEach(i=>{if(i)i.addEventListener('keydown',ev=>{if(ev.key==='Enter')entrarComSenha()});});
 }
 function msgGate(m,t){
   const el=document.getElementById('gmsg');if(!el)return;
   el.textContent=m;el.className='gate-msg on '+(t||'');
 }
-async function enviarLink(){
+function emailDoGate(){
   const em=(document.getElementById('ge').value||'').trim();
-  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){msgGate('E-mail inválido.','err');return;}
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){msgGate('E-mail inválido.','err');return null;}
+  return em;
+}
+async function entrarComSenha(){
+  const em=emailDoGate(); if(!em)return;
+  const senha=document.getElementById('gs').value||'';
+  if(!senha){msgGate('Digite a senha, ou peça um link por e-mail no rodapé.','err');return;}
   const b=document.getElementById('gb');
-  b.disabled=true;b.textContent='Enviando…';
+  b.disabled=true;b.textContent='Entrando…';
+  const {error}=await sb.auth.signInWithPassword({email:em,password:senha});
+  b.disabled=false;b.textContent='Entrar';
+  if(error){
+    /* O Supabase responde a mesma coisa para senha errada e para conta
+       que nunca teve senha — de proposito, para nao revelar quais
+       e-mails existem. Por isso a mensagem cobre os dois casos e aponta
+       a saida em vez de acusar o aluno. */
+    const cred=/invalid login credentials/i.test(error.message||'');
+    msgGate(cred
+      ? 'E-mail ou senha incorretos. Se você nunca definiu uma senha, use o link por e-mail no rodapé.'
+      : 'Não consegui entrar: '+error.message,'err');
+    return;
+  }
+  /* Reload em vez de seguir na mesma tela: o boot inteiro depende da
+     sessao (admin, fases, conteudo) e refaze-lo do zero e' mais seguro
+     do que remontar meia tela. */
+  location.reload();
+}
+async function enviarLink(){
+  const em=emailDoGate(); if(!em)return;
+  const b=document.getElementById('gb');
+  b.disabled=true;
+  msgGate('Enviando…','');
   const {error}=await sb.auth.signInWithOtp({email:em,options:{emailRedirectTo:location.href.split('#')[0]}});
-  b.disabled=false;b.textContent='Receber link de acesso';
+  b.disabled=false;
   if(error){msgGate('Não foi possível enviar: '+error.message,'err');return;}
-  msgGate('Link enviado para '+em+'. Abra o e-mail e clique no link.','ok');
+  msgGate('Link enviado para '+em+'. Abra o e-mail nesta mesma máquina e clique no link. Pode cair em promoções ou spam.','ok');
 }
 async function sairConta(){
   if(!confirm('Sair da conta neste navegador?'))return;
   await sb.auth.signOut();location.reload();
+}
+
+/* ---- O ALUNO DEFININDO A PROPRIA SENHA ----
+   Quem entrou por link precisa de um caminho para nunca mais depender
+   de e-mail. Reusa a caixa do `.gate` como modal: nenhum CSS novo. */
+function telaSenha(){
+  if(document.getElementById('gate-senha'))return;
+  document.body.insertAdjacentHTML('beforeend',`
+  <div class="gate" id="gate-senha"><div class="gate-box">
+    <div class="gate-mark">${ALUNO?ALUNO.email:''}</div>
+    <h1>Definir senha</h1>
+    <p>Com senha você entra de qualquer computador, sem esperar e-mail nenhum.
+       Mínimo de 8 caracteres.</p>
+    <label class="gate-lbl" for="ns1">Nova senha</label>
+    <input class="adm-input" id="ns1" type="password" autocomplete="new-password">
+    <label class="gate-lbl" for="ns2" style="margin-top:10px;">Repita a senha</label>
+    <input class="adm-input" id="ns2" type="password" autocomplete="new-password">
+    <button class="adm-btn" id="nsb" onclick="salvarMinhaSenha()">Salvar senha</button>
+    <div class="gate-msg" id="nsmsg"></div>
+    <div class="gate-foot"><a href="#" onclick="document.getElementById('gate-senha').remove();return false;" style="color:var(--text-muted);">Cancelar</a></div>
+  </div></div>`);
+  document.getElementById('ns1').focus();
+}
+async function salvarMinhaSenha(){
+  const a=document.getElementById('ns1').value||'', b=document.getElementById('ns2').value||'';
+  const msg=(t,c)=>{const el=document.getElementById('nsmsg');el.textContent=t;el.className='gate-msg on '+(c||'');};
+  if(a.length<8){msg('A senha precisa de no mínimo 8 caracteres.','err');return;}
+  if(a!==b){msg('As duas senhas não são iguais.','err');return;}
+  const btn=document.getElementById('nsb');
+  btn.disabled=true;btn.textContent='Salvando…';
+  const {error}=await sb.auth.updateUser({password:a});
+  btn.disabled=false;btn.textContent='Salvar senha';
+  if(error){msg('Não salvou: '+error.message,'err');return;}
+  msg('Senha salva. Agora você entra por e-mail e senha em qualquer computador.','ok');
+  setTimeout(()=>{const g=document.getElementById('gate-senha');if(g)g.remove();},2200);
 }
 
 async function boot(){
@@ -1650,10 +1901,11 @@ async function boot(){
     }
   }catch(e){ console.error('acesso',e); }
   await carregarConteudo();
-  /* Depois do `acesso`, porque o numero so' interessa para quem tem fase
-     fechada. Falha silenciosa: sem a RPC a area abre igual, so' sem os
-     numeros de material nas telas de fase fechada. */
+  /* Depois do `acesso`, porque o numero e a lista so' interessam a quem
+     tem fase fechada. As duas falham em silencio: sem as RPCs a area
+     abre igual, so' sem os numeros e sem a lista de titulos. */
   await carregarContagem();
+  await carregarEmenta();
 
   if(isAdmin()){
     document.getElementById('lock-btn').classList.add('active');

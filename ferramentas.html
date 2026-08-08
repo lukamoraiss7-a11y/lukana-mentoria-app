@@ -176,6 +176,22 @@ h4:first-child{margin-top:0}
 .sb-foot .u{font-size:11px;color:var(--text-secondary);word-break:break-all;line-height:1.4}
 .linkbtn{background:none;border:none;color:var(--text-muted);font-size:10px;cursor:pointer;padding:0;text-decoration:underline;margin-top:6px}
 .linkbtn:hover{color:var(--accent-light)}
+
+/* ---- MODO VITRINE ----
+   O app aberto para quem ainda nao comprou: ele ve os dez modulos
+   funcionando com dados de exemplo e nao consegue lancar nada.
+   O campo continua legivel de proposito — apagar esconde justamente o
+   que precisa ser desejado. O que muda e' o cursor e a interacao. */
+.vitfx{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:linear-gradient(135deg,rgba(201,168,76,.12),rgba(201,168,76,.03));border-bottom:1px solid rgba(201,168,76,.34);padding:13px 26px}
+.vitfx-t{font-size:12.5px;font-weight:700;color:var(--accent-light);letter-spacing:.3px}
+.vitfx-s{font-size:11.5px;color:var(--text-secondary);line-height:1.5;flex:1;min-width:220px}
+.vitfx .vb{display:inline-flex;align-items:center;gap:6px;background:var(--accent);color:var(--navy);border:none;padding:9px 17px;border-radius:4px;font-size:10.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;text-decoration:none;white-space:nowrap}
+.vitfx .vb:hover{filter:brightness(1.12)}
+body.vit #content input,body.vit #content select,body.vit #content textarea{cursor:not-allowed;opacity:.8}
+body.vit #content button:not([data-vitrine-livre]){cursor:not-allowed;opacity:.7}
+.vittoast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:900;display:flex;align-items:center;gap:13px;background:var(--navy-light,#141d31);border:1px solid rgba(201,168,76,.42);border-radius:6px;padding:12px 16px;box-shadow:0 10px 34px rgba(0,0,0,.5);max-width:min(560px,92vw)}
+.vittoast div{font-size:12px;color:var(--text-secondary);line-height:1.5}
+.vittoast a{color:var(--navy);background:var(--accent);text-decoration:none;font-size:10.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:8px 14px;border-radius:4px;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -352,7 +368,20 @@ function carregar(){try{
  if(!o.sim||!o.sim.atual||o.sim.atual.matM2===undefined)o.sim=vazio().sim;
  return o
 }catch(e){return vazio()}}
-function save(){localStorage.setItem(KEY,JSON.stringify(DB));agendarPush();rodape();navBadges()}
+/* MODO VITRINE — quem ainda nao comprou o app entra, olha e nao lanca.
+   Antes batia numa parede: nao dava para saber o que se estava
+   comprando. Agora o app abre inteiro, com dados de exemplo, e a
+   interacao e' que fica trancada.
+   `VITRINE` e' declarada aqui, acima de tudo que a consulta, porque
+   `save()` e' o funil unico de gravacao: com ela ligada nada vai para o
+   localStorage nem para o Supabase, mesmo que algum caminho de edicao
+   escape do bloqueio de eventos. Duas camadas, de proposito — a de tela
+   e' a que o aluno ve, esta e' a que garante. */
+let VITRINE=false;
+function save(){
+ if(VITRINE)return;
+ localStorage.setItem(KEY,JSON.stringify(DB));agendarPush();rodape();navBadges();
+}
 function setv(path,val){const p=path.split('.');let o=DB;for(let i=0;i<p.length-1;i++)o=o[p[i]];o[p[p.length-1]]=val;save();paint()}
 function setn(path,el){setv(path,num(el.value))}
 function setpct(path,el){setv(path,num(el.value)/100)}
@@ -1520,11 +1549,20 @@ function restaurar(){
  save();render();
 }
 function seed(){
+ if(VITRINE)return;
  if(temDados()){
   if(!confirm('ATENÇÃO\n\nIsto APAGA tudo o que você já lançou e coloca dados fictícios no lugar.\n\nUma cópia dos seus dados fica guardada para o botão "Desfazer exemplo", mas o seguro é clicar em Exportar antes.\n\nContinuar mesmo assim?'))return;
   localStorage.setItem(BKP,JSON.stringify(DB));
  }else if(!confirm('Carregar os dados de exemplo?'))return;
- DB=vazio();
+ DB=exemploDB();
+ save();render();
+}
+/* Os dados de exemplo saíram de dentro do `seed()` e viraram função
+   propria porque agora servem a dois donos: o botao "Dados de exemplo"
+   (que grava) e o modo vitrine (que NAO grava nada — nem no navegador,
+   nem no Supabase). Devolve um DB novo e nao toca em nada de fora. */
+function exemploDB(){
+ const DB=vazio();
  DB.fin={fat:[310000,330000,350000],imposto:.10,cv:[105000,58000,14000,5000,12000],cf:[9000,16000,4500,2200,7000,2500,1800,900,15000]};
  const h=hoje();
  const mk=(p,am,cl,atras,ate,jit)=>{const ini=addBiz(h,-atras);
@@ -1553,7 +1591,7 @@ function seed(){
  DB.prec.hist=[{data:addBiz(h,-14),cliente:'João Silva',tipo:'Cozinha Completa',m2:10,preco:20000,status:'Fechado',margem:.35},
                {data:addBiz(h,-9),cliente:'Maria Santos',tipo:'Closet Básico',m2:12,preco:28800,status:'Pendente',margem:.35}];
  CHECKLISTS.corte.itens.forEach((_,i)=>{DB.chk[DB.amb[0].id]=DB.chk[DB.amb[0].id]||{};DB.chk[DB.amb[0].id].corte=DB.chk[DB.amb[0].id].corte||{};DB.chk[DB.amb[0].id].corte[i]={s:i===7?'no':'ok',r:'Matheus'}});
- save();render();
+ return DB;
 }
 
 /* ══════════ CONTA E SINCRONIZAÇÃO ══════════ */
@@ -1567,7 +1605,11 @@ function rodape(){
             ok:['ok','Sincronizado'],
             wait:['wait','Salvando…'],
             bad:['bad','Falha ao sincronizar — dados guardados no navegador'],
-            off:['bad','Sem conexão — será sincronizado ao voltar']}[SYNC]||['',''];
+            off:['bad','Sem conexão — será sincronizado ao voltar'],
+            /* Sem este estado o rodape ficava em branco e parecia defeito.
+               Dizer que nada e' salvo e' honesto e evita o aluno lancar
+               algo achando que ficou guardado. */
+            vitrine:['','Demonstração — nada é salvo.']}[SYNC]||['',''];
  el.innerHTML=(USER?`<div class="u">${esc(USER.email)}</div>`:'')
   +`<div class="sync ${est[0]}"><i></i>${est[1]}${ultimo&&SYNC==='ok'?' · '+ultimo:''}</div>`
   +(USER?`<button class="linkbtn" onclick="sair()">Sair da conta</button>`:'');
@@ -1601,25 +1643,60 @@ async function puxar(){
 }
 window.addEventListener('online',()=>{if(REMOTO){SYNC='wait';rodape();enviar()}});
 
+/* Senha primeiro, link como plano B. O link magico amarrava o acesso ao
+   NAVEGADOR e nao a conta: o membro entrava na fabrica, ia para casa e
+   precisava de outro e-mail — com o SMTP padrao entregando 2 por hora.
+   Quem define a senha e' o admin, na area de membros (Admin > Acessos);
+   aqui so' se usa. Mesmo Supabase, mesma conta dos dois lados. */
 function telaLogin(msg,tipo){
  document.body.insertAdjacentHTML('beforeend',`
  <div class="gate" id="gate"><div class="gate-box">
   <div class="gate-brand"><div class="sb-icon">A</div>
    <div><div class="sb-name">APM</div><div class="sb-sub">Ferramentas</div></div></div>
   <h1>Entrar</h1>
-  <p>Acesso exclusivo dos membros da mentoria. Informe o e-mail do seu cadastro — enviamos um link de acesso, sem senha.</p>
+  <p>Acesso exclusivo dos membros da mentoria. Entre com o e-mail do seu cadastro e a senha que você recebeu.</p>
   <div class="f"><label>E-mail</label><input id="gm" type="email" placeholder="voce@email.com.br" autocomplete="email"></div>
-  <button class="btn gold" id="gb" onclick="enviarLink()">Receber link de acesso</button>
+  <div class="f"><label>Senha</label><input id="gp" type="password" placeholder="sua senha" autocomplete="current-password"></div>
+  <button class="btn gold" id="gb" onclick="entrarComSenha()">Entrar</button>
   <div id="gmsg" class="gate-msg">${msg?`<div class="alert a-${tipo||'blu'}"><span class="ic">${tipo==='red'?'🔴':'🔵'}</span><div>${esc(msg)}</div></div>`:''}</div>
+  <div style="font-size:11px;color:var(--muted,#8a8a8a);margin-top:14px;line-height:1.5;">
+   Ainda não tem senha, ou esqueceu?
+   <a href="#" onclick="enviarLink();return false;" style="color:var(--accent-light,#C9A84C);">Receber um link por e-mail</a>
+   — depois de entrar, defina uma senha na área de membros, em "Definir senha".
+  </div>
  </div></div>`);
- const i=$('#gm');if(i){i.focus();i.addEventListener('keydown',e=>{if(e.key==='Enter')enviarLink()})}
+ const e=$('#gm'),p=$('#gp');
+ if(e)e.focus();
+ [e,p].forEach(i=>{if(i)i.addEventListener('keydown',ev=>{if(ev.key==='Enter')entrarComSenha()})});
+}
+function emailDoGate(){
+ const em=($('#gm').value||'').trim();
+ if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){msgGate('E-mail inválido.','red');return null}
+ return em;
+}
+async function entrarComSenha(){
+ const em=emailDoGate();if(!em)return;
+ const senha=$('#gp').value||'';
+ if(!senha){msgGate('Digite a senha, ou peça um link por e-mail abaixo.','red');return}
+ const b=$('#gb');b.disabled=true;b.textContent='Entrando…';
+ const {error}=await sb.auth.signInWithPassword({email:em,password:senha});
+ b.disabled=false;b.textContent='Entrar';
+ if(error){
+  /* O Supabase responde igual para senha errada e para conta que nunca
+     teve senha, de proposito. A mensagem cobre os dois. */
+  msgGate(/invalid login credentials/i.test(error.message||'')
+   ? 'E-mail ou senha incorretos. Se você nunca definiu uma senha, use o link por e-mail abaixo.'
+   : 'Não consegui entrar: '+error.message,'red');
+  return;
+ }
+ location.reload();
 }
 async function enviarLink(){
- const em=($('#gm').value||'').trim();
- if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){msgGate('E-mail inválido.','red');return}
- const b=$('#gb');b.disabled=true;b.textContent='Enviando…';
+ const em=emailDoGate();if(!em)return;
+ const b=$('#gb');b.disabled=true;
+ msgGate('Enviando…','blu');
  const {error}=await sb.auth.signInWithOtp({email:em,options:{emailRedirectTo:location.href.split('#')[0]}});
- b.disabled=false;b.textContent='Receber link de acesso';
+ b.disabled=false;
  if(error){msgGate('Não foi possível enviar: '+error.message,'red');return}
  msgGate('Link enviado para '+em+'. Abra o e-mail nesta mesma máquina e clique no link. Pode cair na promoções ou no spam.','blu');
 }
@@ -1676,10 +1753,94 @@ function telaSemAcesso(infra){
  </div></div>`);
 }
 
+/* ══════════ MODO VITRINE ══════════
+   Decisao do Luka: quem nao comprou o app entra, ve o que tem dentro e
+   nao consegue colocar numero nenhum. A parede antiga vendia mal — o
+   aluno lia "nao esta no seu plano" sem nunca ver a ferramenta.
+
+   Sao duas camadas, e as duas importam:
+   1. `save()` desligado (VITRINE=true). Nada vai para o localStorage nem
+      para o Supabase. Se algum caminho de edicao escapar do item 2, ele
+      morre aqui — e o dado real do aluno, se existir neste navegador,
+      nunca e' sobrescrito pelos numeros de exemplo.
+   2. Eventos bloqueados na captura, antes de chegarem no handler. E' o
+      que o aluno percebe: o campo esta ali, legivel, e nao aceita.
+
+   Nao ha material a proteger aqui: os numeros sao ficticios, os mesmos
+   do botao "Dados de exemplo". O que se protege e' o uso da ferramenta.
+   Nada disso substitui o gate: `temFerramentas()` continua falhando
+   fechado, e quem compra e' liberado em `acesso.ferramentas`. */
+function modoVitrine(){
+ VITRINE=true;
+ REMOTO=false;SYNC='vitrine';
+ /* De exemplo, em memoria. Nao passa por save() — ver camada 1. */
+ DB=exemploDB();
+ document.body.classList.add('vit');
+ iniciarUI();
+ faixaVitrine();
+ travarVitrine();
+}
+function faixaVitrine(){
+ const c=$('#content');if(!c)return;
+ c.insertAdjacentHTML('beforebegin',`
+ <div class="vitfx">
+  <div style="flex:1;min-width:230px;">
+   <div class="vitfx-t">Modo demonstração — você está vendo o app por dentro</div>
+   <div class="vitfx-s">Os números na tela são de exemplo e os campos estão travados.
+    Com o acesso liberado, você lança os seus e o app devolve diagnóstico, semáforo e o que fazer hoje.</div>
+  </div>
+  <a class="vb" data-vitrine-livre href="${ctaHref('Quero meu acesso ao app de ferramentas da mentoria APM')}" target="_blank" rel="noopener">Quero meu acesso</a>
+ </div>`);
+ /* Exportar/Importar/Dados de exemplo nao fazem sentido em vitrine:
+    exportariam dado ficticio e importar nao gravaria nada. */
+ const tbr=document.querySelector('.tbr');
+ if(tbr)tbr.innerHTML=`<span style="font-size:10.5px;color:var(--accent-light);border:1px solid rgba(201,168,76,.42);background:rgba(201,168,76,.13);padding:4px 9px;border-radius:4px;letter-spacing:.6px;text-transform:uppercase;font-weight:700;">Demonstração</span>`;
+}
+/* Captura (terceiro argumento `true`): o evento e' cortado antes de
+   chegar no `onclick` do elemento, entao nao ha handler para revisar um
+   por um — nem os que ainda vao ser escritos.
+   O que continua livre: a navegacao (`#nav`), o rodape com "Sair da
+   conta", e qualquer coisa marcada `data-vitrine-livre` (o botao de
+   comprar). Bloqueado: tudo que e' campo ou botao dentro de `#content`. */
+const AVISA={pointerdown:1,mousedown:1,click:1,dblclick:1,keydown:1,paste:1};
+function travarVitrine(){
+ const bloquear=ev=>{
+  const el=ev.target;
+  if(!el||!el.closest)return;
+  if(el.closest('[data-vitrine-livre]'))return;
+  if(!el.closest('#content'))return;
+  if(!el.closest('input,select,textarea,button,label,[onclick],[contenteditable]'))return;
+  ev.preventDefault();ev.stopPropagation();
+  /* O aviso sai no gesto do aluno, nao nos eventos que seriam
+     consequencia dele (`focusin`, `input`, `change`) — senao um clique
+     unico piscaria o aviso tres vezes. */
+  if(AVISA[ev.type])avisoVitrine();
+ };
+ ['pointerdown','mousedown','click','dblclick','keydown','paste','input','change','focusin']
+  .forEach(t=>document.addEventListener(t,bloquear,true));
+}
+let vittmr=null;
+function avisoVitrine(){
+ let t=$('#vittoast');
+ if(!t){
+  document.body.insertAdjacentHTML('beforeend',`
+  <div class="vittoast" id="vittoast">
+   <div><b style="color:var(--accent-light)">Campo travado.</b> Você está no modo demonstração:
+    dá para ver tudo o que o app faz, mas lançar os seus números precisa do acesso liberado.</div>
+   <a data-vitrine-livre href="${ctaHref('Quero meu acesso ao app de ferramentas da mentoria APM')}" target="_blank" rel="noopener">Liberar</a>
+  </div>`);
+  t=$('#vittoast');
+ }
+ clearTimeout(vittmr);
+ vittmr=setTimeout(()=>{const e=$('#vittoast');if(e)e.remove()},5200);
+}
+
 async function sair(){
  if(!confirm('Sair da conta neste navegador?'))return;
  await sb.auth.signOut();
- localStorage.removeItem(KEY);localStorage.removeItem(BKP);
+ /* Em vitrine o localStorage nunca foi tocado — apagar aqui destruiria
+    dado de um outro membro que use o mesmo navegador. */
+ if(!VITRINE){localStorage.removeItem(KEY);localStorage.removeItem(BKP)}
  location.reload();
 }
 
@@ -1704,7 +1865,14 @@ function iniciarUI(){
  if(!sess){telaLogin();return}
  USER=sess.user;REMOTO=true;
  const acc=await temFerramentas();
- if(!acc.ok){telaSemAcesso(acc.infra);return}
+ /* Duas saidas diferentes para dois problemas diferentes. `infra` e'
+    banco fora do ar: nao ha nada a demonstrar nem a vender, e mostrar
+    numeros de exemplo ali faria o aluno achar que comprou. Sem `infra`
+    e' aluno que nao comprou — esse entra e olha por dentro. */
+ if(!acc.ok){
+  if(acc.infra){telaSemAcesso(acc.infra);return}
+  modoVitrine();return;
+ }
  try{ await puxar() }
  catch(e){ SYNC='bad';console.error('load',e);
    alert('Entrou, mas não consegui carregar seus dados do servidor. Usando o que está neste navegador. Se o problema persistir, confira se a tabela e as políticas de acesso foram criadas.') }

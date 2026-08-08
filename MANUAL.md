@@ -32,11 +32,29 @@ select tablename, rowsecurity from pg_tables
 As três linhas precisam vir com `rowsecurity = true`. Se vier `false` em alguma, os
 dados de um aluno ficam visíveis para os outros — pare e me chame.
 
-### 2. Configurar o SMTP (uma vez, 10 minutos) — **este é o bloqueio real**
+### 1-B. Rodar os dois SQL novos — ⏳ **PENDENTE (08/08/2026)**
+
+Dois arquivos, um Run cada, no mesmo SQL Editor. Podem rodar em qualquer ordem e
+quantas vezes quiser.
+
+| Arquivo | O que passa a funcionar |
+|---|---|
+| `senha-de-acesso.sql` | O campo **Senha de acesso** no painel. Sem ele, o botão avisa que falta rodar. |
+| `ementa-por-fase.sql` | A lista do que já está publicado dentro da fase fechada, e os números de material da vitrine. **Substitui o `contagem-por-fase.sql`** — as duas funções estão nele. |
+
+Enquanto não rodar, o app não quebra: o campo de senha recusa com uma mensagem
+dizendo o que falta, e a fase fechada volta a aparecer sem a lista de títulos.
+
+### 2. Configurar o SMTP (uma vez, 10 minutos) — **deixou de ser bloqueio**
 
 O serviço de e-mail embutido do Supabase entrega **2 mensagens por hora no projeto
-inteiro**. Como o login é por link no e-mail, uma turma de 20 pessoas levaria 10 horas
-para entrar — e ninguém vê mensagem de erro, só uma caixa de entrada vazia.
+inteiro**. Isso era fatal enquanto o único jeito de entrar era o link no e-mail: uma
+turma de 20 pessoas levaria 10 horas para entrar, sem ver erro nenhum.
+
+**Com o login por senha (08/08/2026) isso saiu do caminho crítico** — você define a
+senha no painel e manda por WhatsApp, sem e-mail nenhum na jogada. O SMTP continua
+valendo a pena para o aluno recuperar acesso sozinho pelo link, mas já não trava a
+abertura da turma.
 
 1. Crie conta no **resend.com** (grátis, 3.000 e-mails/mês — sobra para 20 alunos)
 2. No Resend: **API Keys** → **Create API Key** → copie a chave
@@ -75,6 +93,28 @@ Supabase → **Authentication** → **Users** → **Add user** → **Create new 
 Criar conta só deixa **entrar**. Sem liberar fase, ele vê a trilha inteira bloqueada.
 O passo seguinte é obrigatório.
 
+### Definir a senha dele — é isto que faz o acesso ser da conta, não do computador
+
+Menu lateral → **Admin** → aba **Acessos** → bloco **Senha de acesso**.
+
+1. O e-mail é o mesmo do campo de cima
+2. **Gerar** (ou digite uma, mínimo 8 caracteres)
+3. **Definir senha**
+4. **Mandar no WhatsApp** — abre a conversa com o endereço, o e-mail e a senha
+   prontos. Você escolhe o contato e aperta enviar.
+
+Com senha o mentorado entra **de qualquer computador, quantas vezes quiser**. Sem
+senha ele depende de um link por e-mail que vale uma vez e só no navegador em que
+abriu a caixa de entrada — foi o que fazia você virar porteiro manual.
+
+Na lista "Quem tem o quê", quem ainda não tem senha aparece marcado em vermelho como
+**sem senha (só entra por link)**.
+
+O aluno pode trocar a senha depois: barra lateral → **Definir senha**.
+
+> A senha só é gravada, nunca lida. Nem o painel nem o banco devolvem a senha de
+> ninguém — perdeu, você gera outra.
+
 ### Liberar as fases que o aluno comprou — **pelo painel**
 
 Menu lateral → **Admin** → aba **Acessos**.
@@ -102,9 +142,15 @@ select public.bloquear_fases('aluno@email.com');
 select * from public.listar_acessos();
 ```
 
-O aluno continua vendo na trilha as fases que não comprou — apagadas, com o selo
-**Bloqueado**. Clicando, ele vê o que a fase cobre e os entregáveis, e nada do que foi
-publicado nela. É de propósito: ver o que está perdendo é o que vende a fase seguinte.
+O aluno continua vendo na trilha as fases que não comprou — legíveis e douradas, com o
+selo **Liberar**. Clicando, ele vê o que a fase cobre, os entregáveis **e a lista do
+que já está publicado lá dentro**, título por título, cada um com cadeado e o aviso
+"não abre no seu plano". É de propósito: ler "Planilha de Precificação por m²" trancada
+vende a fase; a descrição, o link e o arquivo continuam presos no banco.
+
+O mesmo vale para o app de ferramentas: quem não comprou **entra em modo demonstração**
+— vê os 10 módulos funcionando com números de exemplo, e todo campo está travado. Nada
+que ele digite é salvo, nem no navegador nem no servidor.
 
 Material que você cadastrar como **Geral** aparece para todo aluno, tenha ele qualquer
 fase. Use isso para recado e documento que vale para a turma inteira.
@@ -179,13 +225,14 @@ era verdade: ficava salvo só no seu navegador e nenhum aluno via.
 
 | Nível | O que abre | Como se libera |
 |---|---|---|
-| **1 — Entrar** | A área de membros, a trilha e o que for cadastrado como Geral | Basta criar a conta |
-| **2 — Fases** | As aulas, materiais e notas das fases compradas | `liberar_fases(email,'{1,3}')` |
-| **3 — Ferramentas** | App de 10 módulos | `liberar_ferramentas(...)` na mão |
+| **1 — Entrar** | A área de membros, a trilha e o que for cadastrado como Geral | Criar a conta **e definir a senha** |
+| **2 — Fases** | As aulas, materiais e notas das fases compradas | Painel → Acessos (ou `liberar_fases(email,'{1,3}')`) |
+| **3 — Ferramentas** | App de 10 módulos, editável | Painel → Acessos, caixa do App |
 
-Um aluno sem o nível 3 que abrir o app de ferramentas vê "Seu plano não inclui as
-ferramentas" e um botão de sair. Uma fase fora do nível 2 aparece na trilha com o selo
-Bloqueado e abre a tela "Esta fase não está no seu plano".
+Um aluno sem o nível 3 que abrir o app de ferramentas **entra em modo demonstração**:
+vê os 10 módulos com números de exemplo e não consegue digitar em campo nenhum. Uma
+fase fora do nível 2 aparece na trilha em dourado, com o selo **Liberar**, e abre a
+tela de venda com a lista do que está publicado lá dentro.
 
 **Criar a conta não libera aula nenhuma.** Desde 06/08/2026 é preciso rodar
 `liberar_fases` também — se esquecer, o aluno entra e não vê aula, e vai achar que
@@ -224,8 +271,22 @@ empresa.
 **Aluno entrou e não vê aula nenhuma** → falta o `liberar_fases` dele. Confira com
 `select * from public.listar_acessos();` — se a coluna `fases` estiver vazia, é isso.
 
+**Aluno diz "não consigo entrar" / "pede link de novo em outro computador"** → ele não
+tem senha. Painel → Acessos → **Senha de acesso** → Gerar → Definir senha → mandar por
+WhatsApp. Resolve de uma vez, para qualquer máquina.
+
+**"E-mail ou senha incorretos"** → ou a senha está errada, ou a conta nunca teve senha
+(o Supabase responde igual nos dois casos, de propósito). Gere outra senha no painel.
+
+**O botão Definir senha diz que falta rodar SQL** → falta o `senha-de-acesso.sql`
+(passo 1-B).
+
+**Fase fechada não mostra a lista do que tem dentro** → falta o `ementa-por-fase.sql`
+(passo 1-B).
+
 **Aluno não recebe o link** → quase sempre é o SMTP (passo 2). Se já estiver configurado,
 peça para olhar em promoções e spam, e confirme que ele abre o e-mail na mesma máquina.
+Mas o caminho curto é senha, não link.
 
 **O aluno entra nas ferramentas sem ter pago** → confira com `select * from public.acesso;`
 se a linha dele está com `ferramentas = true` indevidamente.

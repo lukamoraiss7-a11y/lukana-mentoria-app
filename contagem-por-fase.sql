@@ -1,4 +1,10 @@
 -- ═══════════════════════════════════════════════════════════════
+-- ⚠️  SUBSTITUÍDO por `ementa-por-fase.sql` (08/08/2026).
+--     Aquele arquivo cria esta mesma função e mais a `ementa_por_fase`,
+--     que devolve o título do que está publicado na fase fechada. Rode
+--     o de lá; este fica só como referência do que a função faz.
+-- ═══════════════════════════════════════════════════════════════
+--
 -- QUANTO MATERIAL EXISTE EM CADA FASE — o número, nunca o arquivo
 --
 -- Cole este arquivo inteiro no SQL Editor do Supabase e rode uma vez.
