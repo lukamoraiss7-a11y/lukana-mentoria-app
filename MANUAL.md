@@ -32,18 +32,20 @@ select tablename, rowsecurity from pg_tables
 As três linhas precisam vir com `rowsecurity = true`. Se vier `false` em alguma, os
 dados de um aluno ficam visíveis para os outros — pare e me chame.
 
-### 1-B. Rodar os dois SQL novos — ⏳ **PENDENTE (08/08/2026)**
+### 1-B. Rodar os dois SQL novos — ✅ **FEITO em 08/08/2026**
 
-Dois arquivos, um Run cada, no mesmo SQL Editor. Podem rodar em qualquer ordem e
-quantas vezes quiser.
+Rodados em produção em 08/08/2026 e conferidos. **Não precisa rodar de novo** — ficam
+como referência para reinstalar.
 
-| Arquivo | O que passa a funcionar |
+| Arquivo | O que passou a funcionar |
 |---|---|
-| `senha-de-acesso.sql` | O campo **Senha de acesso** no painel. Sem ele, o botão avisa que falta rodar. |
+| `senha-de-acesso.sql` | O campo **Senha de acesso** no painel, e a coluna "sem senha" na lista. |
 | `ementa-por-fase.sql` | A lista do que já está publicado dentro da fase fechada, e os números de material da vitrine. **Substitui o `contagem-por-fase.sql`** — as duas funções estão nele. |
 
-Enquanto não rodar, o app não quebra: o campo de senha recusa com uma mensagem
-dizendo o que falta, e a fase fechada volta a aparecer sem a lista de títulos.
+Conferência de 08/08: as quatro funções (`admin_definir_senha`, `admin_listar_acessos`,
+`ementa_por_fase`, `contagem_por_fase`) existem, todas `security definer`, todas
+executáveis por aluno logado e **nenhuma** por visitante anônimo. A trava de admin de
+`admin_definir_senha` foi testada e recusa até chamada com poder de `postgres`.
 
 ### 2. Configurar o SMTP (uma vez, 10 minutos) — **deixou de ser bloqueio**
 
