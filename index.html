@@ -1028,7 +1028,34 @@ async function abrirDoBucket(ev,path,abrirNaAba,nome){
     if(aba){aba.location=web;}else{location.href=web;}
     return false;
   }
-  if(aba)aba.location=data.signedUrl; else location.href=data.signedUrl;
+  /* Download (xlsx, pdf) segue direto: o navegador salva o arquivo e o
+     cabecalho do Supabase nao atrapalha. */
+  if(!aba){location.href=data.signedUrl;return false;}
+
+  /* HTML nao pode ir direto. O Storage do Supabase serve objeto `text/html`
+     como TEXTO — protecao contra alguem hospedar pagina no dominio deles —
+     entao a aula abria como codigo-fonte na tela, e sem `text/html` o
+     navegador ignora o `<meta charset>` e o acento virava "MÃ“DULO 2 â€”".
+     O mimetype gravado no bucket esta certo (`text/html` nos 31 objetos);
+     quem troca e' o servidor, e nao ha parametro de assinatura que mude.
+     Solucao: buscar o arquivo, decodificar como UTF-8 na mao e montar um
+     Blob com o tipo certo. O link assinado continua expirando em 60s e o
+     arquivo continua privado — o Blob vive dentro deste navegador. Os
+     modulos sao arquivo unico, sem link relativo, entao perder a URL de
+     base nao quebra nada. */
+  try{
+    const r=await fetch(data.signedUrl);
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    const html=new TextDecoder('utf-8').decode(await r.arrayBuffer());
+    const url=URL.createObjectURL(new Blob([html],{type:'text/html;charset=utf-8'}));
+    aba.location=url;
+    /* Nao revogar de imediato: a aba ainda esta carregando. Um minuto e'
+       folgado e evita segurar memoria para sempre. */
+    setTimeout(()=>URL.revokeObjectURL(url),60000);
+  }catch(e){
+    console.error('abrir material',e);
+    aba.location='files/'+path.split('/').pop();
+  }
   return false;
 }
 
@@ -1357,12 +1384,32 @@ function getAdminData(){return CONTEUDO;}
 /* Uma linha do banco no formato que as telas ja esperam. */
 function daLinha(r){return Object.assign({},r.dados,{_id:r.id,faseId:r.fase_id});}
 
+/* Ordem de leitura do material dentro da fase.
+   `criado_em` nao serve: o upload multiplo de 07/08 subiu os 32 modulos do
+   ultimo para o primeiro, entao a aula 16 aparecia antes da aula 1. E nem
+   com upload na ordem certa daria: qualquer arquivo reenviado depois pula
+   para o fim da fila.
+   O nome do arquivo e' que carrega a ordem de verdade (`f5-00`, `f5-01`,
+   ... `f5-15`) e ordena sozinho como texto porque tem zero a esquerda.
+   Sem caminho nem arquivo — material antigo, cadastrado por URL — cai no
+   nome que o aluno ve. `numeric:true` para "Modulo 2" nao vir depois de
+   "Modulo 12" se um dia o nome for a unica pista. */
+function ordemMaterial(f){
+  return (f.path||f.file||f.name||'').toLowerCase();
+}
+function ordenaConteudo(lista){
+  return lista.slice().sort((a,b)=>
+    ordemMaterial(a).localeCompare(ordemMaterial(b),'pt-BR',{numeric:true}));
+}
 async function carregarConteudo(){
   const vazio={materials:[],videos:[],links:[],comments:[]};
   const {data,error}=await sb.from('conteudo').select('id,tipo,fase_id,dados').order('criado_em');
   if(error){console.error('conteudo',error);CONTEUDO=vazio;return;}
   const fora=Object.assign({},vazio);
   (data||[]).forEach(r=>{if(fora[r.tipo])fora[r.tipo].push(daLinha(r));});
+  /* So' material tem ordem de leitura. Video, link e recado seguem em
+     `criado_em`, que ali e' o certo: o mais antigo primeiro. */
+  fora.materials=ordenaConteudo(fora.materials);
   CONTEUDO=fora;
 }
 async function publicar(tipo,faseId,dados){

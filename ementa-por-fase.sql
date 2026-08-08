@@ -54,7 +54,15 @@ as $$
     from public.conteudo c
    where c.fase_id is not null
      and c.tipo in ('materials','videos','links')
-   order by c.fase_id, c.tipo, c.criado_em;
+   -- Ordem de leitura, não ordem de upload. O upload múltiplo de 07/08
+   -- subiu os 32 módulos do último para o primeiro, então `criado_em`
+   -- listava a aula 16 antes da aula 1. O nome do arquivo carrega a ordem
+   -- real (`f5-00` … `f5-15`) e ordena sozinho porque tem zero à esquerda.
+   order by c.fase_id, c.tipo,
+            coalesce(nullif(btrim(c.dados->>'path'),''),
+                     nullif(btrim(c.dados->>'file'),''),
+                     c.dados->>'name',
+                     c.dados->>'title');
 $$;
 
 
