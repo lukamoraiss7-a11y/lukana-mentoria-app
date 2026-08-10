@@ -171,7 +171,7 @@ h4:first-child{margin-top:0}
 .gate .btn{width:100%;padding:11px;justify-content:center;text-align:center;font-size:13px}
 .gate-msg{margin-top:16px}
 /* Parede de quem nao comprou o app. Precisa de mais largura que a caixa
-   de login: aqui nao ha um campo, ha uma vitrine com os 10 modulos. */
+   de login: aqui nao ha um campo, ha uma vitrine com os 11 modulos. */
 .gate-box.venda{max-width:600px}
 .gate .vmods{margin:18px 0 22px}
 .gate .vlk{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.03);border:1px dashed rgba(201,168,76,.3);color:var(--text-secondary);font-size:11px;padding:5px 10px;border-radius:4px;margin:0 5px 5px 0}
@@ -371,6 +371,37 @@ const TAB_REF=[
  {t:'Home Office',c:1.5,p:2200},{t:'Banheiro Planejado',c:1.8,p:2600}];
 const CV_LBL=['Material Direto (MDF, MDP, ferragens)','Mão de Obra Direta (marceneiros)','Terceirizações (pintura, vidro)','Frete de Material','Perda Técnica'];
 const CF_LBL=['Aluguel / IPTU','Folha Administrativa','Luz, Água, Internet, Telefone','Contador','Marketing / Anúncios','Manutenção Preventiva','Limpeza / Segurança','Seguros','Pró-labore do Dono'];
+const CF_PRO=8;   // índice do pró-labore dentro de CF_LBL — o módulo escreve nesta linha
+
+/* ══════════ PRÓ-LABORE ══════════
+   Duas coisas que a marcenaria pequena mistura e que este módulo separa:
+   PRÓ-LABORE é pagamento pelo TRABALHO do dono — custo fixo, entra no preço,
+   existe mesmo em mês de prejuízo. LUCRO é retorno do CAPITAL — só existe se
+   sobrar. Quem retira do caixa sem pró-labore definido não sabe se a empresa
+   dá lucro: está confundindo o salário dele com o resultado dela. */
+const VIDA_LBL=[
+ 'Moradia (aluguel ou financiamento, condomínio, IPTU)',
+ 'Alimentação (mercado + refeições fora)',
+ 'Transporte (combustível, parcela do carro, seguro, manutenção)',
+ 'Saúde (plano, remédios, dentista, academia)',
+ 'Educação (escola, faculdade, cursos dos filhos)',
+ 'Contas de casa (luz, água, internet, celular, streaming)',
+ 'Ajuda em casa (diarista, creche, cuidador)',
+ 'Lazer, viagens e vestuário',
+ 'Parcelas e dívidas pessoais',
+ 'Outros pessoais'
+];
+/* Tabela do IRRF sobre pró-labore — referência de maio/2025. Fica visível na
+   tela de propósito: tabela fiscal muda por lei e o aluno precisa conferir com
+   o contador dele, não confiar no que está cravado aqui. */
+const IRRF_FX=[
+ {ate:2428.80, al:0,     ded:0},
+ {ate:2826.65, al:0.075, ded:182.16},
+ {ate:3751.05, al:0.15,  ded:394.16},
+ {ate:4664.68, al:0.225, ded:675.49},
+ {ate:Infinity,al:0.275, ded:908.73}
+];
+const IRRF_SIMPL=607.20, IRRF_DEP=189.59, IRRF_REF='maio/2025';
 
 /* ══════════ ESTADO ══════════ */
 const KEY='apm_ferramentas_v1';
@@ -381,6 +412,16 @@ function vazio(){return{
        mo:90,perda:0.15,conv:2.46,margem:0.35,comissao:0,cfix:2000,
        calc:{m2:8,mat:0,cx:1.3},hist:[]},
  cc:{on:true,fonte:'fin',poolManual:0,base:'uteis',diasUteis:21,frentes:4,ocup:0.80,dias:6,moCap:false},
+ pro:{vida:[0,0,0,0,0,0,0,0,0,0],reserva:0,outras:0,retirada:0,
+      func:[{n:'Produção (marceneiro / montador)',h:10,sal:3500},
+            {n:'Projetos e detalhamento',h:8,sal:4500},
+            {n:'Compras e negociação com fornecedor',h:4,sal:3500},
+            {n:'Vendas e atendimento ao cliente',h:12,sal:4000},
+            {n:'Gestão da fábrica (PCP, equipe, prazo)',h:10,sal:6000},
+            {n:'Administrativo e financeiro',h:6,sal:3500}],
+      hSemana:44,encargos:1.70,dep:0,tetoINSS:8157.41,aliqINSS:0.11,minimo:1518,
+      patronal:false,margemMin:0.10,
+      distrib:{reinv:0.40,caixa:0.30,dono:0.30}},
  sim:{atual:{pessoasFab:7,prodFab:10,pessoasMon:3,prodMon:21,custoPessoa:4200,
              fixos:14000,variaveis:6000,matM2:550,precoM2:1950,imp:0.10,com:0.03,
              metaLucro:10000,volume:60},
@@ -487,6 +528,138 @@ function sangrias(){
  const f=DB.fin,fatM=f.fat.reduce((a,b)=>a+b,0)/3;
  const it=[...CV_LBL.map((l,i)=>({l,v:f.cv[i],t:'Variável'})),...CF_LBL.map((l,i)=>({l,v:f.cf[i],t:'Fixo'}))];
  return it.filter(x=>x.v>0).sort((a,b)=>b.v-a.v).slice(0,5).map(x=>({...x,p:fatM?x.v/fatM:NaN}));
+}
+
+/* ══════════ CÁLCULOS: PRÓ-LABORE ══════════ */
+/* INSS do sócio: 11% sobre o pró-labore, limitado ao teto do salário de
+   contribuição. Acima do teto a contribuição para de crescer — por isso o
+   líquido é monotônico e a busca binária mais abaixo funciona. */
+function proINSS(bruto,p){return Math.min(num(bruto),num(p.tetoINSS))*num(p.aliqINSS)}
+/* IRRF: a lei manda apurar pelas deduções legais E pelo desconto simplificado
+   e recolher o MENOR dos dois. Calcular só um dos caminhos superestima o
+   imposto de quem tem pró-labore baixo e poucos dependentes. */
+function proIRRF(bruto,p){
+ const faixa=base=>{const f=IRRF_FX.find(x=>base<=x.ate);return Math.max(0,base*f.al-f.ded)};
+ const legal =Math.max(0,bruto-proINSS(bruto,p)-num(p.dep)*IRRF_DEP);
+ const simpl =Math.max(0,bruto-IRRF_SIMPL);
+ return Math.min(faixa(legal),faixa(simpl));
+}
+function proLiquido(bruto,p){return bruto-proINSS(bruto,p)-proIRRF(bruto,p)}
+/* Caminho inverso — é o que o dono precisa: ele sabe quanto tem que sobrar no
+   bolso, não quanto declarar. Inverter a tabela progressiva na álgebra dá erro
+   nas bordas de faixa; busca binária sobre uma função monotônica não dá. */
+function proBruto(liq,p){
+ if(!(liq>0))return 0;
+ let lo=liq, hi=liq*3+20000;
+ for(let k=0;k<90;k++){const m=(lo+hi)/2; if(proLiquido(m,p)<liq)lo=m;else hi=m}
+ return (lo+hi)/2;
+}
+function proCusto(bruto,p){return bruto*(p.patronal?1.20:1)}   // patronal 20%, sem teto
+function calcPro(){
+ const p=DB.pro, f=calcFin();
+
+ /* --- 1. PISO: o que a vida do dono custa, convertido em pró-labore bruto --- */
+ const vida=p.vida.reduce((a,b)=>a+num(b),0);
+ const liqNec=Math.max(0,vida+num(p.reserva)-num(p.outras));
+ const piso=proBruto(liqNec,p);
+
+ /* --- 2. JUSTO: quanto custaria contratar gente para fazer o que ele faz ---
+    Salário de mercado é para jornada cheia; o dono divide a semana entre vários
+    cargos. Cada função entra proporcional às horas que ele gasta nela. */
+ const hBase=num(p.hSemana)||44;
+ const funcs=p.func.map(x=>({...x,custo:num(x.sal)*(num(x.h)/hBase)}));
+ const justo=funcs.reduce((a,x)=>a+x.custo,0);
+ const horas=funcs.reduce((a,x)=>a+num(x.h),0);
+ const jornadas=hBase?horas/hBase:NaN;
+ /* Salário de mercado é o que o funcionário RECEBE; contratar custa bem mais —
+    13º, férias com 1/3, FGTS, INSS patronal, rescisão. Os dois números têm usos
+    diferentes e trocar um pelo outro é o erro clássico: o salário calibra o
+    pró-labore (é remuneração contra remuneração), o custo de reposição mostra
+    o que você economiza fazendo sozinho — e é ele que mede o subsídio. */
+ const fatorEnc=num(p.encargos)||1;
+ const reposicao=justo*fatorEnc;
+ const funcsRep=funcs.map(x=>({...x,rep:x.custo*fatorEnc}));
+
+ /* --- 3. TETO: o que a empresa aguenta pagar ---
+    Sai da margem de contribuição menos o custo fixo SEM a linha do pró-labore
+    (senão o valor antigo entraria na conta do valor novo), menos a margem
+    líquida que a empresa precisa preservar para não virar refém do dono. */
+ const cfSemPro=DB.fin.cf.reduce((a,b,i)=>a+(i===CF_PRO?0:num(b)),0);
+ const sobra=f.mc-cfSemPro;                       // tudo que sobra antes de pagar o dono
+ const reservaEmp=f.fatM*num(p.margemMin);
+ const disponivel=sobra-reservaEmp;               // custo total máximo, já com patronal
+ const temEmpresa=f.fatM>0;
+ const tetoCusto=temEmpresa?disponivel:NaN;
+ const teto=isFinite(tetoCusto)?Math.max(0,tetoCusto/(p.patronal?1.20:1)):NaN;
+
+ /* --- 4. RECOMENDADO — e a separação que quase toda marcenaria erra ---
+    O pró-labore paga o TRABALHO, e trabalho tem preço de mercado: é o valor do
+    cargo, não o tamanho da conta de casa. O que a vida do dono exige acima
+    disso é retorno do CAPITAL e sai como distribuição de lucro, que não sofre
+    INSS nem IRRF na pessoa física.
+    Pagar tudo como pró-labore é imposto pago à toa. O contrário — chamar
+    salário de dividendo — é sonegação, e é por isso que o limite é ancorado no
+    valor de mercado do bloco 2 e não numa escolha do usuário.
+    Distribuição só existe se houver lucro apurado: quando não há, a retirada
+    inteira volta a ser pró-labore, com o imposto que vier junto. */
+ const proMerc=Math.max(num(p.minimo),Math.min(justo,isFinite(teto)?Math.max(teto,0):justo));
+ const liqMerc=proLiquido(proMerc,p);
+ const complemento=Math.max(0,liqNec-liqMerc);
+ const lucroDisp=Math.max(0,f.mc-cfSemPro-proCusto(proMerc,p));
+ const cabeLucro=temEmpresa&&complemento<=lucroDisp;
+ /* piso acima do mercado, sobra lucro para completar, e a diferença é grande o
+    bastante para valer a estrutura.
+    `ancorado` é a trava que impede o pior conselho possível: sem as funções do
+    bloco 2 preenchidas não existe valor de mercado, e o cálculo cairia no
+    salário mínimo com todo o resto virando dividendo — que é exatamente o
+    desenho que a Receita autua como pró-labore disfarçado. Sem âncora, tudo
+    volta a ser pró-labore. */
+ const ancorado=justo>0&&horas>0;
+ const estruturar=ancorado&&piso>proMerc*1.02&&complemento>0&&cabeLucro;
+
+ const rec=estruturar?proMerc:Math.max(0,Math.max(piso,isFinite(teto)?Math.min(justo,teto):justo));
+ const recLiq=proLiquido(rec,p), recINSS=proINSS(rec,p), recIRRF=proIRRF(rec,p);
+ const recCusto=proCusto(rec,p);
+ const recDiv=estruturar?complemento:0;            // distribuição mensal de lucro
+ const retiradaTotal=recLiq+recDiv;                // o que chega no bolso do dono
+ /* Quanto custa pagar tudo como pró-labore em vez de separar. Só faz sentido
+    comparar quando as duas estruturas entregam o mesmo líquido — que é o caso
+    de `estruturar`, onde ambas fecham em liqNec. */
+ const custoTudoPro=proCusto(piso,p);
+ const custoEstrut=recCusto+recDiv;
+ const economia=estruturar?Math.max(0,custoTudoPro-custoEstrut):0;
+
+ /* --- 5. Efeito na empresa ---
+    Só o pró-labore é custo fixo. Distribuição de lucro sai DEPOIS do resultado
+    e não pode entrar no preço — lançá-la como custo inflaria o m² e esconderia
+    que a empresa não gerou o lucro que está sendo retirado. */
+ const proAtual=num(DB.fin.cf[CF_PRO]);
+ const delta=recCusto-proAtual;                   // quanto o custo fixo muda
+ const llNovo=f.mc-cfSemPro-recCusto;
+ const llpNovo=f.fatM?llNovo/f.fatM:NaN;
+ /* Faturamento adicional para bancar a diferença: o aumento tem que sair da
+    margem de contribuição, não do faturamento cheio. */
+ const fatExtra=(f.mcp>0&&delta>0)?delta/f.mcp:0;
+ const pctFat=f.fatM?recCusto/f.fatM:NaN;
+ const sobraLucro=llNovo-recDiv;                  // lucro que fica NA empresa
+ /* Subsídio: o que a empresa gastaria para repor o dono menos o que ela paga
+    pelo trabalho dele. Custo real que não aparece em lançamento nenhum. */
+ const subsidio=Math.max(0,reposicao-recCusto)*12;
+ /* O teste que vale: a empresa banca a retirada INTEIRA — pró-labore mais
+    lucro — preservando a margem mínima? */
+ const custoDono=recCusto+recDiv;
+ const sustenta=temEmpresa?disponivel>=custoDono:true;
+ const falta=Math.max(0,custoDono-disponivel);
+
+ return{vida,liqNec,piso,funcs:funcsRep,justo,reposicao,fatorEnc,horas,jornadas,hBase,
+        cfSemPro,sobra,reservaEmp,disponivel,tetoCusto,teto,temEmpresa,
+        rec,recLiq,recINSS,recIRRF,recCusto,recDiv,retiradaTotal,
+        proMerc,liqMerc,complemento,lucroDisp,cabeLucro,estruturar,ancorado,economia,custoTudoPro,
+        proAtual,delta,llNovo,llpNovo,fatExtra,pctFat,sobraLucro,subsidio,
+        custoDono,sustenta,falta,
+        retirada:num(p.retirada),
+        preenchido:vida>0,
+        f};
 }
 
 /* ══════════ CÁLCULOS: CENTRO DE CUSTO ══════════ */
@@ -663,6 +836,7 @@ const NAV=[
  {id:'painel',ic:'📊',n:'Painel Executivo',t:'Painel Executivo',d:'Todos os indicadores em um lugar — alimentado pelos outros módulos'},
  {s:'Dinheiro'},
  {id:'financeiro',ic:'💰',n:'Diagnóstico Financeiro',t:'Diagnóstico Financeiro',d:'Margem, ponto de equilíbrio, sangrias e projeção'},
+ {id:'prolabore',ic:'👤',n:'Pró-labore do Dono',t:'Pró-labore do Dono',d:'Quanto você deve se pagar — piso, valor de mercado e o que a empresa aguenta'},
  {id:'precos',ic:'🧮',n:'Precificação',t:'Precificação',d:'Preço por m² frontal com margem garantida'},
  {id:'simulador',ic:'🔮',n:'Simulador',t:'Simulador de Cenários',d:'E se eu contratar, subir custo ou mudar preço — quanto preciso vender'},
  {s:'Produção'},
@@ -857,6 +1031,254 @@ PAINT.financeiro=()=>{
  <div class="card"><h3>💡 Leitura do resultado</h3>
   ${diag.map(([c,t,m])=>`<div class="alert a-${c}"><span class="ic">${c==='red'?'🔴':c==='org'?'🟠':c==='yel'?'🟡':c==='grn'?'🟢':'🔵'}</span><div><b>${t}</b><br><span style="color:var(--text-secondary)">${m}</span></div></div>`).join('')}
  </div>`;
+};
+
+/* ---------- PRÓ-LABORE ---------- */
+function proAdd(){DB.pro.func.push({n:'',h:0,sal:0});save();render()}
+function proDel(i){DB.pro.func.splice(i,1);save();render()}
+/* O pró-labore é custo fixo — o lugar dele é dentro do Diagnóstico Financeiro,
+   senão a margem, o ponto de equilíbrio e o preço continuam calculados como se
+   o dono trabalhasse de graça. Este botão é a ponte, e avisa antes de trocar. */
+function proAplicar(v){
+ const atual=num(DB.fin.cf[CF_PRO]);
+ if(!confirm(`Lançar ${brl(v)} na linha "${CF_LBL[CF_PRO]}" do Diagnóstico Financeiro?\n\nValor atual nessa linha: ${brl(atual)}\n\nIsso recalcula margem, ponto de equilíbrio e preço — é justamente o objetivo: o pró-labore é custo fixo e precisa estar no preço.`))return;
+ DB.fin.cf[CF_PRO]=Math.round(v);save();render();
+}
+VIEWS.prolabore=()=>{
+ const p=DB.pro;
+ const inp=(path,val,ph)=>`<input style="width:120px;background:#111;border:1px solid var(--bd);border-radius:5px;padding:7px 9px;color:var(--text-primary);font-size:13px;text-align:right" value="${val||''}" placeholder="${ph||'0'}" oninput="setn('${path}',this)">`;
+ return `
+ <div class="card">
+  <div class="sub" style="margin:0">
+   <b>Pró-labore não é o que sobra.</b> É o pagamento pelo <b>seu trabalho</b> — custo fixo, entra no preço, existe até em mês ruim.
+   O que sobra depois dele é <b>lucro</b>, que é retorno do capital e só aparece se a empresa der resultado.
+   Enquanto os dois estiverem misturados, você não sabe se a marcenaria dá lucro ou se você está apenas devolvendo o próprio salário para dentro dela.
+  </div>
+ </div>
+
+ <div class="grid g2">
+  <div class="card">
+   <h3>1 · O que a sua vida custa<span class="hint">o piso — média mensal</span></h3>
+   <div class="sub">Não é o que você gostaria de gastar. É o que sai da sua conta todo mês. Chutar para baixo aqui é o começo da retirada escondida do caixa.</div>
+   ${VIDA_LBL.map((l,i)=>`<div class="row" style="margin-bottom:8px"><div class="sp" style="font-size:12.5px;color:var(--text-secondary)">${l}</div>${inp('pro.vida.'+i,p.vida[i])}</div>`).join('')}
+   <div class="row" style="margin-bottom:8px;border-top:1px solid var(--bd);padding-top:10px"><div class="sp" style="font-size:12.5px;color:var(--accent-light)">Reserva pessoal que você quer formar por mês</div>${inp('pro.reserva',p.reserva)}</div>
+   <div class="row" style="margin-bottom:8px"><div class="sp" style="font-size:12.5px;color:var(--text-secondary)">(−) Outras rendas suas (aluguel, cônjuge, sociedade)</div>${inp('pro.outras',p.outras)}</div>
+   <div class="row"><div class="sp" style="font-size:12.5px;color:var(--text-secondary)">Quanto você tira hoje, de fato, por mês</div>${inp('pro.retirada',p.retirada)}</div>
+   <div class="note">Some tudo: pró-labore formal, dinheiro tirado do caixa e despesa pessoal paga pela empresa. É esse número, não o do contrato social, que diz o que a empresa já paga por você.</div>
+  </div>
+
+  <div class="card">
+   <h3>2 · O que você faz na empresa<span class="hint">o valor de mercado</span></h3>
+   <div class="sub">Se você saísse amanhã, quanto custaria contratar gente para fazer o que você faz? Marque as horas por semana e o salário de mercado de cada cargo <b>na sua cidade</b>.</div>
+   <div class="tw"><table>
+    <thead><tr><th>Função que você exerce</th><th class="n">h/sem</th><th class="n">Salário de mercado</th><th></th></tr></thead>
+    <tbody>${p.func.map((x,i)=>`<tr>
+     <td><input value="${esc(x.n)}" oninput="setv('pro.func.${i}.n',this.value)"></td>
+     <td class="n" style="width:80px"><input class="n" style="text-align:right" value="${x.h||''}" oninput="setn('pro.func.${i}.h',this)"></td>
+     <td class="n" style="width:120px"><input style="text-align:right" value="${x.sal||''}" oninput="setn('pro.func.${i}.sal',this)"></td>
+     <td style="width:34px"><button class="btn sm dg" onclick="proDel(${i})">×</button></td></tr>`).join('')}
+    </tbody></table></div>
+   <button class="btn sm" onclick="proAdd()" style="margin-top:10px">+ Função</button>
+   <div class="note">Jornada cheia considerada: <input style="width:52px;background:#111;border:1px solid var(--bd);border-radius:4px;padding:3px 6px;color:var(--text-primary);font-size:12px;text-align:right" value="${p.hSemana||44}" oninput="setn('pro.hSemana',this)"> h/semana ·
+   Encargos sobre o salário CLT: <input style="width:52px;background:#111;border:1px solid var(--bd);border-radius:4px;padding:3px 6px;color:var(--text-primary);font-size:12px;text-align:right" value="${p.encargos||''}" oninput="setn('pro.encargos',this)"> ×
+   (1,70 = 13º, férias com 1/3, FGTS, INSS patronal e provisão de rescisão).<br>Se um cargo não existe em meio período no mercado, o custo real de repor você é <b>maior</b> que o desta conta.</div>
+  </div>
+ </div>
+
+ <div class="card">
+  <h3>3 · Impostos e regras da empresa<span class="hint">confira com o seu contador</span></h3>
+  <div class="grid g4">
+   <div class="f"><label>Dependentes no IR</label><input value="${p.dep||''}" placeholder="0" oninput="setn('pro.dep',this)"><span class="u">R$ ${nf(IRRF_DEP,2)} de dedução cada</span></div>
+   <div class="f"><label>Teto do INSS</label><input value="${p.tetoINSS||''}" oninput="setn('pro.tetoINSS',this)"><span class="u">acima disso a contribuição para de subir</span></div>
+   <div class="f"><label>Alíquota do INSS do sócio</label><input value="${pctIn(p.aliqINSS)}" oninput="setpct('pro.aliqINSS',this)"><span class="u">% — regra geral: 11%</span></div>
+   <div class="f"><label>Salário mínimo vigente</label><input value="${p.minimo||''}" oninput="setn('pro.minimo',this)"><span class="u">piso legal do pró-labore de sócio que trabalha</span></div>
+   <div class="f"><label>Margem líquida mínima da empresa</label><input value="${pctIn(p.margemMin)}" oninput="setpct('pro.margemMin',this)"><span class="u">% do faturamento que tem de sobrar <b>depois</b> de pagar você</span></div>
+   <div class="f"><label>INSS patronal de 20%</label>
+    <select onchange="setv('pro.patronal',this.value==='1')">
+     <option value="0"${p.patronal?'':' selected'}>Não recolhe (Simples — Anexo I, II ou III)</option>
+     <option value="1"${p.patronal?' selected':''}>Recolhe 20% (Anexo IV, Presumido ou Real)</option>
+    </select><span class="u">muda o custo da empresa, não o seu líquido</span></div>
+  </div>
+  <div class="note">Tabela do IRRF usada: referência de <b>${IRRF_REF}</b> — ${IRRF_FX.map(f=>(f.ate===Infinity?'acima de '+nf(IRRF_FX[3].ate,2):'até '+nf(f.ate,2))+' = '+pc(f.al,1)).join(' · ')}. Aplicado o menor imposto entre deduções legais e desconto simplificado de R$ ${nf(IRRF_SIMPL,2)}. <b>Tabela fiscal muda por lei: confirme os números com o seu contador antes de usar como decisão.</b></div>
+ </div>
+
+ <div id="out"></div>`;
+};
+PAINT.prolabore=()=>{
+ const el=$('#out');if(!el)return;
+ const P=DB.pro, r=calcPro(), f=r.f;
+ if(!r.preenchido){el.innerHTML='<div class="card"><div class="empty">Preencha o custo de vida no bloco 1 — sem ele não existe piso, e sem piso qualquer pró-labore é chute.</div></div>';return}
+
+ const tile=(l,v,d,c)=>`<div class="kpi ${c||'neu'}"><div class="l">${l}</div><div class="v">${v}</div><div class="d">${d}</div></div>`;
+ const A=[];
+
+ /* Veredito — a leitura muda conforme o teto da empresa cai antes ou depois
+    do piso e do valor de mercado. São três situações diferentes e cada uma
+    tem uma saída diferente; tratar como uma só é o que gera conselho inútil. */
+ if(!r.temEmpresa){
+  A.push(['blu','Falta o faturamento para saber o teto',
+   `Piso e valor de mercado já estão calculados. Para saber <b>o que a empresa aguenta</b>, lance o faturamento e os custos no Diagnóstico Financeiro — o teto sai de lá.`]);
+ }else if(r.sobra<=0){
+  /* Caso diferente do de baixo e que precisa de nome próprio: aqui não há
+     "quanto sobra para o dono" — a operação já consome tudo antes dele. */
+  A.push(['red','A empresa está no vermelho antes de te pagar',
+   `A margem de contribuição é ${brl(f.mc)} por mês e os custos fixos sem o seu pró-labore somam ${brl(r.cfSemPro)}. <b>Faltam ${brl(-r.sobra)} antes de você tirar um real.</b> Não existe pró-labore certo neste cenário: qualquer valor que você retirar sai de capital de giro ou de dívida. O que está em jogo aqui é preço, volume e custo fixo — não a sua retirada. Vá para o Diagnóstico Financeiro e o Simulador antes de decidir qualquer coisa nesta tela.`]);
+ }else if(!r.sustenta){
+  A.push(['red','A empresa não sustenta a sua vida',
+   `Somando pró-labore e distribuição, tirar o que a sua vida exige custa <b>${brl(r.custoDono)}</b> por mês, e a marcenaria só tem <b>${brl(Math.max(0,r.disponivel))}</b> para isso preservando ${pc(num(P.margemMin))} de margem líquida. Faltam <b>${brl(r.falta)}</b> todo mês. <b>O erro não está no seu pró-labore — está no preço, no volume ou no custo fixo.</b> Cortar o próprio salário aqui só adia o problema e esconde o prejuízo real da operação.`]);
+ }else if(r.teto<r.justo){
+  A.push(['org','Você trabalha por menos do que vale',
+   `A empresa aguenta até <b>${brl(r.teto)}</b>, mas a remuneração de mercado do que você faz é <b>${brl(r.justo)}</b>. Contratar gente para o seu lugar custaria ${brl(r.reposicao)} por mês com encargos: <b>${brl(r.subsidio)} por ano</b> de trabalho seu que ninguém paga e que não aparece em lançamento nenhum. É por isso que a margem parece melhor do que é.`]);
+ }else{
+  A.push(['grn','A empresa sustenta um pró-labore de mercado',
+   `O teto é ${brl(r.teto)} e a remuneração de mercado do seu trabalho é ${brl(r.justo)}. Cabe, e ainda restam <b>${brl(r.sobraLucro)}</b> de lucro por mês — que é resultado do capital, não seu salário.`]);
+ }
+
+ /* O caso que ninguem gosta de ouvir e que o modulo existe para dizer: o padrao
+    de vida do dono e maior do que o trabalho dele vale no mercado. A diferenca
+    nao e salario — e retirada de lucro, e so se sustenta se houver lucro. */
+ if(!r.ancorado){
+  A.push(['org','Falta dizer o que você faz na empresa',
+   `Sem as horas e os salários de mercado do bloco 2 não existe referência para o seu trabalho, e o cálculo <b>trata tudo como pró-labore</b> — o que costuma pagar imposto a mais. Preencher aquele bloco é o que permite separar o que é salário do que é lucro. Ele também é a trava contra o erro oposto: declarar só o mínimo e chamar todo o resto de dividendo é o desenho que a Receita autua como pró-labore disfarçado.`]);
+ }
+ if(r.piso>r.justo*1.05&&r.justo>0){
+  A.push(['yel','A sua vida custa mais do que o seu trabalho vale',
+   `A remuneração de mercado do que você faz é <b>${brl(r.justo)}</b>, e a sua vida exige o equivalente a <b>${brl(r.piso)}</b> de pró-labore bruto. A diferença <b>não é salário</b>: é retorno do capital, e só existe se a empresa der lucro. Duas saídas honestas — cortar custo pessoal é só uma delas. A outra é o seu tempo passar a valer mais: sair da bancada e ocupar a cadeira que decide preço, margem e capacidade. Enquanto você fizer o trabalho de um marceneiro, é um marceneiro que o mercado paga.`]);
+ }
+ /* A separação vale dinheiro e quase ninguém faz — por isso o alerta é explícito
+    e vem com o número do ano, não com a lição de moral. */
+ if(r.estruturar&&r.economia>0){
+  A.push(['grn','Separar pró-labore de lucro economiza '+brl(r.economia*12)+' por ano',
+   `Pagando os mesmos ${brl(r.liqNec)} líquidos: tudo como pró-labore custa <b>${brl(r.custoTudoPro)}</b> por mês para a empresa; ${brl(r.rec)} de pró-labore mais ${brl(r.recDiv)} de distribuição de lucro custam <b>${brl(r.recCusto+r.recDiv)}</b>. São ${brl(r.economia)} por mês de INSS e IRRF que você paga sem precisar. <b>Isso não é manobra:</b> pró-labore é o preço do seu trabalho e lucro é o retorno do seu capital — a Receita exige justamente que estejam separados. Mas distribuição isenta pressupõe escrituração contábil regular e lucro apurado no período: leve esta conta ao seu contador antes de mudar qualquer coisa.`]);
+ }else if(r.piso>r.proMerc*1.02&&r.complemento>0&&!r.cabeLucro&&r.temEmpresa){
+  A.push(['org','Não há lucro para completar a sua retirada',
+   `Acima de ${brl(r.proMerc)} de pró-labore, o que falta para a sua vida deveria sair como distribuição de lucro — e a empresa só tem <b>${brl(r.lucroDisp)}</b> de lucro para os ${brl(r.complemento)} que faltam. Sem lucro apurado, a retirada inteira tem de ser pró-labore e pagar imposto de pessoa física. Retirar assim mesmo, sem lucro, é consumir capital de giro.`]);
+ }
+
+ /* Retirada de hoje x pró-labore correto — onde mora a retirada escondida */
+ if(r.retirada>0){
+  const dif=r.retiradaTotal-r.retirada;
+  const perto=Math.abs(dif)<r.retiradaTotal*0.1;
+  if(perto){
+   A.push(['grn','A sua retirada de hoje está calibrada',
+    `Você tira ${brl(r.retirada)} e a conta pede ${brl(r.retiradaTotal)}. O que falta agora não é valor: é <b>forma</b> — o quanto disso está declarado como pró-labore, o quanto como distribuição, e se o custo está dentro do preço que você orça.`]);
+  }else if(dif>0){
+   A.push(['yel','Você tira menos do que deveria',
+    `Hoje entram ${brl(r.retirada)} por mês no seu bolso e o correto seria <b>${brl(r.retiradaTotal)}</b> líquidos${r.recDiv?` (${brl(r.recLiq)} de pró-labore mais ${brl(r.recDiv)} de lucro)`:''}. Faltam ${brl(dif)} — e como o seu trabalho não está inteiro no preço, seus orçamentos estão baratos por um motivo que não aparece na planilha.`]);
+  }else{
+   /* Tirar acima do recomendado não é necessariamente erro: se houver lucro
+      apurado, o excedente é distribuição legítima. Vira problema quando o
+      lucro não existe — aí é capital de giro saindo pela porta. */
+   const exc=-dif, cobre=exc<=Math.max(0,r.sobraLucro);
+   A.push([cobre?'blu':'org',
+    cobre?'O que você tira além do recomendado é distribuição de lucro':'Você tira mais do que a empresa produz',
+    cobre?`Hoje saem ${brl(r.retirada)} e a retirada calculada é ${brl(r.retiradaTotal)}. Os ${brl(exc)} de diferença <b>cabem no lucro</b> — sobram ${brl(r.sobraLucro)} por mês depois de tudo. Não é sangria, mas também não é salário: precisa estar registrado como distribuição de lucro e sair do resultado, não do preço. Só lembre que cada real distribuído é um real que não vira máquina, estoque nem reserva.`
+    :`Hoje saem ${brl(r.retirada)} por mês e a empresa só gera ${brl(r.retiradaTotal)} de retirada sustentável — e depois disso restam apenas ${brl(Math.max(0,r.sobraLucro))} de lucro. Os ${brl(exc)} de diferença <b>não são salário nem lucro apurado: são capital de giro saindo pela porta.</b> Isso não aparece no extrato como prejuízo. Aparece meses depois, como falta de dinheiro para comprar chapa.`]);
+  }
+ }else{
+  A.push(['blu','Preencha quanto você tira hoje','Sem esse número não dá para medir a distância entre o que a empresa já paga por você e o que ela deveria pagar.']);
+ }
+
+ /* Jornada — dois cargos numa pessoa é risco operacional, não virtude */
+ if(isFinite(r.jornadas)&&r.jornadas>1.05){
+  A.push(['yel',`Você faz o trabalho de ${nf(r.jornadas,1)} pessoas`,
+   `${nf(r.horas,0)} horas por semana distribuídas em ${r.funcs.length} funções. Além do custo, isso é <b>ponto único de falha</b>: qualquer afastamento seu para a empresa. A saída é tirar da sua semana a função de menor valor por hora primeiro — quase sempre é produção ou administrativo, nunca comercial.`]);
+ }
+
+ if(r.rec<num(P.minimo)&&num(P.minimo)>0){
+  A.push(['org','Abaixo do piso legal',
+   `O cálculo chegou em ${brl(r.rec)}, abaixo do salário mínimo de ${brl(num(P.minimo))}. Sócio que trabalha na empresa não pode ter pró-labore menor que um salário mínimo — o valor a declarar é o mínimo, mesmo que a conta peça menos.`]);
+ }
+
+ if(r.delta>0&&r.fatExtra>0){
+  A.push(['blu','O que esse pró-labore exige de faturamento',
+   `Sair de ${brl(r.proAtual)} para ${brl(r.recCusto)} de custo aumenta o fixo em ${brl(r.delta)}. Com a sua margem de contribuição de ${pc(f.mcp)}, isso exige <b>${brl(r.fatExtra)} de faturamento a mais por mês</b> — ou o mesmo faturamento com preço maior. Não é um número para negociar consigo mesmo: é o que a conta pede.`]);
+ }
+
+ /* A régua que interessa é a retirada INTEIRA sobre o faturamento — separar em
+    pró-labore e lucro muda o imposto, não o quanto o dono custa à empresa. */
+ if(r.temEmpresa&&r.custoDono>0){
+  const pctDono=r.custoDono/r.f.fatM;
+  A.push([pctDono>0.15?'org':pctDono<0.05?'yel':'blu',
+   `A sua retirada total é ${pc(pctDono)} do faturamento`,
+   `${brl(r.custoDono)} por mês${r.recDiv?` (${brl(r.recCusto)} de pró-labore e ${brl(r.recDiv)} de distribuição)`:''} sobre ${brl(r.f.fatM)} de faturamento médio. Referência usual em marcenaria sob medida: <b>5% a 10%</b>. `+
+   (pctDono>0.15?`Acima de 15% a retirada do dono compete com o reinvestimento — a empresa para de crescer para sustentar quem a dirige.`
+   :pctDono<0.05?`Abaixo de 5% costuma significar dono que não se paga direito. Isso não é economia: é custo escondido que faz o preço parecer suficiente quando não é.`
+   :`Dentro da faixa.`)]);
+ }
+
+ if(isFinite(r.llpNovo)&&r.temEmpresa){
+  A.push([r.llpNovo>=0.10?'grn':r.llpNovo>=0?'yel':'red','Margem líquida depois de pagar você: '+pc(r.llpNovo),
+   r.llpNovo<0?`Com o pró-labore correto lançado, a empresa fecha o mês em <b>${brl(r.llNovo)}</b>. Ela já estava no prejuízo — o pró-labore só tornou o prejuízo visível. O resultado que aparecia antes era o seu salário não cobrado.`
+   :`Sobram ${brl(r.llNovo)} por mês depois do seu pró-labore. <b>Isso é lucro</b>, e a decisão do que fazer com ele é diferente da decisão de quanto se pagar.`
+    +(r.recDiv?` Desse lucro saem os ${brl(r.recDiv)} da sua distribuição mensal, restando ${brl(r.sobraLucro)} para reinvestir, formar caixa ou distribuir a mais.`:'')]);
+ }
+
+ const linha=(l,v,c,neg)=>`<div class="r ${c||''}"><span>${l}</span><span>${brl(neg?(v?-v:0):v)}</span></div>`;
+ const d=P.distrib||{reinv:.4,caixa:.3,dono:.3};
+ const lucro=Math.max(0,r.sobraLucro);
+
+ el.innerHTML=`
+ <div class="kpis" style="margin-bottom:16px">
+  ${tile('PISO — o que sua vida exige',brl(r.piso),`${brl(r.liqNec)} líquidos por mês`,'neu')}
+  ${tile('JUSTO — remuneração de mercado do seu trabalho',brl(r.justo),`${nf(r.horas,0)} h/semana · repor você custaria ${brl(r.reposicao)}`,'neu')}
+  ${tile('TETO — o que a empresa aguenta',isFinite(r.disponivel)&&r.temEmpresa?brl(Math.max(0,r.disponivel)):'—',r.temEmpresa?`retirada total, preservando ${pc(num(P.margemMin))} de margem`:'lance o faturamento no Diagnóstico Financeiro','neu')}
+  ${tile('PRÓ-LABORE RECOMENDADO',brl(r.rec),r.recDiv?`+ ${brl(r.recDiv)} de lucro = ${brl(r.retiradaTotal)} no bolso`:`${brl(r.recLiq)} líquidos no seu bolso`,!r.temEmpresa?'neu':!r.sustenta?'bad':r.teto>=r.justo?'ok':'warn')}
+ </div>
+
+ <div class="card">
+  <h3>⚖️ Leitura</h3>
+  ${A.map(([k,t,m])=>`<div class="alert a-${k}"><span class="ic">${k==='red'?'🔴':k==='org'?'🟠':k==='yel'?'🟡':k==='grn'?'🟢':'🔵'}</span><div><b>${t}</b><br><span style="color:var(--text-secondary)">${m}</span></div></div>`).join('')}
+ </div>
+
+ <div class="grid g2">
+  <div class="card">
+   <h3>Do bolso ao bruto<span class="hint">o caminho que o contador faz</span></h3>
+   <div class="dre">
+    ${linha('Custo de vida + reserva pessoal',r.vida+num(P.reserva))}
+    ${linha('(−) Outras rendas suas',num(P.outras),'ind',true)}
+    ${linha('(=) Líquido que precisa sobrar',r.liqNec,'tot')}
+    ${linha('PRÓ-LABORE BRUTO recomendado',r.rec,'tot')}
+    ${linha('(−) INSS do sócio',r.recINSS,'ind',true)}
+    ${linha('(−) IRRF na fonte',r.recIRRF,'ind',true)}
+    ${linha('(=) Líquido do pró-labore',r.recLiq,r.recDiv?'':'tot')}
+    ${r.recDiv?linha('(+) Distribuição de lucro (sem INSS e sem IRRF)',r.recDiv,'ind'):''}
+    ${r.recDiv?linha('(=) TOTAL NO SEU BOLSO',r.retiradaTotal,'tot'):''}
+    ${P.patronal?linha('(+) INSS patronal 20% (custo da empresa)',r.recCusto-r.rec,'ind'):''}
+    ${linha('CUSTO DA EMPRESA COM O PRÓ-LABORE',r.recCusto,'tot')}
+   </div>
+   <div class="note">Carga sobre o pró-labore: ${pc(r.rec?(r.recCusto-r.recLiq)/r.rec:NaN)} do bruto. É o preço de formalizar — e é menor que o risco de retirar do caixa sem respaldo.${r.recDiv?' A distribuição de lucro <b>não entra aqui</b>: ela sai do resultado, não do custo, e por isso não pode empurrar o seu preço por m² para cima.':''}</div>
+   <button class="btn gold" onclick="proAplicar(${Math.round(r.recCusto)})" style="margin-top:12px">Lançar no Diagnóstico Financeiro →</button>
+   <div class="note">Lança <b>${brl(r.recCusto)}</b> na linha "${CF_LBL[CF_PRO]}" dos custos fixos. A partir daí a margem, o ponto de equilíbrio e o preço por m² passam a contar com você.</div>
+  </div>
+
+  <div class="card">
+   <h3>Quanto custa repor você<span class="hint">função por função</span></h3>
+   <div class="tw"><table>
+    <thead><tr><th>Função</th><th class="n">h/sem</th><th class="n">Remuneração</th><th class="n">Custo com encargos</th></tr></thead>
+    <tbody>${r.funcs.filter(x=>num(x.h)>0).sort((a,b)=>b.rep-a.rep).map(x=>`<tr>
+     <td>${esc(x.n||'—')}<div class="mini">${pc(r.horas?num(x.h)/r.horas:NaN,0)} da sua semana</div></td>
+     <td class="n">${nf(x.h,0)}</td>
+     <td class="n">${brl(x.custo)}</td>
+     <td class="n"><b>${brl(x.rep)}</b></td></tr>`).join('')||'<tr><td colspan="4" class="mini">Lance as horas por função.</td></tr>'}
+    </tbody>
+    <tfoot><tr style="font-weight:700;border-top:1px solid var(--bd)"><td style="color:var(--accent-light)">${nf(r.jornadas,1)} jornada(s) de trabalho</td><td class="n">${nf(r.horas,0)}</td><td class="n">${brl(r.justo)}</td><td class="n" style="color:var(--accent-light)">${brl(r.reposicao)}</td></tr></tfoot>
+   </table></div>
+   <div class="note">A coluna da direita é a que decide o que delegar: sai da sua semana primeiro a função de <b>maior custo e menor valor estratégico</b> — quase sempre produção ou administrativo, nunca preço e comercial. ${(()=>{const x=r.funcs.filter(y=>num(y.h)>0&&num(y.sal)>0).sort((a,b)=>num(a.sal)-num(b.sal))[0];return x?`No seu caso a hora mais barata de repor é <b>${esc(x.n||'—')}</b>, a ${brl(num(x.sal)/(r.hBase*4.33))} por hora: ${nf(x.h,0)} h/semana que custam ${brl(x.rep)} para contratar e valem muito mais na sua mão em outro lugar.`:''})()}</div>
+  </div>
+ </div>
+
+ ${r.temEmpresa?`<div class="card">
+  <h3>O que sobra depois de você<span class="hint">isto é lucro, não salário</span></h3>
+  <div class="sub">Pró-labore já pago${r.recDiv?`, e os ${brl(r.recDiv)} de distribuição mensal já descontados`:''}. O que resta é retorno do capital e tem três destinos — e o dono que manda 100% para o próprio bolso está descapitalizando a empresa que sustenta ele.</div>
+  ${lucro>0?`<div class="grid g3">
+   ${[['Reinvestimento (máquina, estrutura, time)','reinv','🏭'],['Reserva de caixa (3 a 6 meses de fixo)','caixa','🛡️'],['Distribuição para os sócios','dono','💵']].map(([l,k,ic])=>`
+   <div class="kpi neu"><div class="l">${ic} ${l}</div><div class="v">${brl(lucro*num(d[k]))}</div>
+    <div class="d"><input style="width:56px;background:#111;border:1px solid var(--bd);border-radius:4px;padding:2px 5px;color:var(--text-primary);font-size:11px;text-align:right" value="${pctIn(d[k])}" oninput="setpct('pro.distrib.${k}',this)"> % do lucro</div></div>`).join('')}
+  </div>
+  <div class="note">Soma dos três: ${pc(num(d.reinv)+num(d.caixa)+num(d.dono))}${Math.abs(num(d.reinv)+num(d.caixa)+num(d.dono)-1)>0.001?' — <b style="color:var(--laranja)">não fecha em 100%</b>':''}. Reserva de caixa alvo, pelo seu custo fixo atual: <b>${brl(r.cfSemPro*3+r.recCusto*3)}</b> a <b>${brl(r.cfSemPro*6+r.recCusto*6)}</b>. Distribuição de lucro só é isenta de imposto com contabilidade regular — confirme com o contador antes de retirar.</div>`
+  :`<div class="alert a-red"><span class="ic">🔴</span><div><b>Não há lucro para distribuir.</b><br><span style="color:var(--text-secondary)">Depois do pró-labore correto, a empresa fecha em ${brl(r.sobraLucro)} por mês. Qualquer retirada além do seu pró-labore sai do capital de giro — é a marcenaria financiando o dono, não o contrário.</span></div></div>`}
+ </div>`:''}`;
 };
 
 /* ---------- PRECIFICAÇÃO ---------- */
@@ -1669,7 +2091,8 @@ function importar(el){
 }
 const BKP=KEY+'_bkp';
 function temDados(){
- return DB.amb.length||DB.crm.length||DB.est.mat.length||DB.prec.hist.length||DB.fin.fat.some(x=>x>0);
+ return DB.amb.length||DB.crm.length||DB.est.mat.length||DB.prec.hist.length||DB.fin.fat.some(x=>x>0)
+        ||(DB.pro&&DB.pro.vida.some(x=>x>0));
 }
 function botaoUndo(){
  const el=$('#undo');if(!el)return;
@@ -1702,6 +2125,10 @@ function seed(){
 function exemploDB(){
  const DB=vazio();
  DB.fin={fat:[310000,330000,350000],imposto:.10,cv:[105000,58000,14000,5000,12000],cf:[9000,16000,4500,2200,7000,2500,1800,900,15000]};
+ /* Custo de vida de exemplo abaixo do valor de mercado do trabalho do dono —
+    é o retrato mais comum e o que faz a leitura do módulo aparecer inteira. */
+ DB.pro.vida=[4200,2800,1900,1400,1600,900,1200,1100,800,500];
+ DB.pro.reserva=1500;DB.pro.retirada=12000;DB.pro.dep=2;
  const h=hoje();
  const mk=(p,am,cl,atras,ate,jit)=>{const ini=addBiz(h,-atras);
   const a={id:uid(),projeto:p,ambiente:am,cliente:cl,inicio:ini,plan:MARCOS.map(m=>addBiz(ini,m.off)),real:Array(8).fill('')};

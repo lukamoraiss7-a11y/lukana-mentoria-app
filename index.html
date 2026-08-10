@@ -713,7 +713,7 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
    deles. O app fica porque nao e arquivo — quem manda no acesso dele e a flag
    `acesso.ferramentas`, nao a fase. */
 const F=[
-  {id:"app",name:"Ferramentas APM",url:"ferramentas.html",type:"html",destaque:true,desc:"As 9 planilhas em um app só, mais o simulador de cenários: você lança os números e ele devolve diagnóstico, semáforo e o que fazer hoje. Painel executivo, financeiro, precificação, simulador, KPI 25/50/75/100, kanban, PCP, checklists, CRM e estoque.",mods:[1,2,3],sz:""}
+  {id:"app",name:"Ferramentas APM",url:"ferramentas.html",type:"html",destaque:true,desc:"As 9 planilhas em um app só, mais o simulador de cenários: você lança os números e ele devolve diagnóstico, semáforo e o que fazer hoje. Painel executivo, financeiro, pró-labore, precificação, simulador, KPI 25/50/75/100, kanban, PCP, checklists, CRM e estoque.",mods:[1,2,3],sz:""}
 ];
 
 const M=[
@@ -1152,10 +1152,10 @@ function renderVenda(){
   if(sbp)sbp.innerHTML=`<span style="color:var(--accent-light);cursor:pointer;" onclick="sv('trilha')">${tem} de ${M.length} fases liberadas →</span>`;
 }
 
-/* Os 10 modulos do app, so' o nome. Espelha o `NAV` do `ferramentas.html`
+/* Os 11 modulos do app, so' o nome. Espelha o `NAV` do `ferramentas.html`
    — se um modulo entrar la', acrescente aqui. E' vitrine: o nome do
    modulo e' o que da vontade, e nome nao abre nada. */
-const APP_MODS=['Painel Executivo','Diagnóstico Financeiro','Precificação','Simulador de Cenários','KPI 25/50/75/100 + Aderência','Kanban de Produção','PCP & Gargalos','Checklists por Etapa','CRM Comercial','Controle de Estoque'];
+const APP_MODS=['Painel Executivo','Diagnóstico Financeiro','Pró-labore do Dono','Precificação','Simulador de Cenários','KPI 25/50/75/100 + Aderência','Kanban de Produção','PCP & Gargalos','Checklists por Etapa','CRM Comercial','Controle de Estoque'];
 
 /* O app nao e' fase, entao nao entra no `blocoFechado`: o que ele
    entrega sao modulos, nao arquivos, e o texto tem de dizer isso. Fora
