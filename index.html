@@ -285,6 +285,21 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
 .mtg{font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;background:var(--gold-gradient);color:var(--navy);padding:2px 8px;border-radius:4px;}
 .mtn{font-family:'Inter',sans-serif;font-size:16px;font-weight:700;}
 
+/* Bloco de fase na aba Materiais — fechado por padrao, abre no clique,
+   igual a Trilha e o escopo. Com as 6 fases liberadas a tela despejava
+   os 54 cards de uma vez e a aba virava um paredao de rolagem. Fase
+   trancada NAO usa isto: a vitrine dela precisa nascer aberta, e' o que
+   vende. */
+.mgrp{background:var(--navy-light);border:1px solid #333;border-radius:4px;overflow:hidden;margin-bottom:11px;}
+.mgrp-h{display:flex;align-items:center;gap:9px;padding:13px 16px;cursor:pointer;transition:background .15s;}
+.mgrp-h:hover{background:rgba(255,255,255,.025);}
+.mgrp.open>.mgrp-h{border-bottom:1px solid #333;}
+.mgrp-n{margin-left:auto;font-size:10.5px;color:var(--text-muted);white-space:nowrap;}
+.mgrp-c{color:var(--text-muted);transition:transform .2s;flex-shrink:0;}
+.mgrp.open .mgrp-c{transform:rotate(180deg);}
+.mgrp-b{display:none;padding:14px 16px 18px;}
+.mgrp.open>.mgrp-b{display:block;}
+
 /* Admin */
 .adm-login{background:var(--navy-light);border:1px solid rgba(200,146,42,.2);border-radius:6px;padding:32px;max-width:360px;margin:60px auto;}
 .adm-login-title{font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:20px;}
@@ -1196,6 +1211,33 @@ function blocoFechado(mi,lbl){
   </div>`;
 }
 
+/* Quais blocos da aba Materiais estao abertos agora. Vive em memoria, nao
+   no localStorage: o padrao pedido e' nascer fechado a cada visita. Serve
+   para o `renderMat` (que roda de novo a cada edicao no Admin) nao fechar
+   na cara de quem acabou de abrir. */
+const MABERTO={};
+function toggleMg(k){
+  MABERTO[k]=!MABERTO[k];
+  const el=document.getElementById('mg-'+k);
+  if(el)el.classList.toggle('open',MABERTO[k]);
+}
+const ICO_CHEV='<svg class="mgrp-c" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="2,5 8,11 14,5"/></svg>';
+/* `k` e' a chave do estado, `cab` o que ja era o cabecalho do bloco (`.mh`
+   por dentro), `n` a contagem que aparece fechada — sem ela o aluno teria
+   de abrir fase por fase para saber onde esta o material. */
+function blocoDobra(k,cab,n,corpo){
+  const ab=!!MABERTO[k];
+  return`<div class="mgrp${ab?' open':''}" id="mg-${k}">
+    <div class="mgrp-h" onclick="toggleMg('${k}')">
+      ${cab}
+      <span class="mgrp-n">${n===1?'1 item':n+' itens'}</span>
+      ${ICO_CHEV}
+    </div>
+    <div class="mgrp-b">${corpo}</div>
+  </div>`;
+}
+const grade=cards=>`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;">${cards}</div>`;
+
 function renderMat(){
   const adm=getAdminData();
   const admMats=adm.materials||[];
@@ -1215,7 +1257,9 @@ function renderMat(){
   let h='';
   if(destaque.length){
     h+=appLiberado()
-      ?`<div style="margin-bottom:26px;"><div class="mh"><span style="font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#C9A84C;border:1px solid rgba(201,168,76,.35);padding:2px 8px;border-radius:4px;">APP</span><span class="mtn" style="margin-left:9px;">A ferramenta</span></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;">${destaque.map(f=>fcrd(f,false)).join('')}</div></div>`
+      ?blocoDobra('app',
+        `<span style="font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#C9A84C;border:1px solid rgba(201,168,76,.35);padding:2px 8px;border-radius:4px;">APP</span><span class="mtn">A ferramenta</span>`,
+        destaque.length,grade(destaque.map(f=>fcrd(f,false)).join('')))
       :blocoAppFechado();
   }
   /* Varre as 8 na ordem, nao so' as que tem material. Fase fechada entra
@@ -1227,10 +1271,15 @@ function renderMat(){
     const id=mi.id, lbl=id<6?'F'+(id+1):'B'+(id-5);
     if(!SEM_GATE&&!liberada(id)){h+=blocoFechado(mi,lbl);return;}
     if(!bm[id])return;
-    h+=`<div style="margin-bottom:26px;"><div class="mh"><span class="mtg">${lbl}</span><span class="mtn">${mi.t}</span></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;">${bm[id].map(f=>fcrd(f,isAdmin()&&!!f._isAdm)).join('')}</div></div>`;
+    h+=blocoDobra('f'+id,
+      `<span class="mtg">${lbl}</span><span class="mtn">${mi.t}</span>`,
+      bm[id].length,grade(bm[id].map(f=>fcrd(f,isAdmin()&&!!f._isAdm)).join('')));
   });
   if(gn.length||gnAdm.length){
-    h+=`<div style="margin-bottom:26px;"><div class="mh"><span style="font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);border:1px solid rgba(255,255,255,.08);padding:2px 8px;border-radius:4px;">GERAL</span><span class="mtn" style="margin-left:9px;">Documentos Gerais</span></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;">${[...gn,...gnAdm].map(f=>fcrd(f,isAdmin()&&!!f._isAdm)).join('')}</div></div>`;
+    const ger=[...gn,...gnAdm];
+    h+=blocoDobra('geral',
+      `<span style="font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);border:1px solid rgba(255,255,255,.08);padding:2px 8px;border-radius:4px;">GERAL</span><span class="mtn">Documentos Gerais</span>`,
+      ger.length,grade(ger.map(f=>fcrd(f,isAdmin()&&!!f._isAdm)).join('')));
   }
   document.getElementById('mat').innerHTML=h||'<p style="color:var(--text-muted);font-size:13px;">Nenhum material disponível.</p>';
   /* Conta o que ele ve, nao o que existe. Dizer "24 materiais" para quem
