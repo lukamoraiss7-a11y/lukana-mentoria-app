@@ -1905,6 +1905,10 @@ async function salvarMinhaSenha(){
   setTimeout(()=>{const g=document.getElementById('gate-senha');if(g)g.remove();},2200);
 }
 
+/* Que tipo de link trouxe o aluno ate aqui. Tem de ser lido no topo: o
+   `createClient` consome o hash da URL assim que sobe, e depois disso
+   nao ha mais como saber se veio de uma recuperacao de senha. */
+const LINK=(location.hash.match(/type=(\w+)/)||[])[1]||'';
 async function boot(){
   if(!window.supabase){
     /* Sem a biblioteca nao ha como validar sessao. Fechar e o certo:
@@ -1960,6 +1964,10 @@ async function boot(){
     document.getElementById('nav-admin').style.display='flex';
   }
   init();sv('dashboard');
+  /* Quem chegou por link de recuperacao ou de convite veio para trocar a
+     senha. Abrir a tela sozinho evita o beco de entrar, nao achar onde
+     define e pedir outro e-mail — com o SMTP entregando 2 por hora. */
+  if(LINK==='recovery'||LINK==='invite')telaSenha();
   sb.auth.onAuthStateChange(ev=>{if(ev==='SIGNED_OUT')location.reload();});
 }
 boot();

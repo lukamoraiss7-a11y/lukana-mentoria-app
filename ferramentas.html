@@ -2034,6 +2034,15 @@ function iniciarUI(){
  window.addEventListener('hashchange',()=>{const v=location.hash.replace('#','');if(v&&v!==VIEW&&NAV.some(n=>n.id===v)){VIEW=v;render()}});
 }
 (async function boot(){
+ /* Link de recuperacao de senha caindo aqui. O e-mail disparado pelo
+    painel do Supabase usa a Site URL do projeto, que aponta para este
+    app — mas quem define senha e' a area de membros, nao ele. Pior: se a
+    conta nao tiver o app liberado, o aluno cai na vitrine e acha que o
+    link nao funcionou.
+    Rebate para o index com o token intacto, ANTES de criar o cliente: o
+    supabase-js consome o hash assim que sobe, e depois nao ha o que
+    repassar. */
+ if(/type=(recovery|invite)/.test(location.hash)){location.replace('index.html'+location.hash);return}
  if(!configurado()){SYNC='local';iniciarUI();return}
  if(!window.supabase){
   SYNC='bad';iniciarUI();
