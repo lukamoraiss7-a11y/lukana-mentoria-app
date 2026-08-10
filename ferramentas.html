@@ -181,6 +181,9 @@ h4:first-child{margin-top:0}
 .sb-foot .u{font-size:11px;color:var(--text-secondary);word-break:break-all;line-height:1.4}
 .linkbtn{background:none;border:none;color:var(--text-muted);font-size:10px;cursor:pointer;padding:0;text-decoration:underline;margin-top:6px}
 .linkbtn:hover{color:var(--accent-light)}
+.bkp-l{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 11px;border:1px solid var(--bd);border-radius:5px;margin-bottom:7px;font-size:12.5px}
+.bkp-l .mini{margin-top:2px}
+.gate .bkp-l .btn{width:auto;flex-shrink:0;padding:6px 13px;font-size:11.5px}
 
 /* ---- MODO VITRINE ----
    O app aberto para quem ainda nao comprou: ele ve os dez modulos
@@ -214,6 +217,7 @@ body.vit #content button:not([data-vitrine-livre]){cursor:not-allowed;opacity:.7
       <div><div class="tb-t" id="vt">Painel Executivo</div><div class="tb-s" id="vs"></div></div>
       <div class="tbr">
         <span id="undo"></span>
+        <button class="btn sm" id="bkpbtn" onclick="telaBackups()">Cópias</button>
         <button class="btn sm" onclick="seed()">Dados de exemplo</button>
         <button class="btn sm" onclick="exportar()">Exportar</button>
         <button class="btn sm" onclick="$('#imp').click()">Importar</button>
@@ -385,7 +389,61 @@ function carregar(){try{
 let VITRINE=false;
 function save(){
  if(VITRINE)return;
- localStorage.setItem(KEY,JSON.stringify(DB));agendarPush();rodape();navBadges();
+ localStorage.setItem(KEY,JSON.stringify(DB));gravarSnap('edição');agendarPush();rodape();navBadges();
+}
+
+/* ══════════ COPIAS DE SEGURANCA LOCAIS ══════════
+   O `save()` sobrescreve o estado anterior e o servidor guarda UMA linha
+   por conta — sem isto, qualquer engano (apagar o ambiente errado, um
+   import torto, o servidor devolvendo um payload velho) nao tem volta.
+   Guarda as 12 ultimas fotos do banco inteiro aqui no navegador: uma a
+   cada 15 minutos de edicao, mais uma forcada antes de todo caminho que
+   destroi dado. Nao substitui o Exportar — o navegador pode ser limpo —
+   mas cobre o erro do dia a dia, que e' o que de fato acontece. */
+const SNAPS=KEY+'_snaps';
+let ultimoSnap=0;
+function lerSnaps(){try{return JSON.parse(localStorage.getItem(SNAPS))||[]}catch(e){return[]}}
+function gravarSnap(origem,forcar,payload){
+ if(VITRINE)return;
+ const agora=Date.now();
+ if(!forcar&&agora-ultimoSnap<15*60*1000)return;
+ const l=lerSnaps();
+ l.unshift({ts:agora,origem,payload:payload||DB});
+ while(l.length>12)l.pop();
+ /* Estouro de cota nao pode derrubar o save(): descarta as mais antigas
+    ate caber, e se nem uma couber desiste em silencio. */
+ for(;;){try{localStorage.setItem(SNAPS,JSON.stringify(l));break}
+  catch(e){l.pop();if(!l.length){try{localStorage.removeItem(SNAPS)}catch(e2){}break}}}
+ ultimoSnap=agora;
+}
+function resumoSnap(p){
+ const n=(x)=>(x||[]).length;
+ return `${n(p.amb)} ambiente(s) · ${n(p.crm)} lead(s) · ${n(p.est&&p.est.mat)} material(is) · ${n(p.prec&&p.prec.hist)} orçamento(s)`;
+}
+function telaBackups(){
+ if($('#bkpov'))return;
+ const l=lerSnaps();
+ const d=document.createElement('div');d.className='gate';d.id='bkpov';
+ d.innerHTML=`<div class="gate-box venda">
+  <h1>Cópias de segurança</h1>
+  <p>Guardadas sozinhas neste navegador — uma a cada 15 minutos de uso e uma antes de cada operação que apaga dado. Restaurar troca tudo o que está na tela pela cópia escolhida, e o estado atual vira mais uma cópia antes da troca.</p>
+  ${l.length?l.map((s,i)=>`<div class="bkp-l"><div><b>${new Date(s.ts).toLocaleString('pt-BR')}</b>
+   <div class="mini">${esc(s.origem)} · ${resumoSnap(s.payload||{})}</div></div>
+   <button class="btn sm" data-vitrine-livre onclick="restaurarSnap(${i})">Restaurar</button></div>`).join('')
+  :'<div class="empty">Nenhuma cópia ainda. A primeira sai depois de 15 minutos de uso.</div>'}
+  <button class="btn" data-vitrine-livre onclick="fecharBackups()" style="margin-top:14px">Fechar</button>
+  <div class="note">O Exportar continua sendo o backup que sobrevive à perda do computador. Isto aqui não sai deste navegador.</div>
+ </div>`;
+ document.body.appendChild(d);
+}
+function fecharBackups(){const d=$('#bkpov');if(d)d.remove()}
+function restaurarSnap(i){
+ const l=lerSnaps(),s=l[i];
+ if(!s){alert('Cópia não encontrada.');return}
+ if(!confirm(`Restaurar a cópia de ${new Date(s.ts).toLocaleString('pt-BR')}?\n\n${resumoSnap(s.payload||{})}\n\nO que está na tela agora vira uma cópia antes da troca.`))return;
+ gravarSnap('antes de restaurar uma cópia',true);
+ DB=Object.assign(vazio(),s.payload||{});
+ fecharBackups();save();render();
 }
 function setv(path,val){const p=path.split('.');let o=DB;for(let i=0;i<p.length-1;i++)o=o[p[i]];o[p[p.length-1]]=val;save();paint()}
 function setn(path,el){setv(path,num(el.value))}
@@ -1582,7 +1640,7 @@ function exportar(){
 function importar(el){
  const f=el.files[0];if(!f)return;
  const r=new FileReader();
- r.onload=()=>{try{DB=Object.assign(vazio(),JSON.parse(r.result));save();render();alert('Dados importados.')}catch(e){alert('Arquivo inválido.')}};
+ r.onload=()=>{try{const novo=Object.assign(vazio(),JSON.parse(r.result));gravarSnap('antes de importar',true);DB=novo;save();render();alert('Dados importados. O que havia antes ficou guardado em "Cópias".')}catch(e){alert('Arquivo inválido.')}};
  r.readAsText(f);el.value='';
 }
 const BKP=KEY+'_bkp';
@@ -1608,7 +1666,7 @@ function seed(){
  if(VITRINE)return;
  if(temDados()){
   if(!confirm('ATENÇÃO\n\nIsto APAGA tudo o que você já lançou e coloca dados fictícios no lugar.\n\nUma cópia dos seus dados fica guardada para o botão "Desfazer exemplo", mas o seguro é clicar em Exportar antes.\n\nContinuar mesmo assim?'))return;
-  localStorage.setItem(BKP,JSON.stringify(DB));
+  localStorage.setItem(BKP,JSON.stringify(DB));gravarSnap('antes dos dados de exemplo',true);
  }else if(!confirm('Carregar os dados de exemplo?'))return;
  DB=exemploDB();
  save();render();
@@ -1652,6 +1710,16 @@ function exemploDB(){
 
 /* ══════════ CONTA E SINCRONIZAÇÃO ══════════ */
 let sb=null, USER=null, REMOTO=false, SYNC='local', ultimo='';
+/* Nunca escrever no servidor sem ter conseguido ler antes. O caminho que
+   destruia dado era este: o boot falhava ao carregar, o app seguia com o
+   que estava no navegador (podendo ser vazio ou de semanas atras) e o
+   primeiro save empurrava isso por cima do servidor. Agora a escrita so
+   liga depois de um `puxar()` que deu certo.
+   `BASE` guarda o `updated_at` que foi lido. Se o servidor tiver um mais
+   novo na hora de enviar, alguem gravou de outro lugar: o app para, avisa
+   e deixa a escolha na mao do usuario — nunca sobrescreve calado. */
+let PODE_ESCREVER=false, BASE=null;
+const ts=v=>{const n=Date.parse(v);return isNaN(n)?0:n};
 const configurado=()=>!!(CFG.url&&CFG.anon);
 
 function rodape(){
@@ -1662,13 +1730,21 @@ function rodape(){
             wait:['wait','Salvando…'],
             bad:['bad','Falha ao sincronizar — dados guardados no navegador'],
             off:['bad','Sem conexão — será sincronizado ao voltar'],
+            /* Travado nao e' o mesmo que falha: aqui o app esta se
+               RECUSANDO a escrever para nao destruir o que ha no
+               servidor. Precisa de nome proprio, senao o usuario espera
+               que volte sozinho — e nao volta. */
+            travado:['bad','Não sincronizado — lançamentos só neste navegador'],
+            conflito:['bad','Conflito com outro aparelho — resolva antes de continuar'],
             /* Sem este estado o rodape ficava em branco e parecia defeito.
                Dizer que nada e' salvo e' honesto e evita o aluno lancar
                algo achando que ficou guardado. */
             vitrine:['','Demonstração — nada é salvo.']}[SYNC]||['',''];
  el.innerHTML=(USER?`<div class="u">${esc(USER.email)}</div>`:'')
   +`<div class="sync ${est[0]}"><i></i>${est[1]}${ultimo&&SYNC==='ok'?' · '+ultimo:''}</div>`
+  +(REMOTO&&['bad','off','travado','conflito'].includes(SYNC)?`<button class="linkbtn" onclick="ressincronizar()">Sincronizar agora</button><br>`:'')
   +(USER?`<button class="linkbtn" onclick="sair()">Sair da conta</button>`:'');
+ const b=$('#bkpbtn');if(b&&!VITRINE){const n=lerSnaps().length;b.textContent=n?`Cópias (${n})`:'Cópias'}
 }
 
 let tmr=null;
@@ -1678,24 +1754,64 @@ function agendarPush(){
 }
 async function enviar(){
  if(!REMOTO)return;
+ if(!PODE_ESCREVER){SYNC='travado';rodape();return}
+ /* O conflito e' resolvido FORA do try. Dentro, qualquer coisa que
+    estourasse na pergunta ao usuario cairia no catch e viraria "falha de
+    rede" — escondendo justamente o caso em que ha dado de dois lados. */
+ let pendente=null;
  try{
-  const {error}=await sb.from('dados').upsert(
-    {user_id:USER.id,payload:DB,updated_at:new Date().toISOString()},{onConflict:'user_id'});
-  if(error)throw error;
-  SYNC='ok';ultimo=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  const {data:cur,error:e1}=await sb.from('dados').select('updated_at').eq('user_id',USER.id).maybeSingle();
+  if(e1)throw e1;
+  if(cur&&BASE&&ts(cur.updated_at)>ts(BASE)){PODE_ESCREVER=false;SYNC='conflito';pendente=cur.updated_at}
+  else{
+   const stamp=new Date().toISOString();
+   const {error}=await sb.from('dados').upsert(
+     {user_id:USER.id,payload:DB,updated_at:stamp},{onConflict:'user_id'});
+   if(error)throw error;
+   BASE=stamp;
+   SYNC='ok';ultimo=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  }
  }catch(e){SYNC=navigator.onLine?'bad':'off';console.error('sync',e)}
  rodape();
+ if(pendente)conflito(pendente);
+}
+function conflito(quando){
+ gravarSnap('antes de resolver o conflito',true);
+ const q=new Date(ts(quando)).toLocaleString('pt-BR');
+ const manter=confirm(`Os dados no servidor foram gravados em ${q}, de outro aparelho ou de outra aba deste navegador.\n\nOK = manter o que está NESTA tela e substituir o do servidor.\nCancelar = descartar esta tela e recarregar o do servidor.\n\nDe qualquer forma, o que está aqui já foi guardado em "Cópias".`);
+ if(manter){BASE=null;PODE_ESCREVER=true;enviar()}
+ else location.reload();
 }
 async function puxar(){
- const {data,error}=await sb.from('dados').select('payload').eq('user_id',USER.id).maybeSingle();
+ const {data,error}=await sb.from('dados').select('payload,updated_at').eq('user_id',USER.id).maybeSingle();
  if(error)throw error;
  if(data&&data.payload&&Object.keys(data.payload).length){
-  DB=Object.assign(vazio(),data.payload);
+  /* O que estava neste navegador vira copia antes de ser substituido. Se
+     o servidor devolver algo mais velho, o trabalho local ainda existe. */
+  const antes=localStorage.getItem(KEY);
+  const novo=JSON.stringify(Object.assign(vazio(),data.payload));
+  if(antes&&antes!==novo){try{gravarSnap('deste navegador, antes de entrar',true,JSON.parse(antes))}catch(e){}}
+  DB=JSON.parse(novo);
+  BASE=data.updated_at||null;PODE_ESCREVER=true;
   localStorage.setItem(KEY,JSON.stringify(DB));
  }else{
+  BASE=null;PODE_ESCREVER=true;
   await enviar();   // primeira vez: sobe o que já existe neste navegador
  }
  SYNC='ok';
+}
+/* Saida manual para quando a sincronizacao caiu: nao adivinha qual lado
+   esta certo, pergunta — e guarda copia antes das duas respostas. */
+async function ressincronizar(){
+ if(!REMOTO)return;
+ gravarSnap('antes de sincronizar à mão',true);
+ const subir=confirm('Sincronizar agora.\n\nOK = enviar o que está nesta tela para o servidor.\nCancelar = trazer o do servidor e descartar esta tela.\n\nO que está aqui já foi guardado em "Cópias".');
+ SYNC='wait';rodape();
+ try{
+  if(subir){PODE_ESCREVER=true;BASE=null;await enviar()}
+  else{await puxar();render()}
+ }catch(e){SYNC=navigator.onLine?'bad':'off';console.error('resync',e)}
+ rodape();
 }
 window.addEventListener('online',()=>{if(REMOTO){SYNC='wait';rodape();enviar()}});
 
@@ -1892,11 +2008,18 @@ function avisoVitrine(){
 }
 
 async function sair(){
+ /* Sair apaga o local de proposito — o servidor e' a fonte. Mas se a
+    sincronizacao nao estiver em dia, o que esta aqui e' a UNICA copia:
+    avisar antes, senao o logout vira a forma mais facil de perder o dia
+    inteiro de lancamento. */
+ if(!VITRINE&&REMOTO&&SYNC!=='ok'&&!confirm('ATENÇÃO\n\nHá lançamentos que ainda não foram para o servidor. Sair apaga tudo o que está neste navegador, inclusive as cópias de segurança.\n\nCancele, use "Sincronizar agora" ou "Exportar", e só depois saia.\n\nSair mesmo assim e perder o que não subiu?'))return;
  if(!confirm('Sair da conta neste navegador?'))return;
  await sb.auth.signOut();
  /* Em vitrine o localStorage nunca foi tocado — apagar aqui destruiria
-    dado de um outro membro que use o mesmo navegador. */
- if(!VITRINE){localStorage.removeItem(KEY);localStorage.removeItem(BKP)}
+    dado de um outro membro que use o mesmo navegador.
+    As copias vao junto: sem isso, quem entrasse depois no mesmo
+    computador restauraria dado de outra empresa. */
+ if(!VITRINE){localStorage.removeItem(KEY);localStorage.removeItem(BKP);localStorage.removeItem(SNAPS)}
  location.reload();
 }
 
@@ -1930,8 +2053,8 @@ function iniciarUI(){
   modoVitrine();return;
  }
  try{ await puxar() }
- catch(e){ SYNC='bad';console.error('load',e);
-   alert('Entrou, mas não consegui carregar seus dados do servidor. Usando o que está neste navegador. Se o problema persistir, confira se a tabela e as políticas de acesso foram criadas.') }
+ catch(e){ SYNC='travado';PODE_ESCREVER=false;console.error('load',e);
+   alert('Entrou, mas não consegui carregar seus dados do servidor.\n\nO app abre com o que está neste navegador e NÃO vai gravar nada no servidor até conseguir ler — assim o que está guardado lá não corre risco de ser sobrescrito por uma versão antiga.\n\nO que você lançar agora fica salvo aqui. Quando a conexão voltar, use "Sincronizar agora" no rodapé da barra lateral.') }
  iniciarUI();
  sb.auth.onAuthStateChange((ev)=>{if(ev==='SIGNED_OUT')location.reload()});
 })();
