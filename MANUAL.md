@@ -59,17 +59,61 @@ valendo a pena para o aluno recuperar acesso sozinho pelo link, mas já não tra
 abertura da turma.
 
 1. Crie conta no **resend.com** (grátis, 3.000 e-mails/mês — sobra para 20 alunos)
-2. No Resend: **API Keys** → **Create API Key** → copie a chave
-3. No Supabase: **Authentication** → **Emails** → **SMTP Settings** → ligue **Enable Custom SMTP**
+2. No Resend: **Domains** → **Add Domain** → `lukana.com.br`. Ele mostra 3 registros
+   de DNS (SPF, DKIM, e um de retorno). Cole no painel onde o domínio está registrado
+   e espere ficar **Verified** — costuma levar de 10 minutos a algumas horas.
+   *Sem domínio verificado o Resend só entrega para o e-mail da sua própria conta*,
+   o que serve para testar e não serve para turma.
+3. No Resend: **API Keys** → **Create API Key** → copie a chave (`re_...`)
+4. No Supabase: **Authentication** → **Emails** → **SMTP Settings** → ligue **Enable Custom SMTP**
    - Host: `smtp.resend.com`
    - Porta: `465`
    - Usuário: `resend`
    - Senha: a chave que você copiou
-   - Sender email: um e-mail do seu domínio
-4. Salve. Depois vá em **Authentication → Rate Limits** e suba o limite de e-mails
-   por hora para algo como 100.
+   - Sender email: `nao-responda@lukana.com.br`
+   - Sender name: `Mentoria APM`
+5. Salve. **Só agora** vá em **Authentication → Rate Limits** e suba "emails per hour"
+   para 100.
+
+> A ordem do passo 5 não é frescura: o Supabase **recusa** mudar esse limite enquanto
+> não houver SMTP próprio, com a mensagem `Custom SMTP required to configure
+> RATE_LIMIT_EMAIL_SENT`. Testado pela API em 10/08/2026. Enquanto o serviço embutido
+> estiver no lugar, são 2 e-mails por hora **no projeto inteiro** e não há como
+> aumentar — nem pelo painel, nem por API.
 
 **Não abra turma sem isso.** É a falha que estraga o primeiro dia.
+
+### 2-B. Se VOCÊ ficar sem acesso — atalho que não passa por e-mail
+
+Aconteceu em 10/08/2026: sem a senha do admin, o "Send password recovery" do painel
+bateu em `email rate limit exceeded` e não havia como entrar. O caminho abaixo gera o
+mesmo link do e-mail, **sem enviar e-mail nenhum**, então o limite não se aplica.
+
+Precisa de um token pessoal (Supabase → Account → **Access Tokens** → Generate).
+**Revogue assim que terminar** — ele abre a conta inteira, não só este projeto.
+
+```bash
+SBT='sbp_...'                       # token pessoal, revogar depois
+REF='frqoxmerrfucprtgvghm'
+SR=$(curl -s -H "Authorization: Bearer $SBT" \
+  "https://api.supabase.com/v1/projects/$REF/api-keys?reveal=true" \
+  | python3 -c "import sys,json;print(next(k['api_key'] for k in json.load(sys.stdin) if k['name']=='service_role'))")
+
+curl -s -X POST "https://$REF.supabase.co/auth/v1/admin/generate_link" \
+  -H "apikey: $SR" -H "Authorization: Bearer $SR" -H "Content-Type: application/json" \
+  -d '{"type":"recovery","email":"lukamoraiss7@gmail.com",
+       "options":{"redirect_to":"https://mentoria-app-self.vercel.app"}}' \
+  | python3 -c "import sys,json;print(json.load(sys.stdin)['action_link'])"
+```
+
+O link é de **uso único, válido por 1 hora**, e enquanto vale abre a conta sem senha —
+não repasse. Clicar nele cai na área de membros com "Definir senha" já aberta.
+
+Serve para qualquer conta, não só a sua: trocando o e-mail, resolve o aluno travado
+sem gastar a cota de envio.
+
+**Depois de entrar, defina uma senha e não fique sem.** O buraco não foi o Supabase —
+foi depender de e-mail para entrar na própria casa.
 
 ### 3. Tornar sua conta administradora — ✅ **FEITO em 05/08/2026**
 
@@ -289,6 +333,16 @@ WhatsApp. Resolve de uma vez, para qualquer máquina.
 **Aluno não recebe o link** → quase sempre é o SMTP (passo 2). Se já estiver configurado,
 peça para olhar em promoções e spam, e confirme que ele abre o e-mail na mesma máquina.
 Mas o caminho curto é senha, não link.
+
+**`email rate limit exceeded` ao mandar recuperação** → são os 2 e-mails por hora do
+serviço embutido, contados no projeto todo (janela móvel: libera ~1h depois do último
+envio). Não espere: gere o link direto pela API, sem e-mail — passo **2-B**.
+
+**O link do e-mail cai na tela errada** → era a Site URL apontando para
+`ferramentas.html` com a lista de Redirect URLs **vazia**, o que fazia o Supabase
+descartar todo `emailRedirectTo` e mandar tudo para o app. Corrigido em 10/08/2026:
+Site URL `https://mentoria-app-self.vercel.app`, Redirect URLs
+`https://mentoria-app-self.vercel.app/**`. Se voltar a acontecer, é aí que se olha.
 
 **O aluno entra nas ferramentas sem ter pago** → confira com `select * from public.acesso;`
 se a linha dele está com `ferramentas = true` indevidamente.
