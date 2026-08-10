@@ -120,6 +120,11 @@ table input:focus,table select:focus{border-color:var(--accent)}
 .alert .ic{font-size:15px;line-height:1.2;flex-shrink:0}
 
 .empty{padding:26px;text-align:center;color:var(--text-muted);font-size:13px;border:1px dashed var(--bd);border-radius:6px}
+tr.clik{cursor:pointer}
+tr.clik:hover{background:rgba(201,168,76,.07)}
+tr.clik.on{background:rgba(201,168,76,.1)}
+tr.clik td:first-child::before{content:'▸';color:var(--accent);margin-right:7px;display:inline-block;font-size:10px}
+tr.clik.on td:first-child::before{content:'▾'}
 .dre{font-size:13px}
 .dre .r{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #1f1f1f}
 .dre .r.tot{font-weight:700;border-bottom:1px solid var(--bd);border-top:1px solid var(--bd);margin-top:2px;color:var(--accent-light)}
@@ -1115,36 +1120,76 @@ PAINT.simulador=()=>{
 };
 
 /* ---------- KPI ---------- */
-VIEWS.kpi=()=>`
+/* Dois níveis: a lista mostra projetos, nunca ambientes soltos. Clicar no
+   projeto abre os ambientes dele; clicar no ambiente abre os 8 marcos.
+   Sem isso, 6 projetos de 5 ambientes viravam 30 tabelas empilhadas. */
+function projAtual(){const p=window.__kpiProj;return p&&DB.amb.some(a=>a.projeto===p)?p:null}
+function abrirProj(i){const ps=projetos();if(!ps[i])return;window.__kpiProj=ps[i].projeto;
+ window.__kpiAmb=ps[i].ambientes.length===1?ps[i].ambientes[0].id:null;render()}
+function voltarProj(){window.__kpiProj=null;window.__kpiAmb=null;render()}
+function abrirAmb(id){window.__kpiAmb=window.__kpiAmb===id?null:id;render()}
+VIEWS.kpi=()=>{
+ const p=projAtual();
+ const cli=p?((DB.amb.find(a=>a.projeto===p)||{}).cliente||''):'';
+ return `
  <div class="card">
-  <h3>Novo ambiente<span class="hint">o cronograma é gerado sozinho a partir da data de início</span></h3>
+  <h3>${p?`Novo ambiente em ${esc(p)}`:'Novo ambiente'}<span class="hint">o cronograma é gerado sozinho a partir da data de início</span></h3>
   <div class="row">
-   <div class="f" style="width:110px"><label>Projeto</label><input id="np" placeholder="089"></div>
+   <div class="f" style="width:110px"><label>Projeto</label><input id="np" placeholder="089" value="${esc(p||'')}" ${p?'readonly style="opacity:.6"':''}></div>
    <div class="f" style="width:170px"><label>Ambiente</label><input id="na" placeholder="Cozinha"></div>
-   <div class="f" style="width:170px"><label>Cliente</label><input id="nc" placeholder="João Silva"></div>
+   <div class="f" style="width:170px"><label>Cliente</label><input id="nc" placeholder="João Silva" value="${esc(cli)}"></div>
    <div class="f" style="width:160px"><label>Início (caderno aprovado)</label><input type="date" id="ni" value="${hoje()}"></div>
    <button class="btn gold" onclick="addAmb()">Adicionar</button>
   </div>
   <div class="note">Ciclo padrão: 55 dias úteis do caderno técnico aprovado à entrega. Pré-25% 12d · miolo fábrica 25%→75% 15d · pós-75% 7d · obra 21d. Toda data planejada pode ser editada por ambiente.</div>
  </div>
  <div id="out"></div>`;
+};
 PAINT.kpi=()=>{
  if(!DB.amb.length){$('#out').innerHTML='<div class="card"><div class="empty">Nenhum ambiente cadastrado. A unidade de medida é o <b>ambiente completo</b>, nunca o móvel isolado.</div></div>';return}
+ const sel=projAtual();
+ $('#out').innerHTML=sel?viewProjeto(sel):painelProjetos();
+};
+function painelProjetos(){
  const ps=projetos();
- $('#out').innerHTML=`
- <div class="card"><h3>🚦 Painel do projeto<span class="hint">um ambiente laranja derruba o projeto inteiro</span></h3>
+ return `<div class="card"><h3>🚦 Painel do projeto<span class="hint">clique no projeto para abrir os ambientes · um ambiente laranja derruba o projeto inteiro</span></h3>
   <div class="tw"><table><thead><tr><th>Projeto</th><th>Cliente</th><th>Ambientes</th><th class="n">% planejado</th><th class="n">% real</th><th class="n">Pior ambiente</th><th>Entrega prevista</th><th>Status</th></tr></thead><tbody>
-  ${ps.map(p=>{const c={verde:0,amarelo:0,laranja:0,vermelho:0};p.ambientes.forEach(a=>c[ambStatus(a).cor]++);
-   return `<tr><td><b>${esc(p.projeto)}</b></td><td>${esc(p.cliente||'—')}</td>
+  ${ps.map((p,i)=>{const c={verde:0,amarelo:0,laranja:0,vermelho:0};p.ambientes.forEach(a=>c[ambStatus(a).cor]++);
+   return `<tr class="clik" onclick="abrirProj(${i})"><td><b>${esc(p.projeto)}</b></td><td>${esc(p.cliente||'—')}</td>
    <td>${Object.entries(c).filter(([,v])=>v).map(([k,v])=>`<span class="tag t-${k}" style="margin-right:3px">${v}</span>`).join('')}</td>
    <td class="n">${nf(p.plan)}%</td><td class="n">${nf(p.real)}%</td>
    <td class="n" style="color:${p.pior>=0?'var(--verde)':'var(--vermelho)'}">${p.pior>0?'+':''}${nf(p.pior)} pts</td>
    <td>${fmtD(p.entrega)}</td><td><span class="tag t-${p.cor}">${p.cor}</span></td></tr>`}).join('')}
   </tbody></table></div>
   <div class="note">Verde = adiantado ou em dia · Amarelo = até 12,5 pts atrás (menos de um marco) · Laranja = até 25 pts · Vermelho = mais de 25 pts atrás. % planejado avança por marco vencido, não linearmente.</div>
+ </div>`;
+}
+function viewProjeto(proj){
+ const p=projetos().find(x=>x.projeto===proj);
+ if(!p)return painelProjetos();
+ const aberto=window.__kpiAmb;
+ return `<div class="card">
+  <h3><button class="btn sm" onclick="voltarProj()" style="margin-right:9px">← Projetos</button>${esc(p.projeto)} — ${esc(p.cliente||'sem cliente')}
+   <span class="tag t-${p.cor}" style="margin-left:6px">${p.cor}</span>
+   <span class="hint">${p.ambientes.length} ambiente(s) · entrega prevista ${fmtD(p.entrega)}</span></h3>
+  <div class="row" style="margin-bottom:14px;gap:20px">
+   <div><div class="mini">% planejado hoje</div><b style="font-size:19px">${nf(p.plan)}%</b></div>
+   <div><div class="mini">% real hoje</div><b style="font-size:19px">${nf(p.real)}%</b></div>
+   <div><div class="mini">Desvio médio</div><b style="font-size:19px;color:${p.desvio>=0?'var(--verde)':'var(--vermelho)'}">${p.desvio>0?'+':''}${nf(p.desvio)} pts</b></div>
+   <div><div class="mini">Pior ambiente</div><b style="font-size:19px;color:${p.pior>=0?'var(--verde)':'var(--vermelho)'}">${p.pior>0?'+':''}${nf(p.pior)} pts</b></div>
+  </div>
+  <div class="tw"><table><thead><tr><th>Ambiente</th><th>Etapa atual</th><th class="n">Dias</th><th class="n">% plan</th><th class="n">% real</th><th class="n">Desvio</th><th>Status</th></tr></thead><tbody>
+  ${p.ambientes.map(a=>{const s=ambStatus(a);
+   return `<tr class="clik ${a.id===aberto?'on':''}" onclick="abrirAmb('${a.id}')">
+   <td><b>${esc(a.ambiente)}</b></td><td class="mini">${etapaNome(a)}</td>
+   <td class="n">${diasNaEtapa(a)}</td><td class="n">${nf(s.plan)}%</td><td class="n">${nf(s.real)}%</td>
+   <td class="n" style="color:${s.desvio>=0?'var(--verde)':'var(--vermelho)'}">${s.desvio>0?'+':''}${nf(s.desvio)} pts</td>
+   <td><span class="tag t-${s.cor}">${s.cor}</span></td></tr>`}).join('')}
+  </tbody></table></div>
+  <div class="note">Clique no ambiente para abrir os 8 marcos e lançar as datas reais. O projeto só fica verde se todos os ambientes estiverem aderentes.</div>
  </div>
- ${DB.amb.map((a,i)=>ambCard(a,i)).join('')}`;
-};
+ ${aberto&&p.ambientes.some(a=>a.id===aberto)?ambCard(DB.amb.find(a=>a.id===aberto),DB.amb.findIndex(a=>a.id===aberto)):''}`;
+}
 function ambCard(a,i){
  const s=ambStatus(a),plan=planOf(a),si=stageIdx(a);
  const gate=m=>{const c=MARCOS[m].chk;if(!c)return null;const r=chkPend(a.id,c);return r};
@@ -1177,9 +1222,10 @@ function ambCard(a,i){
 function addAmb(){
  const p=$('#np').value.trim(),am=$('#na').value.trim();
  if(!p||!am){alert('Projeto e ambiente são obrigatórios.');return}
- const inicio=$('#ni').value||hoje();
- DB.amb.push({id:uid(),projeto:p,ambiente:am,cliente:$('#nc').value.trim(),inicio,plan:MARCOS.map(m=>addBiz(inicio,m.off)),real:Array(8).fill('')});
- $('#np').value='';$('#na').value='';$('#nc').value='';
+ const inicio=$('#ni').value||hoje(),id=uid();
+ DB.amb.push({id,projeto:p,ambiente:am,cliente:$('#nc').value.trim(),inicio,plan:MARCOS.map(m=>addBiz(inicio,m.off)),real:Array(8).fill('')});
+ $('#na').value='';
+ window.__kpiProj=p;window.__kpiAmb=id;
  save();render();
 }
 function delAmb(i){if(!confirm('Remover este ambiente e seus checklists?'))return;const a=DB.amb[i];delete DB.chk[a.id];DB.amb.splice(i,1);save();render()}
