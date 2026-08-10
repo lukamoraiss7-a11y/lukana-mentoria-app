@@ -136,6 +136,16 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
 .d-pan-apm-badge { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--dim); margin-bottom: 8px; }
 .d-pan-apm-text { font-size: 12px; color: var(--muted); line-height: 1.65; }
 </style>
+<style>
+/* rodape de direitos — igual nas nove telas do app. Cor herdada do tema da
+   pagina e esmaecida por opacity, para servir tanto no escuro quanto no claro. */
+.aresta-direitos{max-width:980px;margin:46px auto 0;padding:16px 24px 32px;
+  border-top:1px solid rgba(136,153,180,.18);display:flex;align-items:center;
+  gap:12px;font:400 11px/1.55 'Inter',system-ui,-apple-system,sans-serif;
+  opacity:.6;flex-wrap:wrap}
+.aresta-direitos img{height:15px;width:auto;flex-shrink:0}
+@media print{.aresta-direitos{opacity:1}}
+</style>
 </head>
 <body>
 
@@ -485,5 +495,9 @@ function atualizarStats(rows) {
   document.getElementById('sBaixo').textContent = rows.filter(r => r.score_total < 41).length
 }
 </script>
+<div class="aresta-direitos">
+  <img src="marca-aresta.png" alt="ARESTA APM">
+  <span>&copy; 2026 ARESTA APM &middot; Conteúdo e método propriet&aacute;rios. Uso restrito ao aluno matriculado — proibida a reprodu&ccedil;&atilde;o, revenda ou redistribui&ccedil;&atilde;o, total ou parcial.</span>
+</div>
 </body>
 </html>

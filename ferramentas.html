@@ -203,6 +203,24 @@ body.vit #content button:not([data-vitrine-livre]){cursor:not-allowed;opacity:.7
 .vittoast div{font-size:12px;color:var(--text-secondary);line-height:1.5}
 .vittoast a{color:var(--navy);background:var(--accent);text-decoration:none;font-size:10.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:8px 14px;border-radius:4px;white-space:nowrap}
 </style>
+<style>
+/* rodape de direitos — igual nas nove telas do app. Cor herdada do tema da
+   pagina e esmaecida por opacity, para servir tanto no escuro quanto no claro. */
+.aresta-direitos{max-width:980px;margin:46px auto 0;padding:16px 24px 32px;
+  border-top:1px solid rgba(136,153,180,.18);display:flex;align-items:center;
+  gap:12px;font:400 11px/1.55 'Inter',system-ui,-apple-system,sans-serif;
+  opacity:.6;flex-wrap:wrap}
+.aresta-direitos img{height:15px;width:auto;flex-shrink:0}
+@media print{.aresta-direitos{opacity:1}}
+</style>
+<style>
+/* Nas duas telas de app-shell o rodape nao pode ficar no fim do body: o
+   gate de login e' position:fixed z-index:999 e taparia o aviso, e a .app
+   tem overflow:hidden. Vai na barra lateral, empilhado e estreito. */
+.aresta-direitos.lateral{display:block;max-width:none;margin:0;padding:11px 16px 14px;
+  border-top:1px solid #222;font-size:9px;line-height:1.5;opacity:.55}
+.aresta-direitos.lateral img{display:block;height:12px;margin-bottom:7px}
+</style>
 </head>
 <body>
 <div class="app">
@@ -213,6 +231,10 @@ body.vit #content button:not([data-vitrine-livre]){cursor:not-allowed;opacity:.7
     </div>
     <nav class="sb-nav" id="nav"></nav>
     <div class="sb-foot" id="sbfoot"></div>
+    <div class="aresta-direitos lateral">
+      <img src="marca-aresta.png" alt="ARESTA APM">
+      <span>&copy; 2026 ARESTA APM &middot; Conte&uacute;do e m&eacute;todo propriet&aacute;rios. Uso restrito ao aluno matriculado &mdash; proibida a reprodu&ccedil;&atilde;o, revenda ou redistribui&ccedil;&atilde;o.</span>
+    </div>
   </aside>
   <main class="main">
     <div class="topbar">

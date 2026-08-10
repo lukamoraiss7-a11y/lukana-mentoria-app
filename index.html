@@ -342,6 +342,24 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
 .adm-a{color:var(--accent-light);text-decoration:none;font-size:13px;}
 .adm-a:hover{text-decoration:underline;}
 </style>
+<style>
+/* rodape de direitos — igual nas nove telas do app. Cor herdada do tema da
+   pagina e esmaecida por opacity, para servir tanto no escuro quanto no claro. */
+.aresta-direitos{max-width:980px;margin:46px auto 0;padding:16px 24px 32px;
+  border-top:1px solid rgba(136,153,180,.18);display:flex;align-items:center;
+  gap:12px;font:400 11px/1.55 'Inter',system-ui,-apple-system,sans-serif;
+  opacity:.6;flex-wrap:wrap}
+.aresta-direitos img{height:15px;width:auto;flex-shrink:0}
+@media print{.aresta-direitos{opacity:1}}
+</style>
+<style>
+/* Nas duas telas de app-shell o rodape nao pode ficar no fim do body: o
+   gate de login e' position:fixed z-index:999 e taparia o aviso, e a .app
+   tem overflow:hidden. Vai na barra lateral, empilhado e estreito. */
+.aresta-direitos.lateral{display:block;max-width:none;margin:0;padding:11px 16px 14px;
+  border-top:1px solid #222;font-size:9px;line-height:1.5;opacity:.55}
+.aresta-direitos.lateral img{display:block;height:12px;margin-bottom:7px}
+</style>
 </head>
 <body>
 <div class="app">
@@ -392,6 +410,10 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
       <div class="ptrk"><div class="pfil"></div></div>
       <div class="psub">0 de 6 fases concluídas</div>
       <div class="psub" id="sb-plano" style="margin-top:4px;"></div>
+    </div>
+    <div class="aresta-direitos lateral">
+      <img src="marca-aresta.png" alt="ARESTA APM">
+      <span>&copy; 2026 ARESTA APM &middot; Conte&uacute;do e m&eacute;todo propriet&aacute;rios. Uso restrito ao aluno matriculado &mdash; proibida a reprodu&ccedil;&atilde;o, revenda ou redistribui&ccedil;&atilde;o.</span>
     </div>
   </aside>
   <main class="main">
