@@ -46,26 +46,47 @@
     padding: 22px 24px; margin-bottom: 30px; display: flex; align-items: flex-end; gap: 20px; flex-wrap: wrap;
   }
   .input-field label { display: block; font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--dim); margin-bottom: 8px; }
-  .input-field input[type="date"] {
+  .input-field input[type="date"], .input-field input[type="number"] {
     background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px;
     color: var(--text); font-family: 'Inter', sans-serif; font-size: 13px; min-width: 170px;
   }
-  .input-field input[type="date"]:focus { outline: none; border-color: var(--gold); }
-  .mode-toggle { display: flex; gap: 6px; margin-left: auto; }
+  .input-field input:focus { outline: none; border-color: var(--gold); }
+  .input-field input.missing { border-color: rgba(239,68,68,.55); }
+  .input-field .hint { display: block; font-size: 10px; color: var(--dim); margin-top: 6px; max-width: 200px; line-height: 1.5; }
+  .mode-toggle { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+  .mode-toggle .ref-lbl { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--dim); margin-right: 2px; }
   .mode-btn {
     font-family: 'Rajdhani', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase;
     padding: 9px 14px; border-radius: 8px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer;
   }
-  .mode-btn.active { background: linear-gradient(135deg, #C8922A, #F0C060); color: #0c1221; border-color: transparent; }
+  .mode-btn:hover { color: var(--gold-light); border-color: rgba(200,146,42,.4); }
+
+  .gate {
+    background: var(--surface); border: 1px dashed rgba(200,146,42,.35); border-radius: 14px;
+    padding: 30px 26px; text-align: center; font-size: 13px; color: var(--muted); line-height: 1.7;
+  }
+  .gate b { color: var(--gold-light); }
+  .hidden { display: none !important; }
 
   .total-banner { display: flex; align-items: center; justify-content: space-between; gap: 16px; background: rgba(200,146,42,.06); border: 1px solid rgba(200,146,42,.25); border-radius: 12px; padding: 16px 22px; margin-bottom: 34px; flex-wrap: wrap; }
   .total-banner .lbl { font-size: 12px; color: var(--muted); }
   .total-banner .val { font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; color: var(--gold-light); }
+  .total-banner .verdict { font-family: 'Rajdhani', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; padding: 7px 13px; border-radius: 8px; }
+  .total-banner .verdict.ok { background: rgba(16,185,129,.12); color: var(--green); }
+  .total-banner .verdict.tight { background: rgba(240,160,96,.12); color: #f0a060; }
+  .total-banner .verdict.bad { background: rgba(239,68,68,.12); color: var(--red); }
   .total-banner.over { background: rgba(239,68,68,.08); border-color: rgba(239,68,68,.3); }
   .total-banner.over .val { color: var(--red); }
 
   .gantt { margin-bottom: 40px; }
   .gantt-track { position: relative; height: 54px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; display: flex; }
+  .gantt-limit { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--red); z-index: 3; }
+  .gantt-limit::after {
+    content: attr(data-lbl); position: absolute; top: 4px; left: 5px; white-space: nowrap;
+    font-family: 'Rajdhani', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: .5px;
+    text-transform: uppercase; color: var(--red); background: rgba(12,18,33,.85); padding: 2px 5px; border-radius: 4px;
+  }
+  .gantt-limit.flip::after { left: auto; right: 5px; }
   .gantt-block { height: 100%; display: flex; align-items: center; justify-content: center; font-family: 'Rajdhani', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: #0c1221; text-align: center; padding: 0 4px; white-space: nowrap; overflow: hidden; }
   .gb-pre { background: linear-gradient(135deg, #8899b4, #aab6ca); }
   .gb-fab { background: linear-gradient(135deg, #3b82f6, #60a5fa); color: #fff; }
@@ -82,8 +103,16 @@
   table.milestones td { padding: 13px 16px; font-size: 12.5px; color: var(--text); border-bottom: 1px solid var(--border); }
   table.milestones tr:last-child td { border-bottom: none; }
   table.milestones td.block-name { font-weight: 600; }
-  table.milestones td.duration { color: var(--muted); }
-  table.milestones td.date { font-family: 'Rajdhani', sans-serif; font-weight: 700; color: var(--gold-light); white-space: nowrap; }
+  table.milestones td.duration { color: var(--muted); white-space: nowrap; }
+  table.milestones td.duration input {
+    width: 56px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+    padding: 6px 8px; color: var(--gold-light); font-family: 'Rajdhani', sans-serif; font-weight: 700;
+    font-size: 13px; text-align: center; margin-right: 6px;
+  }
+  table.milestones td.duration input:focus { outline: none; border-color: var(--gold); }
+  table.milestones tr.total-row td { background: #0d1526; font-weight: 600; }
+  table.milestones tr.limit-row td { background: rgba(239,68,68,.05); }
+  table.milestones tr.limit-row td.date { color: var(--red); }
 
   .footer-note {
     background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
@@ -120,30 +149,51 @@
     <div class="intro-block">
       <div class="step-label">Ferramenta 4 de 5 — Fase 4</div>
       <h1>Cronograma <span>Mestre</span></h1>
-      <p>O ciclo padrão de marcenaria sob medida: ~60 dias úteis do caderno técnico aprovado à entrega em obra. Escolha a data de aprovação do caderno e veja as datas-alvo de cada bloco — publique o cronograma-alvo antes de iniciar a produção.</p>
+      <p>Do caderno técnico aprovado à entrega em obra. Comece pelo <b>prazo que o seu contrato promete</b> — é ele que manda, não uma média de mercado. Depois ajuste a duração de cada bloco para o que a <b>sua</b> fábrica realmente leva. O cronograma só é gerado quando o prazo estiver preenchido.</p>
     </div>
 
     <div class="input-card">
       <div class="input-field">
+        <label>Prazo do contrato (dias úteis)</label>
+        <input type="number" id="prazoContrato" min="1" max="400" step="1" placeholder="obrigatório">
+        <span class="hint">O que você assinou com o cliente, contado do caderno aprovado até a entrega.</span>
+      </div>
+      <div class="input-field">
         <label>Data de aprovação do caderno técnico</label>
         <input type="date" id="startDate">
+        <span class="hint">Opcional — preencha para ver as datas no calendário.</span>
       </div>
       <div class="mode-toggle">
-        <button class="mode-btn active" data-mode="avg">Cenário médio</button>
-        <button class="mode-btn" data-mode="max">Cenário teto</button>
+        <span class="ref-lbl">Carregar referência</span>
+        <button class="mode-btn" data-mode="avg">Médio</button>
+        <button class="mode-btn" data-mode="max">Teto</button>
       </div>
     </div>
 
+    <div class="gate" id="gate">
+      Preencha o <b>prazo do contrato</b> acima para gerar o cronograma.<br>
+      Cada empresa roda de um jeito — o ciclo tem que sair do seu contrato e da sua fábrica, não de um número emprestado.
+    </div>
+
+    <div id="result" class="hidden">
+
     <div class="total-banner" id="totalBanner">
-      <div class="lbl">Duração total do ciclo neste cenário</div>
-      <div class="val" id="totalVal">— dias úteis</div>
+      <div>
+        <div class="lbl">Ciclo somado dos blocos abaixo</div>
+        <div class="val" id="totalVal">— dias úteis</div>
+      </div>
+      <div>
+        <div class="lbl">Prazo do contrato</div>
+        <div class="val" id="prazoVal">—</div>
+      </div>
+      <div class="verdict" id="verdict">—</div>
     </div>
 
     <div class="gantt">
       <div class="gantt-track" id="ganttTrack"></div>
       <div class="gantt-scale">
         <span>Dia 0 — caderno aprovado</span>
-        <span id="scaleEnd">Dia 60 — entrega</span>
+        <span id="scaleEnd">—</span>
       </div>
     </div>
 
@@ -156,34 +206,56 @@
 
     <table class="milestones">
       <thead>
-        <tr><th>Bloco</th><th>Duração</th><th>Início</th><th>Marco de saída</th></tr>
+        <tr><th>Bloco</th><th>Duração (editável)</th><th>Início</th><th>Marco de saída</th></tr>
       </thead>
       <tbody id="milestoneBody"></tbody>
     </table>
 
     <div class="footer-note">
-      <b>Como usar:</b> preencha a data de aprovação do caderno técnico de um projeto real e publique as datas resultantes como cronograma-alvo antes de iniciar produção — é isso que o <b>KPI 25/50/75/100</b> vai medir depois (aderência = % real vs. % planejado para hoje). <span class="warn">Ciclo que ultrapassa 60 dias úteis é projeto atípico e precisa de aprovação explícita antes de começar.</span>
+      <b>Como usar:</b> preencha o prazo do seu contrato, ajuste a duração de cada bloco para o que a sua fábrica leva de verdade, e só então publique as datas como cronograma-alvo antes de iniciar produção — é isso que o <b>KPI 25/50/75/100</b> vai medir depois (aderência = % real vs. % planejado para hoje).<br><br>
+      <span class="warn" id="warnLine"></span>
+    </div>
+
     </div>
 
   </div>
 
 <script>
-const BLOCKS = {
-  avg: [
-    { name: 'Pré-25% — Planejamento e compras', dias: 12, cls: 'gb-pre', marco: 'Cronograma-alvo publicado, material comprado' },
-    { name: 'Miolo fábrica — 25% → 75%', dias: 15, cls: 'gb-fab', marco: 'Pré-montagem finalizada' },
-    { name: 'Pós-75% — Logística', dias: 7, cls: 'gb-pos', marco: 'Carga expedida para obra' },
-    { name: 'Obra — 25% → 100%', dias: 17, cls: 'gb-obra', marco: 'Ambiente limpo e entregue' },
-  ],
-  max: [
-    { name: 'Pré-25% — Planejamento e compras', dias: 15, cls: 'gb-pre', marco: 'Cronograma-alvo publicado, material comprado' },
-    { name: 'Miolo fábrica — 25% → 75%', dias: 20, cls: 'gb-fab', marco: 'Pré-montagem finalizada' },
-    { name: 'Pós-75% — Logística', dias: 10, cls: 'gb-pos', marco: 'Carga expedida para obra' },
-    { name: 'Obra — 25% → 100%', dias: 20, cls: 'gb-obra', marco: 'Ambiente limpo e entregue' },
-  ]
-};
+/* Os blocos do ciclo. As durações são só um ponto de partida —
+   quem manda é o que a fábrica de quem está usando leva de verdade. */
+const BLOCKS = [
+  { name: 'Pré-25% — Planejamento e compras', cls: 'gb-pre',  marco: 'Cronograma-alvo publicado, material comprado' },
+  { name: 'Miolo fábrica — 25% → 75%',        cls: 'gb-fab',  marco: 'Pré-montagem finalizada' },
+  { name: 'Pós-75% — Logística',              cls: 'gb-pos',  marco: 'Carga expedida para obra' },
+  { name: 'Obra — 25% → 100%',                cls: 'gb-obra', marco: 'Ambiente limpo e entregue' },
+];
 
-let mode = 'avg';
+/* Referências de partida, não regra. Ciclo de marcenaria sob medida
+   observado em operação madura: 51 dias úteis no médio, 65 no teto. */
+const REF = { avg: [12, 15, 7, 17], max: [15, 20, 10, 20] };
+
+const STORE = 'apm-cronograma-v2';
+let dur = REF.avg.slice();
+
+function load() {
+  try {
+    const s = JSON.parse(localStorage.getItem(STORE) || 'null');
+    if (!s) return;
+    if (Array.isArray(s.dur) && s.dur.length === BLOCKS.length) dur = s.dur.map(n => Math.max(0, +n || 0));
+    if (s.prazo) document.getElementById('prazoContrato').value = s.prazo;
+    if (s.start) document.getElementById('startDate').value = s.start;
+  } catch (e) { /* storage bloqueado ou lixo gravado — segue no padrão */ }
+}
+
+function persist() {
+  try {
+    localStorage.setItem(STORE, JSON.stringify({
+      dur: dur,
+      prazo: document.getElementById('prazoContrato').value,
+      start: document.getElementById('startDate').value,
+    }));
+  } catch (e) { /* modo privado: a ferramenta funciona, só não lembra */ }
+}
 
 function addBusinessDays(date, days) {
   const d = new Date(date.getTime());
@@ -201,59 +273,124 @@ function fmt(d) {
 }
 
 function render() {
-  const startInput = document.getElementById('startDate').value;
-  const blocks = BLOCKS[mode];
-  const total = blocks.reduce((s, b) => s + b.dias, 0);
+  const prazoEl = document.getElementById('prazoContrato');
+  const prazo = Math.floor(+prazoEl.value);
+  const valido = prazoEl.value !== '' && isFinite(prazo) && prazo > 0;
 
-  const banner = document.getElementById('totalBanner');
+  /* Portão: sem prazo de contrato não há cronograma. */
+  prazoEl.classList.toggle('missing', !valido && prazoEl.value !== '');
+  document.getElementById('gate').classList.toggle('hidden', valido);
+  document.getElementById('result').classList.toggle('hidden', !valido);
+  persist();
+  if (!valido) return;
+
+  const startInput = document.getElementById('startDate').value;
+  const total = dur.reduce((s, d) => s + d, 0);
+  const folga = prazo - total;
+
   document.getElementById('totalVal').textContent = total + ' dias úteis';
-  banner.classList.toggle('over', total > 60);
-  document.getElementById('scaleEnd').textContent = 'Dia ' + total + ' — entrega';
+  document.getElementById('prazoVal').textContent = prazo + ' dias úteis';
+  document.getElementById('totalBanner').classList.toggle('over', folga < 0);
+
+  const v = document.getElementById('verdict');
+  if (folga < 0) {
+    v.className = 'verdict bad';
+    v.textContent = 'Estoura o contrato em ' + (-folga) + ' dias úteis';
+  } else if (folga === 0) {
+    v.className = 'verdict tight';
+    v.textContent = 'No limite — zero folga';
+  } else if (folga < prazo * 0.1) {
+    v.className = 'verdict tight';
+    v.textContent = 'Aperto — só ' + folga + ' dias de folga';
+  } else {
+    v.className = 'verdict ok';
+    v.textContent = 'Folga de ' + folga + ' dias úteis';
+  }
+
+  /* A escala comporta o maior dos dois, para o estouro aparecer fora do prazo. */
+  const escala = Math.max(total, prazo);
+  document.getElementById('scaleEnd').textContent =
+    'Entrega no dia ' + total + ' · limite do contrato no dia ' + prazo;
 
   const track = document.getElementById('ganttTrack');
   track.innerHTML = '';
-  blocks.forEach(b => {
+  BLOCKS.forEach((b, i) => {
     const el = document.createElement('div');
     el.className = 'gantt-block ' + b.cls;
-    el.style.width = (b.dias / total * 100) + '%';
-    el.textContent = b.dias + 'd';
+    el.style.width = (dur[i] / escala * 100) + '%';
+    el.textContent = dur[i] + 'd';
     track.appendChild(el);
   });
+  const pctLimite = prazo / escala * 100;
+  const limite = document.createElement('div');
+  limite.className = 'gantt-limit' + (pctLimite > 70 ? ' flip' : '');
+  limite.style.left = pctLimite + '%';
+  limite.setAttribute('data-lbl', 'contrato · dia ' + prazo);
+  track.appendChild(limite);
 
   const body = document.getElementById('milestoneBody');
   body.innerHTML = '';
   let cursor = startInput ? new Date(startInput + 'T00:00:00') : null;
-  blocks.forEach(b => {
+  BLOCKS.forEach((b, i) => {
     const tr = document.createElement('tr');
     let startCell = '—';
     if (cursor) {
       startCell = fmt(cursor);
-      cursor = addBusinessDays(cursor, b.dias);
+      cursor = addBusinessDays(cursor, dur[i]);
     }
     tr.innerHTML = '<td class="block-name">' + b.name + '</td>' +
-      '<td class="duration">' + b.dias + ' dias úteis</td>' +
+      '<td class="duration"><input type="number" min="0" max="365" step="1" value="' + dur[i] + '" data-i="' + i + '">dias úteis</td>' +
       '<td class="date">' + startCell + '</td>' +
       '<td>' + b.marco + '</td>';
     body.appendChild(tr);
   });
 
-  if (cursor) {
-    const tr = document.createElement('tr');
-    tr.innerHTML = '<td class="block-name">Entrega final</td><td class="duration">—</td><td class="date">' + fmt(cursor) + '</td><td>Ambiente 100% — limpo e entregue ao cliente</td>';
-    body.appendChild(tr);
-  }
+  const trTotal = document.createElement('tr');
+  trTotal.className = 'total-row';
+  trTotal.innerHTML = '<td class="block-name">Entrega calculada</td>' +
+    '<td class="duration">' + total + ' dias úteis</td>' +
+    '<td class="date">' + (cursor ? fmt(cursor) : '—') + '</td>' +
+    '<td>Ambiente 100% — limpo e entregue ao cliente</td>';
+  body.appendChild(trTotal);
+
+  const trLimite = document.createElement('tr');
+  trLimite.className = 'limit-row';
+  const dataLimite = startInput ? addBusinessDays(new Date(startInput + 'T00:00:00'), prazo) : null;
+  trLimite.innerHTML = '<td class="block-name">Limite do contrato</td>' +
+    '<td class="duration">' + prazo + ' dias úteis</td>' +
+    '<td class="date">' + (dataLimite ? fmt(dataLimite) : '—') + '</td>' +
+    '<td>' + (folga < 0
+      ? 'O ciclo passa desta data em ' + (-folga) + ' dias úteis'
+      : 'O ciclo cabe, com ' + folga + ' dias úteis de folga') + '</td>';
+  body.appendChild(trLimite);
+
+  document.getElementById('warnLine').textContent = folga < 0
+    ? 'O ciclo que você descreveu não cabe no prazo que você assinou — faltam ' + (-folga) + ' dias úteis. Ou o prazo do contrato sobe, ou algum bloco encurta de verdade. Espremer o cronograma no papel não encurta nada: só transfere o atraso para a entrega.'
+    : 'Ciclo que ultrapassa o prazo do contrato é projeto atípico e precisa de aprovação explícita antes de começar — nunca depois.';
 }
+
+/* Duração de cada bloco, editada direto na tabela. */
+document.getElementById('milestoneBody').addEventListener('input', e => {
+  const i = e.target.dataset.i;
+  if (i === undefined) return;
+  dur[i] = Math.max(0, Math.floor(+e.target.value) || 0);
+  const foco = e.target;
+  const pos = foco.selectionStart;
+  render();
+  const novo = document.querySelector('#milestoneBody input[data-i="' + i + '"]');
+  if (novo) { novo.focus(); try { novo.setSelectionRange(pos, pos); } catch (err) {} }
+});
 
 document.querySelectorAll('.mode-btn').forEach(btn => {
   btn.addEventListener('click', () => {
-    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    mode = btn.dataset.mode;
+    dur = REF[btn.dataset.mode].slice();
     render();
   });
 });
+document.getElementById('prazoContrato').addEventListener('input', render);
 document.getElementById('startDate').addEventListener('input', render);
 
+load();
 render();
 </script>
 </body>
