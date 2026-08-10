@@ -580,9 +580,9 @@ const NAV=[
  {id:'simulador',ic:'🔮',n:'Simulador',t:'Simulador de Cenários',d:'E se eu contratar, subir custo ou mudar preço — quanto preciso vender'},
  {s:'Produção'},
  {id:'kpi',ic:'🎯',n:'KPI 25/50/75/100',t:'KPI 25/50/75/100 + Aderência',d:'Planejado × real por ambiente — semáforo objetivo'},
+ {id:'check',ic:'✅',n:'Checklists',t:'Checklists por Etapa',d:'O que libera o avanço de cada marco'},
  {id:'kanban',ic:'🗂️',n:'Kanban',t:'Kanban de Produção',d:'Onde cada ambiente está agora'},
  {id:'pcp',ic:'⚙️',n:'PCP & Gargalos',t:'PCP & Gargalos',d:'Fila, prazos e onde a produção trava'},
- {id:'check',ic:'✅',n:'Checklists',t:'Checklists por Etapa',d:'O que libera o avanço de cada marco'},
  {s:'Comercial & Suprimentos'},
  {id:'crm',ic:'🤝',n:'CRM Comercial',t:'CRM Comercial',d:'Funil, follow-up e taxa de conversão'},
  {id:'estoque',ic:'📦',n:'Estoque',t:'Controle de Estoque',d:'Saldo, curva ABC e alerta de reposição'}
@@ -1307,7 +1307,9 @@ PAINT.check=()=>{
  const lib=g.no===0&&g.pend===0;
  $('#out').innerHTML=`
  <div class="card">
-  <h3>${C.emoji} ${C.nome}<span class="hint">${C.marco} · ${esc(a.projeto)} — ${esc(a.ambiente)}</span></h3>
+  <h3>${C.emoji} ${C.nome}<span class="hint">${C.marco} · ${esc(a.projeto)} — ${esc(a.ambiente)}
+   · <button class="btn sm" onclick="chkTodos('${a.id}','${et}','ok')">Marcar tudo OK</button>
+   <button class="btn sm" onclick="chkTodos('${a.id}','${et}','')">Limpar</button></span></h3>
   <div class="alert ${lib?'a-grn':g.no?'a-red':'a-yel'}"><span class="ic">${lib?'🟢':g.no?'🔴':'🟡'}</span>
    <div><b>${lib?'Etapa liberada para avançar.':g.no?`${g.no} item(ns) NÃO OK — não avance o ambiente.`:`${g.pend} item(ns) sem verificação.`}</b><br>
    <span style="color:var(--text-secondary)">${g.ok} de ${C.itens.length} conferidos. O checklist é o que garante que o % marcado no KPI é real, não achismo.</span></div></div>
@@ -1332,6 +1334,14 @@ PAINT.check=()=>{
   </tbody></table></div>
  </div>`;
 };
+function chkTodos(id,et,v){
+ const n=CHECKLISTS[et].itens.length;
+ if(v==='ok'&&!confirm(`Marcar os ${n} itens de ${CHECKLISTS[et].nome} como OK? O checklist só vale se a conferência foi feita de verdade.`))return;
+ if(v===''&&!confirm(`Limpar a conferência dos ${n} itens de ${CHECKLISTS[et].nome}?`))return;
+ DB.chk[id]=DB.chk[id]||{};DB.chk[id][et]=DB.chk[id][et]||{};
+ for(let i=0;i<n;i++){const cur=DB.chk[id][et][i]||{};DB.chk[id][et][i]={...cur,s:v}}
+ save();render();
+}
 function setChk(id,et,i,v){
  DB.chk[id]=DB.chk[id]||{};DB.chk[id][et]=DB.chk[id][et]||{};
  const cur=DB.chk[id][et][i]||{};
