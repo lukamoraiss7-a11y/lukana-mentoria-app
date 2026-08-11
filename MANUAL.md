@@ -218,6 +218,43 @@ junto com o bucket privado (ver a seção seguinte).
 Se escolher **Geral (todas as fases)**, o arquivo aparece para qualquer aluno,
 independente do que ele comprou.
 
+### Publicar uma fase inteira de uma vez
+
+Quando os HTMLs de uma fase ficam prontos em `mentoria-conteudo/publicar/`, existem
+dois caminhos. **Os dois gravam na mesma pasta do bucket:** o número da fase **menos 1**
+(Fase 2 → `1/`, Fase 5 → `4/`). Errar isso publica na pasta errada e o RLS bloqueia
+justamente o aluno que comprou — falha silenciosa, só aparece quando ele reclama.
+
+**Caminho 1 — pelo painel (2 minutos, sem chave nenhuma)**
+
+1. Entre com a sua conta → **Admin** → aba **Materiais**
+2. Em *Subir arquivo*, clique no campo e selecione **todos** os `f2-*.html` de uma vez
+3. Escolha a fase no seletor. Deixe nome e descrição **em branco** — com vários
+   arquivos, cada um pega o próprio nome do `<title>` do HTML
+4. Clique em Subir. Ele mostra "Subindo 3 de 16…" e no fim "16 materiais publicados"
+
+> ⚠️ **Só clique uma vez.** `publicar()` é `insert` puro, sem upsert, e a lista não
+> deduplica. Clicar de novo cria 16 cards duplicados — foi exatamente assim que a
+> Fase 5 ficou com 34 registros para 18 nomes em 07/08/2026. Se a barra travar,
+> confira a aba Materiais **antes** de tentar de novo.
+
+**Caminho 2 — pelo script (idempotente, pode rodar de novo sem medo)**
+
+`publicar-fase.py` faz o mesmo, mas lê o que já existe antes de gravar e pula o que
+já está lá. É o caminho para republicar sem risco de duplicar.
+
+```bash
+export SUPABASE_SERVICE_KEY='eyJ...'     # Project Settings → API → service_role
+python3 publicar-fase.py 2 --dry-run     # confere sem gravar nada
+python3 publicar-fase.py 2               # publica
+```
+
+A chave `service_role` ignora o RLS por definição — **rotacione depois de usar**, no
+mesmo lugar de onde você a copiou.
+
+**Depois de publicar, confira a contagem** na aba Materiais. Se o número não for o
+esperado, houve duplicação: apague os excedentes pelo ✕ antes de qualquer outra coisa.
+
 ### O que ainda não está trancado nos arquivos
 
 A lista respeita a fase comprada: quem não tem a Fase 4 não recebe o PCP do banco, nem

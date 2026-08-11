@@ -430,7 +430,17 @@ function vazio(){return{
              metaLucro:15000,volume:78}},
  amb:[],crm:[],
  est:{mat:[],mov:[]},
- chk:{}
+ chk:{},
+ /* ── Módulos de rentabilidade ──
+    Chaves de PRIMEIRO nível de propósito: carregar() faz Object.assign(vazio(),d),
+    que é raso. Chave nova aninhada dentro de uma existente (fin, prec, pro) seria
+    engolida pelo objeto salvo do aluno e voltaria undefined. Top-level ganha o
+    padrão automaticamente para quem já tem dado gravado. */
+ obras:[],
+ cx:{saldo:0,taxa:0.02,pmr:0,pme:0,pmp:0,
+     sem:Array.from({length:13},()=>({e:0,s:0}))},
+ meta:{modo:'valor',lucro:0,pct:0.15,precoM2:0,ticket:0},
+ dre12:{ini:'',imposto:0.10,m:Array.from({length:12},()=>({fat:0,cv:0,cf:0}))}
 }}
 let DB=carregar();
 function carregar(){try{
@@ -440,6 +450,15 @@ function carregar(){try{
     material passou de % do preco para R$ por m². Cenario salvo em formato anterior
     nao tem traducao: os campos nao sao os mesmos. Volta ao padrao. */
  if(!o.sim||!o.sim.atual||o.sim.atual.matM2===undefined)o.sim=vazio().sim;
+ /* Object.assign é raso: um arquivo importado com cx/dre12 truncados passaria
+    direto e quebraria o render na primeira linha faltante. Normaliza o tamanho
+    das listas de tamanho fixo em vez de confiar no que veio de fora. */
+ if(!Array.isArray(o.obras))o.obras=[];
+ if(!o.cx||!Array.isArray(o.cx.sem))o.cx=vazio().cx;
+ while(o.cx.sem.length<13)o.cx.sem.push({e:0,s:0});
+ if(!o.meta)o.meta=vazio().meta;
+ if(!o.dre12||!Array.isArray(o.dre12.m))o.dre12=vazio().dre12;
+ while(o.dre12.m.length<12)o.dre12.m.push({fat:0,cv:0,cf:0});
  return o
 }catch(e){return vazio()}}
 /* MODO VITRINE — quem ainda nao comprou o app entra, olha e nao lanca.
@@ -836,6 +855,10 @@ const NAV=[
  {id:'painel',ic:'📊',n:'Painel Executivo',t:'Painel Executivo',d:'Todos os indicadores em um lugar — alimentado pelos outros módulos'},
  {s:'Dinheiro'},
  {id:'financeiro',ic:'💰',n:'Diagnóstico Financeiro',t:'Diagnóstico Financeiro',d:'Margem, ponto de equilíbrio, sangrias e projeção'},
+ {id:'dre',ic:'📅',n:'Resultado Mensal',t:'Resultado Mensal — DRE 12 meses',d:'Mês a mês: evolução da margem, sazonalidade e tendência'},
+ {id:'obra',ic:'🔍',n:'Margem por Obra',t:'Margem por Obra — orçado × realizado',d:'O que o orçamento prometeu e o que a obra entregou de verdade'},
+ {id:'caixa',ic:'🏦',n:'Fluxo de Caixa',t:'Fluxo de Caixa e Capital de Giro',d:'13 semanas à frente, ciclo financeiro e quanto dinheiro fica preso'},
+ {id:'meta',ic:'🎯',n:'Meta de Lucro',t:'Meta de Lucro e Desconto',d:'Do lucro desejado para trás — e o preço real de cada desconto'},
  {id:'prolabore',ic:'👤',n:'Pró-labore do Dono',t:'Pró-labore do Dono',d:'Quanto você deve se pagar — piso, valor de mercado e o que a empresa aguenta'},
  {id:'precos',ic:'🧮',n:'Precificação',t:'Precificação',d:'Preço por m² frontal com margem garantida'},
  {id:'simulador',ic:'🔮',n:'Simulador',t:'Simulador de Cenários',d:'E se eu contratar, subir custo ou mudar preço — quanto preciso vender'},
@@ -2077,6 +2100,629 @@ function addMov(){
 }
 function delMov(i){DB.est.mov.splice(i,1);save();render()}
 
+/* ══════════ MARGEM POR OBRA — orçado × realizado ══════════
+   O único módulo que olha para trás. Todos os outros projetam; este confere.
+   Regra da casa: obra só entra aqui DEPOIS de entregue e com a última nota
+   lançada. Obra em andamento contamina a média com custo que ainda vai chegar.
+
+   Por que margem de CONTRIBUIÇÃO e não margem líquida: custo fixo não pertence
+   a obra nenhuma — ele existe com a fábrica parada. Ratear custo fixo por obra
+   sem critério de consumo é o erro que faz obra grande parecer ruim e obra
+   pequena parecer boa. Quem quiser a margem líquida da obra liga o Centro de
+   Custo (dentro de Precificação) e informa os dias-frente: aí o rateio passa a
+   ter lastro — é consumo de capacidade, não regra de três sobre faturamento. */
+const OB_LBL=['Material','Mão de obra','Terceirizações','Frete e logística','Outros diretos'];
+const OB_FAL=['Retrabalho','Assistência técnica'];
+/* Retrabalho e assistência não têm coluna de orçado de propósito. Ninguém
+   orça retrabalho. Todo real aqui é 100% de estouro, e é o número que mede
+   o custo da falta de processo em dinheiro. */
+
+function obraVazia(){return{id:uid(),nome:'',cliente:'',m2:0,preco:0,dias:0,entrega:hoje(),
+                            orc:[0,0,0,0,0],real:[0,0,0,0,0,0,0]}}
+
+function calcObra(o){
+ const preco=num(o.preco), m2=num(o.m2);
+ const imp=preco*num(DB.fin.imposto), com=preco*num(DB.prec.comissao);
+ const orc =(o.orc ||[]).reduce((a,b)=>a+num(b),0);
+ const dir =(o.real||[]).slice(0,5).reduce((a,b)=>a+num(b),0);
+ const falha=(o.real||[]).slice(5).reduce((a,b)=>a+num(b),0);
+ const real=dir+falha;
+ const mcOrc=preco-imp-com-orc, mcReal=preco-imp-com-real;
+ /* Rateio opcional, e só com lastro: custo por dia-frente × dias-frente que a
+    obra consumiu. Sem o Centro de Custo ligado, o módulo não inventa rateio. */
+ const dias=num(o.dias), cc=calcCC();
+ const temRateio=ccAtivo()&&dias>0;
+ const rateio=temRateio?cc.cdf*dias:0;
+ const res=mcReal-rateio;
+ const desv=OB_LBL.map((l,i)=>({l,o:num(o.orc[i]),r:num(o.real[i]),
+                                d:num(o.real[i])-num(o.orc[i]),
+                                p:num(o.orc[i])?(num(o.real[i])-num(o.orc[i]))/num(o.orc[i]):NaN}));
+ return{preco,m2,imp,com,orc,dir,falha,real,mcOrc,mcReal,desv,dias,temRateio,rateio,res,
+        pOrc :preco?mcOrc /preco:NaN,
+        pReal:preco?mcReal/preco:NaN,
+        pRes :preco?res   /preco:NaN,
+        pFalha:preco?falha/preco:NaN,
+        erosao:mcOrc-mcReal,                       // margem que evaporou entre a proposta e a nota
+        pErosao:preco?(mcOrc-mcReal)/preco:NaN,    // em pontos percentuais de preço
+        estouro:real-orc, pEstouro:orc?(real-orc)/orc:NaN,
+        m2p:m2?preco/m2:NaN, m2c:m2?real/m2:NaN,
+        valida:preco>0};
+}
+
+function obrasResumo(){
+ const L=(DB.obras||[]).map(o=>({o,c:calcObra(o)})).filter(x=>x.c.valida);
+ if(!L.length)return{L,vazio:true};
+ const rec  =L.reduce((a,x)=>a+x.c.preco ,0);
+ const mcR  =L.reduce((a,x)=>a+x.c.mcReal,0);
+ const mcO  =L.reduce((a,x)=>a+x.c.mcOrc ,0);
+ const falha=L.reduce((a,x)=>a+x.c.falha ,0);
+ const m2   =L.reduce((a,x)=>a+x.c.m2    ,0);
+ /* Margem ponderada por receita, nunca média simples das margens: uma obra de
+    R$ 3 mil com 60% não compensa uma de R$ 90 mil com 8%, e a média simples diz
+    que sim. */
+ const pR=rec?mcR/rec:NaN, pO=rec?mcO/rec:NaN;
+ const margens=L.map(x=>x.c.pReal);
+ const med=margens.reduce((a,b)=>a+b,0)/margens.length;
+ const dp=Math.sqrt(margens.reduce((a,b)=>a+(b-med)*(b-med),0)/margens.length);
+ const ord=[...L].sort((a,b)=>a.c.pReal-b.c.pReal);
+ /* Padrão de erro: qual linha estoura, quanto e com que frequência. Uma linha
+    que estoura 90% das vezes não é imprevisto — é premissa errada no orçamento. */
+ const linhas=OB_LBL.map((l,i)=>{
+  const so=L.reduce((a,x)=>a+num(x.o.orc[i]),0);
+  const sr=L.reduce((a,x)=>a+num(x.o.real[i]),0);
+  const n =L.filter(x=>num(x.o.real[i])>num(x.o.orc[i])).length;
+  return{l,o:so,r:sr,d:sr-so,p:so?(sr-so)/so:NaN,n,freq:n/L.length};
+ }).sort((a,b)=>b.d-a.d);
+ const falhaL=OB_FAL.map((l,i)=>({l,v:L.reduce((a,x)=>a+num(x.o.real[5+i]),0)}));
+ /* Obra pequena costuma ser a que sangra: o custo de deslocar equipe, montar e
+    atender não cai na mesma proporção do preço. Divide pela mediana de m². */
+ const comM2=L.filter(x=>x.c.m2>0).sort((a,b)=>a.c.m2-b.c.m2);
+ let porte=null;
+ if(comM2.length>=4){
+  const meio=Math.floor(comM2.length/2);
+  const pq=comM2.slice(0,meio), gr=comM2.slice(meio);
+  const w=g=>{const r=g.reduce((a,x)=>a+x.c.preco,0);return{n:g.length,rec:r,
+              p:r?g.reduce((a,x)=>a+x.c.mcReal,0)/r:NaN,
+              m2:g.reduce((a,x)=>a+x.c.m2,0)/g.length,
+              pm2:g.reduce((a,x)=>a+x.c.m2,0)?r/g.reduce((a,x)=>a+x.c.m2,0):NaN}};
+  porte={pq:w(pq),gr:w(gr)};
+ }
+ const f=calcFin();
+ /* O teste que fecha a conta, e ele precisa ser livre de escala: as obras
+    lançadas nunca somam exatamente um mês de faturamento, então comparar a
+    contribuição delas em R$ contra o custo fixo mensal em R$ compara períodos
+    diferentes e acusa prejuízo onde não há. A comparação certa é em percentual:
+    a margem de contribuição realizada da carteira contra o quanto o custo fixo
+    pesa no faturamento. Acima de 1, as obras pagam a estrutura. */
+ const cobertura=(isFinite(f.cfp)&&f.cfp>0)?pR/f.cfp:NaN;
+ /* Margem-alvo NÃO é a margem de Precificação: lá o percentual é lucro líquido,
+    aplicado depois de material, mão de obra e rateio de fixo. Aqui a conta é de
+    contribuição, e o piso correto é o custo fixo como % do faturamento mais o
+    lucro que a empresa quer. Trocar um pelo outro compara coisas diferentes. */
+ const alvo=isFinite(f.cfp)?f.cfp+num((DB.meta&&DB.meta.pct)||0.15):NaN;
+ return{L,rec,mcR,mcO,pR,pO,med,dp,falha,pFalha:rec?falha/rec:NaN,m2,
+        pm2:m2?rec/m2:NaN, cm2:m2?L.reduce((a,x)=>a+x.c.real,0)/m2:NaN,
+        pior:ord[0],melhor:ord[ord.length-1],
+        abaixo:L.filter(x=>x.c.pReal<alvo).length,
+        alvo,linhas,falhaL,porte,cobertura,cfp:f.cfp,cf:f.cf,vazio:false};
+}
+
+function addObra(){DB.obras.push(obraVazia());save();render()}
+function delObra(i){if(!confirm('Excluir esta obra do histórico de margem?'))return;DB.obras.splice(i,1);save();render()}
+function setObra(i,k,v){DB.obras[i][k]=v;save();paint()}
+function setObraL(i,campo,j,el){DB.obras[i][campo][j]=num(el.value);save();paint()}
+
+VIEWS.obra=()=>{
+ const O=DB.obras||[];
+ return `<div class="card">
+  <h3>Obras fechadas<span class="hint">só entra obra entregue e com a última nota lançada</span></h3>
+  <div class="sub">Aqui você descobre o que o orçamento não viu. A conta é margem de contribuição: preço menos imposto, comissão e custo direto. Custo fixo fica de fora porque não pertence a obra nenhuma — a não ser que você ligue o Centro de Custo em Precificação e informe os dias-frente.</div>
+  <button class="btn" onclick="addObra()">+ Lançar obra</button>
+ </div>
+ <div id="obl"></div>
+ <div id="out"></div>`;
+};
+
+PAINT.obra=()=>{
+ const O=DB.obras||[];
+ $('#obl').innerHTML=O.length?O.map((o,i)=>{
+  const c=calcObra(o);
+  const cor=!c.valida?'':c.pReal>=c.pOrc?'t-verde':c.pReal>=c.pOrc-.05?'t-amarelo':'t-vermelho';
+  return `<div class="card">
+   <div class="row" style="margin-bottom:12px">
+    <div class="f sp"><label>Obra / projeto</label><input value="${esc(o.nome)}" placeholder="Ex.: 089 — Cozinha + Área" oninput="setObra(${i},'nome',this.value)"></div>
+    <div class="f sp"><label>Cliente</label><input value="${esc(o.cliente)}" oninput="setObra(${i},'cliente',this.value)"></div>
+    <div class="f" style="width:110px"><label>Preço vendido</label><input value="${o.preco||''}" placeholder="0" oninput="setObra(${i},'preco',num(this.value))"></div>
+    <div class="f" style="width:80px"><label>m² frontal</label><input value="${o.m2||''}" placeholder="0" oninput="setObra(${i},'m2',num(this.value))"></div>
+    <div class="f" style="width:95px"><label>Dias-frente</label><input value="${o.dias||''}" placeholder="0" oninput="setObra(${i},'dias',num(this.value))"></div>
+    <div class="f" style="width:130px"><label>Entrega</label><input type="date" value="${o.entrega||''}" oninput="setObra(${i},'entrega',this.value)"></div>
+    <button class="btn sm dg" onclick="delObra(${i})">×</button>
+   </div>
+   <div class="tw"><table><thead><tr>
+     <th>Linha de custo</th><th class="n">Orçado</th><th class="n">Realizado</th><th class="n">Desvio</th><th class="n">%</th></tr></thead><tbody>
+    ${OB_LBL.map((l,j)=>{const d=c.desv[j];
+     return `<tr><td>${l}</td>
+      <td class="n"><input style="width:105px;background:#111;border:1px solid var(--bd);border-radius:5px;padding:6px 8px;color:var(--text-primary);font-size:12.5px;text-align:right" value="${o.orc[j]||''}" placeholder="0" oninput="setObraL(${i},'orc',${j},this)"></td>
+      <td class="n"><input style="width:105px;background:#111;border:1px solid var(--bd);border-radius:5px;padding:6px 8px;color:var(--text-primary);font-size:12.5px;text-align:right" value="${o.real[j]||''}" placeholder="0" oninput="setObraL(${i},'real',${j},this)"></td>
+      <td class="n" style="color:${d.d>0?'var(--vermelho)':d.d<0?'var(--verde)':'var(--text-muted)'}">${d.d?brl(d.d):'—'}</td>
+      <td class="n mini">${isFinite(d.p)&&d.o?pc(d.p,0):'—'}</td></tr>`}).join('')}
+    ${OB_FAL.map((l,j)=>`<tr><td>${l} <span class="mini">— ninguém orça isto</span></td>
+      <td class="n mini">—</td>
+      <td class="n"><input style="width:105px;background:#111;border:1px solid var(--bd);border-radius:5px;padding:6px 8px;color:var(--text-primary);font-size:12.5px;text-align:right" value="${o.real[5+j]||''}" placeholder="0" oninput="setObraL(${i},'real',${5+j},this)"></td>
+      <td class="n" style="color:${num(o.real[5+j])>0?'var(--vermelho)':'var(--text-muted)'}">${num(o.real[5+j])?brl(num(o.real[5+j])):'—'}</td>
+      <td class="n mini">—</td></tr>`).join('')}
+    <tr><td><b>Custo direto</b></td><td class="n"><b>${brl(c.orc)}</b></td><td class="n"><b>${brl(c.real)}</b></td>
+        <td class="n"><b style="color:${c.estouro>0?'var(--vermelho)':'var(--verde)'}">${brl(c.estouro)}</b></td>
+        <td class="n mini">${isFinite(c.pEstouro)?pc(c.pEstouro,0):'—'}</td></tr>
+   </tbody></table></div>
+   ${c.valida?`<div class="grid g4" style="margin-top:12px">
+     <div class="kpi"><div class="l">Margem orçada</div><div class="v">${pc(c.pOrc)}</div><div class="d">${brl(c.mcOrc)}</div></div>
+     <div class="kpi ${c.pReal>=c.pOrc?'ok':c.pReal>=c.pOrc-.05?'warn':'bad'}"><div class="l">Margem realizada</div><div class="v">${pc(c.pReal)}</div><div class="d">${brl(c.mcReal)}</div></div>
+     <div class="kpi ${c.pErosao<=0?'ok':c.pErosao<.05?'warn':'bad'}"><div class="l">Erosão de margem</div><div class="v">${nf(c.pErosao*100,1)} pp</div><div class="d">${brl(c.erosao)} sumiram entre a proposta e a nota</div></div>
+     <div class="kpi"><div class="l">Preço por m²</div><div class="v">${brl(c.m2p)}</div><div class="d">custo real ${brl(c.m2c)}/m²</div></div>
+   </div>
+   ${c.temRateio?`<div class="note">Com o Centro de Custo ligado: ${nf(c.dias,0)} dias-frente × ${brl(calcCC().cdf)} = ${brl(c.rateio)} de estrutura absorvida. Resultado depois do fixo: <b style="color:${c.res>=0?'var(--verde)':'var(--vermelho)'}">${brl(c.res)}</b> (${pc(c.pRes)}).</div>`
+     :`<div class="note">Sem rateio de estrutura. Para ver o resultado da obra depois do custo fixo, ligue o Centro de Custo em Precificação e informe os dias-frente.</div>`}
+   ${c.falha>0?`<div class="alert a-org" style="margin-top:10px"><span class="ic">🟠</span><div><b>${brl(c.falha)} de retrabalho e assistência</b><br><span style="color:var(--text-secondary)">${pc(c.pFalha)} do preço da obra. Esse dinheiro não estava em orçamento nenhum — é o preço de um processo que deixou passar.</span></div></div>`:''}`
+   :'<div class="note">Informe o preço vendido para o cálculo aparecer.</div>'}
+  </div>`}).join(''):'<div class="card"><div class="empty">Nenhuma obra lançada. Comece com as 5 últimas obras entregues — é o suficiente para o padrão de erro aparecer.</div></div>';
+
+ const R=obrasResumo();
+ if(R.vazio){$('#out').innerHTML='';return}
+ const diag=[];
+ if(R.pR<0)diag.push(['red','Carteira no prejuízo antes do custo fixo.','A soma das obras não gera contribuição positiva. Isso não se resolve vendendo mais — cada obra nova aumenta o buraco.']);
+ else if(isFinite(R.cobertura)&&R.cobertura<1)diag.push(['red','As obras não pagam a estrutura.',`A carteira entrega ${pc(R.pR)} de margem de contribuição e o custo fixo consome ${pc(R.cfp)} do faturamento. Falta contribuição para cobrir a estrutura, e nenhuma venda adicional nesse padrão resolve — cada obra nova entra com o mesmo furo.`]);
+ else if(isFinite(R.cobertura))diag.push(['grn','As obras pagam a estrutura.',`Margem de contribuição de ${pc(R.pR)} contra custo fixo de ${pc(R.cfp)} do faturamento. O que passa disso é lucro: ${pc(R.pR-R.cfp)} do faturamento.`]);
+ if(R.pO-R.pR>0.05)diag.push(['org','Seu orçamento é otimista de forma sistemática.',`Você orça ${pc(R.pO)} e entrega ${pc(R.pR)} — ${nf((R.pO-R.pR)*100,1)} pontos de erosão. Não é azar de uma obra: é premissa errada repetida.`]);
+ if(R.dp>0.10)diag.push(['yel','Margem imprevisível.',`Desvio padrão de ${nf(R.dp*100,1)} pontos entre obras. Margem que varia tanto significa que o preço não sai de método — sai de negociação.`]);
+ if(R.pFalha>0.02)diag.push(['org','Retrabalho e assistência acima de 2% da receita.',`${brl(R.falha)} no período, ${pc(R.pFalha)} do faturamento. É o custo do processo que falhou, e ele não aparece em orçamento nenhum.`]);
+ const pior=R.linhas[0];
+ if(pior&&pior.d>0)diag.push(['blu','Linha que mais estoura: '+pior.l,`${brl(pior.d)} acima do orçado no total, em ${nf(pior.n,0)} de ${nf(R.L.length,0)} obras (${pc(pior.freq,0)} das vezes). Estourar quase sempre não é imprevisto — é a premissa do orçamento que está errada.`]);
+ if(R.porte&&isFinite(R.porte.pq.p)&&isFinite(R.porte.gr.p)&&R.porte.gr.p-R.porte.pq.p>0.05)
+  diag.push(['org','Obra pequena está subsidiando obra grande.',`Metade menor: ${pc(R.porte.pq.p)} de margem, média de ${nf(R.porte.pq.m2,0)} m². Metade maior: ${pc(R.porte.gr.p)}, ${nf(R.porte.gr.m2,0)} m². Custo de deslocar, montar e atender não cai junto com o tamanho — quem não tem preço mínimo por obra paga por isso.`]);
+ if(R.abaixo)diag.push(['yel',`${R.abaixo} de ${R.L.length} obras abaixo da margem mínima.`,`A margem de contribuição mínima é ${pc(R.alvo)} — custo fixo de ${pc(R.cfp)} do faturamento mais o lucro alvo. Obra abaixo disso não paga a parte dela da estrutura: é o resto da carteira que cobre.`]);
+
+ $('#out').innerHTML=`
+ <div class="kpis" style="margin-bottom:16px">
+  <div class="kpi ${R.pR>=R.alvo?'ok':R.pR>0?'warn':'bad'}"><div class="l">Margem realizada da carteira</div><div class="v">${pc(R.pR)}</div><div class="d">${brl(R.mcR)} em ${nf(R.L.length,0)} obras · ponderada por receita</div></div>
+  <div class="kpi ${R.pO-R.pR<=0.02?'ok':R.pO-R.pR<=0.05?'warn':'bad'}"><div class="l">Erosão média</div><div class="v">${nf((R.pO-R.pR)*100,1)} pp</div><div class="d">orçado ${pc(R.pO)} → realizado ${pc(R.pR)}</div></div>
+  <div class="kpi ${R.pFalha<=0.01?'ok':R.pFalha<=0.02?'warn':'bad'}"><div class="l">Custo da falha</div><div class="v">${pc(R.pFalha)}</div><div class="d">${brl(R.falha)} de retrabalho e assistência</div></div>
+  <div class="kpi ${isFinite(R.cobertura)&&R.cobertura>=1?'ok':'bad'}"><div class="l">Cobertura da estrutura</div><div class="v">${isFinite(R.cobertura)?nf(R.cobertura,2)+'×':'—'}</div><div class="d">margem de ${pc(R.pR)} × custo fixo de ${pc(R.cfp)} do faturamento</div></div>
+ </div>
+
+ <div class="grid g2">
+  <div class="card"><h3>Padrão de erro<span class="hint">onde o orçamento erra sempre</span></h3>
+   <div class="tw"><table><thead><tr><th>Linha</th><th class="n">Orçado</th><th class="n">Realizado</th><th class="n">Desvio</th><th class="n">%</th><th class="n">Frequência</th></tr></thead><tbody>
+   ${R.linhas.map(x=>`<tr><td>${x.l}</td><td class="n">${brl(x.o)}</td><td class="n">${brl(x.r)}</td>
+    <td class="n" style="color:${x.d>0?'var(--vermelho)':x.d<0?'var(--verde)':''}">${brl(x.d)}</td>
+    <td class="n mini">${isFinite(x.p)?pc(x.p,0):'—'}</td>
+    <td class="n"><span class="tag ${x.freq>=.6?'t-vermelho':x.freq>=.3?'t-amarelo':'t-neu'}">${nf(x.n,0)}/${nf(R.L.length,0)}</span></td></tr>`).join('')}
+   ${R.falhaL.filter(x=>x.v>0).map(x=>`<tr><td>${x.l}</td><td class="n mini">nunca orçado</td><td class="n">${brl(x.v)}</td><td class="n" style="color:var(--vermelho)">${brl(x.v)}</td><td class="n mini">—</td><td class="n mini">—</td></tr>`).join('')}
+   </tbody></table></div>
+   <div class="note">Desvio positivo é dinheiro que saiu além do previsto. A coluna de frequência é a mais importante: linha que estoura em mais de 60% das obras não é imprevisto, é erro de premissa — e se corrige mudando o orçamento, não cobrando o cliente.</div>
+  </div>
+
+  <div class="card"><h3>Ranking de obras<span class="hint">margem realizada</span></h3>
+   <div class="tw"><table><thead><tr><th>Obra</th><th class="n">Preço</th><th class="n">R$/m²</th><th class="n">Orçada</th><th class="n">Realizada</th><th class="n">Erosão</th></tr></thead><tbody>
+   ${[...R.L].sort((a,b)=>b.c.pReal-a.c.pReal).map(x=>`<tr>
+    <td>${esc(x.o.nome||'—')}<div class="mini">${esc(x.o.cliente||'')}</div></td>
+    <td class="n">${brl(x.c.preco)}</td>
+    <td class="n">${isFinite(x.c.m2p)?brl(x.c.m2p):'—'}</td>
+    <td class="n mini">${pc(x.c.pOrc)}</td>
+    <td class="n"><span class="tag ${x.c.pReal>=R.alvo?'t-verde':x.c.pReal>0?'t-amarelo':'t-vermelho'}">${pc(x.c.pReal)}</span></td>
+    <td class="n" style="color:${x.c.pErosao>0?'var(--vermelho)':'var(--verde)'}">${nf(x.c.pErosao*100,1)} pp</td></tr>`).join('')}
+   </tbody></table></div>
+   ${R.porte?`<h4>Por porte de obra</h4>
+   <div class="tw"><table><thead><tr><th>Grupo</th><th class="n">Obras</th><th class="n">m² médio</th><th class="n">R$/m²</th><th class="n">Margem</th></tr></thead><tbody>
+    <tr><td>Metade menor</td><td class="n">${nf(R.porte.pq.n,0)}</td><td class="n">${nf(R.porte.pq.m2,0)}</td><td class="n">${brl(R.porte.pq.pm2)}</td><td class="n"><b>${pc(R.porte.pq.p)}</b></td></tr>
+    <tr><td>Metade maior</td><td class="n">${nf(R.porte.gr.n,0)}</td><td class="n">${nf(R.porte.gr.m2,0)}</td><td class="n">${brl(R.porte.gr.pm2)}</td><td class="n"><b>${pc(R.porte.gr.p)}</b></td></tr>
+   </tbody></table></div>`:'<div class="note">Informe o m² frontal de pelo menos 4 obras para a comparação por porte aparecer.</div>'}
+  </div>
+ </div>
+
+ <div class="card"><h3>💡 Leitura da carteira</h3>
+  ${diag.length?diag.map(([c,t,m])=>`<div class="alert a-${c}"><span class="ic">${c==='red'?'🔴':c==='org'?'🟠':c==='yel'?'🟡':c==='grn'?'🟢':'🔵'}</span><div><b>${t}</b><br><span style="color:var(--text-secondary)">${m}</span></div></div>`).join(''):'<div class="alert a-grn"><span class="ic">🟢</span><div><b>Nada fora do padrão.</b><br><span style="color:var(--text-secondary)">Orçamento e realizado batem, margem estável e o custo fixo está coberto.</span></div></div>'}
+  <div class="note">A conta que fecha tudo: a soma das margens de contribuição das obras entregues no período precisa cobrir o custo fixo do mesmo período. Se não cobre, nenhuma obra individual é o problema — o problema é preço ou estrutura.</div>
+ </div>`;
+};
+
+
+/* ══════════ FLUXO DE CAIXA E CAPITAL DE GIRO ══════════
+   Lucro é opinião do regime de competência; caixa é fato. Marcenaria quebra com
+   DRE positivo porque paga chapa à vista e recebe em 10x — o dinheiro existe no
+   papel e não existe na conta. Este módulo separa as duas perguntas:
+   1) o caixa aguenta as próximas 13 semanas?  (projeção)
+   2) quanto de dinheiro fica preso no ciclo, todo mês?  (capital de giro) */
+function calcCx(){
+ const c=DB.cx, f=calcFin();
+ let s=num(c.saldo); const lin=[];
+ for(let i=0;i<13;i++){
+  const e=num((c.sem[i]||{}).e), sa=num((c.sem[i]||{}).s);
+  s+=e-sa; lin.push({i,e,s:sa,liq:e-sa,ac:s});
+ }
+ const totE=lin.reduce((a,x)=>a+x.e,0), totS=lin.reduce((a,x)=>a+x.s,0);
+ const min=lin.reduce((a,x)=>x.ac<a.ac?x:a,lin[0]);
+ const rup=lin.find(x=>x.ac<0)||null;
+ const lancado=totE>0||totS>0;
+ /* Ciclo financeiro: quantos dias o dinheiro fica fora do caixa.
+    Recebimento + produção − prazo do fornecedor. Positivo = você financia o
+    cliente com dinheiro próprio; negativo = o fornecedor financia você. */
+ const ciclo=num(c.pmr)+num(c.pme)-num(c.pmp);
+ const desemb=(f.cv+f.cf)/30;            // desembolso operacional por dia corrido
+ const ncg=ciclo*desemb;                 // necessidade de capital de giro
+ const tes=num(c.saldo)-ncg;             // saldo de tesouraria: sobra ou rombo estrutural
+ const custoCiclo=ncg*num(c.taxa)*12;    // o que custa por ano financiar esse ciclo
+ const folga=desemb>0?num(c.saldo)/desemb:NaN;  // dias de caixa com a torneira fechada
+ return{lin,totE,totS,min,rup,saldoFim:s,lancado,
+        ciclo,desemb,ncg,tes,custoCiclo,folga,
+        pmr:num(c.pmr),pme:num(c.pme),pmp:num(c.pmp),saldo:num(c.saldo),f};
+}
+function setCxSem(i,k,el){DB.cx.sem[i][k]=num(el.value);save();paint()}
+
+VIEWS.caixa=()=>{
+ const c=DB.cx;
+ return `<div class="grid g2">
+  <div class="card"><h3>1 · Posição de hoje</h3>
+   <div class="grid g2">
+    <div class="f"><label>Saldo em caixa e banco</label><input value="${c.saldo||''}" placeholder="0" oninput="setn('cx.saldo',this)"><span class="mini">o que está disponível agora, sem contar a receber</span></div>
+    <div class="f"><label>Custo do dinheiro (mês)</label><input value="${pctIn(c.taxa)}" oninput="setpct('cx.taxa',this)"><span class="mini">% — juro do capital de giro ou do cheque especial</span></div>
+   </div>
+  </div>
+  <div class="card"><h3>2 · Ciclo financeiro<span class="hint">em dias</span></h3>
+   <div class="grid g3">
+    <div class="f"><label>Prazo de recebimento</label><input value="${c.pmr||''}" placeholder="0" oninput="setn('cx.pmr',this)"><span class="mini">da assinatura ao último boleto</span></div>
+    <div class="f"><label>Ciclo de produção</label><input value="${c.pme||''}" placeholder="0" oninput="setn('cx.pme',this)"><span class="mini">da compra do material à entrega</span></div>
+    <div class="f"><label>Prazo do fornecedor</label><input value="${c.pmp||''}" placeholder="0" oninput="setn('cx.pmp',this)"><span class="mini">quanto tempo você tem para pagar a chapa</span></div>
+   </div>
+  </div>
+ </div>
+ <div class="card"><h3>3 · Próximas 13 semanas<span class="hint">o que entra e o que sai, previsto</span></h3>
+  <div class="sub">Entradas: parcelas contratadas com data. Saídas: folha, chapa, aluguel, imposto, parcelas de máquina. Só o que tem data — projeção com desejo dentro não serve.</div>
+  <div class="tw"><table><thead><tr><th>Semana</th><th class="n">Entradas</th><th class="n">Saídas</th><th class="n">Líquido</th><th class="n">Saldo acumulado</th></tr></thead><tbody id="cxb"></tbody></table></div>
+ </div>
+ <div id="out"></div>`;
+};
+
+PAINT.caixa=()=>{
+ const k=calcCx();
+ $('#cxb').innerHTML=k.lin.map(x=>`<tr>
+  <td>S${x.i+1}<div class="mini">${fmtD(addBiz(hoje(),x.i*5))}</div></td>
+  <td class="n"><input style="width:110px;background:#111;border:1px solid var(--bd);border-radius:5px;padding:6px 8px;color:var(--text-primary);font-size:12.5px;text-align:right" value="${DB.cx.sem[x.i].e||''}" placeholder="0" oninput="setCxSem(${x.i},'e',this)"></td>
+  <td class="n"><input style="width:110px;background:#111;border:1px solid var(--bd);border-radius:5px;padding:6px 8px;color:var(--text-primary);font-size:12.5px;text-align:right" value="${DB.cx.sem[x.i].s||''}" placeholder="0" oninput="setCxSem(${x.i},'s',this)"></td>
+  <td class="n" style="color:${x.liq>=0?'var(--verde)':'var(--vermelho)'}">${x.liq?brl(x.liq):'—'}</td>
+  <td class="n"><b style="color:${x.ac<0?'var(--vermelho)':x.ac<k.desemb*7?'var(--amarelo)':'var(--verde)'}">${brl(x.ac)}</b></td></tr>`).join('');
+
+ const diag=[];
+ if(k.rup)diag.push(['red',`Caixa negativo na semana ${k.rup.i+1}.`,`Faltam ${brl(-k.rup.ac)} nessa semana. Você tem ${nf(k.rup.i,0)} semanas para antecipar recebimento, empurrar pagamento ou buscar linha — nessa ordem de preferência, porque as duas primeiras são de graça.`]);
+ else if(k.lancado&&k.min.ac<k.desemb*7)diag.push(['org','Caixa raspa o fundo.',`Menor saldo do período: ${brl(k.min.ac)} na semana ${k.min.i+1} — menos de uma semana de operação. Não é ruptura, mas qualquer atraso de cliente vira uma.`]);
+ else if(k.lancado)diag.push(['grn','Projeção de caixa sustentável.',`Menor saldo: ${brl(k.min.ac)} na semana ${k.min.i+1}. Fecha o trimestre com ${brl(k.saldoFim)}.`]);
+ if(k.ciclo>0&&k.desemb>0){
+  diag.push(['blu',`Ciclo financeiro de ${nf(k.ciclo,0)} dias.`,`Cada dia de ciclo prende ${brl(k.desemb)} do seu dinheiro. No total, ${brl(k.ncg)} ficam permanentemente fora do caixa só para a operação existir — não é lucro, é capital preso.`]);
+  if(k.tes<0)diag.push(['red','Você opera com capital de giro que não tem.',`A operação exige ${brl(k.ncg)} e o caixa tem ${brl(k.saldo)}. O rombo de ${brl(-k.tes)} está sendo financiado por alguém: banco, fornecedor atrasado ou o próximo cliente. Se for o próximo cliente, é pirâmide de obra e quebra na primeira venda que não fecha.`]);
+  else diag.push(['grn','Capital de giro coberto.',`Sobram ${brl(k.tes)} acima da necessidade estrutural de ${brl(k.ncg)}.`]);
+  if(num(DB.cx.taxa)>0)diag.push(['yel','O ciclo tem preço.',`Financiar ${brl(k.ncg)} a ${pc(num(DB.cx.taxa))} ao mês custa ${brl(k.custoCiclo)} por ano. Cortar 10 dias de prazo de recebimento devolve ${brl(10*k.desemb*num(DB.cx.taxa)*12)} por ano — e não depende de vender nada a mais.`]);
+ }
+ if(isFinite(k.folga))diag.push([k.folga>=45?'grn':k.folga>=20?'yel':'red',`${nf(k.folga,0)} dias de caixa.`,`Se as entradas parassem hoje, a empresa opera ${nf(k.folga,0)} dias com o saldo atual. Referência: 30 dias é o mínimo para não decidir com medo; 60 é onde dá para negociar preço sem pressa.`]);
+
+ $('#out').innerHTML=`
+ <div class="kpis" style="margin-bottom:16px">
+  <div class="kpi ${!k.rup?'ok':'bad'}"><div class="l">Menor saldo do trimestre</div><div class="v">${k.lancado?brl(k.min.ac):'—'}</div><div class="d">${k.lancado?'semana '+(k.min.i+1):'lance a projeção'}</div></div>
+  <div class="kpi ${k.folga>=45?'ok':k.folga>=20?'warn':'bad'}"><div class="l">Dias de caixa</div><div class="v">${isFinite(k.folga)?nf(k.folga,0):'—'}</div><div class="d">com as entradas zeradas · ideal ≥ 45</div></div>
+  <div class="kpi ${k.ciclo<=30?'ok':k.ciclo<=60?'warn':'bad'}"><div class="l">Ciclo financeiro</div><div class="v">${nf(k.ciclo,0)} d</div><div class="d">${k.pmr} recebimento + ${k.pme} produção − ${k.pmp} fornecedor</div></div>
+  <div class="kpi ${k.tes>=0?'ok':'bad'}"><div class="l">Capital preso na operação</div><div class="v">${brl(k.ncg)}</div><div class="d">${k.tes>=0?'coberto pelo caixa':'descoberto em '+brl(-k.tes)}</div></div>
+ </div>
+
+ <div class="grid g2">
+  <div class="card"><h3>Curva do caixa<span class="hint">13 semanas</span></h3>
+   ${(()=>{const mx=Math.max(...k.lin.map(x=>Math.abs(x.ac)),1);
+     return `<div style="display:flex;align-items:flex-end;gap:4px;height:150px;padding:8px 0;border-bottom:1px solid var(--bd)">
+     ${k.lin.map(x=>`<div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%" title="S${x.i+1}: ${brl(x.ac)}">
+       <div style="height:${Math.max(2,Math.abs(x.ac)/mx*100)}%;background:${x.ac<0?'var(--vermelho)':'var(--accent)'};border-radius:2px 2px 0 0;opacity:${x.ac<0?1:.75}"></div>
+     </div>`).join('')}
+    </div>
+    <div style="display:flex;gap:4px;margin-top:5px">${k.lin.map(x=>`<div style="flex:1;text-align:center;font-size:9px;color:var(--text-muted)">${x.i+1}</div>`).join('')}</div>`})()}
+   <div class="note">Entradas de ${brl(k.totE)} contra saídas de ${brl(k.totS)} no trimestre. Barra vermelha é semana com saldo negativo.</div>
+  </div>
+
+  <div class="card"><h3>Necessidade de capital de giro</h3><div class="dre">
+   <div class="r"><span>Prazo médio de recebimento</span><span>${nf(k.pmr,0)} dias</span></div>
+   <div class="r"><span>(+) Ciclo de produção</span><span>${nf(k.pme,0)} dias</span></div>
+   <div class="r ind"><span>(−) Prazo do fornecedor</span><span>${nf(k.pmp,0)} dias</span></div>
+   <div class="r tot"><span>(=) Ciclo financeiro</span><span>${nf(k.ciclo,0)} dias</span></div>
+   <div class="r"><span>Desembolso operacional por dia</span><span>${brl(k.desemb)}</span></div>
+   <div class="r tot"><span>(=) Capital de giro necessário</span><span>${brl(k.ncg)}</span></div>
+   <div class="r"><span>Saldo em caixa</span><span>${brl(k.saldo)}</span></div>
+   <div class="r tot"><span>(=) Saldo de tesouraria</span><span style="color:${k.tes>=0?'var(--verde)':'var(--vermelho)'}">${brl(k.tes)}</span></div>
+  </div>
+   <div class="note">Necessidade de capital de giro = ciclo financeiro × desembolso diário, com o desembolso saindo dos custos variáveis e fixos do Diagnóstico Financeiro (${brl(k.f.cv+k.f.cf)} por mês ÷ 30). Saldo de tesouraria negativo significa que a operação já consome mais dinheiro do que a empresa tem — e alguém está financiando isso.</div>
+   <h4>O que cada alavanca devolve</h4>
+   <div class="tw"><table><thead><tr><th>Ação</th><th class="n">Dias</th><th class="n">Dinheiro liberado</th></tr></thead><tbody>
+    <tr><td>Entrada de 40% na assinatura em vez de 30%</td><td class="n">−7</td><td class="n" style="color:var(--verde)">${brl(7*k.desemb)}</td></tr>
+    <tr><td>Cortar 5 dias do ciclo de produção</td><td class="n">−5</td><td class="n" style="color:var(--verde)">${brl(5*k.desemb)}</td></tr>
+    <tr><td>Negociar 30 dias com o fornecedor de chapa</td><td class="n">−30</td><td class="n" style="color:var(--verde)">${brl(30*k.desemb)}</td></tr>
+   </tbody></table></div>
+   <div class="note">São valores ilustrativos calculados sobre o seu desembolso diário. O ponto é a ordem de grandeza: prazo de fornecedor costuma ser a alavanca mais barata, porque não custa desconto nem depende de vender mais.</div>
+  </div>
+ </div>
+
+ <div class="card"><h3>💡 Leitura do caixa</h3>
+  ${diag.map(([c,t,m])=>`<div class="alert a-${c}"><span class="ic">${c==='red'?'🔴':c==='org'?'🟠':c==='yel'?'🟡':c==='grn'?'🟢':'🔵'}</span><div><b>${t}</b><br><span style="color:var(--text-secondary)">${m}</span></div></div>`).join('')}
+ </div>`;
+};
+
+
+/* ══════════ META DE LUCRO E DESCONTO ══════════
+   O caminho contrário do orçamento: começa no lucro que a empresa precisa dar e
+   volta até quanto isso significa vender, em m² e em obras. E fecha com a conta
+   que mais destrói margem em marcenaria: o desconto dado no fim da reunião. */
+function calcMeta(){
+ const m=DB.meta, f=calcFin();
+ const alvo=m.modo==='pct'?f.fatM*num(m.pct):num(m.lucro);
+ const fatNec=f.mcp>0?(f.cf+alvo)/f.mcp:NaN;
+ const gap=fatNec-f.fatM, gapPct=f.fatM?gap/f.fatM:NaN;
+ const pm2=num(m.precoM2), tk=num(m.ticket);
+ const m2Nec=pm2>0?fatNec/pm2:NaN;
+ const obrasNec=tk>0?fatNec/tk:NaN;
+ /* Capacidade vem do Simulador, cenário atual: a entrega é a menor entre
+    fábrica e montagem. Meta que não cabe na capacidade não é meta — é desejo. */
+ const s=calcSim(DB.sim.atual);
+ const cabe=isFinite(m2Nec)?s.capEnt-m2Nec:NaN;
+
+ /* As quatro alavancas para chegar no mesmo lucro. Todas resolvidas para o
+    mesmo alvo, com as outras três congeladas — é isso que torna a comparação
+    honesta e mostra o tamanho absurdo do esforço de volume. */
+ const i=num(f.imp)/(f.fatM||1);            // alíquota efetiva sobre faturamento
+ const alav=[];
+ // 1. preço: fat(1+p)(1-i) - cv - cf = alvo
+ const denom=f.fatM*(1-i);
+ alav.push({k:'Subir preço',v:denom>0?(alvo+f.cv+f.cf)/denom-1:NaN,tipo:'pct',
+            obs:'sem vender um m² a mais'});
+ // 2. volume: (1+q)·mc = alvo + cf
+ alav.push({k:'Vender mais volume',v:f.mc>0?(alvo+f.cf)/f.mc-1:NaN,tipo:'pct',
+            obs:'com o mesmo preço e a mesma estrutura'});
+ // 3. custo variável: cv' = fat(1-i) - cf - alvo
+ alav.push({k:'Cortar custo variável',v:f.cv>0?1-(f.fatM*(1-i)-f.cf-alvo)/f.cv:NaN,tipo:'pct',
+            obs:'material, perda e terceiros'});
+ // 4. custo fixo: cf' = mc - alvo
+ alav.push({k:'Cortar custo fixo',v:f.cf-(f.mc-alvo),tipo:'rs',
+            obs:'por mês, todo mês'});
+
+ /* Desconto. P preço, V custo variável unitário, m = margem de contribuição %.
+    Com desconto d:  MC' = P(m − d)  →  volume necessário = d / (m − d).
+    Em d = m a margem zera: o desconto máximo teórico é exatamente a MC%. */
+ const mc=f.mcp;
+ const desc=[0.03,0.05,0.07,0.10,0.12,0.15,0.20].map(d=>({
+   d, mcNovo:(mc-d)/(1-d), vol:(mc-d)>0?d/(mc-d):Infinity,
+   perda:f.fatM*d, viavel:d<mc}));
+ return{alvo,fatNec,gap,gapPct,m2Nec,obrasNec,pm2,tk,cap:s.capEnt,cabe,alav,desc,mc,f,
+        temBase:f.fatM>0&&f.mcp>0};
+}
+
+VIEWS.meta=()=>{
+ const m=DB.meta;
+ return `<div class="card">
+  <h3>1 · Quanto a empresa precisa dar de lucro<span class="hint">por mês, líquido</span></h3>
+  <div class="sub">Lucro não é o que sobra — é uma conta a pagar como qualquer outra, e é a única que fica para o fim da fila em quase toda marcenaria.</div>
+  <div class="grid g4">
+   <div class="f"><label>Modo</label>
+    <select onchange="setv('meta.modo',this.value)" style="background:#111;border:1px solid var(--bd);border-radius:5px;padding:8px 10px;color:var(--text-primary);font-size:13px">
+     <option value="valor"${m.modo==='valor'?' selected':''}>Valor em R$</option>
+     <option value="pct"${m.modo==='pct'?' selected':''}>% do faturamento</option>
+    </select></div>
+   ${m.modo==='pct'
+     ?`<div class="f"><label>Margem líquida alvo</label><input value="${pctIn(m.pct)}" oninput="setpct('meta.pct',this)"><span class="mini">% — faixa saudável: 15% a 25%</span></div>`
+     :`<div class="f"><label>Lucro desejado</label><input value="${m.lucro||''}" placeholder="0" oninput="setn('meta.lucro',this)"><span class="mini">R$ por mês, depois de tudo</span></div>`}
+   <div class="f"><label>Preço médio por m²</label><input value="${m.precoM2||''}" placeholder="0" oninput="setn('meta.precoM2',this)"><span class="mini">seu preço praticado, não o de tabela</span></div>
+   <div class="f"><label>Ticket médio por obra</label><input value="${m.ticket||''}" placeholder="0" oninput="setn('meta.ticket',this)"><span class="mini">valor médio do contrato fechado</span></div>
+  </div>
+ </div>
+ <div id="out"></div>`;
+};
+
+PAINT.meta=()=>{
+ const k=calcMeta();
+ if(!k.temBase){$('#out').innerHTML='<div class="card"><div class="empty">Preencha o Diagnóstico Financeiro primeiro. Sem faturamento e margem de contribuição, não existe conta de meta.</div></div>';return}
+ const f=k.f;
+ const diag=[];
+ if(k.gap<=0)diag.push(['grn','Você já está acima da meta.',`O faturamento atual de ${brl(f.fatM)} entrega mais que o lucro alvo. Sobra de ${brl(-k.gap)} por mês em faturamento.`]);
+ else diag.push([k.gapPct>0.3?'red':k.gapPct>0.15?'org':'yel',`Faltam ${pc(k.gapPct,0)} de faturamento.`,`Para lucrar ${brl(k.alvo)} por mês você precisa faturar ${brl(k.fatNec)}, contra ${brl(f.fatM)} hoje. A diferença é de ${brl(k.gap)} por mês.`]);
+ if(isFinite(k.cabe)&&k.cabe<0)diag.push(['red','A meta não cabe na capacidade instalada.',`Ela exige ${nf(k.m2Nec,0)} m² por mês e a entrega máxima hoje é ${nf(k.cap,0)} m² — faltam ${nf(-k.cabe,0)} m². Meta que não cabe na fábrica só se resolve por preço ou por gente, nunca por esforço comercial.`]);
+ else if(isFinite(k.cabe))diag.push(['grn','A meta cabe na capacidade.',`Exige ${nf(k.m2Nec,0)} m²/mês contra ${nf(k.cap,0)} m² de entrega máxima. Folga de ${nf(k.cabe,0)} m².`]);
+ const preco=k.alav[0], vol=k.alav[1];
+ if(isFinite(preco.v)&&isFinite(vol.v)&&preco.v>0&&vol.v>0)
+  diag.push(['blu','Preço é a alavanca mais barata — sempre.',`Subir ${pc(preco.v,1)} no preço entrega o mesmo lucro que vender ${pc(vol.v,0)} a mais. Uma é uma conversa; a outra é ${nf(vol.v*(isFinite(k.obrasNec)?k.obrasNec/(1+vol.v):0),1)} obras a mais por mês, com material, equipe e prazo junto.`]);
+ const dMax=k.mc;
+ diag.push(['org','Seu desconto máximo teórico é '+pc(dMax,1)+'.',`Nesse ponto a margem de contribuição vira exatamente zero: a obra passa a não contribuir com nada para o custo fixo. Qualquer desconto acima disso é a empresa pagando para trabalhar.`]);
+
+ $('#out').innerHTML=`
+ <div class="kpis" style="margin-bottom:16px">
+  <div class="kpi"><div class="l">Faturamento necessário</div><div class="v">${brl(k.fatNec)}</div><div class="d">hoje: ${brl(f.fatM)} · margem de contribuição de ${pc(f.mcp)}</div></div>
+  <div class="kpi ${k.gap<=0?'ok':k.gapPct<=.15?'warn':'bad'}"><div class="l">Gap para a meta</div><div class="v">${k.gap>0?'+'+pc(k.gapPct,0):'folga'}</div><div class="d">${brl(Math.abs(k.gap))} por mês</div></div>
+  <div class="kpi ${isFinite(k.cabe)?(k.cabe>=0?'ok':'bad'):''}"><div class="l">m² por mês</div><div class="v">${isFinite(k.m2Nec)?nf(k.m2Nec,0):'—'}</div><div class="d">${isFinite(k.cap)?'capacidade de entrega: '+nf(k.cap,0)+' m²':'informe o preço por m²'}</div></div>
+  <div class="kpi"><div class="l">Obras por mês</div><div class="v">${isFinite(k.obrasNec)?nf(k.obrasNec,1):'—'}</div><div class="d">${k.tk?'ticket de '+brl(k.tk):'informe o ticket médio'}</div></div>
+ </div>
+
+ <div class="grid g2">
+  <div class="card"><h3>As quatro alavancas<span class="hint">mesmo lucro, esforços diferentes</span></h3>
+   <div class="tw"><table><thead><tr><th>Alavanca</th><th class="n">Esforço necessário</th><th>Observação</th></tr></thead><tbody>
+   ${k.alav.map(a=>{
+     const ok=isFinite(a.v)&&(a.tipo==='rs'?a.v<f.cf:a.v<1);
+     const txt=!isFinite(a.v)?'—':a.tipo==='rs'
+        ? (a.v<=0?'já atingido':'cortar '+brl(a.v))
+        : (a.v<=0?'já atingido':pc(a.v,1));
+     return `<tr><td>${a.k}</td>
+       <td class="n"><b style="color:${!isFinite(a.v)?'':a.v<=0?'var(--verde)':ok?'var(--text-primary)':'var(--vermelho)'}">${txt}</b></td>
+       <td class="mini">${a.obs}</td></tr>`}).join('')}
+   </tbody></table></div>
+   <div class="note">Cada linha resolve o mesmo lucro alvo com as outras três congeladas. A conta de preço é a mais barata porque o aumento vai inteiro para a margem, menos o imposto — não traz material, hora nem prazo junto. É por isso que 4% de preço costuma valer mais que 20% de volume, e é a conta que quase nenhum dono faz antes de dar desconto.</div>
+  </div>
+
+  <div class="card"><h3>O preço do desconto<span class="hint">quanto a mais você precisa vender</span></h3>
+   <div class="tw"><table><thead><tr><th class="n">Desconto</th><th class="n">Margem depois</th><th class="n">Volume extra p/ empatar</th><th class="n">Perda no mês</th></tr></thead><tbody>
+   ${k.desc.map(d=>`<tr${!d.viavel?' style="opacity:.5"':''}>
+     <td class="n"><b>${pc(d.d,0)}</b></td>
+     <td class="n" style="color:${d.mcNovo<=0?'var(--vermelho)':d.mcNovo<.2?'var(--amarelo)':''}">${d.viavel?pc(d.mcNovo):'zerada'}</td>
+     <td class="n"><b style="color:${!d.viavel?'var(--vermelho)':d.vol>.5?'var(--vermelho)':d.vol>.25?'var(--amarelo)':''}">${d.viavel?'+'+pc(d.vol,0):'impossível'}</b></td>
+     <td class="n mini">${brl(d.perda)}</td></tr>`).join('')}
+   </tbody></table></div>
+   <div class="note">Volume extra = desconto ÷ (margem de contribuição − desconto). Com margem de ${pc(k.mc)}, cada ponto de desconto exige muito mais que um ponto de venda — e a curva é exponencial, não linear. Em ${pc(k.mc,1)} de desconto a margem chega a zero: esse é o piso absoluto, não o piso saudável.</div>
+   <h4>O que dizer em vez de dar desconto</h4>
+   <div class="mini" style="line-height:1.75">
+    <b>1. Tire escopo, não preço.</b> "Consigo chegar nesse valor retirando o painel do hall e a iluminação embutida." Preço por m² preservado.<br>
+    <b>2. Mude a condição, não o total.</b> Prazo maior, entrada menor, mais parcelas — custa caixa, e caixa tem preço conhecido; margem não volta nunca.<br>
+    <b>3. Troque desconto por prazo de obra.</b> "Se você aceitar entrar na janela de janeiro, consigo esse valor." Você comprou ocupação de fábrica, que vale dinheiro.<br>
+    <b>4. Desconto só contra volume real.</b> Segundo ambiente do mesmo cliente, na mesma viagem de montagem, com o mesmo setup — aí o custo cai de verdade e o desconto é lastreado.
+   </div>
+  </div>
+ </div>
+
+ <div class="card"><h3>💡 Leitura da meta</h3>
+  ${diag.map(([c,t,m])=>`<div class="alert a-${c}"><span class="ic">${c==='red'?'🔴':c==='org'?'🟠':c==='yel'?'🟡':c==='grn'?'🟢':'🔵'}</span><div><b>${t}</b><br><span style="color:var(--text-secondary)">${m}</span></div></div>`).join('')}
+ </div>`;
+};
+
+
+/* ══════════ DRE 12 MESES — resultado mensal ══════════
+   O Diagnóstico Financeiro tira uma foto de 3 meses. Este módulo faz o filme:
+   mês a mês, mostra se a margem está subindo ou descendo e qual é a sazonalidade
+   real do negócio — que é o que decide quando contratar e quando segurar. */
+const MES_N=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+function mesLbl(ini,k){
+ const p=String(ini||'').split('-');
+ if(p.length<2)return 'M'+(k+1);
+ let mo=num(p[1])-1+k, an=num(p[0])+Math.floor(mo/12);
+ return MES_N[((mo%12)+12)%12]+'/'+String(an).slice(2);
+}
+function calcDre(){
+ const D=DB.dre12, i=num(D.imposto);
+ const L=D.m.map((x,k)=>{
+  const fat=num(x.fat), cv=num(x.cv), cf=num(x.cf);
+  const imp=fat*i, rl=fat-imp, mc=rl-cv, ll=mc-cf;
+  const mcRl=rl?mc/rl:0;
+  return{k,lbl:mesLbl(D.ini,k),fat,cv,cf,imp,rl,mc,ll,
+         mcp:fat?mc/fat:NaN, llp:fat?ll/fat:NaN, cfp:fat?cf/fat:NaN,
+         pe:mcRl>0?cf/mcRl/(1-i):NaN};
+ });
+ const A=L.filter(x=>x.fat>0);
+ if(!A.length)return{L,A,vazio:true};
+ const t=k=>A.reduce((a,x)=>a+x[k],0);
+ const fat=t('fat'), ll=t('ll'), mc=t('mc'), cf=t('cf'), cv=t('cv');
+ const media=fat/A.length;
+ const neg=A.filter(x=>x.ll<0);
+ const ord=[...A].sort((a,b)=>a.llp-b.llp);
+ /* Tendência: regressão linear simples da margem líquida contra o índice do mês.
+    Serve para responder "está melhorando?" sem discussão de percepção. */
+ const n=A.length, sx=A.reduce((a,x)=>a+x.k,0), sy=A.reduce((a,x)=>a+x.llp,0);
+ const sxy=A.reduce((a,x)=>a+x.k*x.llp,0), sxx=A.reduce((a,x)=>a+x.k*x.k,0);
+ const slope=(n*sxx-sx*sx)?(n*sxy-sx*sy)/(n*sxx-sx*sx):NaN;   // pontos de margem por mês
+ const saz=A.map(x=>({...x,idx:media?x.fat/media:NaN}));
+ const alta=[...saz].sort((a,b)=>b.idx-a.idx).slice(0,3);
+ const baixa=[...saz].sort((a,b)=>a.idx-b.idx).slice(0,3);
+ return{L,A,vazio:false,fat,ll,mc,cv,cf,media,
+        mcp:fat?mc/fat:NaN, llp:fat?ll/fat:NaN, cfp:fat?cf/fat:NaN,
+        neg,pior:ord[0],melhor:ord[ord.length-1],slope,saz,alta,baixa,
+        mediaLL:ll/A.length};
+}
+function setDre(i,k,el){DB.dre12.m[i][k]=num(el.value);save();paint()}
+function dreDoFin(){
+ if(!confirm('Preencher os 3 primeiros meses com o que está lançado no Diagnóstico Financeiro?\n\nIsso sobrescreve os meses 1, 2 e 3 desta tela.'))return;
+ const f=DB.fin, cv=f.cv.reduce((a,b)=>a+num(b),0), cf=f.cf.reduce((a,b)=>a+num(b),0);
+ for(let i=0;i<3;i++)DB.dre12.m[i]={fat:num(f.fat[i]),cv,cf};
+ DB.dre12.imposto=num(f.imposto);
+ save();render();
+}
+
+VIEWS.dre=()=>{
+ const D=DB.dre12;
+ return `<div class="card">
+  <h3>Resultado mês a mês<span class="hint">12 meses</span></h3>
+  <div class="sub">Média de 3 meses esconde sazonalidade, e sazonalidade em marcenaria é brutal: o mês que paga o ano e o mês que come o caixa não têm o mesmo nome em toda cidade. Aqui você descobre os seus.</div>
+  <div class="row" style="margin-bottom:12px">
+   <div class="f" style="width:150px"><label>Primeiro mês</label><input type="month" value="${esc(D.ini)}" oninput="setv('dre12.ini',this.value)"></div>
+   <div class="f" style="width:150px"><label>Imposto sobre venda</label><input value="${pctIn(D.imposto)}" oninput="setpct('dre12.imposto',this)"><span class="mini">%</span></div>
+   <button class="btn" onclick="dreDoFin()">↓ Puxar do Diagnóstico Financeiro</button>
+  </div>
+  <div class="tw"><table><thead><tr><th>Mês</th><th class="n">Faturamento</th><th class="n">Custo variável</th><th class="n">Custo fixo</th><th class="n">MC</th><th class="n">Lucro</th><th class="n">Margem</th></tr></thead><tbody id="dreb"></tbody></table></div>
+ </div>
+ <div id="out"></div>`;
+};
+
+PAINT.dre=()=>{
+ const k=calcDre();
+ const inp=(i,c,v)=>`<input style="width:105px;background:#111;border:1px solid var(--bd);border-radius:5px;padding:6px 8px;color:var(--text-primary);font-size:12.5px;text-align:right" value="${v||''}" placeholder="0" oninput="setDre(${i},'${c}',this)">`;
+ $('#dreb').innerHTML=k.L.map(x=>`<tr>
+  <td>${x.lbl}</td>
+  <td class="n">${inp(x.k,'fat',DB.dre12.m[x.k].fat)}</td>
+  <td class="n">${inp(x.k,'cv',DB.dre12.m[x.k].cv)}</td>
+  <td class="n">${inp(x.k,'cf',DB.dre12.m[x.k].cf)}</td>
+  <td class="n mini">${x.fat?brl(x.mc):'—'}</td>
+  <td class="n"><b style="color:${!x.fat?'':x.ll<0?'var(--vermelho)':'var(--verde)'}">${x.fat?brl(x.ll):'—'}</b></td>
+  <td class="n">${x.fat?`<span class="tag ${x.llp>=.15?'t-verde':x.llp>=.08?'t-amarelo':'t-vermelho'}">${pc(x.llp,0)}</span>`:'<span class="mini">—</span>'}</td></tr>`).join('');
+ if(k.vazio){$('#out').innerHTML='<div class="card"><div class="empty">Lance pelo menos um mês para o resultado aparecer. Se você já preencheu o Diagnóstico Financeiro, use o botão acima.</div></div>';return}
+
+ const diag=[];
+ if(k.neg.length)diag.push(['red',`${k.neg.length} ${k.neg.length===1?'mês fechou':'meses fecharam'} no prejuízo.`,`${k.neg.map(x=>x.lbl).join(', ')}. Somados, consumiram ${brl(-k.neg.reduce((a,x)=>a+x.ll,0))} de caixa.`]);
+ if(isFinite(k.slope)){
+  const anual=k.slope*12*100;
+  diag.push([k.slope>0.002?'grn':k.slope<-0.002?'red':'yel',
+    k.slope>0.002?'Margem em recuperação.':k.slope<-0.002?'Margem em erosão.':'Margem estável.',
+    `Tendência de ${nf(k.slope*100,2)} ponto de margem por mês — ${nf(Math.abs(anual),1)} pontos em 12 meses se nada mudar. A conta é regressão sobre os meses lançados, não impressão.`]);
+ }
+ if(k.alta.length&&k.baixa.length&&isFinite(k.alta[0].idx))
+  diag.push(['blu','Sazonalidade identificada.',`Meses fortes: ${k.alta.map(x=>x.lbl+' ('+nf(x.idx*100,0)+'%)').join(', ')}. Meses fracos: ${k.baixa.map(x=>x.lbl+' ('+nf(x.idx*100,0)+'%)').join(', ')}. O índice é o faturamento do mês sobre a média. Contratar em mês forte e demitir em mês fraco é o ciclo que destrói equipe — a estrutura tem que caber no mês fraco.`]);
+ if(k.cfp>0.22)diag.push(['org','Custo fixo pesado no ano.',`${pc(k.cfp)} do faturamento acumulado, contra faixa saudável de 15% a 20%.`]);
+ if(k.pior&&k.melhor&&k.melhor.llp-k.pior.llp>0.15)
+  diag.push(['yel','Resultado muito instável.',`Melhor mês: ${k.melhor.lbl} com ${pc(k.melhor.llp)}. Pior: ${k.pior.lbl} com ${pc(k.pior.llp)}. ${nf((k.melhor.llp-k.pior.llp)*100,0)} pontos de amplitude significa que o resultado depende do mix que entrou, não do processo.`]);
+
+ const mx=Math.max(...k.A.map(x=>x.fat),1);
+ $('#out').innerHTML=`
+ <div class="kpis" style="margin-bottom:16px">
+  <div class="kpi"><div class="l">Faturamento acumulado</div><div class="v">${brl(k.fat)}</div><div class="d">${nf(k.A.length,0)} ${k.A.length===1?'mês lançado':'meses lançados'} · média ${brl(k.media)}</div></div>
+  <div class="kpi ${k.llp>=.15?'ok':k.llp>=.08?'warn':'bad'}"><div class="l">Lucro acumulado</div><div class="v">${brl(k.ll)}</div><div class="d">margem líquida de ${pc(k.llp)}</div></div>
+  <div class="kpi ${k.mcp>=.35?'ok':'warn'}"><div class="l">Margem de contribuição</div><div class="v">${pc(k.mcp)}</div><div class="d">${brl(k.mc)} no período</div></div>
+  <div class="kpi ${!k.neg.length?'ok':'bad'}"><div class="l">Meses no prejuízo</div><div class="v">${nf(k.neg.length,0)}</div><div class="d">${k.neg.length?k.neg.map(x=>x.lbl).join(', '):'nenhum'}</div></div>
+ </div>
+
+ <div class="card"><h3>Faturamento e margem<span class="hint">barra = faturamento · etiqueta = margem líquida</span></h3>
+  <div style="display:flex;align-items:flex-end;gap:6px;height:170px;padding:8px 0;border-bottom:1px solid var(--bd)">
+   ${k.A.map(x=>`<div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%;gap:4px" title="${x.lbl}: ${brl(x.fat)} · ${pc(x.llp)}">
+     <div style="font-size:9px;text-align:center;color:${x.llp>=.15?'var(--verde)':x.llp>=.08?'var(--amarelo)':'var(--vermelho)'}">${pc(x.llp,0)}</div>
+     <div style="height:${Math.max(3,x.fat/mx*100)}%;background:var(--accent);opacity:.8;border-radius:2px 2px 0 0"></div>
+   </div>`).join('')}
+  </div>
+  <div style="display:flex;gap:6px;margin-top:5px">${k.A.map(x=>`<div style="flex:1;text-align:center;font-size:9.5px;color:var(--text-muted)">${x.lbl}</div>`).join('')}</div>
+ </div>
+
+ <div class="grid g2">
+  <div class="card"><h3>DRE acumulado do período</h3><div class="dre">
+   <div class="r"><span>(+) Faturamento bruto</span><span>${brl(k.fat)}</span></div>
+   <div class="r ind"><span>(−) Impostos sobre venda</span><span>${brl(-k.A.reduce((a,x)=>a+x.imp,0))}</span></div>
+   <div class="r tot"><span>(=) Receita líquida</span><span>${brl(k.A.reduce((a,x)=>a+x.rl,0))}</span></div>
+   <div class="r ind"><span>(−) Custos variáveis</span><span>${brl(-k.cv)}</span></div>
+   <div class="r tot"><span>(=) Margem de contribuição</span><span>${brl(k.mc)}</span></div>
+   <div class="r ind"><span>% margem de contribuição</span><span>${pc(k.mcp)}</span></div>
+   <div class="r ind"><span>(−) Custos fixos</span><span>${brl(-k.cf)}</span></div>
+   <div class="r tot"><span>(=) LUCRO LÍQUIDO</span><span>${brl(k.ll)}</span></div>
+   <div class="r ind"><span>% margem líquida</span><span>${pc(k.llp)}</span></div>
+  </div></div>
+
+  <div class="card"><h3>Sazonalidade<span class="hint">faturamento do mês sobre a média</span></h3>
+   <div class="tw"><table><thead><tr><th>Mês</th><th class="n">Faturamento</th><th class="n">Índice</th><th class="n">Ponto de equilíbrio</th><th class="n">Resultado</th></tr></thead><tbody>
+   ${k.saz.map(x=>`<tr><td>${x.lbl}</td><td class="n">${brl(x.fat)}</td>
+    <td class="n"><span class="tag ${x.idx>=1.1?'t-verde':x.idx>=.9?'t-neu':'t-amarelo'}">${nf(x.idx*100,0)}%</span></td>
+    <td class="n mini">${isFinite(x.pe)?brl(x.pe):'—'}</td>
+    <td class="n" style="color:${x.ll<0?'var(--vermelho)':'var(--verde)'}">${brl(x.ll)}</td></tr>`).join('')}
+   </tbody></table></div>
+   <div class="note">A estrutura fixa tem que caber no mês de índice mais baixo, não na média. Empresa dimensionada pela média fica no vermelho todo ano nos mesmos meses — e depois chama isso de crise.</div>
+  </div>
+ </div>
+
+ <div class="card"><h3>💡 Leitura do ano</h3>
+  ${diag.map(([c,t,m])=>`<div class="alert a-${c}"><span class="ic">${c==='red'?'🔴':c==='org'?'🟠':c==='yel'?'🟡':c==='grn'?'🟢':'🔵'}</span><div><b>${t}</b><br><span style="color:var(--text-secondary)">${m}</span></div></div>`).join('')}
+ </div>`;
+};
+
+
 /* ══════════ EXPORT / IMPORT / SEED ══════════ */
 function exportar(){
  const b=new Blob([JSON.stringify(DB,null,1)],{type:'application/json'});
@@ -2092,7 +2738,9 @@ function importar(el){
 const BKP=KEY+'_bkp';
 function temDados(){
  return DB.amb.length||DB.crm.length||DB.est.mat.length||DB.prec.hist.length||DB.fin.fat.some(x=>x>0)
-        ||(DB.pro&&DB.pro.vida.some(x=>x>0));
+        ||(DB.pro&&DB.pro.vida.some(x=>x>0))
+        ||(DB.obras&&DB.obras.length)||(DB.cx&&num(DB.cx.saldo)>0)
+        ||(DB.dre12&&DB.dre12.m.some(x=>num(x.fat)>0));
 }
 function botaoUndo(){
  const el=$('#undo');if(!el)return;
@@ -2156,6 +2804,50 @@ function exemploDB(){
  DB.prec.hist=[{data:addBiz(h,-14),cliente:'João Silva',tipo:'Cozinha Completa',m2:10,preco:20000,status:'Fechado',margem:.35},
                {data:addBiz(h,-9),cliente:'Maria Santos',tipo:'Closet Básico',m2:12,preco:28800,status:'Pendente',margem:.35}];
  CHECKLISTS.corte.itens.forEach((_,i)=>{DB.chk[DB.amb[0].id]=DB.chk[DB.amb[0].id]||{};DB.chk[DB.amb[0].id].corte=DB.chk[DB.amb[0].id].corte||{};DB.chk[DB.amb[0].id].corte[i]={s:i===7?'no':'ok',r:'Matheus'}});
+
+ /* ── Cenário do simulador, reconciliado com o Diagnóstico Financeiro ──
+    O exemplo antigo deixava o simulador nos padrões de fábrica, que descreviam
+    uma empresa de R$ 117 mil/mês enquanto o financeiro descrevia uma de R$ 330
+    mil. Os módulos de meta e capacidade cruzam os dois, e a incoerência
+    apareceria como diagnóstico falso. Aqui os números fecham:
+    169 m² × R$ 1.950 = R$ 330 mil/mês, e o material por m² absorve também
+    terceiros, frete e perda — que no simulador não têm linha própria. */
+ DB.sim.atual={pessoasFab:12,prodFab:15,pessoasMon:4,prodMon:45,custoPessoa:3625,
+               fixos:43900,variaveis:15000,matM2:805,precoM2:1950,imp:.10,com:0,
+               metaLucro:60000,volume:169};
+ DB.sim.simulado={...DB.sim.atual,pessoasFab:14,prodFab:15,precoM2:2050,volume:190,metaLucro:80000};
+
+ /* ── Obras fechadas ──
+    O padrão embutido é o mais comum do setor e o que o módulo existe para
+    revelar: mão de obra estoura em 100% das obras, material em 100%, e as obras
+    pequenas entregam metade da margem das grandes. */
+ const ob=(nome,cliente,m2,preco,dias,d,orc,real)=>({id:uid(),nome,cliente,m2,preco,dias,
+   entrega:addBiz(h,-d),orc,real});
+ DB.obras=[
+  ob('089 — Cozinha + Área','João Silva'      ,10,20000,6, 8,[6000,4000, 800,300,200],[6900,4600, 800,420,250,600,  0]),
+  ob('090 — Closet','Maria Santos'            ,12,28800,7,16,[8200,5200,1100,350,250],[8600,6400,1100,500,300,  0,450]),
+  ob('091 — Home Office','Pedro Costa'        , 5, 9500,4,24,[2900,2100,   0,250,150],[3200,2900,   0,480,200,350,  0]),
+  ob('092 — Dormitório casal','Ana Oliveira'  ,16,36000,9,31,[10500,6800,1400,400,300],[11200,7500,1400,560,380,0, 0]),
+  ob('087 — Cozinha compacta','Carlos Menezes', 6,11200,4,45,[3400,2400,   0,260,150],[3900,3300,   0,520,220,800,300]),
+  ob('088 — Painel + rack','Juliana Reis'     , 8,15500,5,52,[4600,3100,   0,300,180],[5100,3400,   0,400,200,  0,  0])];
+
+ /* ── Caixa ──
+    Curto prazo saudável e capital de giro descoberto ao mesmo tempo. É o
+    retrato exato da marcenaria que "está indo bem" e não tem um real livre. */
+ DB.cx={saldo:85000,taxa:.02,pmr:25,pme:35,pmp:25,
+        sem:[[82,61],[64,58],[71,72],[95,55],[58,63],[49,59],[44,66],
+             [52,57],[88,60],[76,62],[81,58],[69,64],[74,59]]
+             .map(([e,s])=>({e:e*1000,s:s*1000}))};
+
+ DB.meta={modo:'valor',lucro:60000,pct:.15,precoM2:1950,ticket:22000};
+
+ /* ── 12 meses com a sazonalidade típica: pico em dezembro, vale em janeiro ── */
+ const d0=new Date(); d0.setMonth(d0.getMonth()-11);
+ DB.dre12={ini:d0.toISOString().slice(0,7),imposto:.10,
+  m:[[305,181,57],[342,202,57],[388,228,58],[415,246,61],[236,155,58],[259,158,58],
+     [318,189,59],[335,197,59],[351,206,59],[344,203,59],[310,186,59],[330,194,59]]
+     .map(([fat,cv,cf])=>({fat:fat*1000,cv:cv*1000,cf:cf*1000}))};
+
  return DB;
 }
 
