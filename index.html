@@ -90,7 +90,10 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
 .cn{font-family:'Inter',sans-serif;font-size:46px;font-weight:700;line-height:1;opacity:.09;position:absolute;right:12px;top:10px;color:#fff;}
 .ctm{position:relative;z-index:1;display:flex;align-items:center;gap:8px;}
 .cpb{width:33px;height:33px;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;}
-.cpa{width:0;height:0;border-style:solid;border-width:6px 0 6px 10px;border-color:transparent transparent transparent rgba(255,255,255,.8);margin-left:3px;}
+/* Era um triangulo de play (border-width fazendo a seta). Nao ha video:
+   aula e' modulo escrito, e botao de play num texto parece video que nao
+   carregou. Virou o glifo de documento. */
+.cpa{color:rgba(255,255,255,.8);display:flex;}
 .cpp{font-family:'Inter',sans-serif;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;border-radius:4px;border:1px solid;}
 .visao .cpp{background:rgba(201,168,76,.15);border-color:rgba(201,168,76,.3);color:#E8C97A;}
 .lucro .cpp{background:rgba(5,150,105,.15);border-color:rgba(5,150,105,.3);color:#6EE7B7;}
@@ -167,7 +170,7 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
 .cc::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold-gradient);}
 .cc:hover{border-color:rgba(200,146,42,.38);transform:translateY(-2px);}
 .ccp{width:50px;height:50px;border-radius:50%;background:var(--gold-gradient);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 0 22px rgba(200,146,42,.2);}
-.ccpa{width:0;height:0;border-style:solid;border-width:9px 0 9px 16px;border-color:transparent transparent transparent var(--navy);margin-left:4px;}
+.ccpa{color:var(--navy);display:flex;}
 .cci{flex:1;}
 .ccl{font-size:10px;color:var(--accent);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:3px;font-family:'Inter',sans-serif;}
 .cct{font-family:'Inter',sans-serif;font-size:20px;font-weight:700;letter-spacing:.3px;margin-bottom:3px;}
@@ -227,12 +230,10 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
 .do{font-size:14px;color:var(--text-secondary);line-height:1.65;max-width:680px;margin-bottom:17px;}
 .dm{display:flex;gap:9px;flex-wrap:wrap;align-items:center;}
 .mt{font-size:11px;color:var(--text-muted);background:rgba(255,255,255,.04);border:1px solid #333;padding:5px 12px;border-radius:6px;}
-.va{background:var(--navy-mid);border:1px solid #333;border-radius:6px;height:310px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:13px;margin-bottom:20px;position:relative;overflow:hidden;cursor:pointer;}
-.va::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50%,rgba(200,146,42,.04),transparent 70%);}
-.vpr{width:66px;height:66px;border-radius:50%;background:var(--gold-gradient);display:flex;align-items:center;justify-content:center;box-shadow:0 0 34px rgba(200,146,42,.2);transition:transform .2s;}
-.va:hover .vpr{transform:scale(1.08);}
-.vpa{width:0;height:0;border-style:solid;border-width:11px 0 11px 19px;border-color:transparent transparent transparent var(--navy);margin-left:5px;}
-.vl{font-family:'Inter',sans-serif;font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:rgba(232,234,240,.35);}
+/* O `.va` (player de 310px), o `.vpr`/`.vpa` (circulo e triangulo) e o
+   `.vl` viviam aqui e sairam com ele em 20/08/2026: a caixa nao tocava
+   nada. Quando existir video de verdade, o bloco volta ACIMA da barra de
+   andamento — e o CSS dele vem junto, do historico do git. */
 .dg{display:grid;grid-template-columns:1fr 295px;gap:17px;margin-bottom:17px;}
 .xc{background:var(--navy-light);border:1px solid #333;border-radius:4px;padding:19px;margin-bottom:13px;}
 .xt{font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:13px;padding-bottom:9px;border-bottom:1px solid #222;}
@@ -429,7 +430,7 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
     <nav class="sb-nav">
       <div class="nav-sec">Principal</div>
       <div class="nav-it" id="nav-dashboard" onclick="sv('dashboard')"><svg class="nav-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg>Dashboard</div>
-      <div class="nav-it" id="nav-trilha" onclick="sv('trilha')"><svg class="nav-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><polygon points="6.5,5.5 11.5,8 6.5,10.5" fill="currentColor" stroke="none"/></svg>Trilha de Aulas<span class="nav-bg">7</span></div>
+      <div class="nav-it" id="nav-trilha" onclick="sv('trilha')"><svg class="nav-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="6" y1="3.5" x2="14" y2="3.5"/><line x1="6" y1="8" x2="14" y2="8"/><line x1="6" y1="12.5" x2="14" y2="12.5"/><circle cx="2.6" cy="3.5" r="1.3"/><circle cx="2.6" cy="8" r="1.3"/><circle cx="2.6" cy="12.5" r="1.3"/></svg>Trilha de Aulas<span class="nav-bg">7</span></div>
       <div class="nav-it" id="nav-pilares" onclick="sv('pilares')"><svg class="nav-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.5L14 5v6l-6 3.5L2 11V5L8 1.5z"/></svg>5 Pilares</div>
       <div class="nav-sec">Recursos</div>
       <div class="nav-it" id="nav-materiais" onclick="sv('materiais')"><svg class="nav-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 1h6l4 4v9a1 1 0 01-1 1H4a1 1 0 01-1-1V2a1 1 0 011-1z"/><polyline points="10,1 10,5 14,5"/></svg>Materiais<span class="nav-bg" style="background:rgba(200,146,42,.1);color:var(--accent);" id="mat-count">8</span></div>
@@ -1253,6 +1254,10 @@ function repintarChecklist(faseId){
   el.textContent=f+' de '+m.ck.length+' feitos';
 }
 
+/* Documento escrito. Substitui o triangulo de play em todo lugar onde a
+   "aula" e' texto — que hoje e' todo lugar. */
+const ICO_DOC='<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 2h5l3 3v9a1 1 0 01-1 1H4a1 1 0 01-1-1V3a1 1 0 011-1z"/><polyline points="9,2 9,5 12,5"/><line x1="5.6" y1="9" x2="10.4" y2="9"/><line x1="5.6" y1="11.3" x2="9" y2="11.3"/></svg>';
+const ICO_DOC_G='<svg width="22" height="22" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 2h5l3 3v9a1 1 0 01-1 1H4a1 1 0 01-1-1V3a1 1 0 011-1z"/><polyline points="9,2 9,5 12,5"/><line x1="5.6" y1="9" x2="10.4" y2="9"/><line x1="5.6" y1="11.3" x2="9" y2="11.3"/></svg>';
 const ICO_OK='<svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.6"><polyline points="3,8.5 6.5,12 13,4.5"/></svg>';
 
 /* Uma escuta so' para toda a area de membros. Duas coisas diferentes:
@@ -1361,7 +1366,7 @@ function renderContinuar(){
          e' abrir a primeira fase liberada. */
       const m=M.find(x=>liberada(x.id))||M[0];
       el.innerHTML=`<div class="cc" onclick="smd(${m.id})">
-        <div class="ccp"><div class="ccpa"></div></div>
+        <div class="ccp"><div class="ccpa">${ICO_DOC_G}</div></div>
         <div class="cci"><div class="ccl">${rotuloFase(m)} &middot; ${m.p}</div><div class="cct">${m.t.split('—')[1]?.trim()||m.t}</div><div class="ccs">${m.o}</div></div>
         <button class="bgo">Abrir fase &rarr;</button>
       </div>`;
@@ -1380,7 +1385,7 @@ function renderContinuar(){
   }
   const {m,f,i,total}=pend[0];
   el.innerHTML=`<div class="cc" onclick="smd(${m.id})">
-    <div class="ccp"><div class="ccpa"></div></div>
+    <div class="ccp"><div class="ccpa">${ICO_DOC_G}</div></div>
     <div class="cci">
       <div class="ccl">${rotuloFase(m)} &middot; Aula ${i+1} de ${total}</div>
       <div class="cct">${f.name}</div>
@@ -1404,7 +1409,7 @@ function cardAula(a){
   return`<div class="mc" data-mat="${esc(chaveMat(a.f))}" onclick="smd(${m.id})">
     <div class="ct ${cls}">
       <div class="cn">${flabel(m)}</div>
-      <div class="ctm"><div class="cpb"><div class="cpa"></div></div><div class="cpp" style="${pstyle(m.p)}">Aula ${a.i+1}/${a.total}</div></div>
+      <div class="ctm"><div class="cpb"><div class="cpa">${ICO_DOC}</div></div><div class="cpp" style="${pstyle(m.p)}">Aula ${a.i+1}/${a.total}</div></div>
     </div>
     <div class="cb">
       <div class="cw">${rotuloFase(m)} &middot; ${m.p}</div>
@@ -1477,7 +1482,7 @@ function card(m){
   return`<div class="mc${stat(m)==='locked'&&!fechada?' lk':''}" onclick="smd(${m.id})">
     <div class="ct ${cls}${stat(m)==='completed'?' done':''}">
       <div class="cn">${lbl}</div>
-      <div class="ctm"><div class="cpb"><div class="cpa"></div></div><div class="cpp">${m.p}</div></div>
+      <div class="ctm"><div class="cpb"><div class="cpa">${ICO_DOC}</div></div><div class="cpp">${m.p}</div></div>
     </div>
     <div class="cb">
       <div class="cw">${m.id<NF?'Fase '+(m.id+1):m.t.split('—')[0].trim()} · ${m.p}</div>
@@ -1905,7 +1910,7 @@ function smd(id){
         </div></div>
       </div>
     </div>
-    ${m.ck?`<div class="chk"><div class="xt">Checklist de Implementação <span id="smd-ckn" style="float:right;font-size:10px;color:var(--text-muted);font-weight:400;">${m.ck.filter((_,i)=>checkFeito(m.id,i)).length} de ${m.ck.length} feitos</span></div><div class="chi">Faça isso <strong style="color:var(--text-secondary)">depois</strong> da aula. Sem executar, não adianta assistir.</div>${m.ck.map((i,ix)=>`<label class="chit"><input type="checkbox"${checkFeito(m.id,ix)?' checked':''} onchange="marcarCheck(${m.id},${ix},this.checked)"><span>${i}</span></label>`).join('')}</div>`:''}
+    ${m.ck?`<div class="chk"><div class="xt">Checklist de Implementação <span id="smd-ckn" style="float:right;font-size:10px;color:var(--text-muted);font-weight:400;">${m.ck.filter((_,i)=>checkFeito(m.id,i)).length} de ${m.ck.length} feitos</span></div><div class="chi">Faça isso <strong style="color:var(--text-secondary)">depois</strong> da aula. Sem executar, não adianta ler.</div>${m.ck.map((i,ix)=>`<label class="chit"><input type="checkbox"${checkFeito(m.id,ix)?' checked':''} onchange="marcarCheck(${m.id},${ix},this.checked)"><span>${i}</span></label>`).join('')}</div>`:''}
     ${m.cx?`<div class="ctx"><div class="cxt">${m.cx.tl}</div>${m.cx.it.map(i=>`<div class="cxr"><span class="cxk">${i.k}</span><span class="cxv">${i.v}</span></div>`).join('')}<div class="cxn">${m.cx.nt}</div></div>`:''}
     ${m.marco?`<div class="marco"><div class="marco-label">Marco de Progressão</div><div class="marco-text">${m.marco}</div></div>`:''}
     ${fh}
