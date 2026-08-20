@@ -47,13 +47,15 @@ Conferência de 08/08: as quatro funções (`admin_definir_senha`, `admin_listar
 executáveis por aluno logado e **nenhuma** por visitante anônimo. A trava de admin de
 `admin_definir_senha` foi testada e recusa até chamada com poder de `postgres`.
 
-### 1-C. Rodar o `progresso.sql` — ⬜ **PENDENTE**
+### 1-C. Rodar o `progresso.sql` — ✅ **FEITO em 20/08/2026**
 
-Um arquivo só, uma vez: `mentoria-app/progresso.sql`. Painel do Supabase → SQL Editor →
-New query → colar → Run.
+Rodado em produção pela API de management e conferido. **Não precisa rodar de novo** —
+fica como referência para reinstalar.
 
-Cria a tabela `public.progresso` (uma linha por aluno) com RLS: cada um lê e escreve
-só a própria linha.
+Criou a tabela `public.progresso` (uma linha por aluno, `payload` jsonb) com RLS ligado e
+três políticas — `select`, `insert` e `update`, todas presas a `auth.uid() = user_id`.
+Conferência com a chave publicável: visitante anônimo lê `[]` (nenhuma linha vaza) e o
+`insert` é recusado pelo RLS (`42501`).
 
 **O app não quebra sem ela.** Sem a tabela, o andamento — quais aulas o aluno já abriu,
 quais itens do checklist ele já marcou — fica guardado no navegador dele e nada mais.
