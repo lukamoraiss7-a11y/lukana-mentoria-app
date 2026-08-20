@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MÓDULO 10 — AVALIAÇÃO DE DESEMPENHO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --tinta:#2C2825; --ouro:#B8925A; --claro:#F5F1EA; --linha:#D8D2C7;
+  --fraco:#6E675E; --papel:#FFFFFF; --caixa:#FAF8F4;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+@page{size:A4;margin:14mm 13mm 13mm}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact;scroll-behavior:smooth}
+body{font:11pt/1.62 'Inter',-apple-system,'Helvetica Neue',Arial,sans-serif;
+  color:var(--tinta);background:var(--claro)}
+.folha{max-width:196mm;margin:0 auto;padding:14mm 10mm 20mm;background:var(--papel);
+  box-shadow:0 1px 3px rgba(0,0,0,.06)}
+
+/* cabecalho */
+.topo{display:flex;justify-content:space-between;align-items:flex-end;
+  border-bottom:1.5pt solid var(--tinta);padding-bottom:6pt;gap:12pt;flex-wrap:wrap}
+.marca{font:600 15pt/1 'Cormorant Garamond',Georgia,serif;letter-spacing:.22em;
+  text-transform:uppercase;outline:none}
+.marca small{display:block;font:400 6.5pt/1 'Inter',sans-serif;letter-spacing:.34em;
+  color:var(--fraco);margin-top:3pt}
+.marca:focus{background:#FFF6DF}
+.doc{text-align:right}
+.doc .fase{font-size:7pt;letter-spacing:.2em;color:var(--ouro);font-weight:600;
+  text-transform:uppercase}
+.doc .cod{font-size:7pt;letter-spacing:.18em;color:var(--fraco);margin-top:2pt}
+.regua{height:2.5pt;background:var(--ouro);margin:0 0 14pt}
+
+/* tipografia */
+h1{font:600 21pt/1.18 'Cormorant Garamond',Georgia,serif;letter-spacing:.01em;
+  margin:0 0 3pt}
+h1 + .lead{font-size:10.5pt;color:var(--fraco);font-style:italic;margin-bottom:14pt;
+  padding-bottom:10pt;border-bottom:.75pt solid var(--linha)}
+h2{font:600 10.5pt/1.25 'Inter',sans-serif;letter-spacing:.13em;text-transform:uppercase;
+  background:var(--claro);border-left:3pt solid var(--ouro);padding:6pt 8pt;
+  margin:22pt 0 9pt;break-after:avoid;page-break-after:avoid}
+h3{font:600 11.5pt/1.3 'Cormorant Garamond',Georgia,serif;letter-spacing:.02em;
+  margin:15pt 0 5pt;break-after:avoid;page-break-after:avoid}
+h4{font:600 8.5pt/1.25 'Inter',sans-serif;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--fraco);margin:12pt 0 4pt;break-after:avoid}
+p{margin:0 0 8pt;text-align:left}
+strong{font-weight:600}
+em{font-style:italic}
+a{color:var(--ouro);text-decoration:none}
+hr{border:none;border-top:.75pt solid var(--linha);margin:16pt 0}
+
+/* listas */
+ul,ol{margin:0 0 9pt 16pt}
+li{margin-bottom:3.5pt}
+ul.chk{list-style:none;margin-left:0}
+ul.chk li{display:flex;gap:7pt;align-items:flex-start;padding:3.5pt 0;
+  border-bottom:.5pt dotted var(--linha);break-inside:avoid}
+ul.chk li::before{content:"";flex:0 0 9.5pt;height:9.5pt;margin-top:2.5pt;
+  border:.9pt solid var(--tinta);border-radius:1pt;background:#fff}
+
+/* citacao / destaque */
+blockquote{border-left:2.5pt solid var(--ouro);background:var(--caixa);
+  padding:9pt 12pt;margin:11pt 0;break-inside:avoid}
+blockquote p:last-child{margin-bottom:0}
+
+/* codigo / templates ascii */
+pre{background:var(--caixa);border:.75pt solid var(--linha);border-radius:2pt;
+  padding:10pt 11pt;margin:11pt 0;overflow-x:auto;break-inside:avoid;
+  font:9pt/1.42 'SFMono-Regular',Menlo,Consolas,'Courier New',monospace;
+  white-space:pre;color:#332F2A}
+code{font:9.2pt/1.4 'SFMono-Regular',Menlo,Consolas,monospace;
+  background:var(--claro);padding:1pt 3pt;border-radius:2pt}
+pre code{background:none;padding:0;font-size:inherit}
+
+/* tabelas */
+.tabwrap{overflow-x:auto;margin:11pt 0}
+table{border-collapse:collapse;width:100%;font-size:9.3pt;break-inside:avoid}
+th{background:var(--claro);text-align:left;font-weight:600;font-size:7.5pt;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--fraco);
+  padding:5.5pt 7pt;border:.75pt solid var(--linha)}
+td{padding:5.5pt 7pt;border:.75pt solid var(--linha);vertical-align:top;line-height:1.42}
+tbody tr:nth-child(even){background:#FCFBF9}
+
+/* indice */
+.indice{background:var(--caixa);border:.75pt solid var(--linha);padding:11pt 13pt;
+  margin:0 0 18pt;break-inside:avoid}
+.indice h4{margin-top:0}
+.indice ol{margin:0 0 0 15pt;font-size:9.5pt;column-gap:18pt}
+.indice li{margin-bottom:2.5pt}
+.indice a{color:var(--tinta)}
+.indice a:hover{color:var(--ouro)}
+
+/* rodape */
+.rodape{margin-top:22pt;padding-top:6pt;border-top:.75pt solid var(--linha);
+  display:flex;justify-content:space-between;font-size:7.5pt;color:var(--fraco);
+  letter-spacing:.06em;gap:10pt;flex-wrap:wrap}
+
+/* direitos — a marca do Aresta e o aviso de propriedade.
+   Fica no rodape, nao no topo: o cabecalho e' do aluno (.marca editavel),
+   e a autoria do metodo nao disputa espaco com a marca dele. */
+.direitos{margin-top:7pt;display:flex;align-items:center;gap:7pt;
+  font-size:6.4pt;line-height:1.45;color:var(--fraco);letter-spacing:.02em}
+.direitos img{height:11pt;width:auto;flex-shrink:0;opacity:.85}
+@media print{.direitos{break-inside:avoid}}
+
+/* navegacao entre modulos (some na impressao) */
+.nav{max-width:196mm;margin:0 auto 10mm;padding:0 10mm;display:flex;
+  justify-content:space-between;gap:10pt;font-size:9pt}
+.nav a{display:inline-block;padding:6pt 11pt;border:.75pt solid var(--linha);
+  background:var(--papel);border-radius:2pt;color:var(--tinta)}
+.nav a:hover{border-color:var(--ouro);color:var(--ouro)}
+.topbar{max-width:196mm;margin:0 auto;padding:8mm 10mm 0;display:flex;
+  justify-content:space-between;font-size:9pt}
+.topbar a{color:var(--fraco)}
+.topbar a:hover{color:var(--ouro)}
+
+@media print{
+  body{background:#fff}
+  .folha{box-shadow:none;padding:0;max-width:none}
+  .nav,.topbar{display:none}
+  .indice{break-after:page}
+}
+@media (max-width:640px){
+  body{font-size:11.5pt}
+  .folha{padding:8mm 5mm 14mm}
+  pre{font-size:7.6pt}
+  table{font-size:8.6pt}
+  .doc{text-align:left}
+}
+</style>
+</head>
+<body>
+
+<div class="folha">
+  <div class="topo">
+    <div class="marca" contenteditable="true" spellcheck="false">SUA MARCA<small>MARCENARIA</small></div>
+    <div class="doc"><div class="fase">Fase 4 — Liderança</div><div class="cod">FASE 4 · MÓDULO 10</div></div>
+  </div>
+  <div class="regua"></div>
+
+  <h1>MÓDULO 10 — AVALIAÇÃO DE DESEMPENHO</h1>
+  <div class="lead">Matriz ENTREGA × JEITO: a avaliação que gera decisão, não papel</div>
+  <div class="indice"><h4>Neste módulo</h4><ol><li><a href="#por-que-quase-toda-avaliacao-de-desempenho-e-inutil">Por que quase toda avaliação de desempenho é inútil</a></li><li><a href="#as-duas-dimensoes-que-importam">As duas dimensões que importam</a></li><li><a href="#a-matriz-entrega-jeito">A Matriz ENTREGA × JEITO</a></li><li><a href="#a-matriz-9-box-versao-para-pme">A Matriz 9 Box (versão para PME)</a></li><li><a href="#os-3-ciclos-de-avaliacao">Os 3 ciclos de avaliação</a></li><li><a href="#como-dar-a-nota-sem-virar-amizade-ou-perseguicao">Como dar a nota sem virar amizade ou perseguição</a></li><li><a href="#o-plano-de-melhoria-formal-pip-quando-a-nota-e-ruim">O Plano de Melhoria Formal (PIP) — quando a nota é ruim</a></li><li><a href="#como-conduzir-a-conversa-de-avaliacao">Como conduzir a conversa de avaliação</a></li><li><a href="#erros-comuns">Erros comuns</a></li><li><a href="#perguntas-que-o-lider-deve-fazer">Perguntas que o líder deve fazer</a></li><li><a href="#exercicios-do-modulo-10">Exercícios do Módulo 10</a></li><li><a href="#frases-de-impacto-do-modulo-10">Frases de impacto do Módulo 10</a></li><li><a href="#entregavel-do-modulo-10">Entregável do Módulo 10</a></li></ol></div>
+  <hr>
+<h2 id="por-que-quase-toda-avaliacao-de-desempenho-e-inutil">Por que quase toda avaliação de desempenho é inútil</h2>
+<p>Você já viu (ou fez) isso: um formulário com 20 itens, nota de 1 a 5, todo mundo tira 4, ninguém muda nada, o papel vai pra pasta e no ano seguinte se repete.</p>
+<p>O motivo do fracasso é sempre o mesmo: <strong>a avaliação não gera decisão.</strong></p>
+<p>Se o resultado da avaliação não muda salário, cargo, plano de desenvolvimento ou permanência da pessoa, ela é teatro. E teatro caro — consome dezenas de horas de gestão.</p>
+<blockquote><p><strong>Regra de ouro:</strong> <em>Toda avaliação precisa terminar com uma decisão. Se não termina, não faça.</em></p></blockquote>
+<hr>
+<h2 id="as-duas-dimensoes-que-importam">As duas dimensões que importam</h2>
+<p>Existem só duas perguntas sobre qualquer pessoa da sua empresa:</p>
+<pre>1. ELA ENTREGA?  → resultado, número, o que ela produz
+2. ELA CABE?     → comportamento, valores, como ela produz</pre>
+<p>Todo o resto é detalhe. E é o cruzamento das duas que gera a decisão.</p>
+<h2 id="a-matriz-entrega-jeito">A Matriz ENTREGA × JEITO</h2>
+<pre>   ENTREGA
+   ALTA  │  ESTRELA PERIGOSA    │      REFERÊNCIA
+         │  (talento tóxico)    │      (proteja)
+         │  → corrige ou sai    │      → dá mais, forma outros
+         │                      │
+   ─────┼──────────────────────┼──────────────────────
+         │                      │
+         │  DESLIGA             │      APOSTA
+   BAIXA │  (não entrega e      │      (cabe mas ainda
+         │   não cabe)          │       não entrega)
+         │  → saída rápida      │      → treina com prazo
+         └──────────────────────┴──────────────────────
+            JEITO RUIM              JEITO BOM
+            (fora dos valores)      (dentro dos valores)</pre>
+<h3 id="o-que-fazer-em-cada-quadrante">O que fazer em cada quadrante</h3>
+<div class="tabwrap"><table><thead><tr><th>Quadrante</th><th>Quem é</th><th>Decisão</th><th>Prazo</th></tr></thead><tbody><tr><td><strong>REFERÊNCIA</strong> (entrega + cabe)</td><td>O raro. 10 a 20% da equipe</td><td>Promova, pague bem, dê responsabilidade de formar. <strong>Proteja de assédio do concorrente</strong></td><td>Contínuo</td></tr><tr><td><strong>APOSTA</strong> (cabe, não entrega ainda)</td><td>Novato ou quem mudou de função. 20 a 30%</td><td>PDI com prazo definido e acompanhamento quinzenal</td><td>90 a 180 dias pra virar Referência</td></tr><tr><td><strong>ESTRELA PERIGOSA</strong> (entrega, não cabe)</td><td>5 a 10%. <strong>O mais difícil</strong></td><td>CORTE com registro, prazo curto e explícito. Se não mudar, desliga — mesmo produzindo</td><td>30 a 60 dias</td></tr><tr><td><strong>DESLIGA</strong> (nem entrega nem cabe)</td><td>5 a 10%</td><td>Desligamento com processo</td><td>30 dias</td></tr></tbody></table></div>
+<h3 id="a-decisao-mais-importante-a-estrela-perigosa">A decisão mais importante: a Estrela Perigosa</h3>
+<p>É o cara que produz 30% mais que a média e humilha o auxiliar, ignora o checklist, responde torto e faz piada com o padrão da casa.</p>
+<p>Você olha e pensa: <em>"mas ele produz."</em></p>
+<p><strong>O cálculo que a maioria dos donos não faz:</strong></p>
+<pre>Ganho dele:          +30% de produção de 1 pessoa
+Custo dele:          -5% a -15% de produção de 6 pessoas ao redor
+                     + 1 a 2 pedidos de demissão por ano
+                     + o fim da credibilidade dos seus valores</pre>
+<p>Matematicamente, ele é prejuízo. Culturalmente, ele é veneno. <strong>A conta nunca fecha a favor dele.</strong></p>
+<p>E tem um detalhe: no dia em que você desligar a Estrela Perigosa, a produtividade do resto do time sobe. Sempre sobe. Porque as pessoas param de gastar energia se defendendo.</p>
+<hr>
+<h2 id="a-matriz-9-box-versao-para-pme">A Matriz 9 Box (versão para PME)</h2>
+<p>Se você quer mais granularidade — útil para decisão de sucessão e investimento em desenvolvimento — use o 9 Box. Aqui o eixo vertical vira <strong>potencial</strong> e o horizontal, <strong>desempenho</strong>.</p>
+<pre>              DESEMPENHO
+         Abaixo    No alvo    Acima
+       ┌─────────┬─────────┬─────────┐
+  Alto │    7    │    8    │    9    │
+       │ Enigma  │ Futuro  │ Estrela │
+POTEN- ├─────────┼─────────┼─────────┤
+CIAL   │    4    │    5    │    6    │
+ Médio │ Dilema  │Mantene- │ Forte   │
+       │         │  dor    │         │
+       ├─────────┼─────────┼─────────┤
+       │    1    │    2    │    3    │
+ Baixo │ Desliga │Eficaz   │Especia- │
+       │         │limitado │ lista   │
+       └─────────┴─────────┴─────────┘</pre>
+<h3 id="acao-por-caixa">Ação por caixa</h3>
+<div class="tabwrap"><table><thead><tr><th>Caixa</th><th>Perfil</th><th>Ação prática</th></tr></thead><tbody><tr><td><strong>9 — Estrela</strong></td><td>Entrega acima e tem potencial</td><td>Sucessor. Dê projeto desafiador, exponha a decisão, pague acima da faixa</td></tr><tr><td><strong>8 — Futuro líder</strong></td><td>Entrega no alvo, potencial alto</td><td>Prepare pra próxima função. Substituição planejada, PDI agressivo</td></tr><tr><td><strong>7 — Enigma</strong></td><td>Potencial alto, entrega abaixo</td><td><strong>Investigue.</strong> Lugar errado? Chefe errado? Problema pessoal? Não desperdice</td></tr><tr><td><strong>6 — Forte</strong></td><td>Entrega acima, potencial médio</td><td>Reconheça, remunere bem, use como formador. Não force pra gestão</td></tr><tr><td><strong>5 — Mantenedor</strong></td><td>A base da empresa. 40–50% do time</td><td>Mantenha, desenvolva no ritmo. Não ignore — é quem sustenta a operação</td></tr><tr><td><strong>4 — Dilema</strong></td><td>Potencial médio, entrega abaixo</td><td>Plano de melhoria de 90 dias. Se não virar, desliga</td></tr><tr><td><strong>3 — Especialista</strong></td><td>Entrega acima, sem potencial de crescer</td><td><strong>Ouro puro.</strong> Trilha técnica, remunere no topo. Não promova pra gestão</td></tr><tr><td><strong>2 — Eficaz limitado</strong></td><td>Entrega no alvo, sem potencial</td><td>Mantenha na função. Não invista em desenvolvimento caro</td></tr><tr><td><strong>1 — Desliga</strong></td><td>Abaixo em tudo</td><td>Desligamento</td></tr></tbody></table></div>
+<h3 id="a-regra-da-distribuicao-forcada-use-com-cuidado">A regra da distribuição forçada (use com cuidado)</h3>
+<p>Numa equipe saudável, a distribuição tende a ser: ~20% nas caixas 6-9, ~60% nas caixas 3-5, ~20% nas caixas 1-2.</p>
+<p><strong>Se todo mundo está no 8 e 9 na sua avaliação, você não avaliou — você foi generoso.</strong> Force-se a posicionar de verdade. Não precisa de cota rígida, mas se a distribuição estiver toda no topo, refaça.</p>
+<p>⚠️ <strong>Cuidado:</strong> 9 Box é ferramenta de gestão interna. <strong>Nunca mostre a caixa pra pessoa.</strong> Compartilhe o resultado (nota, feedback, plano), nunca o rótulo.</p>
+<hr>
+<h2 id="os-3-ciclos-de-avaliacao">Os 3 ciclos de avaliação</h2>
+<h3 id="ciclo-trimestral-check-rapido-20-minutos-por-pessoa">Ciclo TRIMESTRAL — Check rápido (20 minutos por pessoa)</h3>
+<p><strong>Objetivo:</strong> correção de rota, não julgamento.</p>
+<pre>AVALIAÇÃO TRIMESTRAL — [nome] — [trimestre]
+
+1. Os números dele no trimestre:
+   Indicador 1: ____ (meta ____)  🟢🟡🔴
+   Indicador 2: ____ (meta ____)  🟢🟡🔴
+
+2. Quadrante da matriz: ( )Referência ( )Aposta
+                        ( )Estrela perigosa ( )Desliga
+
+3. O que melhorou desde o último trimestre?
+   _________________________________________
+
+4. O que não melhorou?
+   _________________________________________
+
+5. A ação do PDI foi cumprida? ( )Sim ( )Parcial ( )Não
+
+6. Foco do próximo trimestre (UMA coisa):
+   _________________________________________
+
+7. Decisão: ( )Segue ( )Ajusta PDI ( )Plano de melhoria formal
+            ( )Candidato a promoção ( )Iniciar desligamento</pre>
+<p><strong>Conversa de 20 minutos:</strong> 5 min de número, 10 min de conversa, 5 min de definir o foco do próximo trimestre.</p>
+<h3 id="ciclo-semestral-avaliacao-completa-60-minutos-por-pessoa">Ciclo SEMESTRAL — Avaliação completa (60 minutos por pessoa)</h3>
+<p>Usada em março e setembro (as janelas do Módulo 4). É a que gera decisão de salário e promoção.</p>
+<pre>═══════════════════════════════════════════════════════════════
+AVALIAÇÃO DE DESEMPENHO SEMESTRAL
+Colaborador: ______________  Função/Nível: _______________
+Avaliador: ________________  Período: ____ a ____
+
+── PARTE 1: ENTREGA (peso 50%) ──────────────────────────────
+Indicador                     Meta    Real    Nota (1-5)
+____________________________  ____    ____    ____
+____________________________  ____    ____    ____
+____________________________  ____    ____    ____
+                              MÉDIA DE ENTREGA:  ____
+
+── PARTE 2: JEITO / VALORES (peso 50%) ──────────────────────
+Para cada valor da empresa, nota de 1 a 5 com EVIDÊNCIA:
+Valor 1: _______________  Nota: ___
+  Evidência: ____________________________________________
+Valor 2: _______________  Nota: ___
+  Evidência: ____________________________________________
+Valor 3: _______________  Nota: ___
+  Evidência: ____________________________________________
+                              MÉDIA DE JEITO:    ____
+
+⚠ REGRA: nota sem evidência escrita não vale. Se você não
+consegue dar um exemplo, você não observou — você achou.
+
+── PARTE 3: COMPETÊNCIAS (matriz do Módulo 4) ───────────────
+Competência              Nível atual   Nível do cargo   Gap
+______________________   ____          ____             ____
+______________________   ____          ____             ____
+
+── PARTE 4: AUTOAVALIAÇÃO (preenchida pela pessoa antes) ────
+O que eu mais me orgulho neste semestre:
+_______________________________________________________
+Onde eu sei que preciso melhorar:
+_______________________________________________________
+O que eu preciso da empresa/do meu líder:
+_______________________________________________________
+
+── PARTE 5: SÍNTESE ────────────────────────────────────────
+Quadrante: ( )Referência ( )Aposta ( )Estrela perigosa ( )Desliga
+Caixa 9Box (uso interno): ____
+
+3 PONTOS FORTES (com exemplo):
+1. ____________________________________________________
+2. ____________________________________________________
+3. ____________________________________________________
+
+2 PONTOS A DESENVOLVER (com exemplo e impacto):
+1. ____________________________________________________
+2. ____________________________________________________
+
+── PARTE 6: DECISÃO ────────────────────────────────────────
+( ) Mantém nível e faixa
+( ) Sobe dentro da faixa: de R$ ______ para R$ ______
+( ) Promove de nível: de ______ para ______
+( ) Plano de melhoria formal (PIP) — anexo
+( ) Inicia processo de desligamento
+
+Justificativa da decisão:
+_______________________________________________________
+
+── PARTE 7: FOCO DO PRÓXIMO SEMESTRE ───────────────────────
+UMA prioridade de desenvolvimento: ____________________
+Como vamos medir: _____________________________________
+Próxima revisão: ___/___/___
+
+Assinaturas: ______________   ______________
+═══════════════════════════════════════════════════════════════</pre>
+<h3 id="ciclo-anual-visao-de-carreira-90-minutos-so-para-lideranca-e">Ciclo ANUAL — Visão de carreira (90 minutos, só para liderança e talentos)</h3>
+<p>Não é sobre o ano que passou. É sobre os próximos 3 anos.</p>
+<pre>1. Onde você quer estar em 3 anos? (na empresa e na vida)
+2. Que função aqui te interessa e por quê?
+3. O que precisa acontecer pra você chegar lá?
+4. O que a empresa precisa fazer? O que você precisa fazer?
+5. Existe alguma coisa que te faria sair daqui? (pergunte de verdade)
+6. Quem você está formando pra te substituir?</pre>
+<p><strong>A pergunta 5 é a mais valiosa da empresa inteira.</strong> A maioria dos donos descobre por que alguém saiu depois que já saiu. Essa pergunta antecipa.</p>
+<hr>
+<h2 id="como-dar-a-nota-sem-virar-amizade-ou-perseguicao">Como dar a nota sem virar amizade ou perseguição</h2>
+<h3 id="regra-1-nota-sem-evidencia-nao-existe">Regra 1 — Nota sem evidência não existe</h3>
+<p>Se você deu 5 em "trabalho em equipe", escreva <strong>quando</strong> e <strong>o quê</strong>. Se não consegue, a nota é chute.</p>
+<h3 id="regra-2-use-a-regua-nao-a-impressao">Regra 2 — Use a régua, não a impressão</h3>
+<pre>1 — Muito abaixo do esperado para o nível. Compromete a operação.
+2 — Abaixo do esperado. Precisa de supervisão constante.
+3 — No esperado para o nível. É o que se contrata pra fazer.
+4 — Acima do esperado. Resolve o que outros não resolvem.
+5 — Referência. Outros aprendem com ele. É exceção, não regra.</pre>
+<p><strong>O 3 é bom.</strong> A maior distorção da avaliação em PME é achar que 3 é nota ruim. Não é — é o esperado. Se todo mundo é 4 e 5, sua régua está quebrada.</p>
+<h3 id="regra-3-combata-os-5-vieses">Regra 3 — Combata os 5 vieses</h3>
+<div class="tabwrap"><table><thead><tr><th>Viés</th><th>Como aparece</th><th>Antídoto</th></tr></thead><tbody><tr><td><strong>Recência</strong></td><td>Você avalia os últimos 30 dias, não os 180</td><td>Anote fatos durante o semestre. Sem anotação, você avalia memória</td></tr><tr><td><strong>Halo</strong></td><td>A pessoa é boa numa coisa e você dá nota alta em tudo</td><td>Avalie item por item, com evidência de cada um</td></tr><tr><td><strong>Simpatia</strong></td><td>Quem você gosta tira nota melhor</td><td>Peça a alguém que revise suas notas</td></tr><tr><td><strong>Contraste</strong></td><td>Você compara com o melhor, não com o esperado</td><td>A régua é o nível do cargo, não o colega</td></tr><tr><td><strong>Leniência</strong></td><td>Você dá nota alta pra evitar conflito</td><td>Se você não aguenta dar 2, você não pode dar 5</td></tr></tbody></table></div>
+<h3 id="regra-4-anote-o-ano-inteiro">Regra 4 — Anote o ano inteiro</h3>
+<p>A ferramenta mais simples e mais eficaz: um bloco de notas (papel ou celular) com uma linha por pessoa, por mês.</p>
+<pre>JOÃO — Março
++ Pegou erro de medida no painel antes de cortar. Evitou chapa.
+- Chegou 20 min atrasado 3x na semana do dia 10.</pre>
+<p>Dez linhas por mês por pessoa e sua avaliação semestral leva 15 minutos e é justa.</p>
+<hr>
+<h2 id="o-plano-de-melhoria-formal-pip-quando-a-nota-e-ruim">O Plano de Melhoria Formal (PIP) — quando a nota é ruim</h2>
+<p>Não confunda PDI (desenvolvimento, para quem está bem) com PIP (recuperação, para quem está mal).</p>
+<pre>═══════════════════════════════════════════════════════════════
+PLANO DE MELHORIA — [nome]
+Início: ___/___/___   Duração: 60 dias   Fim: ___/___/___
+
+SITUAÇÃO ATUAL (fatos, não opinião)
+_______________________________________________________
+_______________________________________________________
+
+O QUE PRECISA MUDAR (máximo 3 itens, mensuráveis)
+1. De ______ para ______   Como medir: ______________
+2. De ______ para ______   Como medir: ______________
+3. De ______ para ______   Como medir: ______________
+
+O QUE A EMPRESA VAI FAZER
+[ ] Treinamento em: ___________________________________
+[ ] Acompanhamento: reunião de 30 min a cada 15 dias
+[ ] Recurso/ferramenta: ________________________________
+[ ] Padrinho designado: ________________________________
+
+ACOMPANHAMENTOS
+Dia 15: ___/___  Resultado: _______________  Assin: ____
+Dia 30: ___/___  Resultado: _______________  Assin: ____
+Dia 45: ___/___  Resultado: _______________  Assin: ____
+Dia 60: ___/___  Resultado: _______________  Assin: ____
+
+CONSEQUÊNCIA
+Se os 3 itens forem atingidos: [permanência confirmada,
+retomada de elegibilidade a variável/promoção]
+Se não forem atingidos: [desligamento]
+
+Estou ciente do conteúdo e da consequência.
+Colaborador: ____________  Líder: ____________  Data: ______
+═══════════════════════════════════════════════════════════════</pre>
+<p><strong>Regras do PIP:</strong></p>
+<ol><li><strong>Máximo 3 itens.</strong> Mais que isso é impossível de melhorar em 60 dias.</li><li><strong>A consequência é explícita, por escrito.</strong> Sem isso, é conversa.</li><li><strong>A empresa tem obrigações também.</strong> PIP sem apoio é armadilha — e a pessoa percebe.</li><li><strong>60 dias, não 6 meses.</strong> PIP longo é jeito educado de adiar decisão.</li><li><strong>Se der certo, comemore publicamente.</strong> PIP bem-sucedido é a melhor propaganda de que a empresa investe nas pessoas.</li></ol>
+<p><strong>Taxa real de sucesso de PIP:</strong> cerca de 30%. Se a sua for 90%, você está sendo leniente. Se for 0%, você está usando PIP como formalidade pra demitir — e isso a equipe percebe.</p>
+<hr>
+<h2 id="como-conduzir-a-conversa-de-avaliacao">Como conduzir a conversa de avaliação</h2>
+<h3 id="estrutura-de-60-minutos">Estrutura de 60 minutos</h3>
+<pre>0-5 min   — ABERTURA
+"Essa conversa tem três partes: os números, o comportamento,
+e o que a gente combina pra frente. No fim, eu vou te dizer
+a decisão sobre nível e faixa. Nada aqui vai ser surpresa,
+porque a gente vem conversando isso nos one-on-ones."
+
+5-15 min  — AUTOAVALIAÇÃO PRIMEIRO
+"Antes de eu falar, me conta: como você avalia seu semestre?"
+[Deixe falar. 90% das vezes a pessoa aponta o próprio ponto
+fraco, e a conversa fica muito mais fácil.]
+
+15-30 min — ENTREGA (números)
+[Mostre os números. Compare com a meta. Sem adjetivo.]
+
+30-45 min — JEITO (valores e comportamento)
+[Com evidência. Cada nota tem um exemplo.]
+
+45-55 min — DECISÃO E FOCO
+[Diga a decisão claramente. Não enrole.]
+"A decisão é: [X]. O motivo é [Y]."
+"O foco do próximo semestre é UMA coisa: [Z]."
+
+55-60 min — FECHAMENTO
+"O que você precisa de mim pra isso acontecer?"
+"Alguma coisa que eu deveria estar fazendo diferente?"</pre>
+<h3 id="a-regra-que-muda-tudo-sem-surpresa">A regra que muda tudo: sem surpresa</h3>
+<blockquote><p><strong>Se a avaliação semestral traz uma novidade, o líder falhou nos últimos 6 meses.</strong></p></blockquote>
+<p>A avaliação é a <strong>consolidação</strong> do que já foi dito nos one-on-ones e nos CORTEs. Se a pessoa está descobrindo em março que está indo mal, você não a liderou — você a observou.</p>
+<hr>
+<h2 id="erros-comuns">Erros comuns</h2>
+<div class="tabwrap"><table><thead><tr><th>#</th><th>Erro</th><th>Consequência</th></tr></thead><tbody><tr><td>1</td><td>Avaliação que não gera decisão</td><td>Teatro caro</td></tr><tr><td>2</td><td>Todo mundo tira 4</td><td>Régua quebrada, nenhuma informação</td></tr><tr><td>3</td><td>Nota sem evidência</td><td>Vira opinião, gera revolta</td></tr><tr><td>4</td><td>Avaliar só o resultado, não o jeito</td><td>A Estrela Perigosa fica</td></tr><tr><td>5</td><td>Avaliar só o jeito, não o resultado</td><td>O simpático improdutivo fica</td></tr><tr><td>6</td><td>Trazer novidade na avaliação</td><td>Prova que não houve feedback no semestre</td></tr><tr><td>7</td><td>Viés de recência</td><td>Avalia 30 dias em vez de 180</td></tr><tr><td>8</td><td>Mostrar a caixa do 9 Box pra pessoa</td><td>Rótulo destrói quem está numa caixa baixa</td></tr><tr><td>9</td><td>PIP de 6 meses</td><td>Jeito educado de adiar decisão</td></tr><tr><td>10</td><td>Não fazer autoavaliação primeiro</td><td>Perde a chance de a pessoa se antecipar</td></tr><tr><td>11</td><td>20 itens no formulário</td><td>Ninguém preenche direito</td></tr><tr><td>12</td><td>Avaliar sem ter definido o que se espera do nível</td><td>Nota contra régua inexistente</td></tr></tbody></table></div>
+<hr>
+<h2 id="perguntas-que-o-lider-deve-fazer">Perguntas que o líder deve fazer</h2>
+<ol><li>Alguém vai ser surpreendido na próxima avaliação? (Se sim, converse antes.)</li><li>Onde está cada pessoa da minha equipe na matriz Entrega × Jeito?</li><li>Eu tenho alguma Estrela Perigosa que estou tolerando? Há quanto tempo?</li><li>Se minha avaliação tivesse que gerar uma decisão por pessoa, quantas eu conseguiria justificar com fato?</li><li>Eu anoto fatos durante o semestre ou avalio de memória?</li><li>Meu 3 é realmente "no esperado", ou virou "nota ruim"?</li><li>Quem são meus 2 ou 3 candidatos a sucessão? Eles sabem?</li></ol>
+<hr>
+<h2 id="exercicios-do-modulo-10">Exercícios do Módulo 10</h2>
+<h3 id="exercicio-1-posicione-a-equipe-30-min">Exercício 1 — Posicione a equipe (30 min)</h3>
+<p>Coloque cada pessoa da sua equipe na matriz Entrega × Jeito. Sem pensar muito — a primeira intuição costuma estar certa. Depois valide com fato.</p>
+<h3 id="exercicio-2-encare-a-estrela-perigosa-20-min">Exercício 2 — Encare a Estrela Perigosa (20 min)</h3>
+<p>Se você tem alguém nesse quadrante: calcule o custo cultural. Quantas pessoas foram embora ou pensaram em ir? Defina a data da conversa.</p>
+<h3 id="exercicio-3-distribuicao-do-9-box-30-min">Exercício 3 — Distribuição do 9 Box (30 min)</h3>
+<p>Posicione todo mundo no 9 Box. Se mais de 40% caiu nas caixas 8 e 9, refaça — você foi generoso.</p>
+<h3 id="exercicio-4-monte-o-caderno-de-fatos-10-min">Exercício 4 — Monte o caderno de fatos (10 min)</h3>
+<p>Crie o bloco de anotação (uma página por pessoa). Comece hoje. Uma linha por semana, positiva ou negativa.</p>
+<h3 id="exercicio-5-simule-uma-avaliacao-1h">Exercício 5 — Simule uma avaliação (1h)</h3>
+<p>Faça a avaliação semestral completa de uma pessoa. Note onde você travou por falta de evidência. Essa é a sua lacuna de observação.</p>
+<h3 id="exercicio-6-pergunte-a-pergunta-5-30-min">Exercício 6 — Pergunte a pergunta 5 (30 min)</h3>
+<p>Pra sua pessoa mais crítica: <em>"existe alguma coisa que te faria sair daqui?"</em>. Ouça e anote.</p>
+<hr>
+<h2 id="frases-de-impacto-do-modulo-10">Frases de impacto do Módulo 10</h2>
+<ul><li><em>"Toda avaliação precisa terminar com uma decisão. Se não termina, não faça."</em></li><li><em>"Se a avaliação traz surpresa, o líder falhou nos seis meses anteriores."</em></li><li><em>"Nota sem evidência não é avaliação. É opinião com número."</em></li><li><em>"A Estrela Perigosa produz 30% a mais e destrói 15% de seis pessoas. A conta nunca fecha."</em></li><li><em>"Nota 3 é boa. Se todo mundo é 4 e 5, sua régua quebrou."</em></li><li><em>"Quando você desliga o talentoso tóxico, a produtividade do resto sobe. Sempre sobe."</em></li><li><em>"Se você não anota durante o semestre, você não avalia. Você lembra — e memória é injusta."</em></li><li><em>"Especialista sem potencial de gestão é ouro puro. Pare de tentar promover ele pra chefe."</em></li></ul>
+<hr>
+<h2 id="entregavel-do-modulo-10">Entregável do Módulo 10</h2>
+<ol><li>Matriz Entrega × Jeito com toda a equipe posicionada.</li><li>9 Box preenchido (uso interno).</li><li>Formulário de avaliação semestral adaptado à sua empresa.</li><li>Caderno de fatos iniciado.</li><li>Ao menos 1 PIP formal aberto, se aplicável.</li><li>Calendário de avaliações marcado na agenda.</li></ol>
+<p><strong>Próximo módulo:</strong> Como formar gestores — deixar de ser o gargalo.</p>
+
+  <div class="rodape"><span>FASE 4 · MÓDULO 10 · Fase 4 — Liderança</span><span>Material de formação em gestão para donos de PME</span></div>
+  <div class="direitos"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUAAAAAuCAMAAABuxzAGAAAA/1BMVEXcplzXoFjfp1r+3qH2zZSiYBv93G7wxYrzwnnUnlO+t3d+egS9qjzUlzz8rKnJjT3qfBRsHwrxwXuqVVW2hEWYbTvrvoGXNgDtw4e0h0v/68OkeUK/k1S0gz/pv4MAAADttmb4xHHSmErjqlrco1Xos2f///3//wD7vnv/f3/8qVXirWOqqlXotGn//35/f3+7fTr/+87cqWPepVf/AADMk0b/0Hrtu27tuWvqsF7/56/lrmD//q7iq13/1o/7yXIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACX38WxAAAAQHRSTlPaGFsiXw0VlV2cBAULEwP9BQiUA2pNpQjooRtwwUTaAPn9/fz70AMBBgIE8gOyAgIHEvKPATD/jnb+GLsIsRcORXUUwwAACYJJREFUeNrtm2mXmzoShoUx3u30kuVO7syUMCAMxjR26HS7ux3//391S2IHCXDHJ2cmJ/UxcUXwUKp6q6QQkNo9fPrk3sMfE+bDZAIr+d8R+R97sP43BH/QJRaAQ3947gUAI/jbpJ/+EExsBANKn2HWH+Cc3dqmSSDsuYI7n88fCvOq5ra6qrzQmNzlco+Sj8SpxS15xPCHc7So/vDQG6AP/zLR/sZIvIa1PJ93+b/mXvcJum0Bz9S26RNi6QnQY/ODSalp33r9nnaxjBZLjZuvbdDOo9EPNP2F256pMXkQ+dyr5PSSOHHTIZa55Oucz6VlhIsu3WYxA63sVPfChdrgP5zp0bJsqrthT4ABD0CKBD/2CsENfOO/rtk2scNh6+xVuSACzZE4HYTZfw1jJltMvgz3oOONZKV4BFPVw6ULtSWrETxRCwEed9IQJDJ+n6ggYtoGm/cBOP3Od3xB0eILoq2FWY4iBiNYUpXT+sNW9lpLGBTr1D2sz8CaMRsv8ANXlyl7KRbKLXRHPADRheoyghKAIZB0PXMq3/fNCCw9IX7e9BFzgp/ZnMk2o1HwK5zS96JD/IebyAclF6vqYo3hhslyZplf4ZQttJUtVK4Hu/RLWY5MlhDJQ/IANJE4fq6FG/QBiBFITbMchsej+NRW/mqNbOq5j/S73Mmy+WtpEuRpyOYuJQ/FZwqNb9kqZhaCtpV5KRYq89M4dIplxMZv+tYNMPZu17yCfJyaPUMwAWjS005i1E4IssYucf3p7nR6fZV57e5kYeG62ZaXuYylicKDwamyjAgnp32hmobeWvRpQnkIstDtBBjBR06OgGHxRx10E0wBvkr/UqciBg/sUvkRyqJhKkIdH+r9AsdBgihJWhcqLzng256e3yjPgpOmmq4DnD/Mbf6VP0JSukgc9AXon/3CAmH3WkqQSADGt4ZhLDYNJ+7nh9K3OYmNOIBzwyMwfJXYKy3gL/0EYKDljm2vFof4e7rlwCdiE780RDeRaGgRgAGL7H4hmEeg7KU1GFpSgPfwSBzHIY/9xTQC5Aud4PxuUexmEbjp9XMsWiJnnJnHHMyzx7tGCJK6hja23OU/EEQieinRutR0K8CNpwAYgCbC6R0AvdEvAuh6vki5z7B4EyG4pi91NU3qr5XWjgC9MQRxsUGXmm4HCEqAj/R9AKfBrwLoCxrU2WDtwGrCS32joSMyDb01cIcJ0cVL1uaB/QRAdnWAp95Djp8E6LkaTbLYiC+O2RxDUK+JQSLR0Jl4CX3CV+uSMq0AR50RuBHtc9lWaoBpEdk0Lbw+QL4eD8BEC6Oixjex6g0dqUkYITWjpIPjNZyLTs0N3wswhhdn3Qpweclg+NQiY4JrA+QampuWhlMsBAUK75UKYKahp1nWC+B0tFVdtBygX6uQumPLdWAG8Ntg8Fy1u6FiQOe52MiJKce06jGZTIa6YuD5foABvHIa+duv4AlD0HaqPQFpaGhqG1ndxW/A+8bjqJVgCaDLNjunYltVJ5IBNKtziKN1pENVxHsYE1krV3IR7Rz2WZF7TYB+KmG0rJv13Bcegtaw8qlIWUMbQkOXyq4PrxiC1q4vQPGKCYes10x7YQ8UABtNPqZpT63LFk7FpTQVwL11w64HMA4jvpRZKrszmPB87rDyDiGNok0MLy7NcjiE46SNYGULC4K1gQe+mg8dADMfC/lt2pRtlBOsz2/wM3WOnvsDzDS0z7xitLpvhiApZRhJ9+vD05Hv+30Y9ywiUUJQwMjnHUtQAqzsRjS9/d18ME5m3YcPY5JE0UWwN0DXE4ML8xlKonOWSIrtfu5JAAZpAILvFhaEP/jDWZOWFF2rwjMkeLSxetM0HcrnHRnAQWFJLVh1iDOAwaDqhG6O0Er4oTs0a2+Afjpm1wKvoOH5jNdEDPVVEyDX0EnRrtkzfzba8mR1GbOBER9d8PFZy7wjA6h1T2F6zFz2d5aYSetwHYAeE+XKHNSXS0JQj8MGwHQOPTUWkaZp/PDlPNJ1/e0t2fd3klmiSgfmBCeg3dzOA2gD+OhrEdoCbTZ7m/XRw/zHy7KInp2BjW0egtcCmNQD09HScyhdf0ESe7YXIWiXqiqpamiaJH+rZNutKARvSjXdFNIb7Lx59qN3sGBKlXVxK9dib6AfMAKvBVA8nOKgTNAoMg3JNLRBaPXgpXr2gl30qn8nsknGZ2s6BtWY7roAQ1e3rwrwVOG3reMojkdIafJa/DRVIcXRlYDu92/lugleGaB3TYB++eyvdPyX8yBWfjySAJxDZJlFM1AKwALhjoUX9MJaMj9bH8dwz34BQNCtqwGMWeR8r3ZIeWOQn+Ux1y0BDGBAuuy/uqJCyocJnGDLYWMBkHHZFMf9WTHGhEfJ5QZ77vXVACINR2UZDScLQZK/b4bfZQrTLpvGlAjKjht7TGNWPQ+buIwRM58Ph68d8dwzBxavqsQxqubAXgda7LJxlgbDjOCtpwRIFB/aIX8NQXa1QxodYmZBpD1j9cysF8BLaJCfzz/KeeAmJ8jUwwRZolmrzpLxowwqJ/H1mUXXAVgYDy45VOphKUCUsrMZv8DEbzDx60uoHFE6cvGI8jEzeQwmVztkA1WtRJB1TGPqowGMJk9WHluvdmzi7mqj0Q6ALhgo7HvQcDOAHpyo0rbb/CoTHUrTUhKB3x1JetrAmIqqv/taJ4gAq/c6qtd+pDdWwjT+zIpeTT0shxmsz34Z0VaAQe3+l5LGZ6EFSap6avMNuZTZ7mXtSJSsKDvriSMkyK+Q0bHuNY41W55QerXIA81SuhzUt+gaBM0WgOnO6ENDtCMEm5Abp9a2bCtiupCC9md5kjG+fDEMQ7EfknjXm7HrGdzLWC41Xzufedv9VmwQkN6rw9YaPW6WS9/nHnrFo+89VBT5d+qZj19rQlp6C9GOEDE5NJMpuSmjXu5g1O2I0h7el5vfoa573+NF1d3VhDRoHGXtLdeC5ObhRgxuqNNqxDmIdkR++IWy1lXl7zxAmhscveTGVDBclYfL+kvx1vuUX0gPGk5Cgw/3yUjcP+QtVcfn5ZOwUg/4f21x2yC/5f5XQUPfpsN9wieHaN+6wNyCk0APXfhtzfUifnBqnroylQE7W3TEcwJTsd21sCNZzQR0UjvU+81slNJ4ZB3H9Cv3Kw9BewwkkTA97lH6sFsT8uGw/7n/dfG/bOLcWWzHThorGFsf+PSCiDkqMbqrHr/aIBTd7xuCfnKp1Fp2/+cE9sASGv8AmyY6CKb1+gQAAAAASUVORK5CYII=" alt="ARESTA APM"><span>&copy; 2026 ARESTA APM &middot; Conteúdo e método proprietários. Uso restrito ao aluno matriculado — proibida a reprodução, revenda ou redistribuição, total ou parcial.</span></div>
+</div>
+
+<script>
+// mantem a marca digitada pelo usuario neste navegador
+(function(){
+  var m=document.querySelector('.marca');
+  var k='mkt-marca';
+  try{ var s=localStorage.getItem(k); if(s) m.innerHTML=s; }catch(e){}
+  m.addEventListener('blur',function(){ try{localStorage.setItem(k,m.innerHTML);}catch(e){} });
+})();
+</script>
+</body>
+</html>

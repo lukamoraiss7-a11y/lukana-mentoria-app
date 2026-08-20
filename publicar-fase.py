@@ -11,8 +11,16 @@ de gravar e pula o que ja esta la.
 
 Uso:
     export SUPABASE_SERVICE_KEY='eyJ...'      # chave service_role do projeto
-    python3 publicar-fase.py 2                # numero da fase (1 a 6)
-    python3 publicar-fase.py 2 --dry-run      # so mostra o que faria
+    python3 publicar-fase.py 1                # numero da fase (1 a 5)
+    python3 publicar-fase.py 1 --dry-run      # so mostra o que faria
+    python3 publicar-fase.py 1 --sobrescrever # corrige o que ja esta publicado
+
+`--sobrescrever` existe para consertar conteudo ja no ar sem duplicar card:
+reenvia o arquivo por cima do MESMO caminho (upsert no Storage) e regrava
+`name` e `sz` do registro que ja existe, sem insert nenhum. Sem essa opcao a
+unica forma de corrigir uma aula publicada era subir pelo painel do Supabase
+na mao — e reenviar pelo painel do APM criava card duplicado, porque
+`publicar()` e insert puro.
 
 A chave service_role ignora RLS por definicao. Pegar em:
   Supabase -> Project Settings -> API -> service_role (secret)
@@ -75,9 +83,10 @@ def slug(nome):
 
 def main():
     if len(sys.argv) < 2:
-        sys.exit('Uso: publicar-fase.py <numero da fase> [--dry-run]')
+        sys.exit('Uso: publicar-fase.py <numero da fase> [--dry-run] [--sobrescrever]')
     fase = int(sys.argv[1])
     seco = '--dry-run' in sys.argv
+    forcar = '--sobrescrever' in sys.argv
     # A pasta do bucket e o fase_id sao o INDICE do modulo: fase menos 1.
     # Errar isso publica a fase certa na pasta errada e o RLS bloqueia o aluno
     # que comprou — falha silenciosa, so aparece quando ele reclama.
@@ -100,7 +109,7 @@ def main():
     for r in existente:
         d = r.get('dados') or {}
         if d.get('path'):
-            ja[d['path']] = d.get('name', '?')
+            ja[d['path']] = (r['id'], d)
     print('Ja publicados nesta fase: %d registro(s), %d com arquivo no bucket.'
           % (len(existente), len(ja)))
     for r in existente:
@@ -113,14 +122,16 @@ def main():
         nome_arq = os.path.basename(caminho)
         destino = '%s/%s' % (idx, slug(nome_arq))
         nome = titulo(caminho)
-        if destino in ja:
-            print('  = %-46s ja publicado como "%s"' % (nome_arq, ja[destino]))
+        if destino in ja and not forcar:
+            print('  = %-46s ja publicado como "%s"'
+                  % (nome_arq, ja[destino][1].get('name', '?')))
             pulados += 1
             continue
         dados = {'name': nome, 'type': 'html', 'desc': '',
                  'sz': tamanho(os.path.getsize(caminho)), 'path': destino}
         if seco:
-            print('  + %-46s -> %s  |  "%s"' % (nome_arq, destino, nome))
+            print('  %s %-46s -> %s  |  "%s"'
+                  % ('*' if destino in ja else '+', nome_arq, destino, nome))
             novos += 1
             continue
         with open(caminho, 'rb') as f:
@@ -132,6 +143,22 @@ def main():
         if st not in (200, 201):
             print('  ! %s  FALHOU no upload (%s): %s' % (nome_arq, st, resp))
             continue
+        if destino in ja:
+            # ja existe registro para este caminho: atualiza no lugar. Insert
+            # aqui seria o card duplicado que derrubou a Fase 5 em 07/08/2026.
+            rid, antigo = ja[destino]
+            novo = dict(antigo)
+            novo['name'], novo['sz'] = nome, dados['sz']
+            st, resp = req('%s/conteudo?id=eq.%s' % (API_REST, rid), 'PATCH',
+                           json.dumps({'dados': novo}).encode('utf-8'))
+            if st not in (200, 204):
+                print('  ! %s  arquivo subiu, REGISTRO NAO (%s): %s' % (nome_arq, st, resp))
+                continue
+            marca = '~' if antigo.get('name') == nome else '*'
+            print('  %s %-46s "%s"' % (marca, nome_arq, nome))
+            novos += 1
+            continue
+
         st, resp = req('%s/conteudo' % API_REST, 'POST',
                        json.dumps({'tipo': 'materials', 'fase_id': idx,
                                    'dados': dados}).encode('utf-8'))
@@ -141,8 +168,9 @@ def main():
         print('  + %-46s "%s"' % (nome_arq, nome))
         novos += 1
 
-    print('\n%s%d publicado(s), %d pulado(s) por ja existirem.'
-          % ('[dry-run] ' if seco else '', novos, pulados))
+    print('\n%s%d gravado(s), %d pulado(s) por ja existirem.%s'
+          % ('[dry-run] ' if seco else '', novos, pulados,
+             '  (* = nome mudou, ~ = so o arquivo)' if forcar else ''))
     if not seco:
         st, depois = req(url)
         if st == 200:

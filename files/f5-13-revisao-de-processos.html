@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MÓDULO 13 — REVISÃO DE PROCESSOS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --tinta:#2C2825; --ouro:#B8925A; --claro:#F5F1EA; --linha:#D8D2C7;
+  --fraco:#6E675E; --papel:#FFFFFF; --caixa:#FAF8F4;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+@page{size:A4;margin:14mm 13mm 13mm}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact;scroll-behavior:smooth}
+body{font:11pt/1.62 'Inter',-apple-system,'Helvetica Neue',Arial,sans-serif;
+  color:var(--tinta);background:var(--claro)}
+.folha{max-width:196mm;margin:0 auto;padding:14mm 10mm 20mm;background:var(--papel);
+  box-shadow:0 1px 3px rgba(0,0,0,.06)}
+
+/* cabecalho */
+.topo{display:flex;justify-content:space-between;align-items:flex-end;
+  border-bottom:1.5pt solid var(--tinta);padding-bottom:6pt;gap:12pt;flex-wrap:wrap}
+.marca{font:600 15pt/1 'Cormorant Garamond',Georgia,serif;letter-spacing:.22em;
+  text-transform:uppercase;outline:none}
+.marca small{display:block;font:400 6.5pt/1 'Inter',sans-serif;letter-spacing:.34em;
+  color:var(--fraco);margin-top:3pt}
+.marca:focus{background:#FFF6DF}
+.doc{text-align:right}
+.doc .fase{font-size:7pt;letter-spacing:.2em;color:var(--ouro);font-weight:600;
+  text-transform:uppercase}
+.doc .cod{font-size:7pt;letter-spacing:.18em;color:var(--fraco);margin-top:2pt}
+.regua{height:2.5pt;background:var(--ouro);margin:0 0 14pt}
+
+/* tipografia */
+h1{font:600 21pt/1.18 'Cormorant Garamond',Georgia,serif;letter-spacing:.01em;
+  margin:0 0 3pt}
+h1 + .lead{font-size:10.5pt;color:var(--fraco);font-style:italic;margin-bottom:14pt;
+  padding-bottom:10pt;border-bottom:.75pt solid var(--linha)}
+h2{font:600 10.5pt/1.25 'Inter',sans-serif;letter-spacing:.13em;text-transform:uppercase;
+  background:var(--claro);border-left:3pt solid var(--ouro);padding:6pt 8pt;
+  margin:22pt 0 9pt;break-after:avoid;page-break-after:avoid}
+h3{font:600 11.5pt/1.3 'Cormorant Garamond',Georgia,serif;letter-spacing:.02em;
+  margin:15pt 0 5pt;break-after:avoid;page-break-after:avoid}
+h4{font:600 8.5pt/1.25 'Inter',sans-serif;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--fraco);margin:12pt 0 4pt;break-after:avoid}
+p{margin:0 0 8pt;text-align:left}
+strong{font-weight:600}
+em{font-style:italic}
+a{color:var(--ouro);text-decoration:none}
+hr{border:none;border-top:.75pt solid var(--linha);margin:16pt 0}
+
+/* listas */
+ul,ol{margin:0 0 9pt 16pt}
+li{margin-bottom:3.5pt}
+ul.chk{list-style:none;margin-left:0}
+ul.chk li{display:flex;gap:7pt;align-items:flex-start;padding:3.5pt 0;
+  border-bottom:.5pt dotted var(--linha);break-inside:avoid}
+ul.chk li::before{content:"";flex:0 0 9.5pt;height:9.5pt;margin-top:2.5pt;
+  border:.9pt solid var(--tinta);border-radius:1pt;background:#fff}
+
+/* citacao / destaque */
+blockquote{border-left:2.5pt solid var(--ouro);background:var(--caixa);
+  padding:9pt 12pt;margin:11pt 0;break-inside:avoid}
+blockquote p:last-child{margin-bottom:0}
+
+/* codigo / templates ascii */
+pre{background:var(--caixa);border:.75pt solid var(--linha);border-radius:2pt;
+  padding:10pt 11pt;margin:11pt 0;overflow-x:auto;break-inside:avoid;
+  font:9pt/1.42 'SFMono-Regular',Menlo,Consolas,'Courier New',monospace;
+  white-space:pre;color:#332F2A}
+code{font:9.2pt/1.4 'SFMono-Regular',Menlo,Consolas,monospace;
+  background:var(--claro);padding:1pt 3pt;border-radius:2pt}
+pre code{background:none;padding:0;font-size:inherit}
+
+/* tabelas */
+.tabwrap{overflow-x:auto;margin:11pt 0}
+table{border-collapse:collapse;width:100%;font-size:9.3pt;break-inside:avoid}
+th{background:var(--claro);text-align:left;font-weight:600;font-size:7.5pt;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--fraco);
+  padding:5.5pt 7pt;border:.75pt solid var(--linha)}
+td{padding:5.5pt 7pt;border:.75pt solid var(--linha);vertical-align:top;line-height:1.42}
+tbody tr:nth-child(even){background:#FCFBF9}
+
+/* indice */
+.indice{background:var(--caixa);border:.75pt solid var(--linha);padding:11pt 13pt;
+  margin:0 0 18pt;break-inside:avoid}
+.indice h4{margin-top:0}
+.indice ol{margin:0 0 0 15pt;font-size:9.5pt;column-gap:18pt}
+.indice li{margin-bottom:2.5pt}
+.indice a{color:var(--tinta)}
+.indice a:hover{color:var(--ouro)}
+
+/* rodape */
+.rodape{margin-top:22pt;padding-top:6pt;border-top:.75pt solid var(--linha);
+  display:flex;justify-content:space-between;font-size:7.5pt;color:var(--fraco);
+  letter-spacing:.06em;gap:10pt;flex-wrap:wrap}
+
+/* direitos — a marca do Aresta e o aviso de propriedade.
+   Fica no rodape, nao no topo: o cabecalho e' do aluno (.marca editavel),
+   e a autoria do metodo nao disputa espaco com a marca dele. */
+.direitos{margin-top:7pt;display:flex;align-items:center;gap:7pt;
+  font-size:6.4pt;line-height:1.45;color:var(--fraco);letter-spacing:.02em}
+.direitos img{height:11pt;width:auto;flex-shrink:0;opacity:.85}
+@media print{.direitos{break-inside:avoid}}
+
+/* navegacao entre modulos (some na impressao) */
+.nav{max-width:196mm;margin:0 auto 10mm;padding:0 10mm;display:flex;
+  justify-content:space-between;gap:10pt;font-size:9pt}
+.nav a{display:inline-block;padding:6pt 11pt;border:.75pt solid var(--linha);
+  background:var(--papel);border-radius:2pt;color:var(--tinta)}
+.nav a:hover{border-color:var(--ouro);color:var(--ouro)}
+.topbar{max-width:196mm;margin:0 auto;padding:8mm 10mm 0;display:flex;
+  justify-content:space-between;font-size:9pt}
+.topbar a{color:var(--fraco)}
+.topbar a:hover{color:var(--ouro)}
+
+@media print{
+  body{background:#fff}
+  .folha{box-shadow:none;padding:0;max-width:none}
+  .nav,.topbar{display:none}
+  .indice{break-after:page}
+}
+@media (max-width:640px){
+  body{font-size:11.5pt}
+  .folha{padding:8mm 5mm 14mm}
+  pre{font-size:7.6pt}
+  table{font-size:8.6pt}
+  .doc{text-align:left}
+}
+</style>
+</head>
+<body>
+
+<div class="folha">
+  <div class="topo">
+    <div class="marca" contenteditable="true" spellcheck="false">SUA MARCA<small>MARCENARIA</small></div>
+    <div class="doc"><div class="fase">Fase 5 — Escala</div><div class="cod">FASE 5 · MÓDULO 13</div></div>
+  </div>
+  <div class="regua"></div>
+
+  <h1>MÓDULO 13 — REVISÃO DE PROCESSOS</h1>
+  <div class="lead">Auditoria dos 6 Meses: o ritual que impede tudo de apodrecer</div>
+  <div class="indice"><h4>Neste módulo</h4><ol><li><a href="#por-que-este-modulo-e-o-ultimo-e-o-mais-importante">Por que este módulo é o último e o mais importante</a></li><li><a href="#os-5-sinais-de-que-um-processo-apodreceu">Os 5 sinais de que um processo apodreceu</a></li><li><a href="#a-auditoria-dos-6-meses">A Auditoria dos 6 Meses</a></li><li><a href="#estrutura-2-dias-2-vezes-por-ano">Estrutura: 2 dias, 2 vezes por ano</a></li><li><a href="#agenda-dos-2-dias">Agenda dos 2 dias</a></li><li><a href="#o-bloco-mais-importante-e-o-6-o-que-matar">O bloco mais importante é o 6 — "O que matar"</a></li><li><a href="#o-checklist-de-auditoria-de-processo-para-usar-no-bloco-2">O Checklist de Auditoria de Processo (para usar no Bloco 2)</a></li><li><a href="#o-item-2-e-onde-mora-a-informacao">O item 2 é onde mora a informação</a></li><li><a href="#revisao-continua-entre-as-auditorias">Revisão contínua (entre as auditorias)</a></li><li><a href="#gatilhos-de-revisao-fora-do-calendario">Gatilhos de revisão fora do calendário</a></li><li><a href="#o-canal-de-sugestao-de-melhoria">O canal de sugestão de melhoria</a></li><li><a href="#auditoria-de-documentos-o-inventario">Auditoria de documentos (o inventário)</a></li><li><a href="#controle-de-versao-simples-sem-software">Controle de versão simples (sem software)</a></li><li><a href="#como-fazer-a-auditoria-sem-virar-policia">Como fazer a auditoria sem virar polícia</a></li><li><a href="#as-5-regras-da-auditoria-saudavel">As 5 regras da auditoria saudável</a></li><li><a href="#script-de-abertura-da-auditoria">Script de abertura da auditoria</a></li><li><a href="#o-calendario-anual-da-revisao">O calendário anual da revisão</a></li><li><a href="#erros-comuns">Erros comuns</a></li><li><a href="#perguntas-que-o-lider-deve-fazer">Perguntas que o líder deve fazer</a></li><li><a href="#exercicios-do-modulo-13">Exercícios do Módulo 13</a></li><li><a href="#frases-de-impacto">Frases de impacto</a></li><li><a href="#entregavel-do-modulo-13">Entregável do Módulo 13</a></li></ol></div>
+  <hr>
+<h2 id="por-que-este-modulo-e-o-ultimo-e-o-mais-importante">Por que este módulo é o último e o mais importante</h2>
+<p>Você implantou POPs, indicadores, cadência, backup, plano de 90 dias.</p>
+<p><strong>Em 18 meses, metade disso não vai mais existir</strong> — se não houver um ritual formal de revisão.</p>
+<p>Não porque as pessoas são desleixadas. Porque:</p>
+<ul><li>O processo foi escrito pra um contexto que mudou</li><li>A pessoa que escreveu saiu e ninguém sabe por que é assim</li><li>Uma exceção virou regra sem ninguém decidir</li><li>O indicador passou a ser calculado de outro jeito</li><li>Alguém achou um atalho e todo mundo copiou</li></ul>
+<blockquote><p><strong>Frase pra colar na parede:</strong> <em>"Processo não morre de uma vez. Ele apodrece devagar, e ninguém percebe até o dia em que o cliente reclama."</em></p></blockquote>
+<hr>
+<h2 id="os-5-sinais-de-que-um-processo-apodreceu">Os 5 sinais de que um processo apodreceu</h2>
+<pre>1. NINGUÉM SEGUE, MAS TODO MUNDO DIZ QUE SEGUE
+   → Observe 3 execuções sem avisar. Compare com o POP.
+
+2. TODO MUNDO SEGUE, MAS NINGUÉM SABE POR QUÊ
+   → Pergunte "por que isso é assim?". Se ninguém sabe,
+     provavelmente não precisa mais existir.
+
+3. TEM MAIS EXCEÇÃO QUE REGRA
+   → Se 40% dos casos são exceção, a regra está errada.
+
+4. O PROCESSO EXISTE PRA RESOLVER UM PROBLEMA QUE NÃO EXISTE MAIS
+   → Etapa criada por causa de um erro de 3 anos atrás.
+
+5. O DOCUMENTO NÃO É ATUALIZADO HÁ MAIS DE 12 MESES
+   → Se o negócio mudou e o documento não, ele está errado.</pre>
+<hr>
+<h2 id="a-auditoria-dos-6-meses">A Auditoria dos 6 Meses</h2>
+<p>Um ritual formal, com data marcada na agenda do ano inteiro.</p>
+<h2 id="estrutura-2-dias-2-vezes-por-ano">Estrutura: 2 dias, 2 vezes por ano</h2>
+<pre>QUANDO: janeiro e julho (ou os meses mais calmos do seu ciclo)
+QUEM:   dono + todos os líderes
+ONDE:   fora da empresa, se possível
+QUANTO: 2 dias, ou 4 meias-manhãs se não der pra parar</pre>
+<h2 id="agenda-dos-2-dias">Agenda dos 2 dias</h2>
+<pre>═══════════════════════════════════════════════════════════════
+DIA 1 — DIAGNÓSTICO
+═══════════════════════════════════════════════════════════════
+
+BLOCO 1 (2h) — OS NÚMEROS
+[ ] Os 7 números do painel: onde estávamos, onde estamos
+[ ] Scorecard estratégico das 4 dimensões
+[ ] O que melhorou? O que piorou? Por quê?
+[ ] Algum indicador virou inútil? (Aplique o teste do descarte)
+[ ] Algum indicador está sendo calculado diferente do dicionário?
+
+BLOCO 2 (2h) — AUDITORIA DE PROCESSO (na fábrica, andando)
+[ ] Cada POP: ainda é seguido? Ainda faz sentido?
+[ ] Observe 5 execuções reais sem avisar antes
+[ ] Compare o que está escrito com o que é feito
+[ ] Onde tem exceção virando regra?
+[ ] Que processo novo surgiu e não está escrito?
+
+BLOCO 3 (2h) — GARGALO E FLUXO
+[ ] Onde está o gargalo hoje? Mudou de lugar?
+[ ] Tempo de ciclo por etapa: melhorou ou piorou?
+[ ] % de espera no ciclo total
+[ ] Que etapa dá pra eliminar? (não melhorar — eliminar)
+
+BLOCO 4 (2h) — RISCO E CONTINUIDADE
+[ ] Mapa de Riscos revisado: mudou alguma coisa?
+[ ] Backups estão treinados? Foram testados?
+[ ] Teste de restore foi feito no último trimestre?
+[ ] Concentração de cliente e fornecedor: dentro do limite?
+[ ] Que ponto único novo apareceu?
+
+═══════════════════════════════════════════════════════════════
+DIA 2 — DECISÃO
+═══════════════════════════════════════════════════════════════
+
+BLOCO 5 (2h) — PESSOAS
+[ ] Matriz Entrega × Jeito de toda a equipe
+[ ] Quem está pronto pra crescer? Quem está no lugar errado?
+[ ] Turnover por faixa: onde está o problema?
+[ ] Cobertura de competências críticas
+[ ] Quem precisa ser desligado e a gente está adiando?
+
+BLOCO 6 (2h) — O QUE MATAR
+[ ] Que processo a gente elimina? (meta: ao menos 2)
+[ ] Que reunião a gente elimina ou encurta?
+[ ] Que indicador a gente para de medir?
+[ ] Que relatório ninguém lê?
+[ ] Que sistema a gente cancela?
+
+BLOCO 7 (2h) — O QUE MUDAR
+[ ] POPs a reescrever (com dono e prazo)
+[ ] Processos novos a documentar
+[ ] Indicadores a ajustar
+[ ] Metas a recalibrar
+
+BLOCO 8 (1h) — PLANO
+[ ] Prioridades dos próximos 90 dias definidas
+[ ] Donos e prazos
+[ ] Comunicação à empresa agendada
+═══════════════════════════════════════════════════════════════</pre>
+<h2 id="o-bloco-mais-importante-e-o-6-o-que-matar">O bloco mais importante é o 6 — "O que matar"</h2>
+<p><strong>Meta obrigatória: eliminar pelo menos 2 coisas por auditoria.</strong></p>
+<p>Toda empresa acumula processo. Ninguém nunca tira nada. Em 5 anos você tem 12 relatórios, 8 reuniões e 30 controles — e metade não serve pra nada.</p>
+<p><strong>A pergunta do bloco 6:</strong> <em>"se a gente parasse de fazer isso amanhã, o que aconteceria de ruim?"</em></p>
+<p>Se a resposta for "nada" ou "não sei", mate.</p>
+<hr>
+<h2 id="o-checklist-de-auditoria-de-processo-para-usar-no-bloco-2">O Checklist de Auditoria de Processo (para usar no Bloco 2)</h2>
+<p>Aplique a cada processo documentado.</p>
+<pre>═══════════════════════════════════════════════════════════════
+AUDITORIA DE PROCESSO — POP-___ [nome]
+Data: ___/___/___   Auditor: __________  (não pode ser da área)
+═══════════════════════════════════════════════════════════════
+
+1. EXISTÊNCIA
+[ ] O documento existe e está acessível no local de uso
+[ ] Tem data e versão
+[ ] Foi revisado nos últimos 12 meses
+
+2. ADERÊNCIA (observe 3 execuções reais, sem avisar)
+[ ] Execução 1 seguiu o POP?  ( )Sim ( )Parcial ( )Não
+[ ] Execução 2 seguiu o POP?  ( )Sim ( )Parcial ( )Não
+[ ] Execução 3 seguiu o POP?  ( )Sim ( )Parcial ( )Não
+
+Se "não" ou "parcial": por quê?
+( ) O POP está errado / desatualizado
+( ) Falta ferramenta ou recurso
+( ) A pessoa não foi treinada
+( ) A pessoa achou um jeito melhor  ← ATUALIZE O POP!
+( ) Descuido
+
+3. RELEVÂNCIA
+[ ] O problema que esse processo resolve ainda existe?
+[ ] O critério de saída ainda faz sentido?
+[ ] Existe jeito mais simples de chegar no mesmo resultado?
+
+4. EFICÁCIA
+[ ] O indicador ligado a esse processo está saudável?
+[ ] Quantos erros aconteceram neste processo nos últimos 6 meses?
+
+5. DECISÃO
+( ) Mantém como está
+( ) Atualiza — dono: ________ prazo: ______
+( ) Simplifica — dono: ________ prazo: ______
+( ) Elimina — justificativa: _______________________
+═══════════════════════════════════════════════════════════════</pre>
+<h2 id="o-item-2-e-onde-mora-a-informacao">O item 2 é onde mora a informação</h2>
+<p><strong>A opção "a pessoa achou um jeito melhor" é ouro puro.</strong> Na maioria das vezes, quando alguém não segue o POP, é porque encontrou um caminho melhor — e ninguém atualizou o documento.</p>
+<p><strong>Regra:</strong> toda vez que você encontrar isso, atualize o POP <strong>com o nome da pessoa que melhorou</strong>. Isso transforma auditoria de fiscalização em melhoria contínua, e a equipe passa a colaborar em vez de esconder.</p>
+<hr>
+<h2 id="revisao-continua-entre-as-auditorias">Revisão contínua (entre as auditorias)</h2>
+<p>Nem tudo espera 6 meses. Alguns gatilhos exigem revisão imediata.</p>
+<h2 id="gatilhos-de-revisao-fora-do-calendario">Gatilhos de revisão fora do calendário</h2>
+<div class="tabwrap"><table><thead><tr><th>Gatilho</th><th>Revisar</th></tr></thead><tbody><tr><td>Erro que custou acima de R$ ___</td><td>O processo envolvido, imediatamente</td></tr><tr><td>Reclamação grave de cliente</td><td>O processo da etapa que falhou</td></tr><tr><td>Acidente ou quase-acidente</td><td>O POP de segurança daquela operação</td></tr><tr><td>Saída de pessoa-chave</td><td>Toda a documentação da função dela</td></tr><tr><td>Mudança de fornecedor crítico</td><td>Processos de recebimento e conferência</td></tr><tr><td>Compra de máquina nova</td><td>POPs de operação e manutenção</td></tr><tr><td>Mudança de legislação ou norma</td><td>Processos afetados</td></tr><tr><td>3 exceções ao mesmo processo em 30 dias</td><td>A regra está errada</td></tr></tbody></table></div>
+<h2 id="o-canal-de-sugestao-de-melhoria">O canal de sugestão de melhoria</h2>
+<pre>REGRA SIMPLES:
+Qualquer pessoa pode propor mudança em qualquer POP,
+a qualquer momento, direto ao encarregado da área.
+
+O encarregado tem 5 dias úteis pra responder:
+( ) Aceita — atualiza o POP com o nome de quem propôs
+( ) Não aceita — explica por quê, pessoalmente
+( ) Precisa testar — define teste, prazo e responsável
+
+⚠ O QUE MATA ESSE CANAL: não responder.
+Uma sugestão ignorada mata as próximas dez.</pre>
+<p><strong>Reconhecimento:</strong> toda melhoria aceita é citada nominalmente na reunião de segunda. Custa zero e gera mais melhoria do que qualquer prêmio.</p>
+<hr>
+<h2 id="auditoria-de-documentos-o-inventario">Auditoria de documentos (o inventário)</h2>
+<pre>═══════════════════════════════════════════════════════════════
+INVENTÁRIO DE DOCUMENTOS — revisão semestral
+═══════════════════════════════════════════════════════════════
+
+TIPO          | QUANTOS | ATUALIZADOS | DESATUALIZADOS | A CRIAR
+──────────────┼─────────┼─────────────┼────────────────┼────────
+Fluxogramas   |         |             |                |
+SOPs          |         |             |                |
+POPs          |         |             |                |
+Checklists    |         |             |                |
+Formulários   |         |             |                |
+Contratos     |         |             |                |
+Manuais       |         |             |                |
+
+% DE DOCUMENTOS ATUALIZADOS: _____%
+Meta: &gt; 85%
+
+DOCUMENTOS CRÍTICOS DESATUALIZADOS (prioridade máxima):
+1. ____________________  Dono: ______  Prazo: ______
+2. ____________________  Dono: ______  Prazo: ______
+3. ____________________  Dono: ______  Prazo: ______
+
+DOCUMENTOS A ELIMINAR (não servem mais):
+1. ____________________  Justificativa: ______________
+2. ____________________  Justificativa: ______________
+═══════════════════════════════════════════════════════════════</pre>
+<h2 id="controle-de-versao-simples-sem-software">Controle de versão simples (sem software)</h2>
+<pre>No rodapé de todo documento:
+
+POP-14 | Conferência de carga | v3 | 12/06/2026
+Escrito por: Encarregado de Pátio | Revisado por: Gerente de Fábrica
+Próxima revisão: 12/12/2026
+Alterações da v3: incluída conferência de perfil de LED,
+após 2 ocorrências de item faltante em maio.</pre>
+<p><strong>O campo "alterações" é o que preserva a memória.</strong> Sem ele, daqui a dois anos ninguém vai lembrar por que aquela etapa foi criada — e alguém vai eliminar sem saber que ela existe por um motivo.</p>
+<hr>
+<h2 id="como-fazer-a-auditoria-sem-virar-policia">Como fazer a auditoria sem virar polícia</h2>
+<p>O risco é a auditoria virar caça às bruxas. Se isso acontecer, a equipe esconde os problemas e você perde a ferramenta.</p>
+<h2 id="as-5-regras-da-auditoria-saudavel">As 5 regras da auditoria saudável</h2>
+<pre>1. AUDITA-SE O PROCESSO, NÃO A PESSOA
+   "O checklist não foi preenchido" — não "o João não preencheu".
+
+2. QUEM ENCONTRA O PROBLEMA É RECONHECIDO, NÃO PUNIDO
+   Se apontar problema gera bronca, ninguém aponta.
+
+3. O AUDITOR NÃO É DA ÁREA AUDITADA
+   Rotação: fábrica audita obra, obra audita projetos,
+   projetos audita fábrica. Todo mundo aprende com todo mundo.
+
+4. TODA NÃO-CONFORMIDADE VIRA AÇÃO, NÃO REGISTRO
+   Auditoria que só gera relatório é burocracia.
+
+5. O DONO É AUDITADO TAMBÉM
+   Os processos que dependem de você (aprovação, precificação,
+   decisão) entram na auditoria igual.</pre>
+<h2 id="script-de-abertura-da-auditoria">Script de abertura da auditoria</h2>
+<pre>"Pessoal, hoje a gente faz a auditoria semestral.
+
+Só pra deixar claro o que é e o que não é:
+
+O QUE É: a gente vai olhar se os processos que a gente
+escreveu ainda fazem sentido e se estão sendo seguidos.
+Se não estiverem, na maioria das vezes é porque o processo
+está errado, não a pessoa.
+
+O QUE NÃO É: caça às bruxas. Ninguém vai levar bronca por
+uma não-conformidade encontrada hoje.
+
+O QUE EU MAIS QUERO ENCONTRAR: alguém que achou um jeito
+melhor de fazer e não avisou. Isso é melhoria, e a gente
+vai atualizar o POP com o nome de quem descobriu.
+
+E os processos que dependem de mim entram na auditoria
+igual aos de vocês."</pre>
+<hr>
+<h2 id="o-calendario-anual-da-revisao">O calendário anual da revisão</h2>
+<div class="tabwrap"><table><thead><tr><th>Quando</th><th>O quê</th><th>Duração</th></tr></thead><tbody><tr><td><strong>Semanal</strong></td><td>Status das prioridades na reunião tática</td><td>20 min</td></tr><tr><td><strong>Mensal</strong></td><td>Auditoria de padrão (checklist do Módulo 11)</td><td>1h</td></tr><tr><td><strong>Trimestral</strong></td><td>Fechamento do plano de 90 dias + novo plano</td><td>4h</td></tr><tr><td><strong>Trimestral</strong></td><td>Teste de restore de backup</td><td>30 min</td></tr><tr><td><strong>Semestral</strong></td><td><strong>Auditoria dos 6 Meses (completa)</strong></td><td>2 dias</td></tr><tr><td><strong>Semestral</strong></td><td>Revisão do Mapa de Riscos</td><td>2h</td></tr><tr><td><strong>Semestral</strong></td><td>Inventário de documentos</td><td>2h</td></tr><tr><td><strong>Semestral</strong></td><td>Teste de ausência de função crítica</td><td>5 dias</td></tr><tr><td><strong>Anual</strong></td><td>Revisão do Mapa 5×5</td><td>4h</td></tr><tr><td><strong>Anual</strong></td><td>Revisão da tabela salarial e do plano de carreira</td><td>4h</td></tr></tbody></table></div>
+<hr>
+<h2 id="erros-comuns">Erros comuns</h2>
+<div class="tabwrap"><table><thead><tr><th>#</th><th>Erro</th><th>Consequência</th></tr></thead><tbody><tr><td>1</td><td>Não ter data marcada na agenda</td><td>Nunca acontece</td></tr><tr><td>2</td><td>Auditoria virar caça às bruxas</td><td>Equipe esconde problema</td></tr><tr><td>3</td><td>Auditor da própria área</td><td>Não enxerga o que já normalizou</td></tr><tr><td>4</td><td>Só gerar relatório, sem ação</td><td>Burocracia pura</td></tr><tr><td>5</td><td>Não eliminar nada</td><td>Empresa acumula processo até travar</td></tr><tr><td>6</td><td>Não observar execução real</td><td>Todo mundo diz que segue o POP</td></tr><tr><td>7</td><td>Ignorar "a pessoa achou um jeito melhor"</td><td>Perde a melhor fonte de melhoria</td></tr><tr><td>8</td><td>Não responder sugestão de melhoria</td><td>Uma ignorada mata as próximas dez</td></tr><tr><td>9</td><td>Documento sem histórico de alteração</td><td>Perde a memória do porquê</td></tr><tr><td>10</td><td>Não auditar os processos do dono</td><td>Régua dupla visível</td></tr><tr><td>11</td><td>Revisar só quando dá problema</td><td>Reativo, sempre tarde</td></tr><tr><td>12</td><td>Auditoria de 4 horas pra empresa inteira</td><td>Superficial, não pega nada</td></tr></tbody></table></div>
+<hr>
+<h2 id="perguntas-que-o-lider-deve-fazer">Perguntas que o líder deve fazer</h2>
+<ol><li>Quando foi a última vez que eu <strong>eliminei</strong> um processo?</li><li>Quantos dos meus POPs foram atualizados nos últimos 12 meses?</li><li>Se eu observar 3 execuções agora, elas seguem o que está escrito?</li><li>Quantas sugestões de melhoria eu recebi nos últimos 6 meses? Quantas respondi?</li><li>Meu indicador está sendo calculado do jeito que está no dicionário?</li><li>Que exceção virou regra sem ninguém decidir?</li><li>Os processos que dependem de mim são auditados?</li></ol>
+<hr>
+<h2 id="exercicios-do-modulo-13">Exercícios do Módulo 13</h2>
+<h3 id="exercicio-1-marque-as-datas-10-min">Exercício 1 — Marque as datas (10 min)</h3>
+<p>Coloque na agenda do ano inteiro: as duas auditorias semestrais, as mensais e as trimestrais. Com convite pra todos os líderes.</p>
+<h3 id="exercicio-2-observacao-surpresa-1h">Exercício 2 — Observação surpresa (1h)</h3>
+<p>Escolha 3 POPs. Observe uma execução real de cada, sem avisar. Compare com o escrito. Anote as diferenças e a causa.</p>
+<h3 id="exercicio-3-bloco-o-que-matar-1h">Exercício 3 — Bloco "o que matar" (1h)</h3>
+<p>Liste todo relatório, reunião, controle e indicador que existe hoje. Para cada um: "se a gente parasse amanhã, o que aconteceria?". Elimine ao menos 2.</p>
+<h3 id="exercicio-4-inventario-de-documentos-1h">Exercício 4 — Inventário de documentos (1h)</h3>
+<p>Preencha a tabela. Calcule o % de documentos atualizados.</p>
+<h3 id="exercicio-5-canal-de-sugestao-30-min">Exercício 5 — Canal de sugestão (30 min)</h3>
+<p>Comunique a regra. Responda a primeira sugestão em até 5 dias. Reconheça nominalmente na reunião.</p>
+<h3 id="exercicio-6-auditoria-cruzada-2h">Exercício 6 — Auditoria cruzada (2h)</h3>
+<p>Faça a primeira auditoria com auditor de outra área. Use o checklist. Gere 3 ações com dono e prazo.</p>
+<h3 id="exercicio-7-autoauditoria-do-dono-30-min">Exercício 7 — Autoauditoria do dono (30 min)</h3>
+<p>Liste os processos que dependem de você. Alguém já auditou algum? Coloque-os na próxima auditoria.</p>
+<hr>
+<h2 id="frases-de-impacto">Frases de impacto</h2>
+<ul><li><em>"Processo não morre de uma vez. Ele apodrece devagar, e ninguém percebe até o cliente reclamar."</em></li><li><em>"Se 40% dos casos são exceção, a regra está errada."</em></li><li><em>"Toda auditoria precisa eliminar pelo menos duas coisas. Empresa que só acumula processo trava."</em></li><li><em>"Quando alguém não segue o POP, na maioria das vezes é porque achou um jeito melhor e ninguém atualizou o documento."</em></li><li><em>"Atualize o POP com o nome de quem melhorou. Isso transforma fiscalização em colaboração."</em></li><li><em>"Uma sugestão de melhoria ignorada mata as próximas dez."</em></li><li><em>"Auditoria que só gera relatório é burocracia. Auditoria que gera ação é gestão."</em></li><li><em>"Se os processos que dependem de você não são auditados, sua régua é dupla — e todo mundo vê."</em></li></ul>
+<hr>
+<h2 id="entregavel-do-modulo-13">Entregável do Módulo 13</h2>
+<ol><li>Calendário anual de revisão marcado na agenda de todos os líderes.</li><li>Primeira auditoria dos 6 meses realizada (2 dias).</li><li>Checklist de auditoria de processo em uso.</li><li>Inventário de documentos preenchido, com % de atualização.</li><li>Ao menos 2 processos eliminados.</li><li>Canal de sugestão de melhoria comunicado e funcionando.</li><li>Controle de versão com histórico de alteração em todos os POPs.</li></ol>
+<hr>
+<p><strong>FIM DOS MÓDULOS DA FASE 5.</strong> As ferramentas complementares (scorecards, dashboards, templates, SOPs, POPs, planilhas, checklists, reuniões modelo, plano estratégico, plano de expansão, plano de contingência, plano de sucessão, mapa de riscos e os dois frameworks) estão nos arquivos <code>14-extras-*</code>.</p>
+
+  <div class="rodape"><span>FASE 5 · MÓDULO 13 · Fase 5 — Escala</span><span>Material de formação em gestão para donos de PME</span></div>
+  <div class="direitos"><img src="data:image/png;base64,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" alt="ARESTA APM"><span>&copy; 2026 ARESTA APM &middot; Conteúdo e método proprietários. Uso restrito ao aluno matriculado — proibida a reprodução, revenda ou redistribuição, total ou parcial.</span></div>
+</div>
+
+<script>
+// mantem a marca digitada pelo usuario neste navegador
+(function(){
+  var m=document.querySelector('.marca');
+  var k='mkt-marca';
+  try{ var s=localStorage.getItem(k); if(s) m.innerHTML=s; }catch(e){}
+  m.addEventListener('blur',function(){ try{localStorage.setItem(k,m.innerHTML);}catch(e){} });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MÓDULO 2 — CULTURA E VALORES</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --tinta:#2C2825; --ouro:#B8925A; --claro:#F5F1EA; --linha:#D8D2C7;
+  --fraco:#6E675E; --papel:#FFFFFF; --caixa:#FAF8F4;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+@page{size:A4;margin:14mm 13mm 13mm}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact;scroll-behavior:smooth}
+body{font:11pt/1.62 'Inter',-apple-system,'Helvetica Neue',Arial,sans-serif;
+  color:var(--tinta);background:var(--claro)}
+.folha{max-width:196mm;margin:0 auto;padding:14mm 10mm 20mm;background:var(--papel);
+  box-shadow:0 1px 3px rgba(0,0,0,.06)}
+
+/* cabecalho */
+.topo{display:flex;justify-content:space-between;align-items:flex-end;
+  border-bottom:1.5pt solid var(--tinta);padding-bottom:6pt;gap:12pt;flex-wrap:wrap}
+.marca{font:600 15pt/1 'Cormorant Garamond',Georgia,serif;letter-spacing:.22em;
+  text-transform:uppercase;outline:none}
+.marca small{display:block;font:400 6.5pt/1 'Inter',sans-serif;letter-spacing:.34em;
+  color:var(--fraco);margin-top:3pt}
+.marca:focus{background:#FFF6DF}
+.doc{text-align:right}
+.doc .fase{font-size:7pt;letter-spacing:.2em;color:var(--ouro);font-weight:600;
+  text-transform:uppercase}
+.doc .cod{font-size:7pt;letter-spacing:.18em;color:var(--fraco);margin-top:2pt}
+.regua{height:2.5pt;background:var(--ouro);margin:0 0 14pt}
+
+/* tipografia */
+h1{font:600 21pt/1.18 'Cormorant Garamond',Georgia,serif;letter-spacing:.01em;
+  margin:0 0 3pt}
+h1 + .lead{font-size:10.5pt;color:var(--fraco);font-style:italic;margin-bottom:14pt;
+  padding-bottom:10pt;border-bottom:.75pt solid var(--linha)}
+h2{font:600 10.5pt/1.25 'Inter',sans-serif;letter-spacing:.13em;text-transform:uppercase;
+  background:var(--claro);border-left:3pt solid var(--ouro);padding:6pt 8pt;
+  margin:22pt 0 9pt;break-after:avoid;page-break-after:avoid}
+h3{font:600 11.5pt/1.3 'Cormorant Garamond',Georgia,serif;letter-spacing:.02em;
+  margin:15pt 0 5pt;break-after:avoid;page-break-after:avoid}
+h4{font:600 8.5pt/1.25 'Inter',sans-serif;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--fraco);margin:12pt 0 4pt;break-after:avoid}
+p{margin:0 0 8pt;text-align:left}
+strong{font-weight:600}
+em{font-style:italic}
+a{color:var(--ouro);text-decoration:none}
+hr{border:none;border-top:.75pt solid var(--linha);margin:16pt 0}
+
+/* listas */
+ul,ol{margin:0 0 9pt 16pt}
+li{margin-bottom:3.5pt}
+ul.chk{list-style:none;margin-left:0}
+ul.chk li{display:flex;gap:7pt;align-items:flex-start;padding:3.5pt 0;
+  border-bottom:.5pt dotted var(--linha);break-inside:avoid}
+ul.chk li::before{content:"";flex:0 0 9.5pt;height:9.5pt;margin-top:2.5pt;
+  border:.9pt solid var(--tinta);border-radius:1pt;background:#fff}
+
+/* citacao / destaque */
+blockquote{border-left:2.5pt solid var(--ouro);background:var(--caixa);
+  padding:9pt 12pt;margin:11pt 0;break-inside:avoid}
+blockquote p:last-child{margin-bottom:0}
+
+/* codigo / templates ascii */
+pre{background:var(--caixa);border:.75pt solid var(--linha);border-radius:2pt;
+  padding:10pt 11pt;margin:11pt 0;overflow-x:auto;break-inside:avoid;
+  font:9pt/1.42 'SFMono-Regular',Menlo,Consolas,'Courier New',monospace;
+  white-space:pre;color:#332F2A}
+code{font:9.2pt/1.4 'SFMono-Regular',Menlo,Consolas,monospace;
+  background:var(--claro);padding:1pt 3pt;border-radius:2pt}
+pre code{background:none;padding:0;font-size:inherit}
+
+/* tabelas */
+.tabwrap{overflow-x:auto;margin:11pt 0}
+table{border-collapse:collapse;width:100%;font-size:9.3pt;break-inside:avoid}
+th{background:var(--claro);text-align:left;font-weight:600;font-size:7.5pt;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--fraco);
+  padding:5.5pt 7pt;border:.75pt solid var(--linha)}
+td{padding:5.5pt 7pt;border:.75pt solid var(--linha);vertical-align:top;line-height:1.42}
+tbody tr:nth-child(even){background:#FCFBF9}
+
+/* indice */
+.indice{background:var(--caixa);border:.75pt solid var(--linha);padding:11pt 13pt;
+  margin:0 0 18pt;break-inside:avoid}
+.indice h4{margin-top:0}
+.indice ol{margin:0 0 0 15pt;font-size:9.5pt;column-gap:18pt}
+.indice li{margin-bottom:2.5pt}
+.indice a{color:var(--tinta)}
+.indice a:hover{color:var(--ouro)}
+
+/* rodape */
+.rodape{margin-top:22pt;padding-top:6pt;border-top:.75pt solid var(--linha);
+  display:flex;justify-content:space-between;font-size:7.5pt;color:var(--fraco);
+  letter-spacing:.06em;gap:10pt;flex-wrap:wrap}
+
+/* direitos — a marca do Aresta e o aviso de propriedade.
+   Fica no rodape, nao no topo: o cabecalho e' do aluno (.marca editavel),
+   e a autoria do metodo nao disputa espaco com a marca dele. */
+.direitos{margin-top:7pt;display:flex;align-items:center;gap:7pt;
+  font-size:6.4pt;line-height:1.45;color:var(--fraco);letter-spacing:.02em}
+.direitos img{height:11pt;width:auto;flex-shrink:0;opacity:.85}
+@media print{.direitos{break-inside:avoid}}
+
+/* navegacao entre modulos (some na impressao) */
+.nav{max-width:196mm;margin:0 auto 10mm;padding:0 10mm;display:flex;
+  justify-content:space-between;gap:10pt;font-size:9pt}
+.nav a{display:inline-block;padding:6pt 11pt;border:.75pt solid var(--linha);
+  background:var(--papel);border-radius:2pt;color:var(--tinta)}
+.nav a:hover{border-color:var(--ouro);color:var(--ouro)}
+.topbar{max-width:196mm;margin:0 auto;padding:8mm 10mm 0;display:flex;
+  justify-content:space-between;font-size:9pt}
+.topbar a{color:var(--fraco)}
+.topbar a:hover{color:var(--ouro)}
+
+@media print{
+  body{background:#fff}
+  .folha{box-shadow:none;padding:0;max-width:none}
+  .nav,.topbar{display:none}
+  .indice{break-after:page}
+}
+@media (max-width:640px){
+  body{font-size:11.5pt}
+  .folha{padding:8mm 5mm 14mm}
+  pre{font-size:7.6pt}
+  table{font-size:8.6pt}
+  .doc{text-align:left}
+}
+</style>
+</head>
+<body>
+
+<div class="folha">
+  <div class="topo">
+    <div class="marca" contenteditable="true" spellcheck="false">SUA MARCA<small>MARCENARIA</small></div>
+    <div class="doc"><div class="fase">Fase 4 — Liderança</div><div class="cod">FASE 4 · MÓDULO 02</div></div>
+  </div>
+  <div class="regua"></div>
+
+  <h1>MÓDULO 2 — CULTURA E VALORES</h1>
+  <div class="lead">Método MIOLO: cultura é o miolo da chapa, não o revestimento</div>
+  <div class="indice"><h4>Neste módulo</h4><ol><li><a href="#a-metafora-que-explica-tudo">A metáfora que explica tudo</a></li><li><a href="#definicao-pratica-a-unica-que-importa">Definição prática (a única que importa)</a></li><li><a href="#os-4-lugares-onde-a-cultura-realmente-e-escrita">Os 4 lugares onde a cultura realmente é escrita</a></li><li><a href="#como-a-cultura-nasce-numa-pme-as-3-fases">Como a cultura nasce numa PME (as 3 fases)</a></li><li><a href="#o-metodo-miolo-5-passos-para-implantar-cultura-de-verdade">O Método MIOLO — 5 passos para implantar cultura de verdade</a></li><li><a href="#m-modelar-o-dono-e-o-produto-que-a-equipe-copia">M — MODELAR: o dono é o produto que a equipe copia</a></li><li><a href="#i-inegociaveis-como-criar-valores-que-valem-alguma-coisa">I — INEGOCIÁVEIS: como criar valores que valem alguma coisa</a></li><li><a href="#o-que-nao-fazer">O que não fazer</a></li><li><a href="#como-descobrir-os-seus-valores-exercicio-de-90-minutos">Como descobrir os SEUS valores (exercício de 90 minutos)</a></li><li><a href="#como-escrever-cada-valor-a-estrutura-de-4-linhas">Como escrever cada valor (a estrutura de 4 linhas)</a></li><li><a href="#6-valores-prontos-escritos-do-jeito-certo-modelo-para-marcen">6 valores prontos, escritos do jeito certo — modelo para marcenaria</a></li><li><a href="#o-observavel-o-teste-de-que-o-valor-esta-bem-escrito">O — OBSERVÁVEL: o teste de que o valor está bem escrito</a></li><li><a href="#l-lembrar-como-comunicar-cultura-sem-virar-palestra">L — LEMBRAR: como comunicar cultura sem virar palestra</a></li><li><a href="#os-7-rituais-que-instalam-cultura-escolha-4-faca-sempre">Os 7 rituais que instalam cultura (escolha 4, faça sempre)</a></li><li><a href="#o-onerar-cultura-sem-consequencia-e-decoracao">O — ONERAR: cultura sem consequência é decoração</a></li><li><a href="#a-escada-de-consequencia-cultural">A escada de consequência cultural</a></li><li><a href="#o-momento-em-que-a-cultura-e-decidida-de-verdade">O momento em que a cultura é decidida de verdade</a></li><li><a href="#como-corrigir-uma-cultura-que-ja-esta-ruim">Como corrigir uma cultura que já está ruim</a></li><li><a href="#exemplos-reais-como-a-cultura-aparece-na-marcenaria">Exemplos reais — como a cultura aparece na marcenaria</a></li><li><a href="#erros-comuns">Erros comuns</a></li><li><a href="#perguntas-que-o-lider-deve-fazer">Perguntas que o líder deve fazer</a></li><li><a href="#exercicios-do-modulo-2">Exercícios do Módulo 2</a></li><li><a href="#frases-de-impacto-do-modulo-2">Frases de impacto do Módulo 2</a></li><li><a href="#entregavel-do-modulo-2">Entregável do Módulo 2</a></li></ol></div>
+  <hr>
+<h2 id="a-metafora-que-explica-tudo">A metáfora que explica tudo</h2>
+<p>Você pega uma chapa de MDF. Por fora, revestimento perfeito — cor certa, textura boa, brilho no ponto. Bonita.</p>
+<p>Aí você corta e olha o miolo. Se o miolo é ruim, o parafuso não segura, a dobradiça arranca, o móvel empena em seis meses. E o cliente não vê o miolo — mas sente a consequência dele todo dia.</p>
+<p><strong>Cultura é o miolo. O que está no quadro da parede é o revestimento.</strong></p>
+<p>A maioria dos donos de PME investe no revestimento: manda fazer um quadro bonito com "Qualidade, Compromisso, Respeito e Inovação", pendura na recepção e acha que criou cultura. Não criou. Criou decoração.</p>
+<p>Cultura é o que acontece na quinta-feira às 16h40 quando o cliente liga bravo, o montador sumiu e ninguém está olhando.</p>
+<hr>
+<h2 id="definicao-pratica-a-unica-que-importa">Definição prática (a única que importa)</h2>
+<blockquote><p><strong>Cultura é o comportamento que a sua empresa repete quando ninguém está mandando.</strong></p></blockquote>
+<p>E ela se forma por um mecanismo só:</p>
+<pre>CULTURA = O PIOR COMPORTAMENTO QUE O DONO TOLERA</pre>
+<p>Não é o que você fala. Não é o que você escreve. É o que você <strong>deixa passar</strong>.</p>
+<h3 id="como-funciona-na-pratica-passo-a-passo">Como funciona na prática, passo a passo</h3>
+<ol><li>O marceneiro chega 20 minutos atrasado.</li><li>Você vê. Não fala nada — está no telefone com cliente, deixa pra depois.</li><li>Ele percebe que você viu e não falou.</li><li><strong>Nesse instante, o horário da empresa mudou.</strong> Não porque você anunciou, mas porque você validou por omissão.</li><li>Na semana seguinte, ele chega 25 minutos atrasado. E mais dois colegas testam.</li><li>Em dois meses, o horário real da empresa é 20 minutos depois do horário oficial.</li><li>Você reclama numa reunião: "pessoal, tem gente chegando atrasado". Todo mundo ouve e ninguém muda — porque a regra real já é outra, e uma reclamação genérica não desfaz dois meses de tolerância.</li></ol>
+<p><strong>Isso vale pra tudo:</strong> limpeza do posto, uso de EPI, jeito de falar com o colega, qualidade do acabamento, respeito ao checklist, uso do celular na produção.</p>
+<blockquote><p><strong>Frase pra colar na parede:</strong> <em>"Sua cultura não é o que você prega. É o que você tolera."</em></p></blockquote>
+<hr>
+<h2 id="os-4-lugares-onde-a-cultura-realmente-e-escrita">Os 4 lugares onde a cultura realmente é escrita</h2>
+<p>Esqueça o quadro. A cultura da sua empresa está escrita em quatro lugares, e todos são de decisão sua.</p>
+<h3 id="1-quem-voce-contrata">1. Quem você contrata</h3>
+<p>Cada pessoa que entra desloca a média. Se você contrata alguém que não se importa com acabamento porque estava com pressa, você acabou de dizer pra todo mundo que acabamento é negociável quando a agenda aperta.</p>
+<h3 id="2-quem-voce-promove">2. Quem você promove</h3>
+<p><strong>Este é o mais poderoso de todos.</strong> A promoção é o comunicado mais claro que uma empresa emite. Quando você promove o cara que entrega número mas trata mal os outros, você anunciou pra empresa inteira: <em>"aqui, resultado compra licença pra ser babaca."</em> Ninguém vai te dizer isso na cara. Todo mundo entendeu.</p>
+<h3 id="3-quem-voce-demite-e-quem-voce-nao-demite">3. Quem você demite (e quem você não demite)</h3>
+<p>Manter alguém que viola o valor todo dia é a prova de que o valor não vale. Cada dia a mais que o "talentoso tóxico" fica, seus valores valem menos.</p>
+<h3 id="4-o-que-voce-faz-quando-da-conflito-entre-valor-e-dinheiro">4. O que você faz quando dá conflito entre valor e dinheiro</h3>
+<p>O teste real. Cliente grande pede uma coisa que fere seu padrão. Você cede? Se ceder uma vez e a equipe ver, o valor virou preferência.</p>
+<p><strong>Exemplo real de marcenaria:</strong> valor declarado "a gente não entrega móvel com defeito". Obra atrasada, cliente pressionando, uma porta com empeno leve. O dono manda montar assim mesmo "e a gente troca depois". A equipe inteira aprendeu: o valor vale até o prazo apertar. Na obra seguinte, ninguém mais avisa quando vê defeito — pra que, se vai montar do mesmo jeito?</p>
+<hr>
+<h2 id="como-a-cultura-nasce-numa-pme-as-3-fases">Como a cultura nasce numa PME (as 3 fases)</h2>
+<div class="tabwrap"><table><thead><tr><th>Fase</th><th>Como a cultura funciona</th><th>Risco</th></tr></thead><tbody><tr><td><strong>1 a 8 pessoas</strong></td><td>Cultura = personalidade do dono. Todo mundo vê o dono todo dia e copia. Não precisa estar escrita.</td><td>Nenhum grande. Funciona.</td></tr><tr><td><strong>9 a 30 pessoas</strong></td><td>O dono não alcança mais todo mundo. Surgem "subculturas": o time da fábrica tem uma, o da obra tem outra, o do escritório tem outra.</td><td><strong>Aqui é onde quebra.</strong> Se não escrever agora, cada líder cria a sua versão.</td></tr><tr><td><strong>30+ pessoas</strong></td><td>Cultura só existe se estiver escrita, treinada, medida e cobrada. Não sobrevive por osmose.</td><td>Empresa vira "cada um faz do seu jeito" e o dono não entende por quê.</td></tr></tbody></table></div>
+<p>Se você tem mais de 20 pessoas na operação, <strong>você está na fase em que precisa escrever.</strong> Não é burocracia — é a única forma de a cultura chegar em quem não convive com você diariamente.</p>
+<hr>
+<h2 id="o-metodo-miolo-5-passos-para-implantar-cultura-de-verdade">O Método MIOLO — 5 passos para implantar cultura de verdade</h2>
+<pre>M — MODELAR      O dono vive primeiro. Sem isso, o resto é teatro.
+I — INEGOCIÁVEIS Definir 4 a 6 valores com comportamento observável.
+O — OBSERVÁVEL   Traduzir cada valor em "faz assim / não faz assim".
+L — LEMBRAR      Repetir em ritual fixo até virar linguagem da casa.
+O — ONERAR       Ter consequência real: promove, corrige, desliga.</pre>
+<p>O passo que todo mundo pula é o <strong>último</strong>. Valor sem consequência é frase.</p>
+<hr>
+<h2 id="m-modelar-o-dono-e-o-produto-que-a-equipe-copia">M — MODELAR: o dono é o produto que a equipe copia</h2>
+<p>Antes de escrever qualquer valor, faça esse teste honesto:</p>
+<div class="tabwrap"><table><thead><tr><th>Se você...</th><th>A equipe aprende que...</th></tr></thead><tbody><tr><td>Chega depois de todo mundo</td><td>Horário é pra funcionário</td></tr><tr><td>Fala mal de um funcionário na frente de outro</td><td>Aqui se fala pelas costas</td></tr><tr><td>Promete prazo pro cliente sem consultar a fábrica</td><td>Comercial manda na produção</td></tr><tr><td>Nunca admite que errou</td><td>Errar é vergonha, então esconde-se o erro</td></tr><tr><td>Muda a decisão toda semana</td><td>Não vale a pena executar direito, vai mudar mesmo</td></tr><tr><td>Resolve problema pulando o líder</td><td>O líder não tem autoridade</td></tr><tr><td>Atende celular no meio da reunião</td><td>Reunião não é importante</td></tr><tr><td>Não cumpre o que prometeu ao funcionário</td><td>Promessa aqui não vale</td></tr></tbody></table></div>
+<p><strong>O item mais destrutivo é o penúltimo — pular o líder.</strong> Você criou um encarregado, deu o cargo, e aí o marceneiro te procura direto com um problema e você resolve. Em três semanas ninguém mais procura o encarregado. Você criou o cargo e matou a função.</p>
+<p><strong>Regra prática:</strong> quando alguém te procurar com um assunto que é do líder, sua resposta padrão é:</p>
+<blockquote><p><em>"Boa pergunta. Já falou com o [líder]? Fala com ele, e se vocês travarem, vocês dois me chamam juntos."</em></p></blockquote>
+<p>Custa 8 segundos. Constrói autoridade real.</p>
+<hr>
+<h2 id="i-inegociaveis-como-criar-valores-que-valem-alguma-coisa">I — INEGOCIÁVEIS: como criar valores que valem alguma coisa</h2>
+<h2 id="o-que-nao-fazer">O que não fazer</h2>
+<p>Não copie da internet. "Ética, Inovação, Excelência, Comprometimento" não significa nada. Ninguém sabe o que fazer diferente amanhã por causa disso.</p>
+<p><strong>Teste do valor inútil:</strong> se o valor contrário é absurdo, o valor é inútil. Ninguém escreve "aqui a gente é antiético". Portanto "ética" não é um valor — é um pressuposto.</p>
+<p><strong>Teste do valor bom:</strong> existe uma empresa boa que faria o contrário? Se sim, você tem um valor de verdade.</p>
+<ul><li>"A gente prefere avisar o problema cedo do que resolver ele sozinho depois." → Existe empresa que prefere o contrário (autonomia total). Logo, é um valor real.</li><li>"A gente entrega no prazo mesmo que custe margem." → Existe empresa que prioriza margem. Logo, é valor real.</li></ul>
+<h2 id="como-descobrir-os-seus-valores-exercicio-de-90-minutos">Como descobrir os SEUS valores (exercício de 90 minutos)</h2>
+<p>Você não inventa valores. Você <strong>descobre</strong> os que já existem e escolhe quais quer manter.</p>
+<p><strong>Passo 1 — Liste 3 pessoas que você contrataria de novo agora mesmo.</strong> Escreva ao lado de cada uma: <em>o que essa pessoa faz que eu queria que todo mundo fizesse?</em></p>
+<p><strong>Passo 2 — Liste 2 pessoas que você desligou (ou queria ter desligado).</strong> Escreva: <em>qual comportamento tornou impossível manter essa pessoa?</em></p>
+<p><strong>Passo 3 — Liste os 3 momentos de maior orgulho da empresa.</strong> <em>Que comportamento tornou aquilo possível?</em></p>
+<p><strong>Passo 4 — Liste os 3 momentos de maior vergonha.</strong> <em>Que comportamento causou aquilo?</em></p>
+<p><strong>Passo 5 — Cruze.</strong> Os padrões que aparecem em mais de uma lista são seus valores reais. Escolha de 4 a 6. Nunca mais de 6 — ninguém decora 8 valores, e valor que não se lembra não se aplica.</p>
+<h2 id="como-escrever-cada-valor-a-estrutura-de-4-linhas">Como escrever cada valor (a estrutura de 4 linhas)</h2>
+<p>Todo valor precisa de quatro coisas. Se falta alguma, não é valor, é slogan.</p>
+<pre>VALOR: [nome curto e memorável — de preferência com o jeito de falar da casa]
+
+O QUE SIGNIFICA: [1 frase, direta]
+
+NA PRÁTICA, ISSO É:      NA PRÁTICA, ISSO NÃO É:
+- comportamento visível  - comportamento visível
+- comportamento visível  - comportamento visível
+- comportamento visível  - comportamento visível
+
+COMO A GENTE COBRA: [o que acontece quando alguém não vive isso]</pre>
+<p>O bloco <strong>"NÃO É"</strong> é o mais importante e o que ninguém escreve. É ele que resolve discussão.</p>
+<hr>
+<h2 id="6-valores-prontos-escritos-do-jeito-certo-modelo-para-marcen">6 valores prontos, escritos do jeito certo — modelo para marcenaria</h2>
+<p>Adapte ao seu jeito de falar. Não copie palavra por palavra: se não soar como você, a equipe percebe.</p>
+<pre>═══════════════════════════════════════════════════════════════
+VALOR 1 — PROBLEMA AVISADO CEDO NÃO É PROBLEMA
+
+O QUE SIGNIFICA: Aqui, quem avisa cedo é protegido. Quem esconde
+e deixa estourar, responde.
+
+NA PRÁTICA, ISSO É:                  NA PRÁTICA, ISSO NÃO É:
+- Ligar às 9h dizendo que a peça     - Descobrir na sexta que o material
+  veio errada, não às 17h              não chegou na segunda
+- Avisar que não vai dar o prazo     - "Achei que ia dar tempo"
+  3 dias antes, não no dia           - Montar por cima do defeito
+- Dizer "não entendi" na hora que      esperando que ninguém veja
+  recebe a tarefa                    - Ficar quieto pra não levar bronca
+
+COMO A GENTE COBRA: Quem avisa cedo nunca leva CORTE pelo problema —
+leva reconhecimento. Quem esconde leva CORTE pelo esconder, não pelo erro.
+═══════════════════════════════════════════════════════════════
+
+VALOR 2 — QUEM FAZ, CONFERE
+
+O QUE SIGNIFICA: A conferência é parte do trabalho, não uma etapa
+de outra pessoa. Ninguém entrega pra ser corrigido.
+
+NA PRÁTICA, ISSO É:                  NA PRÁTICA, ISSO NÃO É:
+- Medir de novo antes de cortar      - "O conferente que vê isso"
+- Conferir a lista antes de fechar   - Entregar torto porque "dá pra
+  a embalagem                          ajustar na obra"
+- Testar a porta antes de dizer      - Mandar pro próximo sem olhar
+  que terminou
+
+COMO A GENTE COBRA: Item que volta de obra por falta de conferência
+gera registro. Duas vezes no mês, CORTE com registro.
+═══════════════════════════════════════════════════════════════
+
+VALOR 3 — O COMBINADO É O COMBINADO
+
+O QUE SIGNIFICA: Prazo dado é dívida. Vale pra cliente, pra colega
+e pro dono.
+
+NA PRÁTICA, ISSO É:                  NA PRÁTICA, ISSO NÃO É:
+- Prometer a data que você consegue  - Prometer o que o outro quer ouvir
+- Renegociar antes de estourar       - Sumir quando não vai dar
+- Cumprir o que disse na reunião     - "Ah, eu esqueci"
+  de segunda
+
+COMO A GENTE COBRA: Prazo não cumprido sem aviso prévio é tratado
+como falha de gestão, não como imprevisto.
+═══════════════════════════════════════════════════════════════
+
+VALOR 4 — CAPRICHO NÃO É EXTRA, É O PRODUTO
+
+O QUE SIGNIFICA: O cliente paga alto padrão. Alto padrão é acabamento,
+não só móvel.
+
+NA PRÁTICA, ISSO É:                  NA PRÁTICA, ISSO NÃO É:
+- Limpar a obra antes de sair        - "Depois a faxina resolve"
+- Regular a porta até ficar no ponto - Deixar 2mm de folga "que ninguém vê"
+- Proteger o piso do cliente         - Deixar respingo e resolver depois
+- Embalar como se fosse pra viajar   - "É só até a obra"
+
+COMO A GENTE COBRA: Acabamento fora do padrão volta pra ser refeito
+pela mesma pessoa, no mesmo dia.
+═══════════════════════════════════════════════════════════════
+
+VALOR 5 — CORRIGE NA FRENTE, ELOGIA NA FRENTE, HUMILHA NUNCA
+
+O QUE SIGNIFICA: Aqui se fala olho no olho. Não se fala pelas costas,
+e não se destrói ninguém em público.
+
+NA PRÁTICA, ISSO É:                  NA PRÁTICA, ISSO NÃO É:
+- Falar direto com quem errou        - Reclamar do colega pro dono
+- Chamar de lado quando for pesado   - Piada que humilha
+- Reconhecer o colega na reunião     - Silêncio e cara feia
+                                     - "Todo mundo sabe, menos ele"
+
+COMO A GENTE COBRA: Fofoca e humilhação são degrau 2 direto —
+não tem conversa informal.
+═══════════════════════════════════════════════════════════════
+
+VALOR 6 — MATERIAL DA EMPRESA É DINHEIRO DA EMPRESA
+
+O QUE SIGNIFICA: Chapa, fita, ferragem e ferramenta são caixa.
+Desperdício é prejuízo, não sobra.
+
+NA PRÁTICA, ISSO É:                  NA PRÁTICA, ISSO NÃO É:
+- Aproveitar retalho antes de abrir  - Abrir chapa nova por comodidade
+  chapa nova                         - Deixar ferramenta na obra
+- Devolver ferragem que sobrou       - "Levei um pedaço, era sobra"
+- Cuidar da ferramenta como se       - Perder e não avisar
+  fosse sua
+
+COMO A GENTE COBRA: Desvio de material é falta grave — degrau 3 direto.
+═══════════════════════════════════════════════════════════════</pre>
+<hr>
+<h2 id="o-observavel-o-teste-de-que-o-valor-esta-bem-escrito">O — OBSERVÁVEL: o teste de que o valor está bem escrito</h2>
+<p>Aplique estes 3 testes em cada valor que você escreveu:</p>
+<p><strong>Teste 1 — Teste do estagiário.</strong> Você entrega o valor pra alguém que entrou ontem. Ele consegue saber, sozinho, se um comportamento específico está dentro ou fora? Se não, está genérico demais.</p>
+<p><strong>Teste 2 — Teste da câmera.</strong> Se eu apontasse uma câmera pra sua fábrica, eu conseguiria filmar o valor acontecendo? "Respeito" não se filma. "Chama de lado quando for corrigir" se filma.</p>
+<p><strong>Teste 3 — Teste do custo.</strong> Esse valor já te fez perder dinheiro alguma vez? Se nunca custou nada, provavelmente você não vive ele. Valor real tem preço.</p>
+<hr>
+<h2 id="l-lembrar-como-comunicar-cultura-sem-virar-palestra">L — LEMBRAR: como comunicar cultura sem virar palestra</h2>
+<p>Cultura não se comunica em evento. Se comunica por <strong>repetição em ritual</strong>.</p>
+<h2 id="os-7-rituais-que-instalam-cultura-escolha-4-faca-sempre">Os 7 rituais que instalam cultura (escolha 4, faça sempre)</h2>
+<div class="tabwrap"><table><thead><tr><th>Ritual</th><th>Frequência</th><th>Como fazer</th><th>Tempo</th></tr></thead><tbody><tr><td><strong>Valor da semana</strong></td><td>Semanal</td><td>Na reunião de segunda, 1 valor é citado com <strong>um exemplo real da semana anterior</strong> — bom ou ruim, sem expor pessoa</td><td>3 min</td></tr><tr><td><strong>Reconhecimento nominal</strong></td><td>Semanal</td><td>Alguém é citado por ter vivido um valor. Nominal, específico, na frente do time</td><td>2 min</td></tr><tr><td><strong>História de origem</strong></td><td>Onboarding</td><td>Todo novo entra ouvindo do dono como a empresa começou e por que esses valores existem</td><td>20 min</td></tr><tr><td><strong>Prova de fogo contada</strong></td><td>Mensal</td><td>Conte um caso em que a empresa <strong>perdeu dinheiro</strong> pra manter um valor. É a prova de que vale</td><td>5 min</td></tr><tr><td><strong>Valor na avaliação</strong></td><td>Trimestral</td><td>Metade da nota da avaliação é comportamento (valores), não só entrega</td><td>—</td></tr><tr><td><strong>Valor na parede — com o "não é"</strong></td><td>Fixo</td><td>Cartaz com as duas colunas, não só o nome do valor</td><td>—</td></tr><tr><td><strong>Pergunta de fechamento</strong></td><td>Diário</td><td>Encarregado fecha o dia com: "algo que fugiu do nosso padrão hoje?"</td><td>2 min</td></tr></tbody></table></div>
+<p><strong>O ritual mais poderoso é o "prova de fogo contada".</strong> As pessoas não acreditam em valor até verem que ele custou caro e foi mantido mesmo assim.</p>
+<p>Exemplo: <em>"Vocês lembram da obra do [bairro]? A gente refez três portas do zero, perdeu R$ 4.200 e a obra atrasou 5 dias. O cliente nem tinha reclamado. A gente refez porque estava fora do nosso padrão. É isso que significa 'capricho não é extra'."</em></p>
+<p>Uma história dessas vale mais que dez reuniões sobre qualidade.</p>
+<hr>
+<h2 id="o-onerar-cultura-sem-consequencia-e-decoracao">O — ONERAR: cultura sem consequência é decoração</h2>
+<p>Aqui é onde 95% das empresas param — e é por isso que a cultura delas não existe.</p>
+<h2 id="a-escada-de-consequencia-cultural">A escada de consequência cultural</h2>
+<div class="tabwrap"><table><thead><tr><th>Situação</th><th>Ação</th><th>Quem faz</th></tr></thead><tbody><tr><td>Desvio pequeno, 1ª vez</td><td>Correção no momento, direta, sem drama. "Aqui a gente faz assim, ó."</td><td>Líder imediato</td></tr><tr><td>Desvio repetido</td><td>CORTE verbal (Módulo 3) citando o valor pelo nome</td><td>Líder imediato</td></tr><tr><td>Desvio repetido após CORTE</td><td>CORTE com registro escrito</td><td>Líder + dono</td></tr><tr><td>Violação grave de valor (desvio, humilhação, mentira)</td><td>Degrau 3 direto, sem escada</td><td>Dono</td></tr><tr><td>Violação sistemática</td><td>Desligamento</td><td>Dono</td></tr></tbody></table></div>
+<p><strong>A regra que dá dente à cultura:</strong></p>
+<blockquote><p>Comportamento pode ser corrigido em qualquer degrau. Mas <strong>quando o valor é violado, o CORTE cita o valor pelo nome.</strong></p></blockquote>
+<p>Não é "você deixou de conferir". É: <em>"Isso aqui fere o 'quem faz, confere'. Vou te explicar por quê."</em></p>
+<p>Essa diferença de linguagem é o que transforma regra em cultura. Em seis meses, a equipe começa a usar o nome do valor sozinha — e aí você sabe que pegou.</p>
+<h2 id="o-momento-em-que-a-cultura-e-decidida-de-verdade">O momento em que a cultura é decidida de verdade</h2>
+<p>Vai chegar um dia em que o seu melhor funcionário — o que produz mais, o que você não quer perder — vai violar um valor de forma clara e pública.</p>
+<p><strong>Esse dia é a sua cultura.</strong></p>
+<p>Se você fizer vista grossa, todos os seus valores morrem naquele instante. Se você aplicar a consequência, mesmo doendo, todos os seus valores nascem naquele instante.</p>
+<p>Não tem meio-termo. E a equipe inteira está assistindo, mesmo quando parece que ninguém percebeu.</p>
+<blockquote><p><strong>Frase pra colar na parede:</strong> <em>"Sua cultura é testada no dia em que aplicá-la vai te custar caro. Antes disso, é só conversa."</em></p></blockquote>
+<hr>
+<h2 id="como-corrigir-uma-cultura-que-ja-esta-ruim">Como corrigir uma cultura que já está ruim</h2>
+<p>Se sua empresa já tem cultura ruim instalada — fofoca, gente que não avisa problema, "cada um por si" — não adianta pendurar quadro. Segue o protocolo de virada:</p>
+<h3 id="protocolo-virada-90-dias">Protocolo VIRADA (90 dias)</h3>
+<p><strong>Dias 1–7 — Nomear o problema em público</strong> Reúna a equipe. Sem rodeio, sem culpar ninguém individualmente:</p>
+<pre>"Eu preciso falar de uma coisa que é minha responsabilidade.
+A gente deixou algumas coisas se instalarem aqui que não são o que
+eu quero pra essa empresa: [cite 2 ou 3 comportamentos concretos,
+sem nome de pessoa].
+
+Isso é culpa minha, não de vocês — eu vi acontecer e não falei nada,
+e quando o dono não fala, vira regra.
+
+A partir de hoje muda. Vou explicar exatamente como."</pre>
+<p><strong>Por que assumir a culpa:</strong> você desarma a defensiva. Se você culpar a equipe, todo mundo se fecha. Se você assumir, todo mundo escuta. E é verdade — foi você que tolerou.</p>
+<p><strong>Dias 8–15 — Publicar os valores com "é / não é"</strong> Reunião de 1 hora. Apresenta os 4 a 6 valores. Cada um com as duas colunas. Pergunta ao final: <em>"tem alguma coisa aqui que hoje a gente não consegue cumprir por causa de um problema de processo?"</em> — e resolve o que aparecer. Muitas violações de valor são falha de processo disfarçada.</p>
+<p><strong>Dias 16–30 — Só corrigir, sem punir</strong> Período de graça declarado: <em>"nos próximos 15 dias, ninguém vai levar advertência por isso. Vou só corrigir toda vez que eu ver."</em> Corrija muito, calmamente, sem drama. Todo dia.</p>
+<p><strong>Dias 31–90 — Aplicar consequência sem exceção</strong> Acabou o período de graça. A partir daqui, CORTE. E a primeira aplicação precisa ser <strong>em alguém importante</strong>, não no mais fraco. Se a primeira consequência cair no auxiliar de 2 meses e o marceneiro antigo continuar fazendo igual, a virada morre no dia 32.</p>
+<p><strong>Dia 90 — Medir e comunicar</strong> Volte na reunião e mostre o que mudou, com dado: retrabalho, atraso, retorno de obra, clima. Reconheça nominalmente quem virou a chave.</p>
+<h3 id="o-que-esperar">O que esperar</h3>
+<ul><li><strong>10% a 20% da equipe vai sair</strong> nos primeiros 6 meses. É esperado e é bom. Quem vive de cultura frouxa não fica em cultura firme.</li><li><strong>Os primeiros 30 dias parecem piorar.</strong> Você está tornando visível o que estava escondido. Aguente.</li><li><strong>Vai vir teste.</strong> Alguém importante vai testar o limite pra ver se é sério. É o momento decisivo.</li></ul>
+<hr>
+<h2 id="exemplos-reais-como-a-cultura-aparece-na-marcenaria">Exemplos reais — como a cultura aparece na marcenaria</h2>
+<h3 id="caso-1-a-marcenaria-dos-20-minutos">Caso 1 — A marcenaria dos "20 minutos"</h3>
+<p>Empresa de 18 pessoas. O dono reclamava há dois anos que a produção "não rende". Fomos medir: a fábrica começava a produzir de verdade 42 minutos depois do horário oficial. Ninguém estava fazendo corpo mole — o padrão real da casa era esse, e todo mundo cumpria o padrão real.</p>
+<p><strong>Causa:</strong> o próprio dono chegava às 8h30 e a fábrica abria às 7h30. <strong>Solução:</strong> o dono passou a chegar 7h15 por 60 dias. Não falou nada. Em 3 semanas a produção começava 7h40. Em 60 dias, 7h35. <strong>Ganho:</strong> 35 minutos × 18 pessoas × 22 dias = <strong>231 horas/mês</strong>, o equivalente a 1,3 funcionário. Custo: zero.</p>
+<h3 id="caso-2-o-nao-e-comigo">Caso 2 — O "não é comigo"</h3>
+<p>Marcenaria de 30 pessoas, retrabalho alto. Peça errada saía da fábrica, chegava na obra, voltava. Todo mundo dizia "não fui eu".</p>
+<p><strong>Causa:</strong> ninguém era dono do ambiente. Cada um fazia uma parte. <strong>Solução:</strong> valor novo — "<strong>o ambiente tem um nome</strong>". Cada ambiente passou a ter um responsável nominal do corte à embalagem, com o nome escrito na etiqueta da embalagem. <strong>Ganho:</strong> itens faltantes em obra caíram de 9/mês para 2/mês em 90 dias. Não mudou processo — mudou responsabilidade.</p>
+<h3 id="caso-3-o-valor-que-custou-r-40-mil">Caso 3 — O valor que custou R$ 40 mil</h3>
+<p>Marcenaria de alto padrão. Cliente grande, obra de R$ 340 mil, pediu pra usar uma ferragem mais barata que a especificada "pra economizar", mantendo o preço. O dono recusou e perdeu a obra.</p>
+<p>Contou pra equipe na reunião de segunda, com o número. Em duas semanas, três pessoas diferentes recusaram atalhos de qualidade que antes teriam aceitado.</p>
+<p><strong>Lição:</strong> valor só é acreditado quando a equipe vê que ele foi caro.</p>
+<h3 id="caso-4-a-promocao-que-matou-a-cultura">Caso 4 — A promoção que matou a cultura</h3>
+<p>Marcenaria de 22 pessoas. O dono promoveu a encarregado o marceneiro mais produtivo — que era conhecido por gritar com auxiliar e nunca admitir erro. Justificativa: "ele produz o dobro".</p>
+<p>Em 4 meses: dois auxiliares pediram demissão, o clima azedou, e o pessoal parou de avisar problema (porque avisar significava levar bronca). O retrabalho subiu 40%.</p>
+<p><strong>Lição:</strong> promoção é o comunicado mais alto que uma empresa faz. Essa promoção comunicou "aqui, quem produz pode maltratar".</p>
+<hr>
+<h2 id="erros-comuns">Erros comuns</h2>
+<div class="tabwrap"><table><thead><tr><th>#</th><th>Erro</th><th>Por que mata a cultura</th></tr></thead><tbody><tr><td>1</td><td>Copiar valores de empresa grande</td><td>Não é a sua verdade. A equipe percebe em uma semana.</td></tr><tr><td>2</td><td>Ter mais de 6 valores</td><td>Ninguém decora. Valor não lembrado é valor não aplicado.</td></tr><tr><td>3</td><td>Valor sem coluna "não é"</td><td>Vira interpretação. Cada líder aplica o dele.</td></tr><tr><td>4</td><td>Anunciar cultura em evento único</td><td>Cultura é repetição, não lançamento.</td></tr><tr><td>5</td><td>Não aplicar no funcionário-chave</td><td>Cria a regra "vale pra uns". Mata tudo.</td></tr><tr><td>6</td><td>Dono não vive o valor</td><td>Teatro. Custo de credibilidade que não se recupera fácil.</td></tr><tr><td>7</td><td>Confundir cultura com clima</td><td>Cultura é padrão de comportamento. Clima é como as pessoas se sentem. Empresa pode ter clima ótimo e cultura péssima.</td></tr><tr><td>8</td><td>Achar que cultura é "ser legal"</td><td>Cultura firme é mais exigente, não mais confortável.</td></tr><tr><td>9</td><td>Não colocar cultura na avaliação</td><td>O que não é medido não é levado a sério.</td></tr><tr><td>10</td><td>Corrigir comportamento sem citar o valor</td><td>Perde a chance de ensinar o padrão. Vira bronca solta.</td></tr></tbody></table></div>
+<hr>
+<h2 id="perguntas-que-o-lider-deve-fazer">Perguntas que o líder deve fazer</h2>
+<p><strong>Sobre si mesmo:</strong></p>
+<ol><li>Qual comportamento eu tolero hoje que eu não aceitaria de mim mesmo?</li><li>Qual valor meu eu já quebrei na frente da equipe? Eu reconheci?</li><li>A última promoção que eu fiz comunicou o quê?</li><li>Quando foi a última vez que um valor meu me custou dinheiro?</li></ol>
+<p><strong>Para a equipe (uma por vez, no one-on-one):</strong></p>
+<ol><li>"Se eu não estivesse aqui, o que mudaria no jeito de trabalhar?"</li><li>"Tem alguma coisa que a gente fala que faz, mas na prática não faz?"</li><li>"O que alguém precisa fazer aqui pra ser respeitado?"</li><li>"O que faz uma pessoa ser demitida aqui?" — se as respostas divergirem muito, sua cultura não está clara.</li></ol>
+<hr>
+<h2 id="exercicios-do-modulo-2">Exercícios do Módulo 2</h2>
+<h3 id="exercicio-1-a-lista-da-tolerancia-20-min">Exercício 1 — A lista da tolerância (20 min)</h3>
+<p>Escreva os 5 comportamentos que te incomodam e que você nunca abordou. Ao lado de cada um: há quanto tempo acontece, e quantas pessoas já copiaram. <strong>Essa lista é a sua cultura real hoje.</strong> Escolha um e resolva essa semana.</p>
+<h3 id="exercicio-2-descoberta-de-valores-90-min">Exercício 2 — Descoberta de valores (90 min)</h3>
+<p>Faça o exercício dos 5 passos (páginas acima). Escreva 4 a 6 valores com as duas colunas. Não mostre pra ninguém ainda.</p>
+<h3 id="exercicio-3-teste-de-alinhamento-30-min">Exercício 3 — Teste de alinhamento (30 min)</h3>
+<p>Pergunte separadamente a 5 pessoas da equipe: <em>"o que faz uma pessoa ser bem vista aqui?"</em> e <em>"o que faz alguém ser demitido aqui?"</em>. Anote. Compare com os valores que você escreveu. <strong>A distância entre as duas listas é o tamanho do seu trabalho.</strong></p>
+<h3 id="exercicio-4-a-prova-de-fogo-15-min">Exercício 4 — A prova de fogo (15 min)</h3>
+<p>Escreva a história de uma vez em que manter um padrão custou dinheiro à sua empresa. Com número. Conte na próxima reunião de segunda.</p>
+<h3 id="exercicio-5-auditoria-da-promocao-20-min">Exercício 5 — Auditoria da promoção (20 min)</h3>
+<p>Liste as últimas 3 promoções que você fez. Ao lado: <em>que mensagem cada uma comunicou pra empresa?</em> Seja honesto.</p>
+<hr>
+<h2 id="frases-de-impacto-do-modulo-2">Frases de impacto do Módulo 2</h2>
+<ul><li><em>"Sua cultura não é o que você prega. É o que você tolera."</em></li><li><em>"Cultura é o miolo da chapa. O quadro na parede é o revestimento."</em></li><li><em>"A promoção é o comunicado mais alto que uma empresa faz. Cuidado com o que você está anunciando."</em></li><li><em>"Valor que nunca te custou nada não é valor. É preferência."</em></li><li><em>"Se o valor contrário é absurdo, o valor é inútil."</em></li><li><em>"Cultura firme não é cultura confortável. É mais exigente, não mais gentil."</em></li><li><em>"O dia em que aplicar o seu valor vai doer é o dia em que ele nasce ou morre."</em></li><li><em>"Todo mundo está assistindo o que você faz quando ninguém deveria estar assistindo."</em></li></ul>
+<hr>
+<h2 id="entregavel-do-modulo-2">Entregável do Módulo 2</h2>
+<ol><li>Documento de valores: 4 a 6 valores, cada um com "significa / é / não é / como cobramos".</li><li>Lista da tolerância preenchida, com 1 item já resolvido.</li><li>Calendário dos 4 rituais escolhidos, com dia e hora fixos.</li><li>Uma "prova de fogo" escrita e contada à equipe.</li></ol>
+<p><strong>Próximo módulo:</strong> Feedback — o Método CORTE. A ferramenta que faz a cultura sair do papel.</p>
+
+  <div class="rodape"><span>FASE 4 · MÓDULO 02 · Fase 4 — Liderança</span><span>Material de formação em gestão para donos de PME</span></div>
+  <div class="direitos"><img src="data:image/png;base64,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" alt="ARESTA APM"><span>&copy; 2026 ARESTA APM &middot; Conteúdo e método proprietários. Uso restrito ao aluno matriculado — proibida a reprodução, revenda ou redistribuição, total ou parcial.</span></div>
+</div>
+
+<script>
+// mantem a marca digitada pelo usuario neste navegador
+(function(){
+  var m=document.querySelector('.marca');
+  var k='mkt-marca';
+  try{ var s=localStorage.getItem(k); if(s) m.innerHTML=s; }catch(e){}
+  m.addEventListener('blur',function(){ try{localStorage.setItem(k,m.innerHTML);}catch(e){} });
+})();
+</script>
+</body>
+</html>

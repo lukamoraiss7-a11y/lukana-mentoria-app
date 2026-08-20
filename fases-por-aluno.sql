@@ -21,8 +21,8 @@
 -- que estoura dentro de RLS não nega bonito: derruba a consulta inteira e o
 -- aluno vê a área em branco.
 --
--- O conteúdo dessa coluna é o id do módulo (0 a 7), não o número da fase.
--- Fase 1 = '0' … Fase 6 = '5', Bônus 1 = '6', Bônus 2 = '7'. Você nunca
+-- O conteúdo dessa coluna é o id do módulo (0 a 6), não o número da fase.
+-- Fase 1 = '0' … Fase 5 = '4', Bônus 1 = '5', Bônus 2 = '6'. Você nunca
 -- precisa saber disso: as funções lá embaixo recebem o número humano.
 alter table public.acesso
   add column if not exists fases text[] not null default '{}';
@@ -59,12 +59,12 @@ create policy "aluno le o conteudo"
 -- ═══════════════════════════════════════════════════════════════
 -- LIBERAR FASE PELO E-MAIL
 --
--- Você passa o número que usa para vender. 1 a 6 são as fases,
--- 7 é o Bônus 1 e 8 é o Bônus 2. A conversão para o id interno é
+-- Você passa o número que usa para vender. 1 a 5 são as fases,
+-- 6 é o Bônus 1 e 7 é o Bônus 2. A conversão para o id interno é
 -- feita aqui dentro — é exatamente onde o erro silencioso moraria.
 --
 --   select public.liberar_fases('aluno@email.com', '{1,3}');   -- só Fase 1 e 3
---   select public.liberar_fases('aluno@email.com', '{1,2,3,4,5,6,7,8}'); -- tudo
+--   select public.liberar_fases('aluno@email.com', '{1,2,3,4,5,6,7}'); -- tudo
 --   select public.bloquear_fases('aluno@email.com');           -- tira todas
 --   select * from public.listar_acessos();                     -- quem tem o quê
 --
@@ -89,13 +89,13 @@ begin
            ' — crie a conta primeiro em Authentication > Users';
   end if;
 
-  -- Fora de 1..8 é engano de digitação. Recusar é melhor do que gravar
+  -- Fora de 1..7 é engano de digitação. Recusar é melhor do que gravar
   -- uma fase que não existe e o aluno reclamar que não abre.
   select n into v_ruim from unnest(coalesce(p_fases,'{}'::int[])) n
-   where n < 1 or n > 8 limit 1;
+   where n < 1 or n > 7 limit 1;
   if v_ruim is not null then
     return 'numero de fase invalido: ' || v_ruim ||
-           ' — use 1 a 6 para as fases, 7 para o Bonus 1 e 8 para o Bonus 2';
+           ' — use 1 a 5 para as fases, 6 para o Bonus 1 e 7 para o Bonus 2';
   end if;
 
   select coalesce(array_agg(distinct (n - 1)::text), '{}')

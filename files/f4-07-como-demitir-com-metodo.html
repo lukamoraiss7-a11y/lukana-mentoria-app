@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MÓDULO 7 — COMO DEMITIR COM MÉTODO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --tinta:#2C2825; --ouro:#B8925A; --claro:#F5F1EA; --linha:#D8D2C7;
+  --fraco:#6E675E; --papel:#FFFFFF; --caixa:#FAF8F4;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+@page{size:A4;margin:14mm 13mm 13mm}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact;scroll-behavior:smooth}
+body{font:11pt/1.62 'Inter',-apple-system,'Helvetica Neue',Arial,sans-serif;
+  color:var(--tinta);background:var(--claro)}
+.folha{max-width:196mm;margin:0 auto;padding:14mm 10mm 20mm;background:var(--papel);
+  box-shadow:0 1px 3px rgba(0,0,0,.06)}
+
+/* cabecalho */
+.topo{display:flex;justify-content:space-between;align-items:flex-end;
+  border-bottom:1.5pt solid var(--tinta);padding-bottom:6pt;gap:12pt;flex-wrap:wrap}
+.marca{font:600 15pt/1 'Cormorant Garamond',Georgia,serif;letter-spacing:.22em;
+  text-transform:uppercase;outline:none}
+.marca small{display:block;font:400 6.5pt/1 'Inter',sans-serif;letter-spacing:.34em;
+  color:var(--fraco);margin-top:3pt}
+.marca:focus{background:#FFF6DF}
+.doc{text-align:right}
+.doc .fase{font-size:7pt;letter-spacing:.2em;color:var(--ouro);font-weight:600;
+  text-transform:uppercase}
+.doc .cod{font-size:7pt;letter-spacing:.18em;color:var(--fraco);margin-top:2pt}
+.regua{height:2.5pt;background:var(--ouro);margin:0 0 14pt}
+
+/* tipografia */
+h1{font:600 21pt/1.18 'Cormorant Garamond',Georgia,serif;letter-spacing:.01em;
+  margin:0 0 3pt}
+h1 + .lead{font-size:10.5pt;color:var(--fraco);font-style:italic;margin-bottom:14pt;
+  padding-bottom:10pt;border-bottom:.75pt solid var(--linha)}
+h2{font:600 10.5pt/1.25 'Inter',sans-serif;letter-spacing:.13em;text-transform:uppercase;
+  background:var(--claro);border-left:3pt solid var(--ouro);padding:6pt 8pt;
+  margin:22pt 0 9pt;break-after:avoid;page-break-after:avoid}
+h3{font:600 11.5pt/1.3 'Cormorant Garamond',Georgia,serif;letter-spacing:.02em;
+  margin:15pt 0 5pt;break-after:avoid;page-break-after:avoid}
+h4{font:600 8.5pt/1.25 'Inter',sans-serif;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--fraco);margin:12pt 0 4pt;break-after:avoid}
+p{margin:0 0 8pt;text-align:left}
+strong{font-weight:600}
+em{font-style:italic}
+a{color:var(--ouro);text-decoration:none}
+hr{border:none;border-top:.75pt solid var(--linha);margin:16pt 0}
+
+/* listas */
+ul,ol{margin:0 0 9pt 16pt}
+li{margin-bottom:3.5pt}
+ul.chk{list-style:none;margin-left:0}
+ul.chk li{display:flex;gap:7pt;align-items:flex-start;padding:3.5pt 0;
+  border-bottom:.5pt dotted var(--linha);break-inside:avoid}
+ul.chk li::before{content:"";flex:0 0 9.5pt;height:9.5pt;margin-top:2.5pt;
+  border:.9pt solid var(--tinta);border-radius:1pt;background:#fff}
+
+/* citacao / destaque */
+blockquote{border-left:2.5pt solid var(--ouro);background:var(--caixa);
+  padding:9pt 12pt;margin:11pt 0;break-inside:avoid}
+blockquote p:last-child{margin-bottom:0}
+
+/* codigo / templates ascii */
+pre{background:var(--caixa);border:.75pt solid var(--linha);border-radius:2pt;
+  padding:10pt 11pt;margin:11pt 0;overflow-x:auto;break-inside:avoid;
+  font:9pt/1.42 'SFMono-Regular',Menlo,Consolas,'Courier New',monospace;
+  white-space:pre;color:#332F2A}
+code{font:9.2pt/1.4 'SFMono-Regular',Menlo,Consolas,monospace;
+  background:var(--claro);padding:1pt 3pt;border-radius:2pt}
+pre code{background:none;padding:0;font-size:inherit}
+
+/* tabelas */
+.tabwrap{overflow-x:auto;margin:11pt 0}
+table{border-collapse:collapse;width:100%;font-size:9.3pt;break-inside:avoid}
+th{background:var(--claro);text-align:left;font-weight:600;font-size:7.5pt;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--fraco);
+  padding:5.5pt 7pt;border:.75pt solid var(--linha)}
+td{padding:5.5pt 7pt;border:.75pt solid var(--linha);vertical-align:top;line-height:1.42}
+tbody tr:nth-child(even){background:#FCFBF9}
+
+/* indice */
+.indice{background:var(--caixa);border:.75pt solid var(--linha);padding:11pt 13pt;
+  margin:0 0 18pt;break-inside:avoid}
+.indice h4{margin-top:0}
+.indice ol{margin:0 0 0 15pt;font-size:9.5pt;column-gap:18pt}
+.indice li{margin-bottom:2.5pt}
+.indice a{color:var(--tinta)}
+.indice a:hover{color:var(--ouro)}
+
+/* rodape */
+.rodape{margin-top:22pt;padding-top:6pt;border-top:.75pt solid var(--linha);
+  display:flex;justify-content:space-between;font-size:7.5pt;color:var(--fraco);
+  letter-spacing:.06em;gap:10pt;flex-wrap:wrap}
+
+/* direitos — a marca do Aresta e o aviso de propriedade.
+   Fica no rodape, nao no topo: o cabecalho e' do aluno (.marca editavel),
+   e a autoria do metodo nao disputa espaco com a marca dele. */
+.direitos{margin-top:7pt;display:flex;align-items:center;gap:7pt;
+  font-size:6.4pt;line-height:1.45;color:var(--fraco);letter-spacing:.02em}
+.direitos img{height:11pt;width:auto;flex-shrink:0;opacity:.85}
+@media print{.direitos{break-inside:avoid}}
+
+/* navegacao entre modulos (some na impressao) */
+.nav{max-width:196mm;margin:0 auto 10mm;padding:0 10mm;display:flex;
+  justify-content:space-between;gap:10pt;font-size:9pt}
+.nav a{display:inline-block;padding:6pt 11pt;border:.75pt solid var(--linha);
+  background:var(--papel);border-radius:2pt;color:var(--tinta)}
+.nav a:hover{border-color:var(--ouro);color:var(--ouro)}
+.topbar{max-width:196mm;margin:0 auto;padding:8mm 10mm 0;display:flex;
+  justify-content:space-between;font-size:9pt}
+.topbar a{color:var(--fraco)}
+.topbar a:hover{color:var(--ouro)}
+
+@media print{
+  body{background:#fff}
+  .folha{box-shadow:none;padding:0;max-width:none}
+  .nav,.topbar{display:none}
+  .indice{break-after:page}
+}
+@media (max-width:640px){
+  body{font-size:11.5pt}
+  .folha{padding:8mm 5mm 14mm}
+  pre{font-size:7.6pt}
+  table{font-size:8.6pt}
+  .doc{text-align:left}
+}
+</style>
+</head>
+<body>
+
+<div class="folha">
+  <div class="topo">
+    <div class="marca" contenteditable="true" spellcheck="false">SUA MARCA<small>MARCENARIA</small></div>
+    <div class="doc"><div class="fase">Fase 4 — Liderança</div><div class="cod">FASE 4 · MÓDULO 07</div></div>
+  </div>
+  <div class="regua"></div>
+
+  <h1>MÓDULO 7 — COMO DEMITIR COM MÉTODO</h1>
+  <div class="lead">Protocolo DESLIGA: sair sem destruir a pessoa nem expor a empresa</div>
+  <div class="indice"><h4>Neste módulo</h4><ol><li><a href="#a-verdade-sobre-demissao">A verdade sobre demissão</a></li><li><a href="#antes-de-demitir-as-5-perguntas-obrigatorias">Antes de demitir: as 5 perguntas obrigatórias</a></li><li><a href="#o-protocolo-desliga">O Protocolo DESLIGA</a></li><li><a href="#d-decisao">D — DECISÃO</a></li><li><a href="#a-regra-dos-3-dias">A regra dos 3 dias</a></li><li><a href="#o-teste-da-decisao-firme">O teste da decisão firme</a></li><li><a href="#regra-voce-nao-muda-de-ideia-na-conversa">Regra: você não muda de ideia na conversa</a></li><li><a href="#e-evidencia">E — EVIDÊNCIA</a></li><li><a href="#o-que-reunir-antes-pasta-fisica-ou-digital">O que reunir antes (pasta física ou digital)</a></li><li><a href="#por-que-documentar-te-protege">Por que documentar te protege</a></li><li><a href="#cuidados-juridicos-essenciais">⚠️ Cuidados jurídicos essenciais</a></li><li><a href="#s-script">S — SCRIPT</a></li><li><a href="#as-5-regras-da-conversa">As 5 regras da conversa</a></li><li><a href="#script-completo-desligamento-sem-justa-causa-desempenho">SCRIPT COMPLETO — Desligamento sem justa causa (desempenho)</a></li><li><a href="#script-desligamento-por-corte-de-custo-reestruturacao">SCRIPT — Desligamento por corte de custo / reestruturação</a></li><li><a href="#script-desligamento-de-funcionario-antigo-10-anos">SCRIPT — Desligamento de funcionário antigo (10+ anos)</a></li><li><a href="#script-justa-causa-so-com-advogado-envolvido">SCRIPT — Justa causa (só com advogado envolvido)</a></li><li><a href="#l-logistica">L — LOGÍSTICA</a></li><li><a href="#checklist-do-dia">Checklist do dia</a></li><li><a href="#regras-de-dia-e-hora">Regras de dia e hora</a></li><li><a href="#sobre-o-walk-out">Sobre o "walk out"</a></li><li><a href="#i-g-informar-a-equipe">I / G — INFORMAR A EQUIPE</a></li><li><a href="#comunique-no-mesmo-dia-sempre">Comunique no mesmo dia. Sempre.</a></li><li><a href="#modelo-de-comunicado-30-segundos-presencial-no-fim-do-turno">Modelo de comunicado (30 segundos, presencial, no fim do turno)</a></li><li><a href="#o-que-nunca-fazer">O que NUNCA fazer</a></li><li><a href="#o-efeito-na-equipe-o-que-esperar">O efeito na equipe — o que esperar</a></li><li><a href="#a-aprendizado-a-autopsia">A — APRENDIZADO: a autópsia</a></li><li><a href="#entrevista-de-desligamento-opcional-mas-recomendada">Entrevista de desligamento (opcional, mas recomendada)</a></li><li><a href="#os-15-erros-mais-comuns">Os 15 erros mais comuns</a></li><li><a href="#perguntas-que-o-lider-deve-fazer">Perguntas que o líder deve fazer</a></li><li><a href="#exercicios-do-modulo-7">Exercícios do Módulo 7</a></li><li><a href="#frases-de-impacto-do-modulo-7">Frases de impacto do Módulo 7</a></li><li><a href="#entregavel-do-modulo-7">Entregável do Módulo 7</a></li></ol></div>
+  <hr>
+<h2 id="a-verdade-sobre-demissao">A verdade sobre demissão</h2>
+<p>Nenhum dono gosta. Todo dono demite tarde.</p>
+<p>O tempo médio entre "eu sei que essa pessoa não é pra cá" e a demissão efetiva, numa PME, é de <strong>7 a 14 meses</strong>. Nesse período você paga salário, paga retrabalho, perde clima, perde outros funcionários bons que não aguentam, e a própria pessoa desperdiça um ano da carreira dela num lugar onde não vai dar certo.</p>
+<p><strong>Demitir tarde não é gentileza. É covardia com custo pra todo mundo.</strong></p>
+<h3 id="o-custo-de-segurar-12-meses-marceneiro-pleno-r-3-400">O custo de segurar 12 meses (marceneiro pleno, R$ 3.400)</h3>
+<div class="tabwrap"><table><thead><tr><th>Item</th><th>Valor</th></tr></thead><tbody><tr><td>Salário + encargos (12 meses)</td><td>R$ 71.000</td></tr><tr><td>Retrabalho e refugo gerados</td><td>R$ 15.000 a R$ 40.000</td></tr><tr><td>Tempo de gestão corrigindo (3h/semana × R$ 60/h)</td><td>R$ 9.400</td></tr><tr><td>Impacto no clima e produtividade do time (est. 5% em 4 pessoas)</td><td>R$ 8.000</td></tr><tr><td>Risco de perder 1 bom funcionário por causa dele</td><td>R$ 60.000</td></tr><tr><td><strong>Total</strong></td><td><strong>R$ 163.000 a R$ 188.000</strong></td></tr></tbody></table></div>
+<p>E a rescisão, que é o que você tem medo de pagar, custa R$ 6 a 10 mil. <strong>Você está evitando um custo de R$ 8 mil pagando um de R$ 170 mil.</strong></p>
+<blockquote><p><strong>Frase pra colar na parede:</strong> <em>"Todo dono que demitiu tarde diz a mesma frase: 'eu devia ter feito isso há um ano'. Ninguém nunca disse 'eu demiti cedo demais'."</em></p></blockquote>
+<hr>
+<h2 id="antes-de-demitir-as-5-perguntas-obrigatorias">Antes de demitir: as 5 perguntas obrigatórias</h2>
+<p>Demissão é a última etapa, não a primeira reação. Antes, responda honestamente:</p>
+<pre>1. Essa pessoa foi TREINADA para o que eu estou cobrando?
+   (Se não → o problema é meu, não dela)
+
+2. O padrão está ESCRITO em algum lugar que ela pôde consultar?
+   (Se não → escreva primeiro, cobre depois)
+
+3. Ela recebeu FEEDBACK CLARO, com nome, data e consequência?
+   (Se não → aplique o CORTE antes. Ninguém deve ser surpreendido)
+
+4. O problema é de PESSOA ou de PROCESSO?
+   (Se outros erram igual → é processo)
+
+5. Ela está no LUGAR ERRADO ou é a PESSOA ERRADA?
+   (Ótimo marceneiro que virou encarregado ruim: mova, não demita)</pre>
+<p><strong>Se você respondeu "não" às perguntas 1, 2 ou 3, você não pode demitir ainda.</strong> Você tem que consertar o seu lado primeiro. Não por burocracia — porque demitir alguém que nunca soube que estava indo mal é injusto, gera processo trabalhista e destrói a confiança da equipe que está assistindo.</p>
+<h3 id="a-distincao-que-salva-gente-boa-lugar-errado-pessoa-errada">A distinção que salva gente boa: lugar errado × pessoa errada</h3>
+<div class="tabwrap"><table><thead><tr><th>Situação</th><th>Sinal</th><th>Ação</th></tr></thead><tbody><tr><td><strong>Lugar errado</strong></td><td>Era bom antes, piorou depois de mudar de função ou de contexto</td><td>Realocar. Conversa franca sobre voltar</td></tr><tr><td><strong>Não sabe ainda</strong></td><td>Erra, mas melhora quando é ensinado; quer aprender</td><td>Treinar com prazo e método</td></tr><tr><td><strong>Não quer</strong></td><td>Sabe fazer, foi orientado, não muda</td><td>CORTE → escada → desligamento</td></tr><tr><td><strong>Não cabe</strong></td><td>Competente, mas quebra valores</td><td>Desligamento, mesmo produzindo</td></tr></tbody></table></div>
+<hr>
+<h2 id="o-protocolo-desliga">O Protocolo DESLIGA</h2>
+<pre>D — DECISÃO      Decidir de verdade, com data, e não voltar atrás
+E — EVIDÊNCIA    Reunir a documentação (isso te protege e te dá segurança)
+S — SCRIPT       Escrever a conversa antes, palavra por palavra
+L — LOGÍSTICA    Definir dia, hora, local, acessos, pagamento
+I — INFORMAR     Conduzir a conversa
+G — GRUPO        Comunicar à equipe no mesmo dia
+A — APRENDIZADO  Fazer a autópsia: o que a empresa aprende com isso</pre>
+<hr>
+<h2 id="d-decisao">D — DECISÃO</h2>
+<h2 id="a-regra-dos-3-dias">A regra dos 3 dias</h2>
+<p>Depois que você decidir, <strong>demita em até 3 dias úteis</strong>.</p>
+<p>Quanto mais tempo entre a decisão e a execução, mais você se convence de que talvez não precise, mais a pessoa percebe o clima estranho, e maior o risco de vazar antes de você falar.</p>
+<h2 id="o-teste-da-decisao-firme">O teste da decisão firme</h2>
+<p>Se você ainda responde "mas..." a essas perguntas, você não decidiu:</p>
+<ul><li>Se ele pedisse demissão amanhã, você sentiria alívio ou perda? (<strong>Alívio = decidido</strong>)</li><li>Você o contrataria hoje, sabendo o que sabe? (<strong>Não = decidido</strong>)</li><li>Você indicaria ele pra um amigo dono de marcenaria? (<strong>Não pra função dele = decidido</strong>)</li></ul>
+<h2 id="regra-voce-nao-muda-de-ideia-na-conversa">Regra: você não muda de ideia na conversa</h2>
+<p>Isso é fundamental. A conversa de desligamento <strong>não é uma negociação</strong>. Se a pessoa chorar, prometer mudar, contar um problema pessoal, você mantém a decisão — com humanidade, mas mantém.</p>
+<p>Voltar atrás na conversa cria três problemas: a pessoa aprende que basta reagir emocionalmente, você perde a credibilidade da própria decisão, e daqui a três meses você vai demitir do mesmo jeito, só que com mais desgaste.</p>
+<p><strong>Se você acha que pode mudar de ideia, não é hora de demitir. É hora de fazer um plano de melhoria formal.</strong></p>
+<hr>
+<h2 id="e-evidencia">E — EVIDÊNCIA</h2>
+<h2 id="o-que-reunir-antes-pasta-fisica-ou-digital">O que reunir antes (pasta física ou digital)</h2>
+<pre>[ ] Registros de CORTE aplicados (formulários assinados)
+[ ] Advertências formais, se houver
+[ ] E-mails/mensagens documentando orientações dadas
+[ ] Avaliações de desempenho
+[ ] Registros objetivos: retrabalho, faltas, atrasos, ocorrências
+[ ] Plano de melhoria, se aplicado, com o resultado
+[ ] Cópia do scorecard/descrição de função assinada na admissão</pre>
+<p><strong>Regra prática:</strong> se você não tem nada escrito, comece a escrever hoje e demita em 30–60 dias com documentação. Exceto em falta grave — aí é imediato.</p>
+<h2 id="por-que-documentar-te-protege">Por que documentar te protege</h2>
+<ol><li><strong>Juridicamente:</strong> transforma "demissão arbitrária" em "processo justo e documentado". Reduz drasticamente o risco de reclamação por assédio ou dano moral.</li><li><strong>Emocionalmente:</strong> quando bater a dúvida às 3h da manhã, você olha a pasta e lembra por que decidiu.</li><li><strong>Culturalmente:</strong> a equipe percebe a diferença entre demissão por critério e demissão por humor do dono.</li></ol>
+<h2 id="cuidados-juridicos-essenciais">⚠️ Cuidados jurídicos essenciais</h2>
+<div class="tabwrap"><table><thead><tr><th>Situação</th><th>Cuidado</th></tr></thead><tbody><tr><td><strong>Estabilidade</strong></td><td>Gestante, acidentado (12 meses após alta), cipeiro, dirigente sindical, pré-aposentadoria (se em convenção) — <strong>não demita sem consultar advogado</strong></td></tr><tr><td><strong>Atestado médico ativo</strong></td><td>Não demita durante afastamento pelo INSS</td></tr><tr><td><strong>Justa causa</strong></td><td>Exige falta grave tipificada (art. 482 CLT), imediatidade e proporcionalidade. <strong>Nunca aplique sem advogado.</strong> Justa causa mal feita é derrota certa e cara</td></tr><tr><td><strong>Assédio</strong></td><td>Nunca "torne a vida difícil" pra pessoa pedir demissão. Isso é assédio moral, é ilegal e é caro</td></tr><tr><td><strong>Acordo (art. 484-A)</strong></td><td>Demissão por acordo: metade do aviso e da multa do FGTS, saque de 80%, sem seguro-desemprego. Útil quando ambos querem terminar</td></tr><tr><td><strong>Homologação</strong></td><td>Consulte a convenção coletiva da categoria — algumas exigem assistência sindical</td></tr><tr><td><strong>Discriminação</strong></td><td>Nunca cite idade, doença, religião, orientação, gravidez ou origem como motivo</td></tr></tbody></table></div>
+<blockquote><p><strong>Regra de ouro:</strong> consulte seu contador ou advogado trabalhista <strong>antes</strong> de cada desligamento não trivial. A consulta custa R$ 300. A reclamação custa R$ 30 mil.</p></blockquote>
+<hr>
+<h2 id="s-script">S — SCRIPT</h2>
+<h2 id="as-5-regras-da-conversa">As 5 regras da conversa</h2>
+<ol><li><strong>Curta.</strong> 10 a 15 minutos. Mais que isso vira negociação ou terapia.</li><li><strong>Direta.</strong> A informação principal nos primeiros 30 segundos.</li><li><strong>Sem lista de defeitos.</strong> A pessoa não precisa mais do feedback — ela está saindo. Recitar defeitos é crueldade sem função.</li><li><strong>Sem "a empresa decidiu".</strong> Você decidiu. Assuma. Terceirizar a decisão é covardia e a pessoa percebe.</li><li><strong>Sem falsa esperança.</strong> Nada de "quem sabe no futuro". Se não é verdade, não fale.</li></ol>
+<hr>
+<h2 id="script-completo-desligamento-sem-justa-causa-desempenho">SCRIPT COMPLETO — Desligamento sem justa causa (desempenho)</h2>
+<pre>═══════════════════════════════════════════════════════════════
+PREPARAÇÃO
+- Sala fechada, sem vidro, sem passagem de gente
+- Você + 1 pessoa (líder direto ou administrativo). Nunca sozinho,
+  nunca com plateia
+- Documentos de rescisão já calculados e prontos
+- Celular no silencioso
+- Terça, quarta ou quinta. De manhã. NUNCA sexta à tarde
+═══════════════════════════════════════════════════════════════
+
+ABERTURA — direto ao ponto (30 segundos)
+───────────────────────────────────────────────────────────────
+"[Nome], senta aí. Vou ser direto porque enrolar seria pior:
+eu decidi encerrar seu contrato com a gente. Hoje é seu último dia."
+
+[PAUSE. Não emende. Deixe a informação chegar.
+Conte até 5 mentalmente.]
+
+O MOTIVO — uma frase, sem lista (30 segundos)
+───────────────────────────────────────────────────────────────
+"O motivo é o que a gente já conversou nas nossas conversas de
+[data] e [data]: [UM motivo central, específico].
+A gente combinou [ação], não aconteceu, e eu cheguei no meu limite
+do que eu consigo esperar."
+
+[NÃO liste 8 defeitos. UM motivo. O principal.]
+
+RECONHECIMENTO — genuíno, se houver (20 segundos)
+───────────────────────────────────────────────────────────────
+"Eu quero reconhecer [algo verdadeiro: o esforço, uma qualidade
+real, o que ele fez bem]. Isso é verdade e eu não tiro de você."
+
+[Se não houver nada verdadeiro, pule. Elogio falso é pior que
+silêncio.]
+
+O PRÁTICO — clareza total (2 minutos)
+───────────────────────────────────────────────────────────────
+"Agora o que é prático, pra você não ficar com dúvida:
+- Sua rescisão: R$ [valor], paga até [data]
+- Aviso prévio: [indenizado / trabalhado]
+- FGTS + multa de 40%: liberado, o [contador] te orienta
+- Seguro-desemprego: você tem direito, as guias saem em [prazo]
+- Férias e 13º proporcionais: incluídos
+- [Plano de saúde: até quando / outros benefícios]
+
+Alguma dúvida sobre valor ou prazo?"
+
+O RESPEITO — o que você oferece (30 segundos)
+───────────────────────────────────────────────────────────────
+"Duas coisas que eu quero te falar:
+Primeiro: se alguém ligar pedindo referência sua, eu vou falar
+a verdade sobre o que você faz bem — e você faz [X] bem.
+Segundo: se eu souber de uma vaga que combine com você, eu te aviso.
+Isso não é conversa pra amaciar. É o que eu faço."
+
+O FECHAMENTO (1 minuto)
+───────────────────────────────────────────────────────────────
+"Você quer me falar alguma coisa?"
+
+[Escute. De verdade. Sem interromper, sem se defender.
+Se ele reclamar da empresa, ouça e anote — é informação de graça.]
+
+"Obrigado por esse tempo aqui. Sério.
+O [nome do adm] vai te acompanhar pra assinar os papéis e pegar
+suas coisas. Se precisar de mim depois, meu telefone é o mesmo."
+
+[Levante. Aperte a mão. Encerre.]
+═══════════════════════════════════════════════════════════════</pre>
+<hr>
+<h2 id="script-desligamento-por-corte-de-custo-reestruturacao">SCRIPT — Desligamento por corte de custo / reestruturação</h2>
+<p>Aqui o motivo não é a pessoa, e isso muda tudo. Não deixe ela achar que foi culpa dela.</p>
+<pre>"[Nome], preciso te dar uma notícia difícil e quero ser honesto
+sobre o motivo.
+
+A empresa está [reduzindo estrutura / perdeu o contrato X /
+está com queda de faturamento de Y%]. Eu precisei cortar
+[N] posições, e a sua é uma delas.
+
+Isso não é sobre o seu trabalho. Você [reconhecimento verdadeiro
+e específico]. Se eu pudesse manter, eu manteria — e eu quero
+que isso fique muito claro pra você.
+
+A decisão foi minha e a responsabilidade é minha.
+
+[Segue o bloco prático da rescisão.]
+
+E mais uma coisa que é séria: eu vou te dar referência ativa.
+Vou ligar pra [nomes de conhecidos do setor] e falar de você.
+Me manda seu currículo hoje que eu já começo."
+
+E CUMPRA. Ligue mesmo.</pre>
+<hr>
+<h2 id="script-desligamento-de-funcionario-antigo-10-anos">SCRIPT — Desligamento de funcionário antigo (10+ anos)</h2>
+<p>O mais difícil de todos. Requer tempo e cuidado maiores.</p>
+<pre>"[Nome], essa é a conversa mais difícil que eu já tive aqui,
+e eu quero conduzir ela do jeito certo.
+
+Você está aqui há [X] anos. Você viu essa empresa [marco histórico].
+Isso não tem preço e ninguém tira.
+
+E é justamente por isso que eu vou ser honesto com você em vez de
+enrolar: a empresa mudou de um jeito que a sua função hoje não
+existe mais como existia, e eu não consegui encontrar um lugar
+onde você continuasse tendo o valor que você merece ter aqui.
+
+Eu tentei [descreva honestamente o que tentou]. Não deu certo,
+e a responsabilidade disso é minha, não sua.
+
+Então eu decidi encerrar — e decidi fazer isso com condição
+melhor que o mínimo, porque o mínimo não é justo com a sua história.
+
+[Ofereça algo real: aviso trabalhado maior, um valor adicional,
+manutenção de plano por alguns meses, apoio de recolocação.]
+
+Eu queria muito que essa conversa não existisse."</pre>
+<hr>
+<h2 id="script-justa-causa-so-com-advogado-envolvido">SCRIPT — Justa causa (só com advogado envolvido)</h2>
+<pre>"[Nome], eu preciso te comunicar o encerramento imediato do seu
+contrato por justa causa, com base em [fato objetivo e específico,
+com data].
+
+O fato foi apurado em [descreva a apuração]. Você teve oportunidade
+de se manifestar em [data].
+
+Essa é a documentação. Você tem direito a ler antes de assinar.
+Sua assinatura significa ciência do recebimento, não concordância.
+
+Os valores devidos são [os que se aplicam à justa causa].
+Nosso [contador/advogado] está disponível pra esclarecer."
+
+[Nada além disso. Sem discussão de mérito, sem exaltação,
+sem entrar em detalhe do fato. Encerre.]</pre>
+<p>⚠️ <strong>Nunca aplique justa causa sem advogado.</strong> Os requisitos (falta tipificada, imediatidade, proporcionalidade, ausência de perdão tácito) são específicos, e uma justa causa revertida no processo custa muito mais que uma demissão normal.</p>
+<hr>
+<h2 id="l-logistica">L — LOGÍSTICA</h2>
+<h2 id="checklist-do-dia">Checklist do dia</h2>
+<pre>ANTES (véspera)
+[ ] Rescisão calculada e conferida pelo contador
+[ ] Documentos impressos e assinados pela empresa
+[ ] Sala reservada (fechada, sem circulação, sem vidro)
+[ ] Testemunha/apoio definido e alinhado
+[ ] Roteiro da conversa lido em voz alta uma vez
+[ ] Comunicado à equipe redigido
+[ ] Verificado: estabilidade, atestado, convenção coletiva
+
+DIA
+[ ] Terça, quarta ou quinta — de manhã
+[ ] Conversa realizada (10–15 min)
+[ ] Documentos assinados
+[ ] Acessos revogados (sistema, e-mail, grupo de WhatsApp, chave)
+[ ] Ferramentas/EPI/uniforme devolvidos, com lista conferida
+[ ] Pertences pessoais recolhidos com dignidade (ajude, ofereça caixa)
+[ ] Acompanhado até a saída sem constrangimento
+[ ] Equipe comunicada no MESMO dia
+
+DEPOIS (mesma semana)
+[ ] Pagamento efetuado no prazo legal (10 dias)
+[ ] Documentação arquivada
+[ ] Autópsia feita com o líder direto
+[ ] Redistribuição de tarefas definida e comunicada
+[ ] Reposição avaliada: contrata, redistribui ou automatiza?</pre>
+<h2 id="regras-de-dia-e-hora">Regras de dia e hora</h2>
+<div class="tabwrap"><table><thead><tr><th>Faça</th><th>Não faça</th></tr></thead><tbody><tr><td>Terça, quarta ou quinta</td><td>Sexta à tarde (a pessoa passa o fim de semana sozinha com isso, sem poder resolver nada)</td></tr><tr><td>De manhã</td><td>Fim do expediente (parece emboscada)</td></tr><tr><td>Sala fechada e reservada</td><td>Na fábrica, no corredor, na frente de gente</td></tr><tr><td>Dia normal de trabalho</td><td>Véspera de feriado, aniversário, Natal</td></tr><tr><td>Presencial</td><td>Por telefone ou mensagem — exceto se a pessoa for remota, e mesmo aí, videochamada</td></tr></tbody></table></div>
+<h2 id="sobre-o-walk-out">Sobre o "walk out"</h2>
+<p>Numa marcenaria, a pessoa provavelmente tem ferramenta, armário e pertences. Faça com dignidade:</p>
+<ul><li>Ofereça ajuda pra carregar</li><li>Deixe ela se despedir da equipe se quiser (a maioria quer)</li><li>Não fique atrás dela como segurança</li><li>Se houver risco real de dano ou desvio, aí sim acompanhe — mas discretamente</li></ul>
+<hr>
+<h2 id="i-g-informar-a-equipe">I / G — INFORMAR A EQUIPE</h2>
+<h2 id="comunique-no-mesmo-dia-sempre">Comunique no mesmo dia. Sempre.</h2>
+<p>Se você não comunica, a fábrica inteira inventa uma versão em duas horas. E a versão inventada é sempre pior que a real.</p>
+<h2 id="modelo-de-comunicado-30-segundos-presencial-no-fim-do-turno">Modelo de comunicado (30 segundos, presencial, no fim do turno)</h2>
+<pre>"Pessoal, 30 segundos.
+
+O [nome] não faz mais parte do time a partir de hoje.
+
+Foi uma decisão minha, foi difícil e é definitiva.
+
+Não vou entrar em detalhe do motivo, porque eu não entro em
+detalhe de ninguém — se um dia for com vocês, também não vou
+falar de vocês pra ninguém.
+
+O que eu quero que fique claro: aqui a régua é uma só, e ela
+vale pra todo mundo, inclusive pra mim.
+
+O trabalho dele fica [redistribuição], e a gente ajusta [prazo].
+
+Alguma dúvida sobre o trabalho? [Responda só o que for de trabalho.]"</pre>
+<h2 id="o-que-nunca-fazer">O que NUNCA fazer</h2>
+<div class="tabwrap"><table><thead><tr><th>❌ Nunca</th><th>Por quê</th></tr></thead><tbody><tr><td>Contar detalhes do motivo</td><td>Quebra a confiança de todo mundo. "Se ele fala do outro, fala de mim"</td></tr><tr><td>Falar mal de quem saiu</td><td>Desmoraliza você, não a pessoa</td></tr><tr><td>Deixar a equipe descobrir sozinha</td><td>Rumor sempre é pior que verdade</td></tr><tr><td>"Ele pediu pra sair" quando foi demissão</td><td>Mentira que sempre vaza</td></tr><tr><td>Fazer piada ou aliviar com humor</td><td>Comunica que gente é descartável</td></tr><tr><td>Ignorar o assunto na semana seguinte</td><td>O time fica tenso e ninguém fala</td></tr></tbody></table></div>
+<h2 id="o-efeito-na-equipe-o-que-esperar">O efeito na equipe — o que esperar</h2>
+<p><strong>Se a pessoa era ruim e todo mundo sabia:</strong> alívio. A equipe vai te respeitar mais. É comum ouvir depois: <em>"demorou".</em></p>
+<p><strong>Se a pessoa era querida:</strong> medo. Nos dias seguintes, converse individualmente com os 2 ou 3 mais próximos:</p>
+<pre>"Sei que você era próximo dele e que isso mexe.
+Quero te dizer duas coisas: primeiro, sua posição aqui não
+está em questão — se estivesse, você saberia por mim antes
+de qualquer um.
+Segundo, se você quiser falar sobre isso, eu tô aqui."</pre>
+<p><strong>Se foi por corte de custo:</strong> insegurança geral. Fale abertamente do cenário. Silêncio nesse caso gera boato e faz gente boa começar a procurar emprego.</p>
+<hr>
+<h2 id="a-aprendizado-a-autopsia">A — APRENDIZADO: a autópsia</h2>
+<p>Toda demissão gera uma pergunta que a empresa precisa responder.</p>
+<pre>═══════════════════════════════════════════════════════════════
+AUTÓPSIA DE DESLIGAMENTO
+Colaborador: ____________  Função: ________  Tempo de casa: ____
+Data: ___/___/___         Motivo principal: ____________________
+
+1. QUANDO EU SOUBE, DE VERDADE, QUE NÃO IA DAR CERTO?
+   Data aproximada: ________  Tempo até a demissão: ____ meses
+   → Por que eu demorei?
+
+2. O ERRO FOI NA CONTRATAÇÃO?
+   ( ) Sim — qual sinal eu ignorei? ____________________________
+   ( ) Não — deu certo no início e mudou. O que mudou? _________
+
+3. O ERRO FOI NA LIDERANÇA?
+   ( ) Faltou treinamento     ( ) Faltou feedback claro
+   ( ) Faltou padrão escrito  ( ) Faltou acompanhamento
+   ( ) Nenhum — foi da pessoa
+
+4. O ERRO FOI DE POSIÇÃO?
+   Ela seria boa em outra função aqui? ( ) Sim ( ) Não
+   Se sim, por que eu não tentei? ______________________________
+
+5. O QUE MUDA NO PROCESSO A PARTIR DE AGORA?
+   No scorecard: _______________________________________________
+   Na entrevista: ______________________________________________
+   No onboarding: ______________________________________________
+   Na cadência de feedback: ____________________________________
+
+6. QUEM MAIS ESTÁ NA MESMA SITUAÇÃO HOJE?
+   _____________________________________________________________
+   → Prazo pra resolver: ___/___/___
+═══════════════════════════════════════════════════════════════</pre>
+<p><strong>A pergunta 6 é a mais valiosa.</strong> Toda demissão te dá coragem que dura duas semanas. Use essa janela pra resolver o próximo caso que você está adiando.</p>
+<hr>
+<h2 id="entrevista-de-desligamento-opcional-mas-recomendada">Entrevista de desligamento (opcional, mas recomendada)</h2>
+<p>Feita <strong>por outra pessoa</strong>, não por você — com você a pessoa não fala a verdade. Pode ser o administrativo, o contador ou alguém de fora.</p>
+<p><strong>5 perguntas, 20 minutos:</strong></p>
+<ol><li>Qual foi o melhor e o pior da sua experiência aqui?</li><li>Você recebeu o feedback que precisava? Com que frequência?</li><li>O que você mudaria na empresa se pudesse mudar uma coisa?</li><li>Teve algum momento em que você pensou em sair antes? O que foi?</li><li>Você recomendaria essa empresa pra um amigo? Por quê?</li></ol>
+<p><strong>Onde está o ouro:</strong> as respostas 2 e 4. Elas te dizem se o problema era a pessoa ou a sua gestão.</p>
+<hr>
+<h2 id="os-15-erros-mais-comuns">Os 15 erros mais comuns</h2>
+<div class="tabwrap"><table><thead><tr><th>#</th><th>Erro</th><th>Consequência</th></tr></thead><tbody><tr><td>1</td><td>Demitir tarde demais</td><td>Custo de 20x a rescisão</td></tr><tr><td>2</td><td>Demitir sem documentação</td><td>Risco jurídico + insegurança da equipe</td></tr><tr><td>3</td><td>Demitir sem nunca ter dado feedback</td><td>Injusto, gera processo, destrói confiança</td></tr><tr><td>4</td><td>Sexta à tarde</td><td>Crueldade desnecessária</td></tr><tr><td>5</td><td>Na frente de outras pessoas</td><td>Humilhação. Nunca é esquecido</td></tr><tr><td>6</td><td>Listar todos os defeitos na conversa</td><td>Crueldade sem função</td></tr><tr><td>7</td><td>"A empresa decidiu"</td><td>Covardia. Assuma a decisão</td></tr><tr><td>8</td><td>Mudar de ideia na conversa</td><td>Perde credibilidade e adia o inevitável</td></tr><tr><td>9</td><td>Falsa esperança ("quem sabe depois")</td><td>Mentira que a pessoa carrega</td></tr><tr><td>10</td><td>Não comunicar à equipe</td><td>Rumor toma conta</td></tr><tr><td>11</td><td>Contar o motivo detalhado à equipe</td><td>Todo mundo passa a temer você</td></tr><tr><td>12</td><td>Justa causa sem advogado</td><td>Reversão na Justiça, custo dobrado</td></tr><tr><td>13</td><td>Assediar para a pessoa pedir demissão</td><td>Ilegal, caro e desonesto</td></tr><tr><td>14</td><td>Não fazer autópsia</td><td>Repete o mesmo erro na próxima contratação</td></tr><tr><td>15</td><td>Não resolver o "próximo caso" na janela de coragem</td><td>Adia mais 12 meses</td></tr></tbody></table></div>
+<hr>
+<h2 id="perguntas-que-o-lider-deve-fazer">Perguntas que o líder deve fazer</h2>
+<ol><li>Quem na minha equipe eu não contrataria hoje, sabendo o que sei? Há quanto tempo eu sei disso?</li><li>Se essa pessoa pedisse demissão amanhã, eu sentiria alívio?</li><li>Ela já ouviu de mim, com todas as letras, que o emprego dela está em risco?</li><li>Estou segurando por medo do custo da rescisão? Já calculei o custo de manter?</li><li>Estou segurando porque não tenho substituto? (Isso é problema de contratação, não motivo pra manter)</li><li>Quando foi a última vez que documentei um feedback dela?</li></ol>
+<hr>
+<h2 id="exercicios-do-modulo-7">Exercícios do Módulo 7</h2>
+<h3 id="exercicio-1-a-lista-honesta-20-min">Exercício 1 — A lista honesta (20 min)</h3>
+<p>Escreva os nomes das pessoas que você não contrataria hoje. Ao lado: há quanto tempo você sabe, e quanto já custou. Não mostre pra ninguém. Escolha uma e defina a data.</p>
+<h3 id="exercicio-2-calculo-do-custo-de-manter-20-min">Exercício 2 — Cálculo do custo de manter (20 min)</h3>
+<p>Pegue a primeira pessoa da lista. Calcule o custo de 12 meses usando a tabela do início do módulo. Compare com a rescisão.</p>
+<h3 id="exercicio-3-escreva-o-script-30-min">Exercício 3 — Escreva o script (30 min)</h3>
+<p>Escreva o script completo da conversa que você está adiando. Palavra por palavra. Leia em voz alta. Você vai descobrir onde trava.</p>
+<h3 id="exercicio-4-auditoria-de-documentacao-30-min">Exercício 4 — Auditoria de documentação (30 min)</h3>
+<p>Para cada pessoa da lista: você tem feedback documentado? Se não, esse é o seu trabalho dos próximos 30 dias.</p>
+<h3 id="exercicio-5-autopsia-retroativa-30-min">Exercício 5 — Autópsia retroativa (30 min)</h3>
+<p>Pegue a última demissão que você fez. Preencha a autópsia completa. O que muda no seu processo de contratação?</p>
+<hr>
+<h2 id="frases-de-impacto-do-modulo-7">Frases de impacto do Módulo 7</h2>
+<ul><li><em>"Ninguém nunca disse 'eu demiti cedo demais'."</em></li><li><em>"Demitir tarde não é gentileza. É covardia com custo pra todo mundo — inclusive pra pessoa."</em></li><li><em>"Ninguém deveria ser demitido sem já ter ouvido, com todas as letras, que estava a caminho disso."</em></li><li><em>"Você está evitando um custo de R$ 8 mil pagando um de R$ 170 mil."</em></li><li><em>"A conversa de demissão não é negociação. Se você pode mudar de ideia, ainda não é hora."</em></li><li><em>"O que a equipe aprende com uma demissão não é sobre quem saiu. É sobre quem você é."</em></li><li><em>"Se você fala do motivo de um pra todo mundo, todo mundo entende que um dia você vai falar deles."</em></li><li><em>"Manter alguém que você já desistiu é roubar o tempo da carreira dessa pessoa."</em></li><li><em>"Toda demissão te dá duas semanas de coragem. Use pra resolver o próximo caso."</em></li></ul>
+<hr>
+<h2 id="entregavel-do-modulo-7">Entregável do Módulo 7</h2>
+<ol><li>Lista honesta preenchida, com uma data definida.</li><li>Script escrito da conversa mais difícil que você está adiando.</li><li>Checklist de desligamento impresso.</li><li>Modelo de autópsia salvo.</li><li>Contato de advogado trabalhista de confiança à mão.</li></ol>
+<p><strong>Próximo módulo:</strong> Treinamento e desenvolvimento — porque demitir menos começa em formar melhor.</p>
+
+  <div class="rodape"><span>FASE 4 · MÓDULO 07 · Fase 4 — Liderança</span><span>Material de formação em gestão para donos de PME</span></div>
+  <div class="direitos"><img src="data:image/png;base64,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" alt="ARESTA APM"><span>&copy; 2026 ARESTA APM &middot; Conteúdo e método proprietários. Uso restrito ao aluno matriculado — proibida a reprodução, revenda ou redistribuição, total ou parcial.</span></div>
+</div>
+
+<script>
+// mantem a marca digitada pelo usuario neste navegador
+(function(){
+  var m=document.querySelector('.marca');
+  var k='mkt-marca';
+  try{ var s=localStorage.getItem(k); if(s) m.innerHTML=s; }catch(e){}
+  m.addEventListener('blur',function(){ try{localStorage.setItem(k,m.innerHTML);}catch(e){} });
+})();
+</script>
+</body>
+</html>

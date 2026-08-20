@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MÓDULO 10 — TECNOLOGIA, IA E AUTOMAÇÃO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --tinta:#2C2825; --ouro:#B8925A; --claro:#F5F1EA; --linha:#D8D2C7;
+  --fraco:#6E675E; --papel:#FFFFFF; --caixa:#FAF8F4;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+@page{size:A4;margin:14mm 13mm 13mm}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact;scroll-behavior:smooth}
+body{font:11pt/1.62 'Inter',-apple-system,'Helvetica Neue',Arial,sans-serif;
+  color:var(--tinta);background:var(--claro)}
+.folha{max-width:196mm;margin:0 auto;padding:14mm 10mm 20mm;background:var(--papel);
+  box-shadow:0 1px 3px rgba(0,0,0,.06)}
+
+/* cabecalho */
+.topo{display:flex;justify-content:space-between;align-items:flex-end;
+  border-bottom:1.5pt solid var(--tinta);padding-bottom:6pt;gap:12pt;flex-wrap:wrap}
+.marca{font:600 15pt/1 'Cormorant Garamond',Georgia,serif;letter-spacing:.22em;
+  text-transform:uppercase;outline:none}
+.marca small{display:block;font:400 6.5pt/1 'Inter',sans-serif;letter-spacing:.34em;
+  color:var(--fraco);margin-top:3pt}
+.marca:focus{background:#FFF6DF}
+.doc{text-align:right}
+.doc .fase{font-size:7pt;letter-spacing:.2em;color:var(--ouro);font-weight:600;
+  text-transform:uppercase}
+.doc .cod{font-size:7pt;letter-spacing:.18em;color:var(--fraco);margin-top:2pt}
+.regua{height:2.5pt;background:var(--ouro);margin:0 0 14pt}
+
+/* tipografia */
+h1{font:600 21pt/1.18 'Cormorant Garamond',Georgia,serif;letter-spacing:.01em;
+  margin:0 0 3pt}
+h1 + .lead{font-size:10.5pt;color:var(--fraco);font-style:italic;margin-bottom:14pt;
+  padding-bottom:10pt;border-bottom:.75pt solid var(--linha)}
+h2{font:600 10.5pt/1.25 'Inter',sans-serif;letter-spacing:.13em;text-transform:uppercase;
+  background:var(--claro);border-left:3pt solid var(--ouro);padding:6pt 8pt;
+  margin:22pt 0 9pt;break-after:avoid;page-break-after:avoid}
+h3{font:600 11.5pt/1.3 'Cormorant Garamond',Georgia,serif;letter-spacing:.02em;
+  margin:15pt 0 5pt;break-after:avoid;page-break-after:avoid}
+h4{font:600 8.5pt/1.25 'Inter',sans-serif;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--fraco);margin:12pt 0 4pt;break-after:avoid}
+p{margin:0 0 8pt;text-align:left}
+strong{font-weight:600}
+em{font-style:italic}
+a{color:var(--ouro);text-decoration:none}
+hr{border:none;border-top:.75pt solid var(--linha);margin:16pt 0}
+
+/* listas */
+ul,ol{margin:0 0 9pt 16pt}
+li{margin-bottom:3.5pt}
+ul.chk{list-style:none;margin-left:0}
+ul.chk li{display:flex;gap:7pt;align-items:flex-start;padding:3.5pt 0;
+  border-bottom:.5pt dotted var(--linha);break-inside:avoid}
+ul.chk li::before{content:"";flex:0 0 9.5pt;height:9.5pt;margin-top:2.5pt;
+  border:.9pt solid var(--tinta);border-radius:1pt;background:#fff}
+
+/* citacao / destaque */
+blockquote{border-left:2.5pt solid var(--ouro);background:var(--caixa);
+  padding:9pt 12pt;margin:11pt 0;break-inside:avoid}
+blockquote p:last-child{margin-bottom:0}
+
+/* codigo / templates ascii */
+pre{background:var(--caixa);border:.75pt solid var(--linha);border-radius:2pt;
+  padding:10pt 11pt;margin:11pt 0;overflow-x:auto;break-inside:avoid;
+  font:9pt/1.42 'SFMono-Regular',Menlo,Consolas,'Courier New',monospace;
+  white-space:pre;color:#332F2A}
+code{font:9.2pt/1.4 'SFMono-Regular',Menlo,Consolas,monospace;
+  background:var(--claro);padding:1pt 3pt;border-radius:2pt}
+pre code{background:none;padding:0;font-size:inherit}
+
+/* tabelas */
+.tabwrap{overflow-x:auto;margin:11pt 0}
+table{border-collapse:collapse;width:100%;font-size:9.3pt;break-inside:avoid}
+th{background:var(--claro);text-align:left;font-weight:600;font-size:7.5pt;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--fraco);
+  padding:5.5pt 7pt;border:.75pt solid var(--linha)}
+td{padding:5.5pt 7pt;border:.75pt solid var(--linha);vertical-align:top;line-height:1.42}
+tbody tr:nth-child(even){background:#FCFBF9}
+
+/* indice */
+.indice{background:var(--caixa);border:.75pt solid var(--linha);padding:11pt 13pt;
+  margin:0 0 18pt;break-inside:avoid}
+.indice h4{margin-top:0}
+.indice ol{margin:0 0 0 15pt;font-size:9.5pt;column-gap:18pt}
+.indice li{margin-bottom:2.5pt}
+.indice a{color:var(--tinta)}
+.indice a:hover{color:var(--ouro)}
+
+/* rodape */
+.rodape{margin-top:22pt;padding-top:6pt;border-top:.75pt solid var(--linha);
+  display:flex;justify-content:space-between;font-size:7.5pt;color:var(--fraco);
+  letter-spacing:.06em;gap:10pt;flex-wrap:wrap}
+
+/* direitos — a marca do Aresta e o aviso de propriedade.
+   Fica no rodape, nao no topo: o cabecalho e' do aluno (.marca editavel),
+   e a autoria do metodo nao disputa espaco com a marca dele. */
+.direitos{margin-top:7pt;display:flex;align-items:center;gap:7pt;
+  font-size:6.4pt;line-height:1.45;color:var(--fraco);letter-spacing:.02em}
+.direitos img{height:11pt;width:auto;flex-shrink:0;opacity:.85}
+@media print{.direitos{break-inside:avoid}}
+
+/* navegacao entre modulos (some na impressao) */
+.nav{max-width:196mm;margin:0 auto 10mm;padding:0 10mm;display:flex;
+  justify-content:space-between;gap:10pt;font-size:9pt}
+.nav a{display:inline-block;padding:6pt 11pt;border:.75pt solid var(--linha);
+  background:var(--papel);border-radius:2pt;color:var(--tinta)}
+.nav a:hover{border-color:var(--ouro);color:var(--ouro)}
+.topbar{max-width:196mm;margin:0 auto;padding:8mm 10mm 0;display:flex;
+  justify-content:space-between;font-size:9pt}
+.topbar a{color:var(--fraco)}
+.topbar a:hover{color:var(--ouro)}
+
+@media print{
+  body{background:#fff}
+  .folha{box-shadow:none;padding:0;max-width:none}
+  .nav,.topbar{display:none}
+  .indice{break-after:page}
+}
+@media (max-width:640px){
+  body{font-size:11.5pt}
+  .folha{padding:8mm 5mm 14mm}
+  pre{font-size:7.6pt}
+  table{font-size:8.6pt}
+  .doc{text-align:left}
+}
+</style>
+</head>
+<body>
+
+<div class="folha">
+  <div class="topo">
+    <div class="marca" contenteditable="true" spellcheck="false">SUA MARCA<small>MARCENARIA</small></div>
+    <div class="doc"><div class="fase">Fase 5 — Escala</div><div class="cod">FASE 5 · MÓDULO 10</div></div>
+  </div>
+  <div class="regua"></div>
+
+  <h1>MÓDULO 10 — TECNOLOGIA, IA E AUTOMAÇÃO</h1>
+  <div class="lead">Régua do Julgamento: automatize o repetível, nunca o julgamento</div>
+  <div class="indice"><h4>Neste módulo</h4><ol><li><a href="#a-regra-que-evita-90-dos-erros-com-tecnologia">A regra que evita 90% dos erros com tecnologia</a></li><li><a href="#a-regua-do-julgamento">A Régua do Julgamento</a></li><li><a href="#o-stack-minimo-viavel-de-uma-marcenaria-organizada">O Stack Mínimo Viável de uma marcenaria organizada</a></li><li><a href="#ordem-de-implantacao-e-por-que">Ordem de implantação (e por quê)</a></li><li><a href="#criterios-para-escolher-qualquer-sistema">Critérios para escolher qualquer sistema</a></li><li><a href="#onde-a-ia-realmente-ajuda-numa-marcenaria-hoje">Onde a IA realmente ajuda numa marcenaria (hoje)</a></li><li><a href="#uso-1-orcamento-estruturado">Uso 1 — Orçamento estruturado</a></li><li><a href="#uso-2-leitura-de-projeto-e-extracao-de-informacao">Uso 2 — Leitura de projeto e extração de informação</a></li><li><a href="#uso-3-qualificacao-de-lead-no-whatsapp">Uso 3 — Qualificação de lead no WhatsApp</a></li><li><a href="#uso-4-redacao-de-documentos-e-comunicacao">Uso 4 — Redação de documentos e comunicação</a></li><li><a href="#uso-5-analise-de-dados">Uso 5 — Análise de dados</a></li><li><a href="#uso-6-consolidacao-de-relatorio">Uso 6 — Consolidação de relatório</a></li><li><a href="#uso-7-base-de-conhecimento-interna">Uso 7 — Base de conhecimento interna</a></li><li><a href="#onde-nao-usar-ia-a-lista-que-importa-mais">Onde NÃO usar IA (a lista que importa mais)</a></li><li><a href="#as-10-automacoes-de-maior-retorno-numa-marcenaria">As 10 automações de maior retorno numa marcenaria</a></li><li><a href="#como-implantar-tecnologia-sem-trauma">Como implantar tecnologia sem trauma</a></li><li><a href="#o-protocolo-de-5-passos">O protocolo de 5 passos</a></li><li><a href="#os-3-papeis-obrigatorios-em-qualquer-implantacao">Os 3 papéis obrigatórios em qualquer implantação</a></li><li><a href="#como-vencer-a-resistencia">Como vencer a resistência</a></li><li><a href="#o-erro-da-planilha-eterna">O erro da planilha eterna</a></li><li><a href="#custo-de-tecnologia-qual-e-o-teto-saudavel">Custo de tecnologia: qual é o teto saudável</a></li><li><a href="#agentes-de-ia-o-que-da-e-o-que-nao-da-pra-fazer-hoje">Agentes de IA: o que dá e o que não dá pra fazer hoje</a></li><li><a href="#erros-comuns">Erros comuns</a></li><li><a href="#perguntas-que-o-lider-deve-fazer">Perguntas que o líder deve fazer</a></li><li><a href="#exercicios-do-modulo-10">Exercícios do Módulo 10</a></li><li><a href="#frases-de-impacto">Frases de impacto</a></li><li><a href="#entregavel-do-modulo-10">Entregável do Módulo 10</a></li></ol></div>
+  <hr>
+<h2 id="a-regra-que-evita-90-dos-erros-com-tecnologia">A regra que evita 90% dos erros com tecnologia</h2>
+<blockquote><p><strong>Nunca implante sistema para resolver problema de processo.</strong></p></blockquote>
+<p>Sistema em cima de processo bagunçado deixa a bagunça <strong>mais cara e mais rápida</strong>. Você paga R$ 40 mil por um ERP, treina três meses, e descobre que o dado está errado — porque ninguém tinha definido quem alimenta o quê e quando.</p>
+<p><strong>A ordem correta é sempre:</strong></p>
+<pre>1. Definir o processo (Módulo 1)
+2. Fazer no papel/planilha até estabilizar
+3. Só então automatizar</pre>
+<p>Quem pula a etapa 1 automatiza o caos.</p>
+<hr>
+<h2 id="a-regua-do-julgamento">A Régua do Julgamento</h2>
+<p>A pergunta que decide o que automatizar:</p>
+<pre>A tarefa exige JULGAMENTO ou é REPETÍVEL COM REGRA?
+
+REPETÍVEL COM REGRA  → automatize
+JULGAMENTO           → mantenha humano, use IA como apoio
+JULGAMENTO + RISCO   → humano, sem apoio automático</pre>
+<div class="tabwrap"><table><thead><tr><th>Tarefa</th><th>Tipo</th><th>Decisão</th></tr></thead><tbody><tr><td>Gerar orçamento a partir de m² e complexidade</td><td>Repetível com regra</td><td>✅ Automatize</td></tr><tr><td>Decidir dar 8% de desconto pra fechar</td><td>Julgamento</td><td>❌ Humano</td></tr><tr><td>Enviar lembrete de prazo ao cliente 24h antes</td><td>Repetível</td><td>✅ Automatize</td></tr><tr><td>Escrever a mensagem de um problema na obra</td><td>Julgamento</td><td>❌ Humano (IA rascunha)</td></tr><tr><td>Calcular plano de corte</td><td>Repetível com regra</td><td>✅ Automatize</td></tr><tr><td>Definir se um projeto é viável tecnicamente</td><td>Julgamento</td><td>❌ Humano</td></tr><tr><td>Classificar chamado de assistência por causa</td><td>Repetível com regra</td><td>✅ Automatize</td></tr><tr><td>Decidir demitir alguém</td><td>Julgamento + risco</td><td>❌ Humano, sem apoio</td></tr><tr><td>Consolidar o relatório semanal</td><td>Repetível</td><td>✅ Automatize</td></tr><tr><td>Precificar obra atípica</td><td>Julgamento</td><td>❌ Humano</td></tr></tbody></table></div>
+<hr>
+<h2 id="o-stack-minimo-viavel-de-uma-marcenaria-organizada">O Stack Mínimo Viável de uma marcenaria organizada</h2>
+<p>Não precisa de 12 sistemas. Precisa de 5 coisas funcionando.</p>
+<pre>┌─────────────────────────────────────────────────────────┐
+│  1. CRM              → do lead ao contrato assinado     │
+│  2. ERP/GESTÃO       → obra, cronograma, KPI, produção  │
+│  3. FINANCEIRO       → caixa, contas, DRE, centro de custo│
+│  4. PROJETO/CAD      → caderno técnico e plano de corte │
+│  5. COMUNICAÇÃO      → canal oficial com registro       │
+└─────────────────────────────────────────────────────────┘</pre>
+<h2 id="ordem-de-implantacao-e-por-que">Ordem de implantação (e por quê)</h2>
+<div class="tabwrap"><table><thead><tr><th>Ordem</th><th>O quê</th><th>Por que primeiro</th><th>Custo típico/mês</th></tr></thead><tbody><tr><td><strong>1º</strong></td><td>Financeiro com centro de custo por obra</td><td>Sem margem por obra, toda decisão é no escuro</td><td>R$ 150 a R$ 600</td></tr><tr><td><strong>2º</strong></td><td>CRM</td><td>Lead perdido é receita perdida hoje</td><td>R$ 100 a R$ 500</td></tr><tr><td><strong>3º</strong></td><td>ERP com cronograma e KPI</td><td>Previsibilidade é o que você vende</td><td>R$ 300 a R$ 2.000</td></tr><tr><td><strong>4º</strong></td><td>Otimização de corte</td><td>Ganho direto de material</td><td>R$ 200 a R$ 800</td></tr><tr><td><strong>5º</strong></td><td>Integrações e BI</td><td>Só faz sentido com os quatro acima funcionando</td><td>Variável</td></tr></tbody></table></div>
+<p><strong>Erro clássico:</strong> começar pelo ERP. É o mais caro, o mais demorado e o que mais depende de processo definido. Comece pelo financeiro — é o mais barato e o que mais rápido muda decisão.</p>
+<h2 id="criterios-para-escolher-qualquer-sistema">Critérios para escolher qualquer sistema</h2>
+<pre>[ ] Roda no celular? (Sua equipe não fica no computador)
+[ ] Alguém da equipe consegue usar sem treinamento longo?
+[ ] Exporta os dados? (Se não exporta, você fica preso pra sempre)
+[ ] Tem suporte em português e que responde?
+[ ] Custa menos de 1% do faturamento mensal?
+[ ] Dá pra testar por 30 dias antes de assinar?
+[ ] O que acontece com os meus dados se eu cancelar?</pre>
+<p><strong>A pergunta sobre exportação é a mais ignorada e a mais cara.</strong> Sistema que não exporta te prende — e o preço sobe todo ano porque eles sabem que você não vai sair.</p>
+<hr>
+<h2 id="onde-a-ia-realmente-ajuda-numa-marcenaria-hoje">Onde a IA realmente ajuda numa marcenaria (hoje)</h2>
+<h2 id="uso-1-orcamento-estruturado">Uso 1 — Orçamento estruturado</h2>
+<pre>O QUE FAZ: você descreve o projeto (m², ambientes, complexidade,
+acabamento) e a IA gera o orçamento seguindo a sua tabela de preço
+e as suas regras de complexidade.
+
+GANHO REAL: de 3 horas para 20 minutos por orçamento.
+Numa marcenaria que faz 20 orçamentos/mês: 53 horas/mês.
+
+CUIDADO: a IA aplica a SUA regra. Se a sua regra de precificação
+está errada, ela vai errar mais rápido e em escala.
+→ Acerte a precificação antes de automatizar.</pre>
+<h2 id="uso-2-leitura-de-projeto-e-extracao-de-informacao">Uso 2 — Leitura de projeto e extração de informação</h2>
+<pre>O QUE FAZ: lê planta/prancha e extrai medidas, ambientes,
+pontos elétricos e hidráulicos.
+
+GANHO: reduz o tempo de levantamento inicial.
+
+CUIDADO SÉRIO: não confie em medida extraída por IA sem
+conferência humana. Erro de medida vira chapa perdida.
+→ Use pra acelerar o levantamento, nunca pra substituir a medição.</pre>
+<h2 id="uso-3-qualificacao-de-lead-no-whatsapp">Uso 3 — Qualificação de lead no WhatsApp</h2>
+<pre>O QUE FAZ: responde a primeira mensagem, faz 4 a 6 perguntas de
+qualificação e classifica o lead antes de chegar no vendedor.
+
+GANHO: o vendedor só fala com quem tem perfil.
+Reduz de 60 para 20 conversas/mês, com a mesma conversão.
+
+CUIDADO: cliente de alto padrão percebe robô e não gosta.
+→ Use na TRIAGEM inicial e passe pra humano rápido.
+→ Deixe claro que é atendimento automático. Enganar destrói confiança.</pre>
+<h2 id="uso-4-redacao-de-documentos-e-comunicacao">Uso 4 — Redação de documentos e comunicação</h2>
+<pre>O QUE FAZ: rascunha proposta, e-mail difícil, comunicado interno,
+descrição de vaga, POP.
+
+GANHO: sai do zero em segundos. Você edita em vez de criar.
+
+CUIDADO: revise sempre. IA escreve bonito e escreve errado com
+a mesma confiança.
+→ Nunca mande nada sem ler.</pre>
+<h2 id="uso-5-analise-de-dados">Uso 5 — Análise de dados</h2>
+<pre>O QUE FAZ: você cola a planilha de obras e pergunta "qual tipo
+de obra dá menos margem?" ou "onde está concentrado o retrabalho?"
+
+GANHO: análise que levaria uma tarde sai em minutos.
+
+CUIDADO: confira os números-chave manualmente antes de decidir.</pre>
+<h2 id="uso-6-consolidacao-de-relatorio">Uso 6 — Consolidação de relatório</h2>
+<pre>O QUE FAZ: transforma dados brutos em relatório semanal legível.
+
+GANHO: 2 a 4 horas por semana do administrativo.</pre>
+<h2 id="uso-7-base-de-conhecimento-interna">Uso 7 — Base de conhecimento interna</h2>
+<pre>O QUE FAZ: você joga os POPs, o protocolo e os manuais numa
+ferramenta de IA, e a equipe pergunta em linguagem natural.
+"Como faz o setup da coladeira pra fita de 2mm?"
+
+GANHO: reduz interrupção do encarregado e acelera o novato.</pre>
+<hr>
+<h2 id="onde-nao-usar-ia-a-lista-que-importa-mais">Onde NÃO usar IA (a lista que importa mais)</h2>
+<div class="tabwrap"><table><thead><tr><th>Não use para</th><th>Por quê</th></tr></thead><tbody><tr><td><strong>Decidir preço final</strong></td><td>Preço é estratégia e leitura de cliente, não cálculo</td></tr><tr><td><strong>Feedback ou avaliação de pessoa</strong></td><td>Se você não tem 10 minutos pra escrever, não tem o direito de avaliar</td></tr><tr><td><strong>Demissão, advertência, conflito</strong></td><td>Nenhuma tecnologia pode mediar isso. É olho no olho</td></tr><tr><td><strong>Medição de obra</strong></td><td>Erro de medida vira prejuízo direto</td></tr><tr><td><strong>Aprovação de compra acima de X</strong></td><td>Julgamento com risco financeiro</td></tr><tr><td><strong>Relacionamento com cliente de alto ticket</strong></td><td>O que ele compra é a relação, não a resposta</td></tr><tr><td><strong>Decisão sobre gente</strong></td><td>Contratar, promover, desligar — humano, sempre</td></tr><tr><td><strong>Substituir conferência de qualidade</strong></td><td>Máquina não sente a emenda com a mão</td></tr><tr><td><strong>Conteúdo que se passa por humano sem avisar</strong></td><td>Quebra de confiança, e a cidade fala</td></tr></tbody></table></div>
+<blockquote><p><strong>Frase pra colar na parede:</strong> <em>"Automatize o que é repetitivo. Nunca automatize o que é relacionamento nem o que é julgamento com consequência."</em></p></blockquote>
+<hr>
+<h2 id="as-10-automacoes-de-maior-retorno-numa-marcenaria">As 10 automações de maior retorno numa marcenaria</h2>
+<p>Ordenadas por retorno sobre esforço:</p>
+<div class="tabwrap"><table><thead><tr><th>#</th><th>Automação</th><th>Ganho estimado/mês</th><th>Esforço</th></tr></thead><tbody><tr><td>1</td><td>Lembrete automático de prazo ao cliente (24h antes)</td><td>Evita 2 a 4 atrasos por espera</td><td>Baixo</td></tr><tr><td>2</td><td>Relatório diário de produção gerado automaticamente</td><td>5h do encarregado</td><td>Baixo</td></tr><tr><td>3</td><td>Notificação de mudança de status de obra (25/50/75/100)</td><td>Reduz 20 ligações/semana</td><td>Baixo</td></tr><tr><td>4</td><td>Orçamento gerado por m² e complexidade</td><td>40 a 60h</td><td>Médio</td></tr><tr><td>5</td><td>Qualificação de lead no primeiro contato</td><td>20h do comercial</td><td>Médio</td></tr><tr><td>6</td><td>Alerta de obra fora do cronograma</td><td>Antecipa problema em 5 a 10 dias</td><td>Baixo</td></tr><tr><td>7</td><td>Fluxo de cobrança automática de parcela vencida</td><td>Reduz inadimplência 1 a 2 pontos</td><td>Baixo</td></tr><tr><td>8</td><td>Pesquisa de satisfação disparada na entrega</td><td>Dado que não existia</td><td>Baixo</td></tr><tr><td>9</td><td>Otimização de plano de corte</td><td>3 a 6 pontos de aproveitamento de chapa</td><td>Médio</td></tr><tr><td>10</td><td>Painel de indicadores atualizado automaticamente</td><td>6h/mês + confiabilidade</td><td>Alto</td></tr></tbody></table></div>
+<p><strong>Comece pelas de esforço baixo.</strong> Três automações simples funcionando valem mais que um projeto grande pela metade.</p>
+<hr>
+<h2 id="como-implantar-tecnologia-sem-trauma">Como implantar tecnologia sem trauma</h2>
+<h2 id="o-protocolo-de-5-passos">O protocolo de 5 passos</h2>
+<pre>PASSO 1 — DESENHE O PROCESSO NO PAPEL (antes de qualquer sistema)
+   Se você não consegue desenhar, não consegue automatizar.
+
+PASSO 2 — FAÇA MANUAL POR 30 DIAS
+   Planilha, papel, o que for. Você vai descobrir 5 exceções
+   que nenhum sistema previa.
+
+PASSO 3 — ESCOLHA O SISTEMA COM OS CRITÉRIOS
+   Teste 2 opções por 30 dias antes de assinar.
+
+PASSO 4 — IMPLANTE EM UMA ÁREA SÓ
+   Nunca a empresa inteira de uma vez. Escolha a área mais
+   receptiva, faça dar certo, e use como prova pras outras.
+
+PASSO 5 — SÓ DESLIGUE O ANTIGO QUANDO O NOVO ESTIVER RODANDO
+   Rodar em paralelo por 30 dias custa trabalho e evita desastre.</pre>
+<h2 id="os-3-papeis-obrigatorios-em-qualquer-implantacao">Os 3 papéis obrigatórios em qualquer implantação</h2>
+<pre>DONO DO PROJETO — responde pelo resultado, não pela ferramenta
+CAMPEÃO INTERNO — a pessoa da equipe que domina primeiro e ensina
+PATROCINADOR    — o dono, cobrando o uso nas reuniões
+
+Sem o terceiro, a implantação morre em 60 dias.</pre>
+<h2 id="como-vencer-a-resistencia">Como vencer a resistência</h2>
+<p>A resistência é sempre a mesma: <em>"antes era mais fácil"</em>. E é verdade — no começo é mais difícil mesmo.</p>
+<pre>O QUE FUNCIONA:
+✓ Explicar o problema que o sistema resolve (não a funcionalidade)
+✓ Envolver quem vai usar no desenho, antes de escolher
+✓ Escolher um campeão da própria equipe, não impor de cima
+✓ Começar pelo que dá ganho visível PRA QUEM USA, não pro dono
+✓ Treinar na tarefa real, não em sala
+✓ O dono usar o sistema também. Se o dono pede relatório por
+  WhatsApp, o sistema morre.
+
+O QUE NÃO FUNCIONA:
+✗ "Agora é assim porque eu decidi"
+✗ Treinamento único de 4 horas
+✗ Implantar tudo de uma vez
+✗ Manter o processo antigo funcionando em paralelo pra sempre</pre>
+<p><strong>O item mais importante:</strong> comece pelo ganho de quem usa. Se o sistema só dá relatório pro dono e dá trabalho pro encarregado, o encarregado vai sabotar — não por má vontade, mas porque é racional.</p>
+<hr>
+<h2 id="o-erro-da-planilha-eterna">O erro da planilha eterna</h2>
+<p>Toda PME tem "a planilha". Aquela que só uma pessoa entende, com 40 abas, fórmulas quebradas e três versões circulando.</p>
+<p><strong>Sinais de que a planilha virou risco:</strong></p>
+<pre>[ ] Só uma pessoa sabe mexer
+[ ] Tem mais de 10 abas
+[ ] Alguém já perdeu dado nela
+[ ] Existem versões diferentes circulando por WhatsApp
+[ ] Ela trava ou demora pra abrir
+[ ] Você não tem backup testado dela</pre>
+<p><strong>3 ou mais marcados:</strong> essa planilha é um ponto único de falha (Módulo 6). Trate como tal — documente, faça backup e planeje a migração.</p>
+<hr>
+<h2 id="custo-de-tecnologia-qual-e-o-teto-saudavel">Custo de tecnologia: qual é o teto saudável</h2>
+<div class="tabwrap"><table><thead><tr><th>Porte</th><th>Investimento em tecnologia</th><th>% do faturamento</th></tr></thead><tbody><tr><td>Até R$ 2M/ano</td><td>R$ 500 a R$ 1.500/mês</td><td>0,3% a 0,9%</td></tr><tr><td>R$ 2M a R$ 6M/ano</td><td>R$ 1.500 a R$ 4.000/mês</td><td>0,3% a 0,8%</td></tr><tr><td>R$ 6M a R$ 15M/ano</td><td>R$ 4.000 a R$ 12.000/mês</td><td>0,3% a 1,0%</td></tr></tbody></table></div>
+<p><strong>Regra:</strong> tecnologia acima de 1,5% do faturamento numa marcenaria é sinal de sistema demais ou de sistema errado.</p>
+<p><strong>E a conta que importa:</strong> todo sistema precisa se pagar. Escreva antes de assinar:</p>
+<pre>Sistema: ______________  Custo anual: R$ ______
+Como se paga:
+  ( ) Horas economizadas: ____ h/mês × R$ ____ = R$ ______/ano
+  ( ) Perda evitada: R$ ______/ano
+  ( ) Receita adicional: R$ ______/ano
+TOTAL DE RETORNO: R$ ______  →  Payback: ____ meses
+
+Se o payback for maior que 12 meses, pense duas vezes.</pre>
+<hr>
+<h2 id="agentes-de-ia-o-que-da-e-o-que-nao-da-pra-fazer-hoje">Agentes de IA: o que dá e o que não dá pra fazer hoje</h2>
+<p><strong>Dá pra fazer bem:</strong></p>
+<ul><li>Agente que responde dúvida sobre POP e processo interno</li><li>Agente que gera orçamento seguindo a sua regra</li><li>Agente que qualifica lead com perguntas fixas</li><li>Agente que consolida e resume relatório</li><li>Agente que rascunha documento a partir de um modelo</li></ul>
+<p><strong>Não dá pra confiar ainda:</strong></p>
+<ul><li>Agente que decide preço sozinho</li><li>Agente que fala com cliente de alto ticket sem supervisão</li><li>Agente que interpreta prancha e gera caderno técnico sem revisão</li><li>Agente que toma decisão com consequência financeira</li></ul>
+<p><strong>A regra de segurança:</strong> todo agente precisa de um <strong>humano no loop</strong> nas decisões com consequência. O agente prepara, o humano decide.</p>
+<hr>
+<h2 id="erros-comuns">Erros comuns</h2>
+<div class="tabwrap"><table><thead><tr><th>#</th><th>Erro</th><th>Consequência</th></tr></thead><tbody><tr><td>1</td><td>Sistema pra resolver problema de processo</td><td>Bagunça mais cara e mais rápida</td></tr><tr><td>2</td><td>Começar pelo ERP</td><td>O mais caro, demorado e dependente de processo</td></tr><tr><td>3</td><td>Implantar na empresa inteira de uma vez</td><td>Rejeição generalizada</td></tr><tr><td>4</td><td>Não ter campeão interno</td><td>Ninguém domina, todo mundo desiste</td></tr><tr><td>5</td><td>Dono não usa o sistema</td><td>Sistema morre em 60 dias</td></tr><tr><td>6</td><td>Sistema que não exporta dados</td><td>Refém pra sempre, preço sobe todo ano</td></tr><tr><td>7</td><td>Automatizar julgamento</td><td>Decisão errada em escala</td></tr><tr><td>8</td><td>IA sem revisão humana</td><td>Erro com aparência de precisão</td></tr><tr><td>9</td><td>Automatizar precificação errada</td><td>Erra mais rápido e mais vezes</td></tr><tr><td>10</td><td>Robô no atendimento de alto ticket sem avisar</td><td>Quebra de confiança</td></tr><tr><td>11</td><td>Planilha crítica com uma pessoa só</td><td>Ponto único de falha</td></tr><tr><td>12</td><td>Não calcular o payback</td><td>Custo fixo novo sem retorno definido</td></tr></tbody></table></div>
+<hr>
+<h2 id="perguntas-que-o-lider-deve-fazer">Perguntas que o líder deve fazer</h2>
+<ol><li>Que tarefa a minha equipe faz toda semana que é 100% repetitiva com regra?</li><li>Meu sistema atual exporta os dados? Já testei?</li><li>Se eu cancelar meu ERP amanhã, o que acontece com os meus dados?</li><li>Quanto eu pago de tecnologia por mês? Qual % do faturamento?</li><li>Cada sistema que eu pago se paga? Já calculei?</li><li>Que planilha crítica só uma pessoa sabe mexer?</li><li>Onde eu estou automatizando julgamento sem perceber?</li></ol>
+<hr>
+<h2 id="exercicios-do-modulo-10">Exercícios do Módulo 10</h2>
+<h3 id="exercicio-1-regua-do-julgamento-30-min">Exercício 1 — Régua do Julgamento (30 min)</h3>
+<p>Liste 15 tarefas recorrentes da sua empresa. Classifique cada uma: repetível com regra ou julgamento. As repetíveis são candidatas.</p>
+<h3 id="exercicio-2-auditoria-de-sistemas-45-min">Exercício 2 — Auditoria de sistemas (45 min)</h3>
+<p>Liste tudo que você paga. Para cada um: custo/mês, quem usa, se exporta dados, e se se paga. Corte o que não se paga.</p>
+<h3 id="exercicio-3-payback-30-min">Exercício 3 — Payback (30 min)</h3>
+<p>Para o próximo sistema que você quer contratar, preencha a conta de payback antes de assinar.</p>
+<h3 id="exercicio-4-3-automacoes-simples-1-mes">Exercício 4 — 3 automações simples (1 mês)</h3>
+<p>Escolha 3 das automações de esforço baixo da tabela. Implante uma por semana.</p>
+<h3 id="exercicio-5-caca-a-planilha-critica-30-min">Exercício 5 — Caça à planilha crítica (30 min)</h3>
+<p>Aplique os 6 sinais em cada planilha importante. Documente e faça backup das que tiverem 3+.</p>
+<h3 id="exercicio-6-teste-de-ia-1h">Exercício 6 — Teste de IA (1h)</h3>
+<p>Pegue um relatório que alguém gasta 3 horas montando. Teste fazer com IA. Compare tempo e qualidade. Confira os números manualmente.</p>
+<hr>
+<h2 id="frases-de-impacto">Frases de impacto</h2>
+<ul><li><em>"Nunca implante sistema pra resolver problema de processo. Você só deixa a bagunça mais cara e mais rápida."</em></li><li><em>"Automatize o que é repetitivo. Nunca automatize relacionamento nem julgamento com consequência."</em></li><li><em>"Se a sua precificação está errada, automatizar faz você errar mais rápido e em escala."</em></li><li><em>"IA escreve bonito e escreve errado com a mesma confiança. Revise sempre."</em></li><li><em>"Sistema que não exporta dados te prende. E o preço sobe todo ano porque eles sabem que você não vai sair."</em></li><li><em>"Se o dono pede relatório por WhatsApp, o sistema morre em 60 dias."</em></li><li><em>"Comece pelo ganho de quem usa, não pelo relatório do dono. Senão o usuário sabota — e ele tem razão."</em></li><li><em>"Todo agente precisa de humano no loop nas decisões com consequência. O agente prepara, o humano decide."</em></li></ul>
+<hr>
+<h2 id="entregavel-do-modulo-10">Entregável do Módulo 10</h2>
+<ol><li>Classificação de 15 tarefas pela Régua do Julgamento.</li><li>Auditoria de sistemas com custo, uso e payback.</li><li>Três automações de esforço baixo implantadas.</li><li>Lista de planilhas críticas documentadas e com backup.</li><li>Cálculo de payback do próximo investimento em tecnologia.</li></ol>
+<p><strong>Próximo módulo:</strong> Crescimento sem perder qualidade — como o padrão sobrevive ao aumento de volume.</p>
+
+  <div class="rodape"><span>FASE 5 · MÓDULO 10 · Fase 5 — Escala</span><span>Material de formação em gestão para donos de PME</span></div>
+  <div class="direitos"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUAAAAAuCAMAAABuxzAGAAAA/1BMVEXcplzXoFjfp1r+3qH2zZSiYBv93G7wxYrzwnnUnlO+t3d+egS9qjzUlzz8rKnJjT3qfBRsHwrxwXuqVVW2hEWYbTvrvoGXNgDtw4e0h0v/68OkeUK/k1S0gz/pv4MAAADttmb4xHHSmErjqlrco1Xos2f///3//wD7vnv/f3/8qVXirWOqqlXotGn//35/f3+7fTr/+87cqWPepVf/AADMk0b/0Hrtu27tuWvqsF7/56/lrmD//q7iq13/1o/7yXIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACX38WxAAAAQHRSTlPaGFsiXw0VlV2cBAULEwP9BQiUA2pNpQjooRtwwUTaAPn9/fz70AMBBgIE8gOyAgIHEvKPATD/jnb+GLsIsRcORXUUwwAACYJJREFUeNrtm2mXmzoShoUx3u30kuVO7syUMCAMxjR26HS7ux3//391S2IHCXDHJ2cmJ/UxcUXwUKp6q6QQkNo9fPrk3sMfE+bDZAIr+d8R+R97sP43BH/QJRaAQ3947gUAI/jbpJ/+EExsBANKn2HWH+Cc3dqmSSDsuYI7n88fCvOq5ra6qrzQmNzlco+Sj8SpxS15xPCHc7So/vDQG6AP/zLR/sZIvIa1PJ93+b/mXvcJum0Bz9S26RNi6QnQY/ODSalp33r9nnaxjBZLjZuvbdDOo9EPNP2F256pMXkQ+dyr5PSSOHHTIZa55Oucz6VlhIsu3WYxA63sVPfChdrgP5zp0bJsqrthT4ABD0CKBD/2CsENfOO/rtk2scNh6+xVuSACzZE4HYTZfw1jJltMvgz3oOONZKV4BFPVw6ULtSWrETxRCwEed9IQJDJ+n6ggYtoGm/cBOP3Od3xB0eILoq2FWY4iBiNYUpXT+sNW9lpLGBTr1D2sz8CaMRsv8ANXlyl7KRbKLXRHPADRheoyghKAIZB0PXMq3/fNCCw9IX7e9BFzgp/ZnMk2o1HwK5zS96JD/IebyAclF6vqYo3hhslyZplf4ZQttJUtVK4Hu/RLWY5MlhDJQ/IANJE4fq6FG/QBiBFITbMchsej+NRW/mqNbOq5j/S73Mmy+WtpEuRpyOYuJQ/FZwqNb9kqZhaCtpV5KRYq89M4dIplxMZv+tYNMPZu17yCfJyaPUMwAWjS005i1E4IssYucf3p7nR6fZV57e5kYeG62ZaXuYylicKDwamyjAgnp32hmobeWvRpQnkIstDtBBjBR06OgGHxRx10E0wBvkr/UqciBg/sUvkRyqJhKkIdH+r9AsdBgihJWhcqLzng256e3yjPgpOmmq4DnD/Mbf6VP0JSukgc9AXon/3CAmH3WkqQSADGt4ZhLDYNJ+7nh9K3OYmNOIBzwyMwfJXYKy3gL/0EYKDljm2vFof4e7rlwCdiE780RDeRaGgRgAGL7H4hmEeg7KU1GFpSgPfwSBzHIY/9xTQC5Aud4PxuUexmEbjp9XMsWiJnnJnHHMyzx7tGCJK6hja23OU/EEQieinRutR0K8CNpwAYgCbC6R0AvdEvAuh6vki5z7B4EyG4pi91NU3qr5XWjgC9MQRxsUGXmm4HCEqAj/R9AKfBrwLoCxrU2WDtwGrCS32joSMyDb01cIcJ0cVL1uaB/QRAdnWAp95Djp8E6LkaTbLYiC+O2RxDUK+JQSLR0Jl4CX3CV+uSMq0AR50RuBHtc9lWaoBpEdk0Lbw+QL4eD8BEC6Oixjex6g0dqUkYITWjpIPjNZyLTs0N3wswhhdn3Qpweclg+NQiY4JrA+QampuWhlMsBAUK75UKYKahp1nWC+B0tFVdtBygX6uQumPLdWAG8Ntg8Fy1u6FiQOe52MiJKce06jGZTIa6YuD5foABvHIa+duv4AlD0HaqPQFpaGhqG1ndxW/A+8bjqJVgCaDLNjunYltVJ5IBNKtziKN1pENVxHsYE1krV3IR7Rz2WZF7TYB+KmG0rJv13Bcegtaw8qlIWUMbQkOXyq4PrxiC1q4vQPGKCYes10x7YQ8UABtNPqZpT63LFk7FpTQVwL11w64HMA4jvpRZKrszmPB87rDyDiGNok0MLy7NcjiE46SNYGULC4K1gQe+mg8dADMfC/lt2pRtlBOsz2/wM3WOnvsDzDS0z7xitLpvhiApZRhJ9+vD05Hv+30Y9ywiUUJQwMjnHUtQAqzsRjS9/d18ME5m3YcPY5JE0UWwN0DXE4ML8xlKonOWSIrtfu5JAAZpAILvFhaEP/jDWZOWFF2rwjMkeLSxetM0HcrnHRnAQWFJLVh1iDOAwaDqhG6O0Er4oTs0a2+Afjpm1wKvoOH5jNdEDPVVEyDX0EnRrtkzfzba8mR1GbOBER9d8PFZy7wjA6h1T2F6zFz2d5aYSetwHYAeE+XKHNSXS0JQj8MGwHQOPTUWkaZp/PDlPNJ1/e0t2fd3klmiSgfmBCeg3dzOA2gD+OhrEdoCbTZ7m/XRw/zHy7KInp2BjW0egtcCmNQD09HScyhdf0ESe7YXIWiXqiqpamiaJH+rZNutKARvSjXdFNIb7Lx59qN3sGBKlXVxK9dib6AfMAKvBVA8nOKgTNAoMg3JNLRBaPXgpXr2gl30qn8nsknGZ2s6BtWY7roAQ1e3rwrwVOG3reMojkdIafJa/DRVIcXRlYDu92/lugleGaB3TYB++eyvdPyX8yBWfjySAJxDZJlFM1AKwALhjoUX9MJaMj9bH8dwz34BQNCtqwGMWeR8r3ZIeWOQn+Ux1y0BDGBAuuy/uqJCyocJnGDLYWMBkHHZFMf9WTHGhEfJ5QZ77vXVACINR2UZDScLQZK/b4bfZQrTLpvGlAjKjht7TGNWPQ+buIwRM58Ph68d8dwzBxavqsQxqubAXgda7LJxlgbDjOCtpwRIFB/aIX8NQXa1QxodYmZBpD1j9cysF8BLaJCfzz/KeeAmJ8jUwwRZolmrzpLxowwqJ/H1mUXXAVgYDy45VOphKUCUsrMZv8DEbzDx60uoHFE6cvGI8jEzeQwmVztkA1WtRJB1TGPqowGMJk9WHluvdmzi7mqj0Q6ALhgo7HvQcDOAHpyo0rbb/CoTHUrTUhKB3x1JetrAmIqqv/taJ4gAq/c6qtd+pDdWwjT+zIpeTT0shxmsz34Z0VaAQe3+l5LGZ6EFSap6avMNuZTZ7mXtSJSsKDvriSMkyK+Q0bHuNY41W55QerXIA81SuhzUt+gaBM0WgOnO6ENDtCMEm5Abp9a2bCtiupCC9md5kjG+fDEMQ7EfknjXm7HrGdzLWC41Xzufedv9VmwQkN6rw9YaPW6WS9/nHnrFo+89VBT5d+qZj19rQlp6C9GOEDE5NJMpuSmjXu5g1O2I0h7el5vfoa573+NF1d3VhDRoHGXtLdeC5ObhRgxuqNNqxDmIdkR++IWy1lXl7zxAmhscveTGVDBclYfL+kvx1vuUX0gPGk5Cgw/3yUjcP+QtVcfn5ZOwUg/4f21x2yC/5f5XQUPfpsN9wieHaN+6wNyCk0APXfhtzfUifnBqnroylQE7W3TEcwJTsd21sCNZzQR0UjvU+81slNJ4ZB3H9Cv3Kw9BewwkkTA97lH6sFsT8uGw/7n/dfG/bOLcWWzHThorGFsf+PSCiDkqMbqrHr/aIBTd7xuCfnKp1Fp2/+cE9sASGv8AmyY6CKb1+gQAAAAASUVORK5CYII=" alt="ARESTA APM"><span>&copy; 2026 ARESTA APM &middot; Conteúdo e método proprietários. Uso restrito ao aluno matriculado — proibida a reprodução, revenda ou redistribuição, total ou parcial.</span></div>
+</div>
+
+<script>
+// mantem a marca digitada pelo usuario neste navegador
+(function(){
+  var m=document.querySelector('.marca');
+  var k='mkt-marca';
+  try{ var s=localStorage.getItem(k); if(s) m.innerHTML=s; }catch(e){}
+  m.addEventListener('blur',function(){ try{localStorage.setItem(k,m.innerHTML);}catch(e){} });
+})();
+</script>
+</body>
+</html>

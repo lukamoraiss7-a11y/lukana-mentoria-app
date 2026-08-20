@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FASE 4 — EXTRAS III</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --tinta:#2C2825; --ouro:#B8925A; --claro:#F5F1EA; --linha:#D8D2C7;
+  --fraco:#6E675E; --papel:#FFFFFF; --caixa:#FAF8F4;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+@page{size:A4;margin:14mm 13mm 13mm}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact;scroll-behavior:smooth}
+body{font:11pt/1.62 'Inter',-apple-system,'Helvetica Neue',Arial,sans-serif;
+  color:var(--tinta);background:var(--claro)}
+.folha{max-width:196mm;margin:0 auto;padding:14mm 10mm 20mm;background:var(--papel);
+  box-shadow:0 1px 3px rgba(0,0,0,.06)}
+
+/* cabecalho */
+.topo{display:flex;justify-content:space-between;align-items:flex-end;
+  border-bottom:1.5pt solid var(--tinta);padding-bottom:6pt;gap:12pt;flex-wrap:wrap}
+.marca{font:600 15pt/1 'Cormorant Garamond',Georgia,serif;letter-spacing:.22em;
+  text-transform:uppercase;outline:none}
+.marca small{display:block;font:400 6.5pt/1 'Inter',sans-serif;letter-spacing:.34em;
+  color:var(--fraco);margin-top:3pt}
+.marca:focus{background:#FFF6DF}
+.doc{text-align:right}
+.doc .fase{font-size:7pt;letter-spacing:.2em;color:var(--ouro);font-weight:600;
+  text-transform:uppercase}
+.doc .cod{font-size:7pt;letter-spacing:.18em;color:var(--fraco);margin-top:2pt}
+.regua{height:2.5pt;background:var(--ouro);margin:0 0 14pt}
+
+/* tipografia */
+h1{font:600 21pt/1.18 'Cormorant Garamond',Georgia,serif;letter-spacing:.01em;
+  margin:0 0 3pt}
+h1 + .lead{font-size:10.5pt;color:var(--fraco);font-style:italic;margin-bottom:14pt;
+  padding-bottom:10pt;border-bottom:.75pt solid var(--linha)}
+h2{font:600 10.5pt/1.25 'Inter',sans-serif;letter-spacing:.13em;text-transform:uppercase;
+  background:var(--claro);border-left:3pt solid var(--ouro);padding:6pt 8pt;
+  margin:22pt 0 9pt;break-after:avoid;page-break-after:avoid}
+h3{font:600 11.5pt/1.3 'Cormorant Garamond',Georgia,serif;letter-spacing:.02em;
+  margin:15pt 0 5pt;break-after:avoid;page-break-after:avoid}
+h4{font:600 8.5pt/1.25 'Inter',sans-serif;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--fraco);margin:12pt 0 4pt;break-after:avoid}
+p{margin:0 0 8pt;text-align:left}
+strong{font-weight:600}
+em{font-style:italic}
+a{color:var(--ouro);text-decoration:none}
+hr{border:none;border-top:.75pt solid var(--linha);margin:16pt 0}
+
+/* listas */
+ul,ol{margin:0 0 9pt 16pt}
+li{margin-bottom:3.5pt}
+ul.chk{list-style:none;margin-left:0}
+ul.chk li{display:flex;gap:7pt;align-items:flex-start;padding:3.5pt 0;
+  border-bottom:.5pt dotted var(--linha);break-inside:avoid}
+ul.chk li::before{content:"";flex:0 0 9.5pt;height:9.5pt;margin-top:2.5pt;
+  border:.9pt solid var(--tinta);border-radius:1pt;background:#fff}
+
+/* citacao / destaque */
+blockquote{border-left:2.5pt solid var(--ouro);background:var(--caixa);
+  padding:9pt 12pt;margin:11pt 0;break-inside:avoid}
+blockquote p:last-child{margin-bottom:0}
+
+/* codigo / templates ascii */
+pre{background:var(--caixa);border:.75pt solid var(--linha);border-radius:2pt;
+  padding:10pt 11pt;margin:11pt 0;overflow-x:auto;break-inside:avoid;
+  font:9pt/1.42 'SFMono-Regular',Menlo,Consolas,'Courier New',monospace;
+  white-space:pre;color:#332F2A}
+code{font:9.2pt/1.4 'SFMono-Regular',Menlo,Consolas,monospace;
+  background:var(--claro);padding:1pt 3pt;border-radius:2pt}
+pre code{background:none;padding:0;font-size:inherit}
+
+/* tabelas */
+.tabwrap{overflow-x:auto;margin:11pt 0}
+table{border-collapse:collapse;width:100%;font-size:9.3pt;break-inside:avoid}
+th{background:var(--claro);text-align:left;font-weight:600;font-size:7.5pt;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--fraco);
+  padding:5.5pt 7pt;border:.75pt solid var(--linha)}
+td{padding:5.5pt 7pt;border:.75pt solid var(--linha);vertical-align:top;line-height:1.42}
+tbody tr:nth-child(even){background:#FCFBF9}
+
+/* indice */
+.indice{background:var(--caixa);border:.75pt solid var(--linha);padding:11pt 13pt;
+  margin:0 0 18pt;break-inside:avoid}
+.indice h4{margin-top:0}
+.indice ol{margin:0 0 0 15pt;font-size:9.5pt;column-gap:18pt}
+.indice li{margin-bottom:2.5pt}
+.indice a{color:var(--tinta)}
+.indice a:hover{color:var(--ouro)}
+
+/* rodape */
+.rodape{margin-top:22pt;padding-top:6pt;border-top:.75pt solid var(--linha);
+  display:flex;justify-content:space-between;font-size:7.5pt;color:var(--fraco);
+  letter-spacing:.06em;gap:10pt;flex-wrap:wrap}
+
+/* direitos — a marca do Aresta e o aviso de propriedade.
+   Fica no rodape, nao no topo: o cabecalho e' do aluno (.marca editavel),
+   e a autoria do metodo nao disputa espaco com a marca dele. */
+.direitos{margin-top:7pt;display:flex;align-items:center;gap:7pt;
+  font-size:6.4pt;line-height:1.45;color:var(--fraco);letter-spacing:.02em}
+.direitos img{height:11pt;width:auto;flex-shrink:0;opacity:.85}
+@media print{.direitos{break-inside:avoid}}
+
+/* navegacao entre modulos (some na impressao) */
+.nav{max-width:196mm;margin:0 auto 10mm;padding:0 10mm;display:flex;
+  justify-content:space-between;gap:10pt;font-size:9pt}
+.nav a{display:inline-block;padding:6pt 11pt;border:.75pt solid var(--linha);
+  background:var(--papel);border-radius:2pt;color:var(--tinta)}
+.nav a:hover{border-color:var(--ouro);color:var(--ouro)}
+.topbar{max-width:196mm;margin:0 auto;padding:8mm 10mm 0;display:flex;
+  justify-content:space-between;font-size:9pt}
+.topbar a{color:var(--fraco)}
+.topbar a:hover{color:var(--ouro)}
+
+@media print{
+  body{background:#fff}
+  .folha{box-shadow:none;padding:0;max-width:none}
+  .nav,.topbar{display:none}
+  .indice{break-after:page}
+}
+@media (max-width:640px){
+  body{font-size:11.5pt}
+  .folha{padding:8mm 5mm 14mm}
+  pre{font-size:7.6pt}
+  table{font-size:8.6pt}
+  .doc{text-align:left}
+}
+</style>
+</head>
+<body>
+
+<div class="folha">
+  <div class="topo">
+    <div class="marca" contenteditable="true" spellcheck="false">SUA MARCA<small>MARCENARIA</small></div>
+    <div class="doc"><div class="fase">Fase 4 — Liderança</div><div class="cod">FASE 4 · MÓDULO 15</div></div>
+  </div>
+  <div class="regua"></div>
+
+  <h1>FASE 4 — EXTRAS III</h1>
+  <div class="lead">20 exercícios para gestores · Checklists do líder · Manual de boas práticas</div>
+  <div class="indice"><h4>Neste módulo</h4><ol><li><a href="#parte-1-20-exercicios-para-gestores">PARTE 1 — 20 EXERCÍCIOS PARA GESTORES</a></li><li><a href="#parte-2-checklist-semanal-do-lider">PARTE 2 — CHECKLIST SEMANAL DO LÍDER</a></li><li><a href="#parte-3-checklist-mensal-do-lider">PARTE 3 — CHECKLIST MENSAL DO LÍDER</a></li><li><a href="#parte-4-manual-de-boas-praticas-do-lider">PARTE 4 — MANUAL DE BOAS PRÁTICAS DO LÍDER</a></li><li><a href="#as-10-regras-inegociaveis">As 10 regras inegociáveis</a></li><li><a href="#rituais-diarios-nao-negociaveis">Rituais diários (não negociáveis)</a></li><li><a href="#o-que-fazer-quando-guia-rapido">O que fazer quando (guia rápido)</a></li><li><a href="#os-7-habitos-que-separam-o-lider-do-capataz">Os 7 hábitos que separam o líder do capataz</a></li><li><a href="#as-5-frases-que-um-lider-nunca-deve-dizer">As 5 frases que um líder nunca deve dizer</a></li><li><a href="#calendario-anual-do-lider">Calendário anual do líder</a></li><li><a href="#o-painel-de-autoavaliacao-do-dono-revisar-a-cada-90-dias">O Painel de Autoavaliação do Dono (revisar a cada 90 dias)</a></li><li><a href="#fechamento-da-fase-4">Fechamento da Fase 4</a></li></ol></div>
+  <hr>
+<h2 id="parte-1-20-exercicios-para-gestores">PARTE 1 — 20 EXERCÍCIOS PARA GESTORES</h2>
+<p>Use em treinamento de liderança, em workshop interno ou como tarefa entre os one-on-ones. Cada exercício tem tempo, entregável e o que ele revela.</p>
+<hr>
+<p><strong>EXERCÍCIO 1 — Diário de Decisões</strong> <em>(5 dias · 5 min/dia)</em> Anote toda decisão que passar por você. Classifique: A (só eu), B (líder poderia), C (falta processo), D (nem deveria ter chegado). <strong>Revela:</strong> quanto do seu tempo é arquitetura ruim, não excesso de trabalho. <strong>Entregável:</strong> planilha com percentual por categoria.</p>
+<p><strong>EXERCÍCIO 2 — A Lista da Tolerância</strong> <em>(20 min)</em> Escreva os 5 comportamentos que te incomodam e que você nunca abordou. Ao lado: há quanto tempo acontece e quantos já copiaram. <strong>Revela:</strong> sua cultura real, não a declarada. <strong>Entregável:</strong> 1 item resolvido nesta semana.</p>
+<p><strong>EXERCÍCIO 3 — Teste do Banco de Reservas</strong> <em>(20 min)</em> Liste cada função-chave e quem assumiria amanhã se a pessoa saísse hoje. <strong>Revela:</strong> seus pontos únicos de falha. <strong>Entregável:</strong> tabela com prazo pra cada lacuna.</p>
+<p><strong>EXERCÍCIO 4 — Autópsia da Contratação Errada</strong> <em>(30 min)</em> Última contratação que deu errado: em qual etapa do PRUMO você pulou? Que sinal ignorou? Quanto custou em R$? <strong>Revela:</strong> o padrão que você repete.</p>
+<p><strong>EXERCÍCIO 5 — Teste de Alinhamento Cultural</strong> <em>(30 min)</em> Pergunte separadamente a 5 pessoas: "o que faz alguém ser bem visto aqui?" e "o que faz alguém ser demitido aqui?". <strong>Revela:</strong> a distância entre a cultura que você acha que tem e a que existe.</p>
+<p><strong>EXERCÍCIO 6 — Reescreva 5 Broncas</strong> <em>(30 min)</em> Pegue 5 coisas que você já disse do jeito errado. Reescreva no formato CORTE completo. <strong>Revela:</strong> onde você pula o impacto (O) e onde você dá a solução no lugar da pergunta (R).</p>
+<p><strong>EXERCÍCIO 7 — Teste Processo × Pessoa</strong> <em>(20 min)</em> Liste os 5 erros mais frequentes dos últimos 60 dias. Aplique as 4 perguntas (foi treinado? padrão escrito? tinha recurso? outros erram igual?). <strong>Revela:</strong> quantas broncas suas são injustas.</p>
+<p><strong>EXERCÍCIO 8 — Simulação de Folha</strong> <em>(45 min)</em> Monte a tabela salarial com piso/meio/teto. Simule todo mundo subindo 1 nível em 24 meses. <strong>Revela:</strong> se seu plano de carreira é sustentável.</p>
+<p><strong>EXERCÍCIO 9 — Auditoria de Promoções</strong> <em>(20 min)</em> Suas últimas 5 promoções: qual gatilho emocional estava presente? Quantas passariam nos 3 filtros hoje? <strong>Revela:</strong> seu viés na hora de promover.</p>
+<p><strong>EXERCÍCIO 10 — Auditoria de Reuniões</strong> <em>(30 min)</em> Liste todas as reuniões atuais: quem, quanto tempo, frequência, e <strong>qual decisão saiu da última</strong>. Some o custo-hora. <strong>Revela:</strong> quanto você gasta em reunião que não decide nada.</p>
+<p><strong>EXERCÍCIO 11 — Escolha do Placar</strong> <em>(1h)</em> Defina os 5 a 8 números da empresa. Regra: cada um levantável em menos de 10 min/semana. <strong>Revela:</strong> quais indicadores você quer mas não consegue medir.</p>
+<p><strong>EXERCÍCIO 12 — Teste de Gamificação</strong> <em>(20 min)</em> Para cada KPI: "se eu fosse funcionário e quisesse maximizar esse número prejudicando a empresa, o que eu faria?" <strong>Revela:</strong> a trava (gatilho 2) que falta em cada indicador.</p>
+<p><strong>EXERCÍCIO 13 — Mapa das Três Portas</strong> <em>(30 min)</em> Liste todos os familiares ligados à empresa. Marque por quais portas cada um entra e se as regras estão claras. <strong>Revela:</strong> onde você mistura família com gestão.</p>
+<p><strong>EXERCÍCIO 14 — Teste do Estranho</strong> <em>(20 min)</em> Para cada familiar empregado: "se fosse um estranho com o mesmo desempenho, eu manteria nessa função com esse salário?" <strong>Revela:</strong> suas exceções invisíveis.</p>
+<p><strong>EXERCÍCIO 15 — A Lista Honesta</strong> <em>(20 min)</em> Nomes das pessoas que você não contrataria hoje. Há quanto tempo você sabe. Quanto já custou. <strong>Revela:</strong> suas decisões adiadas. <strong>Entregável:</strong> uma data definida.</p>
+<p><strong>EXERCÍCIO 16 — Escreva o Script Difícil</strong> <em>(30 min)</em> Escreva palavra por palavra a conversa que você está adiando. Leia em voz alta. <strong>Revela:</strong> exatamente onde você trava.</p>
+<p><strong>EXERCÍCIO 17 — Matriz de Cobertura</strong> <em>(30 min)</em> Para cada tarefa crítica, liste quem sabe fazer. Onde só uma pessoa sabe, marque em vermelho. <strong>Revela:</strong> seu bus factor real.</p>
+<p><strong>EXERCÍCIO 18 — Declare o Nível</strong> <em>(1 semana)</em> Toda vez que delegar, diga em voz alta o nível de autonomia (1 a 5). Anote as reações. <strong>Revela:</strong> quantos mal-entendidos vinham só de falta de declaração.</p>
+<p><strong>EXERCÍCIO 19 — Teste da Ausência</strong> <em>(1 dia · depois 3 dias)</em> Escreva a lista do que é e do que não é emergência. Suma. Faça a autópsia no dia seguinte. <strong>Revela:</strong> onde está o próximo trabalho de arquitetura.</p>
+<p><strong>EXERCÍCIO 20 — A Pergunta que Antecipa</strong> <em>(30 min)</em> Pra cada pessoa crítica da sua equipe, no one-on-one: <em>"existe alguma coisa que te faria sair daqui?"</em> <strong>Revela:</strong> as saídas que você vai ter nos próximos 12 meses — enquanto ainda dá pra evitar.</p>
+<hr>
+<h2 id="parte-2-checklist-semanal-do-lider">PARTE 2 — CHECKLIST SEMANAL DO LÍDER</h2>
+<p>Imprima. Uma folha por semana. Marque no fim de cada dia.</p>
+<pre>═══════════════════════════════════════════════════════════════
+CHECKLIST SEMANAL DO LÍDER — semana de ___/___ a ___/___
+═══════════════════════════════════════════════════════════════
+
+SEGUNDA — PLANEJAR
+[ ] Reunião semanal tática conduzida (60 min, com ata)
+[ ] Ações da semana anterior revisadas — cobradas as não feitas
+[ ] Placar atualizado e visível a todos
+[ ] Prioridades da semana comunicadas à equipe
+[ ] Vermelhos do placar viraram item com dono e prazo
+
+TODOS OS DIAS — CONDUZIR
+[ ] Reunião diária de 15 min realizada (em pé, no horário)
+[ ] Andei na fábrica/obra ao menos 1x sem agenda
+[ ] Número do dia anterior atualizado no quadro
+[ ] Fechei o dia perguntando: "algo fugiu do padrão hoje?"
+
+DURANTE A SEMANA — LIDERAR
+[ ] Ao menos 1 one-on-one realizado (30 min, pauta da pessoa)
+[ ] Ao menos 1 reconhecimento nominal e público dado
+[ ] Feedback dado no momento (não acumulei nada da semana)
+[ ] Acompanhamento de CORTE anterior cumprido na data
+[ ] Devolvi ao líder responsável toda demanda que não era minha
+[ ] Não revertí nenhuma decisão de líder em público
+
+DURANTE A SEMANA — CONSTRUIR
+[ ] Escrevi ou revisei 1 POP
+[ ] Ensinei alguma coisa a alguém (4M)
+[ ] Deleguei 1 coisa nova, declarando o nível de autonomia
+[ ] Anotei ao menos 3 fatos no caderno de observação da equipe
+
+SEXTA — FECHAR
+[ ] Números da semana fechados e publicados
+[ ] Pauta da reunião de segunda enviada (24h antes)
+[ ] Programação da semana seguinte definida
+[ ] Pendências não concluídas repriorizadas, não empurradas
+[ ] 3 comportamentos anotados pra reconhecer na segunda
+
+AUTOAVALIAÇÃO DA SEMANA
+Quantas decisões passaram por mim que não deveriam? ______
+Falei menos de 30% do tempo nas reuniões?  ( )Sim ( )Não
+O que eu adiei essa semana? _____________________________
+Nota da minha semana como líder: ____/10
+═══════════════════════════════════════════════════════════════</pre>
+<hr>
+<h2 id="parte-3-checklist-mensal-do-lider">PARTE 3 — CHECKLIST MENSAL DO LÍDER</h2>
+<pre>═══════════════════════════════════════════════════════════════
+CHECKLIST MENSAL DO LÍDER — mês de _______________
+═══════════════════════════════════════════════════════════════
+
+RESULTADO
+[ ] Reunião mensal de resultado realizada até o dia 10
+[ ] DRE gerencial analisado (margem, folha/faturamento, caixa)
+[ ] Margem das 5 maiores obras entregues no mês calculada
+[ ] Custo de retrabalho do mês quantificado em R$
+[ ] 3 piores desvios analisados com causa raiz e dono definido
+
+PESSOAS
+[ ] One-on-one com 100% dos liderados diretos
+[ ] Matriz Entrega × Jeito revisada — alguém mudou de quadrante?
+[ ] PDIs revisados: ação cumprida ou não?
+[ ] CORTEs do mês contabilizados (nº, por área, reincidência)
+[ ] Proporção reconhecimento : correção ≥ 4:1?
+[ ] Nenhum acompanhamento de CORTE pendente sem data
+
+PROCESSO
+[ ] Ao menos 4 POPs escritos ou revisados no mês
+[ ] Indicadores de todas as funções levantados e publicados
+[ ] Ao menos 1 processo simplificado ou eliminado
+[ ] Autópsia feita de todo erro que custou acima de R$ ___
+
+FUTURO
+[ ] Progresso das prioridades do trimestre avaliado
+[ ] Matriz de cobertura de competências críticas revisada
+[ ] Funil de candidatos: falei com ao menos 1 pessoa boa sem ter vaga
+[ ] Ao menos 1 dia da semana com bloco protegido pra pensar
+
+MINHA EVOLUÇÃO COMO DONO
+[ ] Parei de fazer alguma coisa que eu fazia mês passado?
+    O quê: ________________________________________________
+[ ] Deleguei alguma decisão que antes era minha?
+    Qual: _________________________________________________
+[ ] Meu nível de maturidade hoje: (1)Executor (2)Supervisor
+    (3)Gestor de gestores (4)Construtor
+[ ] O que eu preciso soltar no mês que vem: ________________
+═══════════════════════════════════════════════════════════════</pre>
+<hr>
+<h2 id="parte-4-manual-de-boas-praticas-do-lider">PARTE 4 — MANUAL DE BOAS PRÁTICAS DO LÍDER</h2>
+<h2 id="as-10-regras-inegociaveis">As 10 regras inegociáveis</h2>
+<pre>1.  A régua é uma só, e a primeira pessoa medida por ela sou eu.
+2.  Corrijo em particular, reconheço em público, humilho nunca.
+3.  Não reverto decisão de líder na frente de ninguém.
+4.  Toda reunião começa e termina na hora.
+5.  Toda conversa difícil acontece em até 48h do fato.
+6.  Toda combinação tem dono, prazo e forma de verificar.
+7.  Não prometo o que não vou cumprir — nem prazo, nem promoção, nem retorno.
+8.  Não decido salário no corredor. Só na janela.
+9.  Não deixo ninguém descobrir na avaliação algo que eu deveria ter dito antes.
+10. Quando alguém me traz um problema que é de outro líder, eu devolvo.</pre>
+<h2 id="rituais-diarios-nao-negociaveis">Rituais diários (não negociáveis)</h2>
+<div class="tabwrap"><table><thead><tr><th>Ritual</th><th>Quando</th><th>Duração</th></tr></thead><tbody><tr><td>Chegar antes da equipe</td><td>Início do turno</td><td>—</td></tr><tr><td>Reunião diária em pé</td><td>5 min após entrada</td><td>15 min</td></tr><tr><td>Caminhada sem agenda</td><td>Meio da manhã e meio da tarde</td><td>10 min cada</td></tr><tr><td>Pergunta de fechamento</td><td>Fim do turno</td><td>2 min</td></tr><tr><td>Anotação do caderno de fatos</td><td>Fim do dia</td><td>3 min</td></tr></tbody></table></div>
+<h2 id="o-que-fazer-quando-guia-rapido">O que fazer quando (guia rápido)</h2>
+<div class="tabwrap"><table><thead><tr><th>Situação</th><th>O que fazer</th></tr></thead><tbody><tr><td>Alguém erra pela 1ª vez</td><td>CORTE verbal em até 48h. Sem drama</td></tr><tr><td>Alguém erra pela 2ª vez no mês</td><td>CORTE com registro. Formulário assinado</td></tr><tr><td>Três pessoas erram igual</td><td>Não é CORTE. É POP faltando</td></tr><tr><td>Alguém traz problema sem solução</td><td>Devolva: "traz duas opções e sua recomendação"</td></tr><tr><td>Alguém passa por cima do líder</td><td>"Já falou com o [líder]?" — sempre</td></tr><tr><td>Alguém pede aumento fora da janela</td><td>Mostre a matriz e o critério. Marque março</td></tr><tr><td>Alguém chora no feedback</td><td>Pare. Ofereça um minuto. Não desfaça o feedback</td></tr><tr><td>Alguém levanta a voz</td><td>Baixe o seu. 10 minutos de intervalo. Retome</td></tr><tr><td>Alguém diz "o Fulano faz igual"</td><td>"Vou resolver com ele. Agora é sobre você." E resolva</td></tr><tr><td>Você errou na frente da equipe</td><td>Assuma em público, no mesmo tom em que errou</td></tr><tr><td>Um líder toma decisão ruim</td><td>Sustente em público, corrija em particular</td></tr><tr><td>Alguém pede demissão</td><td>Pergunte o motivo real. Não faça contraoferta no impulso</td></tr><tr><td>Você está bravo</td><td>Espere 4 horas antes de falar</td></tr></tbody></table></div>
+<h2 id="os-7-habitos-que-separam-o-lider-do-capataz">Os 7 hábitos que separam o líder do capataz</h2>
+<pre>1. PERGUNTA ANTES DE MANDAR
+   "O que você faria?" antes de "faz assim".
+
+2. EXPLICA O PORQUÊ
+   Ninguém se compromete com o que não entende.
+
+3. PROTEGE A EQUIPE PRA FORA, COBRA PRA DENTRO
+   Nunca joga o time debaixo do ônibus na frente do cliente.
+
+4. ASSUME O ERRO DO TIME COMO SEU
+   E dá o crédito do acerto ao time.
+
+5. FORMA SUBSTITUTO
+   Líder que não tem substituto não é promovível.
+
+6. DIZ O NÚMERO
+   Todo mundo sabe onde está e quanto falta.
+
+7. CUMPRE O QUE PROMETEU
+   Inclusive as coisas pequenas. Principalmente as pequenas.</pre>
+<h2 id="as-5-frases-que-um-lider-nunca-deve-dizer">As 5 frases que um líder nunca deve dizer</h2>
+<div class="tabwrap"><table><thead><tr><th>Nunca diga</th><th>Por quê</th><th>Diga isso</th></tr></thead><tbody><tr><td>"A empresa decidiu"</td><td>Terceiriza a decisão. Covardia visível</td><td>"Eu decidi"</td></tr><tr><td>"Sempre foi assim"</td><td>Mata qualquer melhoria</td><td>"Foi assim até agora. Por que você acha que dá pra mudar?"</td></tr><tr><td>"Não é problema meu"</td><td>Ensina que ninguém é responsável por nada</td><td>"Não é da minha área, mas vou levar pra quem é"</td></tr><tr><td>"Se não gostar, a porta é serventia da casa"</td><td>Destrói a relação e vaza pra cidade inteira</td><td>"Me conta o que está te incomodando"</td></tr><tr><td>"Você sempre / você nunca"</td><td>Generalização. Gera defesa, não mudança</td><td>"Ontem, na obra X, aconteceu Y"</td></tr></tbody></table></div>
+<h2 id="calendario-anual-do-lider">Calendário anual do líder</h2>
+<div class="tabwrap"><table><thead><tr><th>Mês</th><th>O quê</th></tr></thead><tbody><tr><td><strong>Janeiro</strong></td><td>Definir prioridades do ano. Comunicar à equipe</td></tr><tr><td><strong>Março</strong></td><td>Avaliação semestral completa. Promoções e reajuste de mérito</td></tr><tr><td><strong>Abril</strong></td><td>Revisão de metas de variável. Trimestral estratégica</td></tr><tr><td><strong>Junho</strong></td><td>Meio de ano: revisão de prioridades e de cobertura de competências</td></tr><tr><td><strong>Julho</strong></td><td>Trimestral estratégica</td></tr><tr><td><strong>Setembro</strong></td><td>Avaliação semestral. Correções pontuais de faixa</td></tr><tr><td><strong>Outubro</strong></td><td>Trimestral estratégica. Planejamento de férias coletivas e contingência</td></tr><tr><td><strong>Novembro</strong></td><td>Revisão do plano de carreira e da tabela salarial pro ano seguinte</td></tr><tr><td><strong>Dezembro</strong></td><td>Fechamento, reconhecimento público, e desenho do ano seguinte</td></tr><tr><td><strong>Todo mês</strong></td><td>Reunião de resultado até o dia 10 · one-on-ones · POPs</td></tr><tr><td><strong>Toda semana</strong></td><td>Tática de segunda · placar atualizado</td></tr><tr><td><strong>Todo dia</strong></td><td>Diária de 15 min · caminhada · caderno de fatos</td></tr></tbody></table></div>
+<hr>
+<h2 id="o-painel-de-autoavaliacao-do-dono-revisar-a-cada-90-dias">O Painel de Autoavaliação do Dono (revisar a cada 90 dias)</h2>
+<pre>                                          Trim 1  Trim 2  Trim 3  Trim 4
+Nº de decisões/dia que passam por mim      ____   ____   ____   ____
+Horas trabalhadas por semana               ____   ____   ____   ____
+Dias que consigo ficar fora sem parar nada ____   ____   ____   ____
+Nº de líderes com alçada real              ____   ____   ____   ____
+Nº de POPs escritos (acumulado)            ____   ____   ____   ____
+Turnover anualizado (%)                    ____   ____   ____   ____
+Funções críticas com backup                ____   ____   ____   ____
+Meu nível de maturidade (1-4)              ____   ____   ____   ____
+
+A ÚNICA MÉTRICA QUE IMPORTA:
+"Se eu sumir 30 dias, a empresa entrega o mesmo?"
+( ) Não, para tudo
+( ) Parcialmente, com perda grande
+( ) Sim, com perda pequena
+( ) Sim, sem perda</pre>
+<hr>
+<h2 id="fechamento-da-fase-4">Fechamento da Fase 4</h2>
+<p>Você começou essa fase respondendo seis perguntas. Volte nelas.</p>
+<ol><li>Se você sumir por 15 dias sem celular, quantas obras param?</li><li>Quantas decisões passaram por você ontem que não precisavam?</li><li>Quem na sua empresa pode te dizer "isso está errado" sem medo?</li><li>Quantas pessoas você demitiu tarde demais?</li><li>Qual foi a última contratação que você fez com processo, e não com urgência?</li><li>Se eu perguntar pro seu encarregado qual é o número dele desse mês, ele responde em 5 segundos?</li></ol>
+<p><strong>Se as respostas mudaram, a fase funcionou.</strong></p>
+<p>Se não mudaram, você leu — não implantou. Volte no Módulo 5, monte a cadência, e comece de novo. Liderança não se aprende lendo. Se aprende praticando com método, apanhando, corrigindo e insistindo.</p>
+<p>O mesmo que a marcenaria.</p>
+<hr>
+<p><strong>FIM DA FASE 4 — LIDERANÇA.</strong> <strong>Próxima fase:</strong> FASE 5 — ESCALA. Como crescer sem perder qualidade, sem perder margem e sem virar refém do próprio tamanho.</p>
+
+  <div class="rodape"><span>FASE 4 · MÓDULO 15 · Fase 4 — Liderança</span><span>Material de formação em gestão para donos de PME</span></div>
+  <div class="direitos"><img src="data:image/png;base64,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" alt="ARESTA APM"><span>&copy; 2026 ARESTA APM &middot; Conteúdo e método proprietários. Uso restrito ao aluno matriculado — proibida a reprodução, revenda ou redistribuição, total ou parcial.</span></div>
+</div>
+
+<script>
+// mantem a marca digitada pelo usuario neste navegador
+(function(){
+  var m=document.querySelector('.marca');
+  var k='mkt-marca';
+  try{ var s=localStorage.getItem(k); if(s) m.innerHTML=s; }catch(e){}
+  m.addEventListener('blur',function(){ try{localStorage.setItem(k,m.innerHTML);}catch(e){} });
+})();
+</script>
+</body>
+</html>

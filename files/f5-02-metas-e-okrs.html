@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MÓDULO 2 — METAS E OKRs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --tinta:#2C2825; --ouro:#B8925A; --claro:#F5F1EA; --linha:#D8D2C7;
+  --fraco:#6E675E; --papel:#FFFFFF; --caixa:#FAF8F4;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+@page{size:A4;margin:14mm 13mm 13mm}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact;scroll-behavior:smooth}
+body{font:11pt/1.62 'Inter',-apple-system,'Helvetica Neue',Arial,sans-serif;
+  color:var(--tinta);background:var(--claro)}
+.folha{max-width:196mm;margin:0 auto;padding:14mm 10mm 20mm;background:var(--papel);
+  box-shadow:0 1px 3px rgba(0,0,0,.06)}
+
+/* cabecalho */
+.topo{display:flex;justify-content:space-between;align-items:flex-end;
+  border-bottom:1.5pt solid var(--tinta);padding-bottom:6pt;gap:12pt;flex-wrap:wrap}
+.marca{font:600 15pt/1 'Cormorant Garamond',Georgia,serif;letter-spacing:.22em;
+  text-transform:uppercase;outline:none}
+.marca small{display:block;font:400 6.5pt/1 'Inter',sans-serif;letter-spacing:.34em;
+  color:var(--fraco);margin-top:3pt}
+.marca:focus{background:#FFF6DF}
+.doc{text-align:right}
+.doc .fase{font-size:7pt;letter-spacing:.2em;color:var(--ouro);font-weight:600;
+  text-transform:uppercase}
+.doc .cod{font-size:7pt;letter-spacing:.18em;color:var(--fraco);margin-top:2pt}
+.regua{height:2.5pt;background:var(--ouro);margin:0 0 14pt}
+
+/* tipografia */
+h1{font:600 21pt/1.18 'Cormorant Garamond',Georgia,serif;letter-spacing:.01em;
+  margin:0 0 3pt}
+h1 + .lead{font-size:10.5pt;color:var(--fraco);font-style:italic;margin-bottom:14pt;
+  padding-bottom:10pt;border-bottom:.75pt solid var(--linha)}
+h2{font:600 10.5pt/1.25 'Inter',sans-serif;letter-spacing:.13em;text-transform:uppercase;
+  background:var(--claro);border-left:3pt solid var(--ouro);padding:6pt 8pt;
+  margin:22pt 0 9pt;break-after:avoid;page-break-after:avoid}
+h3{font:600 11.5pt/1.3 'Cormorant Garamond',Georgia,serif;letter-spacing:.02em;
+  margin:15pt 0 5pt;break-after:avoid;page-break-after:avoid}
+h4{font:600 8.5pt/1.25 'Inter',sans-serif;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--fraco);margin:12pt 0 4pt;break-after:avoid}
+p{margin:0 0 8pt;text-align:left}
+strong{font-weight:600}
+em{font-style:italic}
+a{color:var(--ouro);text-decoration:none}
+hr{border:none;border-top:.75pt solid var(--linha);margin:16pt 0}
+
+/* listas */
+ul,ol{margin:0 0 9pt 16pt}
+li{margin-bottom:3.5pt}
+ul.chk{list-style:none;margin-left:0}
+ul.chk li{display:flex;gap:7pt;align-items:flex-start;padding:3.5pt 0;
+  border-bottom:.5pt dotted var(--linha);break-inside:avoid}
+ul.chk li::before{content:"";flex:0 0 9.5pt;height:9.5pt;margin-top:2.5pt;
+  border:.9pt solid var(--tinta);border-radius:1pt;background:#fff}
+
+/* citacao / destaque */
+blockquote{border-left:2.5pt solid var(--ouro);background:var(--caixa);
+  padding:9pt 12pt;margin:11pt 0;break-inside:avoid}
+blockquote p:last-child{margin-bottom:0}
+
+/* codigo / templates ascii */
+pre{background:var(--caixa);border:.75pt solid var(--linha);border-radius:2pt;
+  padding:10pt 11pt;margin:11pt 0;overflow-x:auto;break-inside:avoid;
+  font:9pt/1.42 'SFMono-Regular',Menlo,Consolas,'Courier New',monospace;
+  white-space:pre;color:#332F2A}
+code{font:9.2pt/1.4 'SFMono-Regular',Menlo,Consolas,monospace;
+  background:var(--claro);padding:1pt 3pt;border-radius:2pt}
+pre code{background:none;padding:0;font-size:inherit}
+
+/* tabelas */
+.tabwrap{overflow-x:auto;margin:11pt 0}
+table{border-collapse:collapse;width:100%;font-size:9.3pt;break-inside:avoid}
+th{background:var(--claro);text-align:left;font-weight:600;font-size:7.5pt;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--fraco);
+  padding:5.5pt 7pt;border:.75pt solid var(--linha)}
+td{padding:5.5pt 7pt;border:.75pt solid var(--linha);vertical-align:top;line-height:1.42}
+tbody tr:nth-child(even){background:#FCFBF9}
+
+/* indice */
+.indice{background:var(--caixa);border:.75pt solid var(--linha);padding:11pt 13pt;
+  margin:0 0 18pt;break-inside:avoid}
+.indice h4{margin-top:0}
+.indice ol{margin:0 0 0 15pt;font-size:9.5pt;column-gap:18pt}
+.indice li{margin-bottom:2.5pt}
+.indice a{color:var(--tinta)}
+.indice a:hover{color:var(--ouro)}
+
+/* rodape */
+.rodape{margin-top:22pt;padding-top:6pt;border-top:.75pt solid var(--linha);
+  display:flex;justify-content:space-between;font-size:7.5pt;color:var(--fraco);
+  letter-spacing:.06em;gap:10pt;flex-wrap:wrap}
+
+/* direitos — a marca do Aresta e o aviso de propriedade.
+   Fica no rodape, nao no topo: o cabecalho e' do aluno (.marca editavel),
+   e a autoria do metodo nao disputa espaco com a marca dele. */
+.direitos{margin-top:7pt;display:flex;align-items:center;gap:7pt;
+  font-size:6.4pt;line-height:1.45;color:var(--fraco);letter-spacing:.02em}
+.direitos img{height:11pt;width:auto;flex-shrink:0;opacity:.85}
+@media print{.direitos{break-inside:avoid}}
+
+/* navegacao entre modulos (some na impressao) */
+.nav{max-width:196mm;margin:0 auto 10mm;padding:0 10mm;display:flex;
+  justify-content:space-between;gap:10pt;font-size:9pt}
+.nav a{display:inline-block;padding:6pt 11pt;border:.75pt solid var(--linha);
+  background:var(--papel);border-radius:2pt;color:var(--tinta)}
+.nav a:hover{border-color:var(--ouro);color:var(--ouro)}
+.topbar{max-width:196mm;margin:0 auto;padding:8mm 10mm 0;display:flex;
+  justify-content:space-between;font-size:9pt}
+.topbar a{color:var(--fraco)}
+.topbar a:hover{color:var(--ouro)}
+
+@media print{
+  body{background:#fff}
+  .folha{box-shadow:none;padding:0;max-width:none}
+  .nav,.topbar{display:none}
+  .indice{break-after:page}
+}
+@media (max-width:640px){
+  body{font-size:11.5pt}
+  .folha{padding:8mm 5mm 14mm}
+  pre{font-size:7.6pt}
+  table{font-size:8.6pt}
+  .doc{text-align:left}
+}
+</style>
+</head>
+<body>
+
+<div class="folha">
+  <div class="topo">
+    <div class="marca" contenteditable="true" spellcheck="false">SUA MARCA<small>MARCENARIA</small></div>
+    <div class="doc"><div class="fase">Fase 5 — Escala</div><div class="cod">FASE 5 · MÓDULO 02</div></div>
+  </div>
+  <div class="regua"></div>
+
+  <h1>MÓDULO 2 — METAS E OKRs</h1>
+  <div class="lead">Método 1-3-9: uma meta, três alavancas, nove resultados</div>
+  <div class="indice"><h4>Neste módulo</h4><ol><li><a href="#por-que-a-meta-da-sua-empresa-nao-funciona">Por que a meta da sua empresa não funciona</a></li><li><a href="#a-diferenca-entre-meta-kpi-e-okr-em-linguagem-de-dono">A diferença entre meta, KPI e OKR (em linguagem de dono)</a></li><li><a href="#o-metodo-1-3-9">O Método 1-3-9</a></li><li><a href="#exemplo-completo-marcenaria-de-r-5m-ano">Exemplo completo — marcenaria de R$ 5M/ano</a></li><li><a href="#como-escrever-um-bom-resultado-chave">Como escrever um bom Resultado-Chave</a></li><li><a href="#a-formula">A fórmula</a></li><li><a href="#os-4-testes-de-um-bom-rc">Os 4 testes de um bom RC</a></li><li><a href="#atividade-resultado-o-erro-mais-comum">Atividade × Resultado (o erro mais comum)</a></li><li><a href="#como-quebrar-a-meta-anual">Como quebrar a meta anual</a></li><li><a href="#o-funil-de-desdobramento">O funil de desdobramento</a></li><li><a href="#o-ciclo-trimestral-de-okr">O ciclo trimestral de OKR</a></li><li><a href="#como-pontuar-no-fechamento">Como pontuar no fechamento</a></li><li><a href="#o-scorecard-estrategico">O Scorecard Estratégico</a></li><li><a href="#como-comunicar-a-meta-para-a-empresa-inteira">Como comunicar a meta para a empresa inteira</a></li><li><a href="#o-dashboard-como-montar-sem-virar-projeto-de-ti">O Dashboard — como montar sem virar projeto de TI</a></li><li><a href="#regra-comece-no-papel-depois-planilha-depois-sistema">Regra: comece no papel, depois planilha, depois sistema</a></li><li><a href="#o-painel-de-parede-o-mais-poderoso-e-o-mais-barato">O painel de parede (o mais poderoso e o mais barato)</a></li><li><a href="#erros-comuns">Erros comuns</a></li><li><a href="#perguntas-que-o-lider-deve-fazer">Perguntas que o líder deve fazer</a></li><li><a href="#exercicios-do-modulo-2">Exercícios do Módulo 2</a></li><li><a href="#frases-de-impacto">Frases de impacto</a></li><li><a href="#entregavel-do-modulo-2">Entregável do Módulo 2</a></li></ol></div>
+  <hr>
+<h2 id="por-que-a-meta-da-sua-empresa-nao-funciona">Por que a meta da sua empresa não funciona</h2>
+<p>Três padrões que eu vejo em toda PME:</p>
+<p><strong>Padrão 1 — A meta que só existe na cabeça do dono.</strong> "Esse ano eu quero crescer 30%." Ninguém mais sabe. Ninguém sabe o que fazer amanhã por causa disso.</p>
+<p><strong>Padrão 2 — A meta que não vira ação.</strong> "Faturar R$ 6 milhões." Ótimo. O montador faz o que amanhã por causa disso? Nada. Meta que não desce até a bancada não é meta — é desejo.</p>
+<p><strong>Padrão 3 — A meta demais.</strong> Doze prioridades pro ano. Em março ninguém lembra de nove delas. Em dezembro nenhuma foi concluída.</p>
+<blockquote><p><strong>Frase pra colar na parede:</strong> <em>"Se tudo é prioridade, nada é. Escolher o que NÃO fazer é metade do trabalho de definir meta."</em></p></blockquote>
+<hr>
+<h2 id="a-diferenca-entre-meta-kpi-e-okr-em-linguagem-de-dono">A diferença entre meta, KPI e OKR (em linguagem de dono)</h2>
+<div class="tabwrap"><table><thead><tr><th></th><th>O que é</th><th>Exemplo</th><th>Frequência</th></tr></thead><tbody><tr><td><strong>KPI</strong></td><td>O termômetro. Mede a saúde do que já existe</td><td>Retrabalho ≤ 4%</td><td>Sempre ativo, mede continuamente</td></tr><tr><td><strong>Meta</strong></td><td>O destino. Onde você quer chegar</td><td>Faturar R$ 6M em 2027</td><td>Anual</td></tr><tr><td><strong>OKR</strong></td><td>O plano de ataque de um trimestre. O que você vai mudar</td><td>Reduzir o ciclo de fábrica de 20 para 15 dias úteis</td><td>Trimestral</td></tr></tbody></table></div>
+<p><strong>A confusão mais comum:</strong> transformar KPI em OKR. "Manter retrabalho em 4%" não é OKR — é rotina. OKR é sobre <strong>mudar alguma coisa</strong>, não sobre manter.</p>
+<p><strong>Regra:</strong> se você conseguiria atingir isso continuando a fazer exatamente o que já faz, não é OKR.</p>
+<hr>
+<h2 id="o-metodo-1-3-9">O Método 1-3-9</h2>
+<pre>1 META ANUAL
+  ↓
+3 ALAVANCAS (as três coisas que, se acontecerem, a meta acontece)
+  ↓
+9 RESULTADOS-CHAVE (três por alavanca, com número e prazo)</pre>
+<p>Não mais que isso. Nunca.</p>
+<h2 id="exemplo-completo-marcenaria-de-r-5m-ano">Exemplo completo — marcenaria de R$ 5M/ano</h2>
+<pre>═══════════════════════════════════════════════════════════════
+META ANUAL [ANO]
+"Faturar R$ 7,5 milhões com margem líquida de 12%"
+(hoje: R$ 5M com 8%)
+═══════════════════════════════════════════════════════════════
+
+ALAVANCA 1 — PRODUTIVIDADE
+"Produzir 40% mais sem aumentar a folha na mesma proporção"
+Dono: Gerente de Fábrica
+
+  RC 1.1 — Elevar a saída da bancada de 200 para 280 m²/mês
+  RC 1.2 — Reduzir o ciclo de fábrica (25%→75%) de 20 para 15 dias úteis
+  RC 1.3 — Reduzir retrabalho de 8% para 4%
+
+ALAVANCA 2 — MARGEM
+"Parar de vender obra que não paga"
+Dono: CEO
+
+  RC 2.1 — Calcular margem real de 100% das obras entregues, mensalmente
+  RC 2.2 — Reduzir desconto médio de 9% para 4%
+  RC 2.3 — Elevar a margem de contribuição média de 32% para 38%
+
+ALAVANCA 3 — PREVISIBILIDADE
+"Entregar no prazo prometido, sempre"
+Dono: Coordenador de Projetos
+
+  RC 3.1 — Elevar aderência ao cronograma de 68% para 90%
+  RC 3.2 — Reduzir erros de projeto de 6 para 1 por mês
+  RC 3.3 — Reduzir montagens reagendadas por obra não pronta de 4 para 1/mês
+═══════════════════════════════════════════════════════════════</pre>
+<p><strong>Por que isso funciona:</strong> cada pessoa da empresa consegue olhar e ver onde ela entra. O marceneiro entende que o RC 1.3 é ele. O projetista entende que o RC 3.2 é ele.</p>
+<hr>
+<h2 id="como-escrever-um-bom-resultado-chave">Como escrever um bom Resultado-Chave</h2>
+<h2 id="a-formula">A fórmula</h2>
+<pre>VERBO DE MUDANÇA + INDICADOR + DE [valor atual] PARA [valor alvo] + ATÉ [data]</pre>
+<div class="tabwrap"><table><thead><tr><th>❌ Ruim</th><th>✅ Bom</th></tr></thead><tbody><tr><td>"Melhorar a comunicação com o cliente"</td><td>"Reduzir de 8 para 2 as reclamações de cliente por falta de informação, até 31/03"</td></tr><tr><td>"Implantar o ERP"</td><td>"Ter 100% das obras ativas com cronograma cadastrado no ERP até 30/04"</td></tr><tr><td>"Aumentar as vendas"</td><td>"Elevar a margem de contribuição vendida de R$ 90k para R$ 130k/mês até 30/06"</td></tr><tr><td>"Treinar a equipe"</td><td>"Ter 6 pessoas validadas em setup de coladeira (hoje: 2) até 31/05"</td></tr><tr><td>"Reduzir custo"</td><td>"Reduzir custo de material por m² de R$ 148 para R$ 132 até 30/09"</td></tr></tbody></table></div>
+<h2 id="os-4-testes-de-um-bom-rc">Os 4 testes de um bom RC</h2>
+<pre>1. TESTE DO NÚMERO
+   Tem valor atual e valor alvo? Se não tem "de X para Y", não é RC.
+
+2. TESTE DO DONO
+   Uma pessoa nominal responde por ele? "A fábrica" não é dono.
+
+3. TESTE DO BINÁRIO
+   No último dia do trimestre, dá pra dizer SIM ou NÃO sem discussão?
+
+4. TESTE DA AMBIÇÃO
+   Se eu continuar fazendo tudo igual, isso acontece sozinho?
+   Se sim, não é RC — é previsão.</pre>
+<h2 id="atividade-resultado-o-erro-mais-comum">Atividade × Resultado (o erro mais comum)</h2>
+<div class="tabwrap"><table><thead><tr><th>Atividade (não é RC)</th><th>Resultado (é RC)</th></tr></thead><tbody><tr><td>"Escrever 20 POPs"</td><td>"Reduzir o tempo de rampa de novo marceneiro de 12 para 6 meses"</td></tr><tr><td>"Contratar 3 pessoas"</td><td>"Elevar a capacidade da bancada de 200 para 280 m²/mês"</td></tr><tr><td>"Fazer 12 reuniões de vendas"</td><td>"Elevar a taxa de conversão de 18% para 26%"</td></tr><tr><td>"Comprar seccionadora"</td><td>"Reduzir o ciclo de corte de 3 para 1 dia"</td></tr></tbody></table></div>
+<p><strong>Por que importa:</strong> você pode escrever 20 POPs e não reduzir tempo de rampa nenhum. Atividade cumprida não é resultado atingido — e é resultado que paga a conta.</p>
+<p><strong>Exceção:</strong> no primeiro trimestre de implantação, alguns RCs de atividade são aceitáveis pra criar base ("ter 100% das obras com cronograma cadastrado"). Mas não faça disso hábito.</p>
+<hr>
+<h2 id="como-quebrar-a-meta-anual">Como quebrar a meta anual</h2>
+<h2 id="o-funil-de-desdobramento">O funil de desdobramento</h2>
+<pre>META ANUAL (1 número)
+   ↓ quebra em 4 trimestres — não linearmente
+TRIMESTRE (3 alavancas, 9 RCs)
+   ↓ quebra em marcos
+MÊS (marcos de 30/60/90 dias)
+   ↓ quebra em ações
+SEMANA (a lista da reunião tática)
+   ↓
+DIA (a reunião diária de 15 min)</pre>
+<p><strong>Detalhe importante: não quebre a meta anual linearmente.</strong> Se a meta é R$ 7,5M, isso não é R$ 625k por mês. Marcenaria tem sazonalidade: dezembro e janeiro são fracos, o segundo semestre é mais forte, e uma obra grande distorce o mês.</p>
+<p><strong>Faça assim:</strong></p>
+<ol><li>Pegue a distribuição mensal real dos últimos 2 anos</li><li>Calcule o peso de cada mês (% do ano)</li><li>Aplique o peso à nova meta</li></ol>
+<pre>Exemplo:
+Fevereiro histórico = 6,2% do faturamento anual
+Meta anual R$ 7,5M → meta de fevereiro = R$ 465k
+(não R$ 625k)</pre>
+<p>Meta linear em negócio sazonal gera desmotivação em janeiro e complacência em outubro.</p>
+<hr>
+<h2 id="o-ciclo-trimestral-de-okr">O ciclo trimestral de OKR</h2>
+<div class="tabwrap"><table><thead><tr><th>Quando</th><th>O quê</th><th>Duração</th></tr></thead><tbody><tr><td><strong>Semana -2</strong></td><td>Cada líder propõe RCs da área dele</td><td>2h individual</td></tr><tr><td><strong>Semana -1</strong></td><td>Reunião trimestral estratégica: define os 9 RCs</td><td>4h</td></tr><tr><td><strong>Semana 1</strong></td><td>Comunicação para a empresa inteira</td><td>30 min</td></tr><tr><td><strong>Semanal</strong></td><td>Status de cada RC na reunião tática (verde/amarelo/vermelho)</td><td>5 min</td></tr><tr><td><strong>Semana 6</strong></td><td>Checkpoint de meio de trimestre — ajusta o caminho, não a meta</td><td>1h</td></tr><tr><td><strong>Semana 13</strong></td><td>Fechamento: nota de cada RC + aprendizados</td><td>Na trimestral seguinte</td></tr></tbody></table></div>
+<h2 id="como-pontuar-no-fechamento">Como pontuar no fechamento</h2>
+<pre>1,0 = atingiu ou superou
+0,7 = atingiu boa parte (chegou perto)
+0,3 = pouco progresso
+0,0 = não saiu do lugar
+
+MÉDIA DO TRIMESTRE:
+0,6 a 0,8 → saudável. Metas ambiciosas na medida certa.
+&gt; 0,9      → metas frouxas. Aumente a ambição.
+&lt; 0,4      → metas irreais ou execução travada. Investigue qual dos dois.</pre>
+<p><strong>Regra cultural crítica:</strong> OKR não pode virar instrumento de punição. Se o time souber que 0,5 gera bronca, ele vai colocar metas fáceis no trimestre seguinte — e você perde a ferramenta.</p>
+<p><strong>A pergunta no fechamento não é "por que você não bateu?". É "o que a gente aprendeu?".</strong></p>
+<hr>
+<h2 id="o-scorecard-estrategico">O Scorecard Estratégico</h2>
+<p>Diferente do placar semanal (Módulo 12 da Fase 4), que é operacional. O scorecard estratégico é a visão do dono, revisada mensalmente.</p>
+<pre>═══════════════════════════════════════════════════════════════
+SCORECARD ESTRATÉGICO — [empresa] — mês ___/______
+═══════════════════════════════════════════════════════════════
+
+DIMENSÃO FINANCEIRA                Meta     Real    Ano    Status
+ Faturamento do mês              R$ 500k  R$ 468k  -3%     🟡
+ Margem líquida                     12%      9,4%   -      🔴
+ Margem de contribuição média       38%     34,2%   -      🟡
+ Caixa livre (meses de folga)         3       2,4   -      🟡
+
+DIMENSÃO CLIENTE
+ Aderência ao cronograma             90%       74%  -      🔴
+ NPS / nota média de entrega          8,5      8,8  -      🟢
+ Chamados de assistência técnica       &lt;3        2  -      🟢
+ % de vendas por indicação            25%      31%  -      🟢
+
+DIMENSÃO PROCESSO
+ Produtividade (m²/pessoa/mês)        8,5      7,1  -      🟡
+ Retrabalho                            4%     6,2%  -      🔴
+ Ciclo de fábrica (dias úteis)         15       19  -      🟡
+ Cargas completas                    100%      98%  -      🟡
+
+DIMENSÃO PESSOAS
+ Turnover anualizado                 &lt;25%      31%  -      🔴
+ Funções críticas com backup         100%      40%  -      🔴
+ POPs escritos (acumulado)             30       17  -      🟡
+ Horas de treinamento/pessoa/mês        6      2,5  -      🔴
+
+═══════════════════════════════════════════════════════════════
+OS 3 VERMELHOS QUE VIRAM AÇÃO ESTE MÊS:
+1. _____________________  Dono: ________  Prazo: ______
+2. _____________________  Dono: ________  Prazo: ______
+3. _____________________  Dono: ________  Prazo: ______
+═══════════════════════════════════════════════════════════════</pre>
+<p><strong>As 4 dimensões existem por um motivo:</strong> empresa que só olha financeiro corta custo, destrói processo e perde gente — e o financeiro despenca seis meses depois. As quatro dimensões se equilibram.</p>
+<p><strong>Regra do scorecard:</strong> máximo 4 indicadores por dimensão. 16 no total é o teto absoluto — e 12 é melhor.</p>
+<hr>
+<h2 id="como-comunicar-a-meta-para-a-empresa-inteira">Como comunicar a meta para a empresa inteira</h2>
+<p>A meta que só a liderança conhece não move ninguém.</p>
+<h3 id="script-de-comunicacao-reuniao-geral-20-minutos">Script de comunicação (reunião geral, 20 minutos)</h3>
+<pre>"Vou apresentar pra vocês pra onde a gente vai esse ano.
+
+ONDE A GENTE ESTÁ
+No ano passado a gente fez R$ 5 milhões. Cada pessoa aqui
+produziu, em média, R$ 179 mil. Isso é abaixo do que uma
+marcenaria do nosso padrão consegue fazer.
+
+PRA ONDE A GENTE VAI
+A meta é R$ 7,5 milhões — mas não trabalhando 50% mais. Trabalhando
+melhor. Isso significa produzir mais por pessoa, não mais horas.
+
+COMO A GENTE CHEGA LÁ — TRÊS CAMINHOS
+1. [Alavanca 1, em linguagem simples]
+2. [Alavanca 2]
+3. [Alavanca 3]
+
+ONDE CADA UM ENTRA
+[Fábrica]: o número de vocês é [X]. Hoje está em [Y].
+[Obra]: o número de vocês é [X]. Hoje está em [Y].
+[Projetos]: ...
+
+O QUE MUDA PRA VOCÊS SE A GENTE CHEGAR LÁ
+[Seja concreto e honesto: variável maior, investimento em
+máquina, mais gente pra dividir a carga, faixas salariais
+melhores. Não prometa o que não vai cumprir.]
+
+ONDE VOCÊS VÃO ACOMPANHAR
+Todo [dia], no quadro. O número de todo mundo, sem segredo.
+
+Perguntas?"</pre>
+<p><strong>O bloco "onde cada um entra" é o que faz a diferença.</strong> Sem ele, a meta é do dono. Com ele, é da empresa.</p>
+<hr>
+<h2 id="o-dashboard-como-montar-sem-virar-projeto-de-ti">O Dashboard — como montar sem virar projeto de TI</h2>
+<h2 id="regra-comece-no-papel-depois-planilha-depois-sistema">Regra: comece no papel, depois planilha, depois sistema</h2>
+<div class="tabwrap"><table><thead><tr><th>Estágio</th><th>Ferramenta</th><th>Quando migrar</th></tr></thead><tbody><tr><td><strong>1</strong></td><td>Quadro branco na fábrica</td><td>Sempre — nunca abandone</td></tr><tr><td><strong>2</strong></td><td>Planilha atualizada 1x/semana</td><td>Quando forem mais de 5 indicadores</td></tr><tr><td><strong>3</strong></td><td>Sistema (ERP com painel)</td><td>Quando a digitação manual começar a errar</td></tr></tbody></table></div>
+<p><strong>Erro clássico:</strong> pular direto pro estágio 3. O sistema vai mostrar dado errado, porque ninguém definiu o processo de coleta. Comece manual — o manual te ensina o que realmente importa medir.</p>
+<h2 id="o-painel-de-parede-o-mais-poderoso-e-o-mais-barato">O painel de parede (o mais poderoso e o mais barato)</h2>
+<pre>┌─────────────────────────────────────────────────────────┐
+│           PLACAR DA SEMANA — semana ___/___             │
+├─────────────────────────────────────────────────────────┤
+│                                                          │
+│   AMBIENTES ENTREGUES        ADERÊNCIA CRONOGRAMA       │
+│        5 / 6                       -4%                  │
+│         🟡                          🟡                   │
+│                                                          │
+│   RETRABALHO                 CARGAS COMPLETAS           │
+│        6,2%                       100%                  │
+│         🔴                          🟢                   │
+│                                                          │
+├─────────────────────────────────────────────────────────┤
+│  META DO TRIMESTRE: ciclo de fábrica de 20 → 15 dias    │
+│  ONDE ESTAMOS:  ████████░░░░  19 dias                   │
+├─────────────────────────────────────────────────────────┤
+│  RECONHECIMENTO DA SEMANA:                              │
+│  [nome] — pegou erro de medida antes do corte           │
+└─────────────────────────────────────────────────────────┘</pre>
+<p><strong>Atualizado toda sexta, à mão, pelo encarregado.</strong> Custo: zero. Efeito: a equipe começa a falar dos números entre si.</p>
+<hr>
+<h2 id="erros-comuns">Erros comuns</h2>
+<div class="tabwrap"><table><thead><tr><th>#</th><th>Erro</th><th>Consequência</th></tr></thead><tbody><tr><td>1</td><td>Mais de 3 alavancas por trimestre</td><td>Nenhuma é concluída</td></tr><tr><td>2</td><td>RC sem "de X para Y"</td><td>Impossível saber se atingiu</td></tr><tr><td>3</td><td>RC de atividade, não de resultado</td><td>Cumpre a atividade e nada muda</td></tr><tr><td>4</td><td>Meta só na cabeça do dono</td><td>Ninguém muda comportamento</td></tr><tr><td>5</td><td>Quebrar a meta linearmente em negócio sazonal</td><td>Frustração em janeiro, folga em outubro</td></tr><tr><td>6</td><td>Meta sem dono nominal</td><td>Ninguém responde</td></tr><tr><td>7</td><td>Usar OKR como instrumento de punição</td><td>Time coloca meta fácil no ciclo seguinte</td></tr><tr><td>8</td><td>Mudar o RC no meio do trimestre</td><td>Ninguém leva a sério</td></tr><tr><td>9</td><td>Não revisar semanalmente</td><td>Descobre em dezembro que não bateu</td></tr><tr><td>10</td><td>20 indicadores no scorecard</td><td>Ninguém olha</td></tr><tr><td>11</td><td>Só dimensão financeira</td><td>Corta custo, destrói processo, perde gente</td></tr><tr><td>12</td><td>Pular direto pro sistema sem processo de coleta</td><td>Dado errado com aparência de precisão</td></tr></tbody></table></div>
+<hr>
+<h2 id="perguntas-que-o-lider-deve-fazer">Perguntas que o líder deve fazer</h2>
+<ol><li>Se eu perguntar a 5 pessoas qual é a meta da empresa esse ano, quantas respostas diferentes eu recebo?</li><li>Cada pessoa da empresa sabe onde ela entra na meta?</li><li>Meus RCs mudariam alguma coisa se eu continuasse fazendo tudo igual? (Se não, são previsão, não meta.)</li><li>O que eu decidi <strong>não</strong> fazer esse trimestre?</li><li>Quantos dos meus RCs do trimestre passado foram concluídos? Por que os outros não?</li><li>Meu scorecard tem as 4 dimensões ou só financeiro?</li><li>O dado do meu painel é confiável? Alguém já conferiu?</li></ol>
+<hr>
+<h2 id="exercicios-do-modulo-2">Exercícios do Módulo 2</h2>
+<h3 id="exercicio-1-meta-em-uma-frase-30-min">Exercício 1 — Meta em uma frase (30 min)</h3>
+<p>Escreva a meta do seu ano em uma frase com dois números (volume + margem). Se precisa de mais de uma frase, não está clara.</p>
+<h3 id="exercicio-2-as-3-alavancas-1h">Exercício 2 — As 3 alavancas (1h)</h3>
+<p>Se você só pudesse mudar três coisas esse ano pra chegar na meta, quais seriam? Escreva com dono nominal.</p>
+<h3 id="exercicio-3-9-rcs-1h30">Exercício 3 — 9 RCs (1h30)</h3>
+<p>Três por alavanca, cada um com "de X para Y até quando". Aplique os 4 testes.</p>
+<h3 id="exercicio-4-sazonalidade-real-45-min">Exercício 4 — Sazonalidade real (45 min)</h3>
+<p>Levante a distribuição mensal dos últimos 24 meses. Calcule o peso de cada mês. Aplique à meta nova.</p>
+<h3 id="exercicio-5-scorecard-estrategico-1h">Exercício 5 — Scorecard estratégico (1h)</h3>
+<p>Monte com no máximo 4 indicadores por dimensão. Preencha o valor atual de cada um. Onde você não tem o dado, essa é a sua primeira tarefa.</p>
+<h3 id="exercicio-6-teste-de-comunicacao-20-min">Exercício 6 — Teste de comunicação (20 min)</h3>
+<p>Pergunte a 5 pessoas da equipe qual é a meta da empresa. Compare as respostas.</p>
+<hr>
+<h2 id="frases-de-impacto">Frases de impacto</h2>
+<ul><li><em>"Se tudo é prioridade, nada é. Escolher o que não fazer é metade do trabalho."</em></li><li><em>"Meta que não desce até a bancada não é meta. É desejo do dono."</em></li><li><em>"Se você atingiria isso continuando a fazer tudo igual, não é meta. É previsão."</em></li><li><em>"Atividade cumprida não é resultado atingido. E é resultado que paga a conta."</em></li><li><em>"Meta linear em negócio sazonal gera desmotivação em janeiro e complacência em outubro."</em></li><li><em>"OKR usado como punição vira meta fácil no trimestre seguinte. Você perde a ferramenta."</em></li><li><em>"Empresa que só olha o financeiro corta custo, destrói processo, perde gente — e o financeiro despenca seis meses depois."</em></li><li><em>"Comece no papel. O quadro branco na parede move mais comportamento que qualquer dashboard caro."</em></li></ul>
+<hr>
+<h2 id="entregavel-do-modulo-2">Entregável do Módulo 2</h2>
+<ol><li>Meta anual em uma frase, com volume e margem.</li><li>3 alavancas com dono nominal.</li><li>9 resultados-chave, cada um com "de X para Y até quando".</li><li>Distribuição sazonal calculada e meta mensal ajustada.</li><li>Scorecard estratégico com as 4 dimensões preenchido.</li><li>Placar de parede montado e atualizado.</li></ol>
+<p><strong>Próximo módulo:</strong> Decisão baseada em dados — quais números olhar e quais ignorar.</p>
+
+  <div class="rodape"><span>FASE 5 · MÓDULO 02 · Fase 5 — Escala</span><span>Material de formação em gestão para donos de PME</span></div>
+  <div class="direitos"><img src="data:image/png;base64,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" alt="ARESTA APM"><span>&copy; 2026 ARESTA APM &middot; Conteúdo e método proprietários. Uso restrito ao aluno matriculado — proibida a reprodução, revenda ou redistribuição, total ou parcial.</span></div>
+</div>
+
+<script>
+// mantem a marca digitada pelo usuario neste navegador
+(function(){
+  var m=document.querySelector('.marca');
+  var k='mkt-marca';
+  try{ var s=localStorage.getItem(k); if(s) m.innerHTML=s; }catch(e){}
+  m.addEventListener('blur',function(){ try{localStorage.setItem(k,m.innerHTML);}catch(e){} });
+})();
+</script>
+</body>
+</html>

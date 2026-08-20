@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FASE 5 — EXTRAS I</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --tinta:#2C2825; --ouro:#B8925A; --claro:#F5F1EA; --linha:#D8D2C7;
+  --fraco:#6E675E; --papel:#FFFFFF; --caixa:#FAF8F4;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+@page{size:A4;margin:14mm 13mm 13mm}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact;scroll-behavior:smooth}
+body{font:11pt/1.62 'Inter',-apple-system,'Helvetica Neue',Arial,sans-serif;
+  color:var(--tinta);background:var(--claro)}
+.folha{max-width:196mm;margin:0 auto;padding:14mm 10mm 20mm;background:var(--papel);
+  box-shadow:0 1px 3px rgba(0,0,0,.06)}
+
+/* cabecalho */
+.topo{display:flex;justify-content:space-between;align-items:flex-end;
+  border-bottom:1.5pt solid var(--tinta);padding-bottom:6pt;gap:12pt;flex-wrap:wrap}
+.marca{font:600 15pt/1 'Cormorant Garamond',Georgia,serif;letter-spacing:.22em;
+  text-transform:uppercase;outline:none}
+.marca small{display:block;font:400 6.5pt/1 'Inter',sans-serif;letter-spacing:.34em;
+  color:var(--fraco);margin-top:3pt}
+.marca:focus{background:#FFF6DF}
+.doc{text-align:right}
+.doc .fase{font-size:7pt;letter-spacing:.2em;color:var(--ouro);font-weight:600;
+  text-transform:uppercase}
+.doc .cod{font-size:7pt;letter-spacing:.18em;color:var(--fraco);margin-top:2pt}
+.regua{height:2.5pt;background:var(--ouro);margin:0 0 14pt}
+
+/* tipografia */
+h1{font:600 21pt/1.18 'Cormorant Garamond',Georgia,serif;letter-spacing:.01em;
+  margin:0 0 3pt}
+h1 + .lead{font-size:10.5pt;color:var(--fraco);font-style:italic;margin-bottom:14pt;
+  padding-bottom:10pt;border-bottom:.75pt solid var(--linha)}
+h2{font:600 10.5pt/1.25 'Inter',sans-serif;letter-spacing:.13em;text-transform:uppercase;
+  background:var(--claro);border-left:3pt solid var(--ouro);padding:6pt 8pt;
+  margin:22pt 0 9pt;break-after:avoid;page-break-after:avoid}
+h3{font:600 11.5pt/1.3 'Cormorant Garamond',Georgia,serif;letter-spacing:.02em;
+  margin:15pt 0 5pt;break-after:avoid;page-break-after:avoid}
+h4{font:600 8.5pt/1.25 'Inter',sans-serif;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--fraco);margin:12pt 0 4pt;break-after:avoid}
+p{margin:0 0 8pt;text-align:left}
+strong{font-weight:600}
+em{font-style:italic}
+a{color:var(--ouro);text-decoration:none}
+hr{border:none;border-top:.75pt solid var(--linha);margin:16pt 0}
+
+/* listas */
+ul,ol{margin:0 0 9pt 16pt}
+li{margin-bottom:3.5pt}
+ul.chk{list-style:none;margin-left:0}
+ul.chk li{display:flex;gap:7pt;align-items:flex-start;padding:3.5pt 0;
+  border-bottom:.5pt dotted var(--linha);break-inside:avoid}
+ul.chk li::before{content:"";flex:0 0 9.5pt;height:9.5pt;margin-top:2.5pt;
+  border:.9pt solid var(--tinta);border-radius:1pt;background:#fff}
+
+/* citacao / destaque */
+blockquote{border-left:2.5pt solid var(--ouro);background:var(--caixa);
+  padding:9pt 12pt;margin:11pt 0;break-inside:avoid}
+blockquote p:last-child{margin-bottom:0}
+
+/* codigo / templates ascii */
+pre{background:var(--caixa);border:.75pt solid var(--linha);border-radius:2pt;
+  padding:10pt 11pt;margin:11pt 0;overflow-x:auto;break-inside:avoid;
+  font:9pt/1.42 'SFMono-Regular',Menlo,Consolas,'Courier New',monospace;
+  white-space:pre;color:#332F2A}
+code{font:9.2pt/1.4 'SFMono-Regular',Menlo,Consolas,monospace;
+  background:var(--claro);padding:1pt 3pt;border-radius:2pt}
+pre code{background:none;padding:0;font-size:inherit}
+
+/* tabelas */
+.tabwrap{overflow-x:auto;margin:11pt 0}
+table{border-collapse:collapse;width:100%;font-size:9.3pt;break-inside:avoid}
+th{background:var(--claro);text-align:left;font-weight:600;font-size:7.5pt;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--fraco);
+  padding:5.5pt 7pt;border:.75pt solid var(--linha)}
+td{padding:5.5pt 7pt;border:.75pt solid var(--linha);vertical-align:top;line-height:1.42}
+tbody tr:nth-child(even){background:#FCFBF9}
+
+/* indice */
+.indice{background:var(--caixa);border:.75pt solid var(--linha);padding:11pt 13pt;
+  margin:0 0 18pt;break-inside:avoid}
+.indice h4{margin-top:0}
+.indice ol{margin:0 0 0 15pt;font-size:9.5pt;column-gap:18pt}
+.indice li{margin-bottom:2.5pt}
+.indice a{color:var(--tinta)}
+.indice a:hover{color:var(--ouro)}
+
+/* rodape */
+.rodape{margin-top:22pt;padding-top:6pt;border-top:.75pt solid var(--linha);
+  display:flex;justify-content:space-between;font-size:7.5pt;color:var(--fraco);
+  letter-spacing:.06em;gap:10pt;flex-wrap:wrap}
+
+/* direitos — a marca do Aresta e o aviso de propriedade.
+   Fica no rodape, nao no topo: o cabecalho e' do aluno (.marca editavel),
+   e a autoria do metodo nao disputa espaco com a marca dele. */
+.direitos{margin-top:7pt;display:flex;align-items:center;gap:7pt;
+  font-size:6.4pt;line-height:1.45;color:var(--fraco);letter-spacing:.02em}
+.direitos img{height:11pt;width:auto;flex-shrink:0;opacity:.85}
+@media print{.direitos{break-inside:avoid}}
+
+/* navegacao entre modulos (some na impressao) */
+.nav{max-width:196mm;margin:0 auto 10mm;padding:0 10mm;display:flex;
+  justify-content:space-between;gap:10pt;font-size:9pt}
+.nav a{display:inline-block;padding:6pt 11pt;border:.75pt solid var(--linha);
+  background:var(--papel);border-radius:2pt;color:var(--tinta)}
+.nav a:hover{border-color:var(--ouro);color:var(--ouro)}
+.topbar{max-width:196mm;margin:0 auto;padding:8mm 10mm 0;display:flex;
+  justify-content:space-between;font-size:9pt}
+.topbar a{color:var(--fraco)}
+.topbar a:hover{color:var(--ouro)}
+
+@media print{
+  body{background:#fff}
+  .folha{box-shadow:none;padding:0;max-width:none}
+  .nav,.topbar{display:none}
+  .indice{break-after:page}
+}
+@media (max-width:640px){
+  body{font-size:11.5pt}
+  .folha{padding:8mm 5mm 14mm}
+  pre{font-size:7.6pt}
+  table{font-size:8.6pt}
+  .doc{text-align:left}
+}
+</style>
+</head>
+<body>
+
+<div class="folha">
+  <div class="topo">
+    <div class="marca" contenteditable="true" spellcheck="false">SUA MARCA<small>MARCENARIA</small></div>
+    <div class="doc"><div class="fase">Fase 5 — Escala</div><div class="cod">FASE 5 · MÓDULO 14</div></div>
+  </div>
+  <div class="regua"></div>
+
+  <h1>FASE 5 — EXTRAS I</h1>
+  <div class="lead">Scorecards · Dashboards · Templates · SOPs · POPs · Planilhas · Checklists · Reuniões modelo</div>
+  <div class="indice"><h4>Neste módulo</h4><ol><li><a href="#parte-1-scorecards">PARTE 1 — SCORECARDS</a></li><li><a href="#scorecard-1-estrategico-dono-mensal">Scorecard 1 — Estratégico (dono, mensal)</a></li><li><a href="#scorecard-2-por-area-lider-semanal">Scorecard 2 — Por área (líder, semanal)</a></li><li><a href="#scorecard-3-de-contratacao-por-vaga">Scorecard 3 — De contratação (por vaga)</a></li><li><a href="#parte-2-dashboards">PARTE 2 — DASHBOARDS</a></li><li><a href="#dashboard-1-painel-de-parede-semanal-a-mao">Dashboard 1 — Painel de parede (semanal, à mão)</a></li><li><a href="#dashboard-2-obras-em-andamento-visual-kpi-25-50-75-100">Dashboard 2 — Obras em andamento (visual, KPI 25/50/75/100)</a></li><li><a href="#dashboard-3-financeiro-semanal-13-semanas">Dashboard 3 — Financeiro semanal (13 semanas)</a></li><li><a href="#dashboard-4-plano-de-90-dias-13-semanas">Dashboard 4 — Plano de 90 dias (13 semanas)</a></li><li><a href="#parte-3-templates-essenciais">PARTE 3 — TEMPLATES ESSENCIAIS</a></li><li><a href="#template-1-ata-de-reuniao-1-pagina">Template 1 — Ata de reunião (1 página)</a></li><li><a href="#template-2-comunicado-interno">Template 2 — Comunicado interno</a></li><li><a href="#template-3-proposta-de-melhoria-por-qualquer-pessoa">Template 3 — Proposta de melhoria (por qualquer pessoa)</a></li><li><a href="#template-4-registro-de-erro-autopsia">Template 4 — Registro de erro / autópsia</a></li><li><a href="#parte-4-sops-procedimentos-que-atravessam-areas">PARTE 4 — SOPs (procedimentos que atravessam áreas)</a></li><li><a href="#modelo-de-sop">Modelo de SOP</a></li><li><a href="#os-8-sops-minimos-de-uma-marcenaria">Os 8 SOPs mínimos de uma marcenaria</a></li><li><a href="#parte-5-pops-os-20-primeiros-de-uma-marcenaria">PARTE 5 — POPs (os 20 primeiros de uma marcenaria)</a></li><li><a href="#modelo-de-pop-1-pagina">Modelo de POP (1 página)</a></li><li><a href="#parte-6-planilhas-essenciais">PARTE 6 — PLANILHAS ESSENCIAIS</a></li><li><a href="#as-9-planilhas-que-uma-marcenaria-organizada-precisa">As 9 planilhas que uma marcenaria organizada precisa</a></li><li><a href="#estrutura-minima-planilha-de-margem-por-obra">Estrutura mínima — Planilha de margem por obra</a></li><li><a href="#estrutura-minima-planilha-de-precificacao">Estrutura mínima — Planilha de precificação</a></li><li><a href="#parte-7-checklists">PARTE 7 — CHECKLISTS</a></li><li><a href="#checklist-1-liberacao-de-obra-para-montagem">Checklist 1 — Liberação de obra para montagem</a></li><li><a href="#checklist-2-conferencia-de-carga">Checklist 2 — Conferência de carga</a></li><li><a href="#checklist-3-fechamento-mensal">Checklist 3 — Fechamento mensal</a></li><li><a href="#checklist-4-antes-de-fechar-uma-obra-grande">Checklist 4 — Antes de fechar uma obra grande</a></li><li><a href="#parte-8-reunioes-modelo">PARTE 8 — REUNIÕES MODELO</a></li><li><a href="#regras-validas-para-todas">Regras válidas para todas</a></li><li><a href="#como-usar-esses-templates">Como usar esses templates</a></li></ol></div>
+  <hr>
+<h2 id="parte-1-scorecards">PARTE 1 — SCORECARDS</h2>
+<h2 id="scorecard-1-estrategico-dono-mensal">Scorecard 1 — Estratégico (dono, mensal)</h2>
+<pre>═══════════════════════════════════════════════════════════════
+SCORECARD ESTRATÉGICO — [empresa] — ___/______
+═══════════════════════════════════════════════════════════════
+DIMENSÃO / INDICADOR              META    REAL   ANT.  TEND  STATUS
+───────────────────────────────────────────────────────────────
+💰 FINANCEIRA
+  Faturamento do mês            R$_____ R$_____ _____  ↑↓→   🟢🟡🔴
+  Margem líquida                  ____%   ____%  ____   ↑↓→   🟢🟡🔴
+  Margem de contribuição média    ____%   ____%  ____   ↑↓→   🟢🟡🔴
+  Caixa livre (meses)             ____    ____   ____   ↑↓→   🟢🟡🔴
+
+👤 CLIENTE
+  Aderência ao cronograma         ____%   ____%  ____   ↑↓→   🟢🟡🔴
+  NPS / nota de entrega           ____    ____   ____   ↑↓→   🟢🟡🔴
+  Chamados de assistência         ____    ____   ____   ↑↓→   🟢🟡🔴
+  % de vendas por indicação       ____%   ____%  ____   ↑↓→   🟢🟡🔴
+
+⚙ PROCESSO
+  Produtividade (m²/pessoa/mês)   ____    ____   ____   ↑↓→   🟢🟡🔴
+  Retrabalho                      ____%   ____%  ____   ↑↓→   🟢🟡🔴
+  Ciclo de fábrica (dias úteis)   ____    ____   ____   ↑↓→   🟢🟡🔴
+  Cargas completas                ____%   ____%  ____   ↑↓→   🟢🟡🔴
+
+👥 PESSOAS
+  Turnover anualizado             ____%   ____%  ____   ↑↓→   🟢🟡🔴
+  Funções críticas com backup     ____%   ____%  ____   ↑↓→   🟢🟡🔴
+  POPs atualizados                ____%   ____%  ____   ↑↓→   🟢🟡🔴
+  Horas de treinamento/pessoa     ____    ____   ____   ↑↓→   🟢🟡🔴
+───────────────────────────────────────────────────────────────
+OS 3 VERMELHOS QUE VIRAM AÇÃO ESTE MÊS
+1. _______________  Dono: ______  Prazo: ______
+2. _______________  Dono: ______  Prazo: ______
+3. _______________  Dono: ______  Prazo: ______
+═══════════════════════════════════════════════════════════════</pre>
+<h2 id="scorecard-2-por-area-lider-semanal">Scorecard 2 — Por área (líder, semanal)</h2>
+<pre>SCORECARD DA ÁREA: ____________  Semana ___/___  Líder: ______
+
+NÚMERO-MESTRE: ______________  Meta: ____  Real: ____  🟢🟡🔴
+APOIO 1:       ______________  Meta: ____  Real: ____  🟢🟡🔴
+APOIO 2:       ______________  Meta: ____  Real: ____  🟢🟡🔴
+
+O QUE ACONTECEU (1 linha): _____________________________
+O QUE VOU FAZER (1 linha): _____________________________
+ONDE PRECISO DE AJUDA:     _____________________________
+
+ROTINA DE GESTÃO DA SEMANA
+[ ] Diária realizada 5 de 5 dias
+[ ] One-on-one realizado (____ de ____)
+[ ] Reconhecimento público dado
+[ ] Feedback dado sem acumular
+[ ] Placar atualizado</pre>
+<h2 id="scorecard-3-de-contratacao-por-vaga">Scorecard 3 — De contratação (por vaga)</h2>
+<p><em>(reproduzido da Fase 4 — mantenha os dois juntos)</em></p>
+<pre>Cargo: __________  Missão em 1 frase: ____________________
+Resultados esperados (3 a 5, com número e prazo)
+Competências técnicas inegociáveis
+Competências que posso ensinar
+Competências comportamentais + como verificar
+Eliminatórios
+Faixa salarial + variável
+Como vou saber em 90 dias que acertei</pre>
+<hr>
+<h2 id="parte-2-dashboards">PARTE 2 — DASHBOARDS</h2>
+<h2 id="dashboard-1-painel-de-parede-semanal-a-mao">Dashboard 1 — Painel de parede (semanal, à mão)</h2>
+<pre>┌────────────────────────────────────────────────────────────┐
+│  PLACAR DA SEMANA — semana ___/___          Atualizado: ___│
+├────────────────────────────────────────────────────────────┤
+│  AMBIENTES ENTREGUES     ADERÊNCIA        RETRABALHO       │
+│      ___ / ___              ___%             ___%          │
+│         🟢🟡🔴              🟢🟡🔴            🟢🟡🔴         │
+│                                                             │
+│  CARGAS COMPLETAS        MARGEM VENDIDA   CHAMADOS AT      │
+│      ___%                 R$ ______          ___           │
+│         🟢🟡🔴              🟢🟡🔴            🟢🟡🔴         │
+├────────────────────────────────────────────────────────────┤
+│  FOCO DO TRIMESTRE: _____________________________________  │
+│  ████████░░░░░░  ___ de ___                                │
+├────────────────────────────────────────────────────────────┤
+│  RECONHECIMENTO DA SEMANA:                                 │
+│  ________________________________________________________  │
+└────────────────────────────────────────────────────────────┘</pre>
+<h2 id="dashboard-2-obras-em-andamento-visual-kpi-25-50-75-100">Dashboard 2 — Obras em andamento (visual, KPI 25/50/75/100)</h2>
+<pre>┌─────────────────────────────────────────────────────────────┐
+│ OBRA          │ AMB │ FÁBRICA        │ OBRA           │ ADER │
+├───────────────┼─────┼────────────────┼────────────────┼──────┤
+│ Cliente A     │  4  │ ███████░ 75%   │ ░░░░░░░░  0%   │ 🟢 +2│
+│ Cliente B     │  6  │ ██████████100% │ █████░░░ 50%   │ 🟡 -6│
+│ Cliente C     │  3  │ ██░░░░░░ 25%   │ ░░░░░░░░  0%   │ 🔴-31│
+│ Cliente D     │  8  │ █████░░░ 50%   │ ░░░░░░░░  0%   │ 🟢 +1│
+└───────────────┴─────┴────────────────┴────────────────┴──────┘
+Aderência = % real − % planejado para hoje
+🟢 ≥0  🟡 -1 a -10  🟠 -11 a -25  🔴 &lt; -25
+⚠ Projeto só é verde se TODOS os ambientes estiverem aderentes.</pre>
+<h2 id="dashboard-3-financeiro-semanal-13-semanas">Dashboard 3 — Financeiro semanal (13 semanas)</h2>
+<pre>FLUXO DE CAIXA PROJETADO — 13 SEMANAS
+Sem │ Entradas │ Saídas  │ Saldo sem. │ Saldo acum. │ Status
+────┼──────────┼─────────┼────────────┼─────────────┼───────
+ 1  │          │         │            │             │
+ 2  │          │         │            │             │
+... │          │         │            │             │
+13  │          │         │            │             │
+
+⚠ Qualquer semana com saldo acumulado negativo = 🔴 ação imediata
+Meses de folga = saldo atual ÷ custo fixo mensal = ______</pre>
+<h2 id="dashboard-4-plano-de-90-dias-13-semanas">Dashboard 4 — Plano de 90 dias (13 semanas)</h2>
+<pre>┌────────────────────────────────────────────────────────────┐
+│  PLANO DE 90 DIAS — Trimestre ___/____                     │
+│  Semana  1  2  3  4  5  6  7  8  9 10 11 12 13             │
+│          ●  ●  ●  ○  ○  ○  ○  ○  ○  ○  ○  ○  ○  ← hoje    │
+├────────────────────────────────────────────────────────────┤
+│  1. ________________________  Dono: ______      🟢🟡🔴     │
+│     ████████░░░░░░░░  ___ (meta da semana: ___)           │
+│  2. ________________________  Dono: ______      🟢🟡🔴     │
+│     ████░░░░░░░░░░░░  ___ (meta da semana: ___)           │
+│  3. ________________________  Dono: ______      🟢🟡🔴     │
+│     ██████░░░░░░░░░░  ___ (meta da semana: ___)           │
+└────────────────────────────────────────────────────────────┘</pre>
+<hr>
+<h2 id="parte-3-templates-essenciais">PARTE 3 — TEMPLATES ESSENCIAIS</h2>
+<h2 id="template-1-ata-de-reuniao-1-pagina">Template 1 — Ata de reunião (1 página)</h2>
+<pre>REUNIÃO: ______________  DATA: ___/___/___  DURAÇÃO: ____
+PRESENTES: ______________________  AUSENTES: ____________
+
+PLACAR
+Indicador ________  Meta ____  Real ____  🟢🟡🔴
+Indicador ________  Meta ____  Real ____  🟢🟡🔴
+
+PENDÊNCIAS DA REUNIÃO ANTERIOR
+O quê ________________  Quem ______  ( )Feito ( )Não
+
+PROBLEMAS RESOLVIDOS HOJE (máx. 3)
+1. Problema: ______________  Causa: ______________
+   Decisão: _______________________________________
+
+AÇÕES
+O QUÊ                       QUEM        ATÉ QUANDO
+__________________________  _________   ___/___
+__________________________  _________   ___/___
+
+A COMUNICAR FORA DAQUI: _________________________
+NOTA DA REUNIÃO: ____/10   O que melhoraria: _____</pre>
+<h2 id="template-2-comunicado-interno">Template 2 — Comunicado interno</h2>
+<pre>COMUNICADO — [assunto]           Data: ___/___/___
+
+O QUE MUDA
+_______________________________________________
+
+A PARTIR DE QUANDO
+_______________________________________________
+
+POR QUE (o motivo real, não o formal)
+_______________________________________________
+
+O QUE EU PRECISO DE VOCÊS
+_______________________________________________
+
+QUEM TIRA DÚVIDA
+_______________________________________________</pre>
+<h2 id="template-3-proposta-de-melhoria-por-qualquer-pessoa">Template 3 — Proposta de melhoria (por qualquer pessoa)</h2>
+<pre>PROPOSTA DE MELHORIA        Proposto por: __________
+Data: ___/___/___           Área: ________________
+
+QUAL É O PROBLEMA HOJE
+_______________________________________________
+
+O QUE EU PROPONHO
+_______________________________________________
+
+O QUE MELHORA (tempo, custo, qualidade, segurança)
+_______________________________________________
+
+O QUE PRECISA PRA FAZER
+_______________________________________________
+
+─── RESPOSTA DO LÍDER (até 5 dias úteis) ───
+( ) Aceito — POP atualizado em ___/___ com o nome do proponente
+( ) Não aceito — motivo: _______________________
+( ) Testar — teste: ______  prazo: ______  responsável: ____</pre>
+<h2 id="template-4-registro-de-erro-autopsia">Template 4 — Registro de erro / autópsia</h2>
+<pre>AUTÓPSIA DE ERRO             Data do erro: ___/___/___
+Obra/processo: ____________  Custo: R$ __________
+
+O QUE ACONTECEU (fato)
+_______________________________________________
+
+5 PORQUÊS
+1. Por quê? ____________________________________
+2. Por quê? ____________________________________
+3. Por quê? ____________________________________
+4. Por quê? ____________________________________
+5. Por quê? ____________________________  ← causa raiz
+
+É FALHA DE PESSOA OU DE PROCESSO?
+( ) Processo → ação: criar/ajustar POP
+( ) Pessoa   → ação: treinar ou CORTE
+( ) Sistema  → ação: __________________
+
+O QUE MUDA A PARTIR DE AGORA
+Ação: _________________  Dono: ______  Prazo: ______
+
+QUEM MAIS PODE COMETER O MESMO ERRO?
+_______________________________________________
+Como vou prevenir: _____________________________</pre>
+<hr>
+<h2 id="parte-4-sops-procedimentos-que-atravessam-areas">PARTE 4 — SOPs (procedimentos que atravessam áreas)</h2>
+<h2 id="modelo-de-sop">Modelo de SOP</h2>
+<pre>═══════════════════════════════════════════════════════════════
+SOP-___ | [NOME DO PROCESSO]
+Versão ___ | Data ___/___/___ | Dono do processo: __________
+═══════════════════════════════════════════════════════════════
+
+OBJETIVO (1 frase)
+_______________________________________________
+
+ONDE COMEÇA E ONDE TERMINA
+Começa quando: _________________________________
+Termina quando: ________________________________
+
+CRITÉRIO DE ENTRADA (o que precisa estar pronto pra começar)
+[ ] _____________________________________________
+[ ] _____________________________________________
+
+ETAPAS
+# | ETAPA           | RESPONSÁVEL | PRAZO | SAÍDA
+1 | _______________ | ___________ | _____ | __________
+2 | _______________ | ___________ | _____ | __________
+3 | _______________ | ___________ | _____ | __________
+
+CRITÉRIO DE SAÍDA (como sei que terminou certo)
+[ ] _____________________________________________
+
+INDICADOR DO PROCESSO: _________________________
+Meta: ______  Quem mede: ______  Frequência: ______
+
+O QUE FAZER QUANDO DÁ EXCEÇÃO
+_______________________________________________
+Quem decide a exceção: _________________________
+
+POPs LIGADOS A ESSE SOP: _______________________
+═══════════════════════════════════════════════════════════════</pre>
+<h2 id="os-8-sops-minimos-de-uma-marcenaria">Os 8 SOPs mínimos de uma marcenaria</h2>
+<div class="tabwrap"><table><thead><tr><th>#</th><th>SOP</th><th>Começa</th><th>Termina</th></tr></thead><tbody><tr><td>1</td><td><strong>Atendimento e qualificação de lead</strong></td><td>Lead entra</td><td>Visita agendada ou descartado</td></tr><tr><td>2</td><td><strong>Orçamento e proposta</strong></td><td>Briefing inicial</td><td>Proposta entregue</td></tr><tr><td>3</td><td><strong>Fechamento e briefing completo</strong></td><td>Proposta aceita</td><td>Checklist de início 100%</td></tr><tr><td>4</td><td><strong>Medição e caderno técnico</strong></td><td>Solicitação de medição</td><td>Caderno assinado</td></tr><tr><td>5</td><td><strong>Compras e recebimento</strong></td><td>Lista de material</td><td>Material conferido em estoque</td></tr><tr><td>6</td><td><strong>Produção</strong></td><td>Material em fábrica (25%)</td><td>Ambiente embalado (100%)</td></tr><tr><td>7</td><td><strong>Logística e montagem</strong></td><td>Liberação da obra</td><td>Ambiente limpo (100%)</td></tr><tr><td>8</td><td><strong>Entrega e pós-venda</strong></td><td>Vistoria com cliente</td><td>Pesquisa respondida + indicação pedida</td></tr></tbody></table></div>
+<hr>
+<h2 id="parte-5-pops-os-20-primeiros-de-uma-marcenaria">PARTE 5 — POPs (os 20 primeiros de uma marcenaria)</h2>
+<p>Ordenados por prioridade (Frequência × Custo do erro × Nº de pessoas).</p>
+<div class="tabwrap"><table><thead><tr><th>#</th><th>POP</th><th>Área</th><th>Prioridade</th></tr></thead><tbody><tr><td>1</td><td>Conferência de carga antes da saída</td><td>Pátio</td><td>🔴</td></tr><tr><td>2</td><td>Elaboração de plano de corte</td><td>Fábrica</td><td>🔴</td></tr><tr><td>3</td><td>Medição em obra</td><td>Projetos</td><td>🔴</td></tr><tr><td>4</td><td>Setup e operação da coladeira</td><td>Fábrica</td><td>🔴</td></tr><tr><td>5</td><td>Conferência de caderno técnico (por segunda pessoa)</td><td>Projetos</td><td>🔴</td></tr><tr><td>6</td><td>Recebimento e conferência de material</td><td>Compras</td><td>🔴</td></tr><tr><td>7</td><td>Liberação de obra para montagem (checklist)</td><td>Obra</td><td>🟠</td></tr><tr><td>8</td><td>Operação da esquadrejadeira</td><td>Fábrica</td><td>🟠</td></tr><tr><td>9</td><td>Furação de dobradiça e corrediça</td><td>Fábrica</td><td>🟠</td></tr><tr><td>10</td><td>Pré-montagem e conferência de esquadro</td><td>Fábrica</td><td>🟠</td></tr><tr><td>11</td><td>Padrão de acabamento e lixamento</td><td>Fábrica</td><td>🟠</td></tr><tr><td>12</td><td>Embalagem e identificação</td><td>Pátio</td><td>🟠</td></tr><tr><td>13</td><td>Carregamento e amarração</td><td>Pátio</td><td>🟠</td></tr><tr><td>14</td><td>Montagem em obra — sequência padrão</td><td>Obra</td><td>🟠</td></tr><tr><td>15</td><td>Regulagem de porta e gaveta</td><td>Obra</td><td>🟡</td></tr><tr><td>16</td><td>Limpeza e entrega do ambiente</td><td>Obra</td><td>🟡</td></tr><tr><td>17</td><td>Abertura e tratamento de chamado de assistência</td><td>Pós-venda</td><td>🟡</td></tr><tr><td>18</td><td>Inventário de ferragem</td><td>Pátio</td><td>🟡</td></tr><tr><td>19</td><td>Manutenção preventiva de máquina</td><td>Fábrica</td><td>🟡</td></tr><tr><td>20</td><td>Fechamento financeiro mensal</td><td>Financeiro</td><td>🟡</td></tr></tbody></table></div>
+<h2 id="modelo-de-pop-1-pagina">Modelo de POP (1 página)</h2>
+<pre>POP-___ | [NOME]     v___ | ___/___/___
+Escrito por: ______  Revisado por: ______  Próx. revisão: ______
+
+PARA QUE SERVE: ________________________________
+QUEM FAZ / QUANDO: _____________________________
+
+PRECISA ANTES
+[ ] ____________________________________________
+
+MATERIAL/FERRAMENTA: ___________________________
+
+PASSO A PASSO
+1. _____________________________________________
+2. _____________________________________________
+3. _____________________________________________
+
+⚠ PONTOS CRÍTICOS (onde mais se erra)
+• _____________________________________________
+
+✓ COMO SEI QUE FICOU CERTO
+• _____________________________________________
+
+✗ SE DER ERRADO: ______________________________
+
+TEMPO PADRÃO: ______   [FOTO CERTO] [FOTO ERRADO]
+
+ALTERAÇÕES DESTA VERSÃO: _______________________</pre>
+<hr>
+<h2 id="parte-6-planilhas-essenciais">PARTE 6 — PLANILHAS ESSENCIAIS</h2>
+<h2 id="as-9-planilhas-que-uma-marcenaria-organizada-precisa">As 9 planilhas que uma marcenaria organizada precisa</h2>
+<div class="tabwrap"><table><thead><tr><th>#</th><th>Planilha</th><th>Para que serve</th><th>Atualização</th></tr></thead><tbody><tr><td>1</td><td><strong>Fluxo de caixa 13 semanas</strong></td><td>Sobrevivência</td><td>Semanal</td></tr><tr><td>2</td><td><strong>Margem por obra</strong></td><td>Saber o que dá dinheiro</td><td>Por obra entregue</td></tr><tr><td>3</td><td><strong>Precificação</strong></td><td>Custo → preço com margem</td><td>Revisão trimestral</td></tr><tr><td>4</td><td><strong>Cronograma mestre de obras</strong></td><td>Aderência e capacidade</td><td>Semanal</td></tr><tr><td>5</td><td><strong>KPI 25/50/75/100</strong></td><td>Status por ambiente</td><td>Diária</td></tr><tr><td>6</td><td><strong>Controle de estoque</strong></td><td>Ruptura e capital parado</td><td>Semanal</td></tr><tr><td>7</td><td><strong>CRM simplificado</strong></td><td>Funil e conversão por origem</td><td>Diária</td></tr><tr><td>8</td><td><strong>Matriz de competências</strong></td><td>Quem sabe fazer o quê</td><td>Trimestral</td></tr><tr><td>9</td><td><strong>Painel de indicadores</strong></td><td>Consolidação dos 7 números</td><td>Semanal</td></tr></tbody></table></div>
+<h2 id="estrutura-minima-planilha-de-margem-por-obra">Estrutura mínima — Planilha de margem por obra</h2>
+<pre>OBRA | CLIENTE | ORIGEM | TIPO | AMB | m² | VENDA | MATERIAL |
+MO DIRETA | COMISSÃO | FRETE | IMPOSTO | CUSTO VAR TOTAL |
+MARGEM R$ | MARGEM % | DESCONTO % | ALTEROU PÓS-CADERNO? |
+DIAS DE CICLO | RETRABALHO R$ | CHAMADOS AT</pre>
+<p><strong>Com essas colunas você consegue responder:</strong> que tipo de obra dá margem, se desconto correlaciona com margem, se alteração pós-caderno destrói margem, se obra grande é melhor que pequena, e qual origem de lead traz cliente melhor.</p>
+<h2 id="estrutura-minima-planilha-de-precificacao">Estrutura mínima — Planilha de precificação</h2>
+<pre>ENTRADAS
+  m² de móvel
+  Complexidade (1 a 5)
+  Tipo de acabamento
+  Nº de lados curvos
+  LED integrado (s/n)
+
+CUSTOS
+  Material por m² (chapa + fita + ferragem + acessórios)
+  MO direta por m² (custo-hora × horas por m²)
+  Custo indireto rateado por m²
+
+MARK-UP
+  ( + ) Margem alvo
+  ( + ) Comissão
+  ( + ) Imposto
+  ( + ) Provisão de assistência técnica
+  ( = ) Preço de venda por m²
+
+VALIDAÇÃO
+  Preço final ÷ m² = R$ ______/m²
+  Comparação com tabela de referência: ______
+  Margem de contribuição resultante: ______%
+  ⚠ Se abaixo da margem mínima → aprovação do dono</pre>
+<hr>
+<h2 id="parte-7-checklists">PARTE 7 — CHECKLISTS</h2>
+<h2 id="checklist-1-liberacao-de-obra-para-montagem">Checklist 1 — Liberação de obra para montagem</h2>
+<pre>OBRA: ____________  DATA PREVISTA: ___/___  CONFERIDO POR: ____
+
+AMBIENTE
+[ ] Obra civil concluída no ambiente (piso, gesso, pintura)
+[ ] Sem entulho, material de obra ou móvel antigo
+[ ] Esquadrias instaladas em posição definitiva
+[ ] Pedras e revestimentos instalados
+[ ] Piso protegido ou proteção combinada
+
+INFRAESTRUTURA
+[ ] Energia elétrica disponível no ambiente
+[ ] Pontos elétricos e hidráulicos na posição do projeto
+[ ] Iluminação suficiente para trabalhar
+
+ACESSO
+[ ] Portaria/condomínio autorizou veículo de carga
+[ ] Elevador funcionando e com carga compatível
+[ ] Horário de trabalho permitido confirmado
+[ ] Local de descarga definido
+
+PESSOAS
+[ ] Pessoa autorizada disponível para acompanhar
+[ ] Contato no local: ______________ Tel: __________
+
+DOCUMENTAÇÃO
+[ ] Caderno técnico aprovado disponível
+[ ] Foto do ambiente enviada 48h antes ( ) Sim ( ) Não
+
+LIBERADO? ( ) SIM  ( ) NÃO — motivo: ____________________
+Assinatura: ____________  Data: ___/___/___</pre>
+<h2 id="checklist-2-conferencia-de-carga">Checklist 2 — Conferência de carga</h2>
+<pre>OBRA: __________  AMBIENTE: __________  DATA: ___/___/___
+
+[ ] Lista de itens impressa
+[ ] Peças conferidas uma a uma e marcadas
+[ ] Ferragem CONTADA (não estimada) contra a lista
+[ ] Perfis e rodapés
+[ ] Puxadores
+[ ] LED, perfil e fonte
+[ ] Vidros e espelhos
+[ ] Prateleiras e fundos de gaveta (os que mais somem)
+[ ] Acessórios internos
+[ ] Foto do conjunto completo antes de lacrar
+[ ] Foto enviada no grupo da obra
+[ ] Lista assinada e anexada à ordem
+
+ITENS FALTANTES: ______________________________
+( ) Nenhum — LIBERADO
+( ) Faltam itens — NÃO LACRAR. Avisado a: __________ às ____
+
+Conferido por: ____________  Assinatura: ____________</pre>
+<h2 id="checklist-3-fechamento-mensal">Checklist 3 — Fechamento mensal</h2>
+<pre>MÊS: ______   Responsável: ____________  Prazo: dia 10
+
+FINANCEIRO
+[ ] Todas as notas fiscais lançadas
+[ ] Contas a pagar e a receber conciliadas
+[ ] Conciliação bancária feita
+[ ] DRE gerencial fechado
+[ ] Margem calculada de 100% das obras entregues
+[ ] Fluxo de caixa das próximas 13 semanas atualizado
+
+OPERACIONAL
+[ ] KPIs do mês levantados e publicados
+[ ] Retrabalho do mês quantificado e classificado por causa
+[ ] Aderência ao cronograma de todas as obras
+[ ] Chamados de assistência classificados por causa raiz
+
+PESSOAS
+[ ] Folha conferida
+[ ] Variável apurado conforme regulamento
+[ ] One-on-ones do mês realizados
+[ ] CORTEs do mês contabilizados
+
+GESTÃO
+[ ] Scorecard estratégico preenchido
+[ ] Reunião mensal de resultado agendada
+[ ] 3 vermelhos identificados com dono e prazo</pre>
+<h2 id="checklist-4-antes-de-fechar-uma-obra-grande">Checklist 4 — Antes de fechar uma obra grande</h2>
+<pre>OBRA: __________  VALOR: R$ __________  DATA: ___/___
+
+VIABILIDADE
+[ ] Margem de contribuição projetada: ____% (mínimo: ____%)
+[ ] Cabe no limite de obras simultâneas? ( )Sim ( )Não
+[ ] Se não cabe: quantas obras vai atrasar? ____
+[ ] Custo do atraso das outras: R$ ______
+[ ] Ainda vale a pena? ( )Sim ( )Não
+
+CAPACIDADE
+[ ] m² da obra: ____  Capacidade livre no período: ____ m²
+[ ] Material disponível ou prazo de fornecedor compatível
+[ ] Equipe de montagem disponível na janela prevista
+
+RISCO
+[ ] Esse cliente passa a ser mais de 20% do faturamento? ( )
+[ ] Prazo de pagamento compatível com o fluxo de caixa
+[ ] Condições contratuais revisadas (multa, alteração, aceite)
+[ ] Protocolo apresentado e assinado pelo cliente
+
+DECISÃO: ( ) Aceitar ( ) Aceitar com data diferente
+         ( ) Aceitar com preço maior ( ) Recusar</pre>
+<hr>
+<h2 id="parte-8-reunioes-modelo">PARTE 8 — REUNIÕES MODELO</h2>
+<div class="tabwrap"><table><thead><tr><th>Reunião</th><th>Frequência</th><th>Duração</th><th>Quem</th><th>Pauta fixa</th></tr></thead><tbody><tr><td><strong>Diária de produção</strong></td><td>Todo dia</td><td>15 min, em pé</td><td>Encarregado + equipe</td><td>Ontem · hoje · o que trava</td></tr><tr><td><strong>Tática semanal</strong></td><td>Segunda</td><td>60 min</td><td>Dono + líderes</td><td>Boa notícia · placar · prioridades · pendências · resolver 3 · fechamento com nota</td></tr><tr><td><strong>Alinhamento comercial</strong></td><td>Segunda</td><td>30 min</td><td>Dono + comercial</td><td>Funil · propostas · fechamentos · gargalo</td></tr><tr><td><strong>Mensal de resultado</strong></td><td>Até dia 10</td><td>90 min</td><td>Dono + líderes</td><td>DRE · KPIs · 3 piores desvios · pessoas · ajuste de plano</td></tr><tr><td><strong>One-on-one</strong></td><td>Mensal</td><td>30 min</td><td>Líder + liderado</td><td>Pauta da pessoa · desenvolvimento · o que trava</td></tr><tr><td><strong>Trimestral estratégica</strong></td><td>1x/trimestre</td><td>4h, fora</td><td>Dono + liderança</td><td>Olhar pra trás · pra fora · pro alto · definir 3 prioridades · pessoas · compromisso</td></tr><tr><td><strong>Auditoria dos 6 meses</strong></td><td>2x/ano</td><td>2 dias</td><td>Dono + líderes</td><td>Números · processo · gargalo · risco · pessoas · o que matar · o que mudar</td></tr><tr><td><strong>Reunião de sócios</strong></td><td>Mensal</td><td>90 min</td><td>Só sócios</td><td>Resultado · distribuição · investimento · avaliação de gestores</td></tr><tr><td><strong>Conselho de família</strong></td><td>Trimestral</td><td>2h, fora</td><td>Sócios + família</td><td>Relação família-empresa · entrada de gerações · expectativas</td></tr></tbody></table></div>
+<h2 id="regras-validas-para-todas">Regras válidas para todas</h2>
+<pre>1. Pauta enviada 24h antes. Sem pauta = cancelada.
+2. Começa na hora, com quem estiver. Termina na hora.
+3. Toda reunião gera ação com dono e prazo.
+4. Celular fora da mesa. O dono é o primeiro a cumprir.
+5. Nota de 1 a 10 no fim (nas de mais de 30 min).
+6. Rodízio de condução, quando possível.
+7. Quem traz problema traz uma sugestão.</pre>
+<hr>
+<h2 id="como-usar-esses-templates">Como usar esses templates</h2>
+<ol><li><strong>Não implante tudo.</strong> Escolha os 5 que resolvem a sua dor de hoje.</li><li><strong>Adapte a linguagem.</strong> Se não soar como você, a equipe percebe e não usa.</li><li><strong>Comece em papel.</strong> Só digitalize o que já estiver estabilizado.</li><li><strong>Coloque data e versão em tudo.</strong> Documento sem data ninguém sabe se vale.</li><li><strong>Quem executa preenche.</strong> Formulário preenchido pelo dono não é processo, é relatório.</li></ol>
+<hr>
+<p><strong>Próximo arquivo:</strong> <code>15-extras-planos-e-frameworks.md</code></p>
+
+  <div class="rodape"><span>FASE 5 · MÓDULO 14 · Fase 5 — Escala</span><span>Material de formação em gestão para donos de PME</span></div>
+  <div class="direitos"><img src="data:image/png;base64,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" alt="ARESTA APM"><span>&copy; 2026 ARESTA APM &middot; Conteúdo e método proprietários. Uso restrito ao aluno matriculado — proibida a reprodução, revenda ou redistribuição, total ou parcial.</span></div>
+</div>
+
+<script>
+// mantem a marca digitada pelo usuario neste navegador
+(function(){
+  var m=document.querySelector('.marca');
+  var k='mkt-marca';
+  try{ var s=localStorage.getItem(k); if(s) m.innerHTML=s; }catch(e){}
+  m.addEventListener('blur',function(){ try{localStorage.setItem(k,m.innerHTML);}catch(e){} });
+})();
+</script>
+</body>
+</html>

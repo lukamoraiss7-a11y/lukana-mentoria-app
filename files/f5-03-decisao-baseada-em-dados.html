@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MÓDULO 3 — DECISÃO BASEADA EM DADOS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --tinta:#2C2825; --ouro:#B8925A; --claro:#F5F1EA; --linha:#D8D2C7;
+  --fraco:#6E675E; --papel:#FFFFFF; --caixa:#FAF8F4;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+@page{size:A4;margin:14mm 13mm 13mm}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact;scroll-behavior:smooth}
+body{font:11pt/1.62 'Inter',-apple-system,'Helvetica Neue',Arial,sans-serif;
+  color:var(--tinta);background:var(--claro)}
+.folha{max-width:196mm;margin:0 auto;padding:14mm 10mm 20mm;background:var(--papel);
+  box-shadow:0 1px 3px rgba(0,0,0,.06)}
+
+/* cabecalho */
+.topo{display:flex;justify-content:space-between;align-items:flex-end;
+  border-bottom:1.5pt solid var(--tinta);padding-bottom:6pt;gap:12pt;flex-wrap:wrap}
+.marca{font:600 15pt/1 'Cormorant Garamond',Georgia,serif;letter-spacing:.22em;
+  text-transform:uppercase;outline:none}
+.marca small{display:block;font:400 6.5pt/1 'Inter',sans-serif;letter-spacing:.34em;
+  color:var(--fraco);margin-top:3pt}
+.marca:focus{background:#FFF6DF}
+.doc{text-align:right}
+.doc .fase{font-size:7pt;letter-spacing:.2em;color:var(--ouro);font-weight:600;
+  text-transform:uppercase}
+.doc .cod{font-size:7pt;letter-spacing:.18em;color:var(--fraco);margin-top:2pt}
+.regua{height:2.5pt;background:var(--ouro);margin:0 0 14pt}
+
+/* tipografia */
+h1{font:600 21pt/1.18 'Cormorant Garamond',Georgia,serif;letter-spacing:.01em;
+  margin:0 0 3pt}
+h1 + .lead{font-size:10.5pt;color:var(--fraco);font-style:italic;margin-bottom:14pt;
+  padding-bottom:10pt;border-bottom:.75pt solid var(--linha)}
+h2{font:600 10.5pt/1.25 'Inter',sans-serif;letter-spacing:.13em;text-transform:uppercase;
+  background:var(--claro);border-left:3pt solid var(--ouro);padding:6pt 8pt;
+  margin:22pt 0 9pt;break-after:avoid;page-break-after:avoid}
+h3{font:600 11.5pt/1.3 'Cormorant Garamond',Georgia,serif;letter-spacing:.02em;
+  margin:15pt 0 5pt;break-after:avoid;page-break-after:avoid}
+h4{font:600 8.5pt/1.25 'Inter',sans-serif;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--fraco);margin:12pt 0 4pt;break-after:avoid}
+p{margin:0 0 8pt;text-align:left}
+strong{font-weight:600}
+em{font-style:italic}
+a{color:var(--ouro);text-decoration:none}
+hr{border:none;border-top:.75pt solid var(--linha);margin:16pt 0}
+
+/* listas */
+ul,ol{margin:0 0 9pt 16pt}
+li{margin-bottom:3.5pt}
+ul.chk{list-style:none;margin-left:0}
+ul.chk li{display:flex;gap:7pt;align-items:flex-start;padding:3.5pt 0;
+  border-bottom:.5pt dotted var(--linha);break-inside:avoid}
+ul.chk li::before{content:"";flex:0 0 9.5pt;height:9.5pt;margin-top:2.5pt;
+  border:.9pt solid var(--tinta);border-radius:1pt;background:#fff}
+
+/* citacao / destaque */
+blockquote{border-left:2.5pt solid var(--ouro);background:var(--caixa);
+  padding:9pt 12pt;margin:11pt 0;break-inside:avoid}
+blockquote p:last-child{margin-bottom:0}
+
+/* codigo / templates ascii */
+pre{background:var(--caixa);border:.75pt solid var(--linha);border-radius:2pt;
+  padding:10pt 11pt;margin:11pt 0;overflow-x:auto;break-inside:avoid;
+  font:9pt/1.42 'SFMono-Regular',Menlo,Consolas,'Courier New',monospace;
+  white-space:pre;color:#332F2A}
+code{font:9.2pt/1.4 'SFMono-Regular',Menlo,Consolas,monospace;
+  background:var(--claro);padding:1pt 3pt;border-radius:2pt}
+pre code{background:none;padding:0;font-size:inherit}
+
+/* tabelas */
+.tabwrap{overflow-x:auto;margin:11pt 0}
+table{border-collapse:collapse;width:100%;font-size:9.3pt;break-inside:avoid}
+th{background:var(--claro);text-align:left;font-weight:600;font-size:7.5pt;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--fraco);
+  padding:5.5pt 7pt;border:.75pt solid var(--linha)}
+td{padding:5.5pt 7pt;border:.75pt solid var(--linha);vertical-align:top;line-height:1.42}
+tbody tr:nth-child(even){background:#FCFBF9}
+
+/* indice */
+.indice{background:var(--caixa);border:.75pt solid var(--linha);padding:11pt 13pt;
+  margin:0 0 18pt;break-inside:avoid}
+.indice h4{margin-top:0}
+.indice ol{margin:0 0 0 15pt;font-size:9.5pt;column-gap:18pt}
+.indice li{margin-bottom:2.5pt}
+.indice a{color:var(--tinta)}
+.indice a:hover{color:var(--ouro)}
+
+/* rodape */
+.rodape{margin-top:22pt;padding-top:6pt;border-top:.75pt solid var(--linha);
+  display:flex;justify-content:space-between;font-size:7.5pt;color:var(--fraco);
+  letter-spacing:.06em;gap:10pt;flex-wrap:wrap}
+
+/* direitos — a marca do Aresta e o aviso de propriedade.
+   Fica no rodape, nao no topo: o cabecalho e' do aluno (.marca editavel),
+   e a autoria do metodo nao disputa espaco com a marca dele. */
+.direitos{margin-top:7pt;display:flex;align-items:center;gap:7pt;
+  font-size:6.4pt;line-height:1.45;color:var(--fraco);letter-spacing:.02em}
+.direitos img{height:11pt;width:auto;flex-shrink:0;opacity:.85}
+@media print{.direitos{break-inside:avoid}}
+
+/* navegacao entre modulos (some na impressao) */
+.nav{max-width:196mm;margin:0 auto 10mm;padding:0 10mm;display:flex;
+  justify-content:space-between;gap:10pt;font-size:9pt}
+.nav a{display:inline-block;padding:6pt 11pt;border:.75pt solid var(--linha);
+  background:var(--papel);border-radius:2pt;color:var(--tinta)}
+.nav a:hover{border-color:var(--ouro);color:var(--ouro)}
+.topbar{max-width:196mm;margin:0 auto;padding:8mm 10mm 0;display:flex;
+  justify-content:space-between;font-size:9pt}
+.topbar a{color:var(--fraco)}
+.topbar a:hover{color:var(--ouro)}
+
+@media print{
+  body{background:#fff}
+  .folha{box-shadow:none;padding:0;max-width:none}
+  .nav,.topbar{display:none}
+  .indice{break-after:page}
+}
+@media (max-width:640px){
+  body{font-size:11.5pt}
+  .folha{padding:8mm 5mm 14mm}
+  pre{font-size:7.6pt}
+  table{font-size:8.6pt}
+  .doc{text-align:left}
+}
+</style>
+</head>
+<body>
+
+<div class="folha">
+  <div class="topo">
+    <div class="marca" contenteditable="true" spellcheck="false">SUA MARCA<small>MARCENARIA</small></div>
+    <div class="doc"><div class="fase">Fase 5 — Escala</div><div class="cod">FASE 5 · MÓDULO 03</div></div>
+  </div>
+  <div class="regua"></div>
+
+  <h1>MÓDULO 3 — DECISÃO BASEADA EM DADOS</h1>
+  <div class="lead">Painel de 7 Números: o que olhar, o que ignorar</div>
+  <div class="indice"><h4>Neste módulo</h4><ol><li><a href="#o-problema-nao-e-falta-de-dado-e-excesso-de-dado-inutil">O problema não é falta de dado. É excesso de dado inútil.</a></li><li><a href="#o-teste-do-descarte">O teste do descarte</a></li><li><a href="#numeros-que-enganam-e-por-que">Números que enganam (e por que)</a></li><li><a href="#o-painel-de-7-numeros">O Painel de 7 Números</a></li><li><a href="#detalhamento-de-cada-numero">Detalhamento de cada número</a></li><li><a href="#como-montar-o-painel-na-pratica">Como montar o painel na prática</a></li><li><a href="#passo-1-defina-a-fonte-de-cada-dado">Passo 1 — Defina a fonte de cada dado</a></li><li><a href="#passo-2-meca-60-dias-sem-meta">Passo 2 — Meça 60 dias sem meta</a></li><li><a href="#passo-3-defina-faixa-nao-ponto">Passo 3 — Defina faixa, não ponto</a></li><li><a href="#passo-4-todo-vermelho-vira-item-de-pauta">Passo 4 — Todo vermelho vira item de pauta</a></li><li><a href="#como-interpretar-indicadores-sem-se-enganar">Como interpretar indicadores sem se enganar</a></li><li><a href="#regra-1-tendencia-vale-mais-que-ponto">Regra 1 — Tendência vale mais que ponto</a></li><li><a href="#regra-2-todo-numero-precisa-de-contexto-de-comparacao">Regra 2 — Todo número precisa de contexto de comparação</a></li><li><a href="#regra-3-correlacao-nao-e-causa">Regra 3 — Correlação não é causa</a></li><li><a href="#regra-4-desconfie-do-dado-bom-demais">Regra 4 — Desconfie do dado bom demais</a></li><li><a href="#regra-5-o-dado-precisa-chegar-em-tempo-de-agir">Regra 5 — O dado precisa chegar em tempo de agir</a></li><li><a href="#indicadores-de-resultado-indicadores-de-direcao">Indicadores de resultado × indicadores de direção</a></li><li><a href="#as-5-analises-que-todo-dono-deveria-fazer-trimestralmente">As 5 análises que todo dono deveria fazer trimestralmente</a></li><li><a href="#erros-comuns">Erros comuns</a></li><li><a href="#perguntas-que-o-lider-deve-fazer">Perguntas que o líder deve fazer</a></li><li><a href="#exercicios-do-modulo-3">Exercícios do Módulo 3</a></li><li><a href="#frases-de-impacto">Frases de impacto</a></li><li><a href="#entregavel-do-modulo-3">Entregável do Módulo 3</a></li></ol></div>
+  <hr>
+<h2 id="o-problema-nao-e-falta-de-dado-e-excesso-de-dado-inutil">O problema não é falta de dado. É excesso de dado inútil.</h2>
+<p>Toda marcenaria tem dado. Tem nota fiscal, tem folha, tem ordem de produção, tem WhatsApp com o cliente. O que não tem é <strong>informação organizada no momento em que a decisão é tomada</strong>.</p>
+<p>E aí acontecem os dois extremos:</p>
+<p><strong>Extremo 1 — Decisão por sensação.</strong> <em>"Acho que a obra do fulano deu bom."</em> Você não sabe. E na maioria das vezes está errado: a obra que "pareceu boa" era a que tinha mais visibilidade, não mais margem.</p>
+<p><strong>Extremo 2 — Paralisia por relatório.</strong> Cinquenta indicadores, três horas de planilha por semana, e nenhuma decisão diferente por causa disso.</p>
+<blockquote><p><strong>Frase pra colar na parede:</strong> <em>"Número que não muda decisão nenhuma é curiosidade cara. Tire do painel."</em></p></blockquote>
+<hr>
+<h2 id="o-teste-do-descarte">O teste do descarte</h2>
+<p>Antes de manter qualquer indicador no seu painel, responda:</p>
+<pre>1. Qual decisão eu tomo diferente se esse número mudar?
+   → Se a resposta é "nenhuma", elimine.
+
+2. Quem age quando esse número fica vermelho?
+   → Se não tem nome, elimine ou dê dono.
+
+3. Quanto tempo custa levantar por semana?
+   → Se mais de 10 minutos, simplifique ou automatize.
+
+4. Eu confio nesse dado?
+   → Se não, resolva a fonte antes de usar. Dado ruim é pior que
+     nenhum, porque gera decisão errada com falsa confiança.</pre>
+<p><strong>Aplicar esses quatro testes normalmente elimina 60% a 70% do que uma PME acha que precisa medir.</strong></p>
+<hr>
+<h2 id="numeros-que-enganam-e-por-que">Números que enganam (e por que)</h2>
+<div class="tabwrap"><table><thead><tr><th>Número enganoso</th><th>Por que engana</th><th>Use no lugar</th></tr></thead><tbody><tr><td><strong>Faturamento</strong></td><td>Cresce com desconto e com obra ruim</td><td>Margem de contribuição</td></tr><tr><td><strong>Lucro contábil</strong></td><td>Não é caixa. Você pode ter lucro e não ter dinheiro</td><td>Caixa livre + margem</td></tr><tr><td><strong>Horas trabalhadas</strong></td><td>Premia lentidão e presença</td><td>Entrega por período</td></tr><tr><td><strong>Ocupação da fábrica</strong></td><td>Fábrica 100% ocupada produzindo estoque não entrega nada</td><td>m² entregues e aceitos</td></tr><tr><td><strong>Nº de orçamentos enviados</strong></td><td>Pode ser muito orçamento ruim</td><td>Taxa de conversão por origem</td></tr><tr><td><strong>Seguidores/curtidas</strong></td><td>Não paga conta</td><td>Custo por reunião qualificada</td></tr><tr><td><strong>Média de qualquer coisa</strong></td><td>Esconde a cauda. Média de prazo 60 dias com 30% acima de 90 é péssimo</td><td>Média + pior caso + % fora da faixa</td></tr><tr><td><strong>% de crescimento sem base</strong></td><td>100% de crescimento sobre 2 obras é ruído</td><td>Valor absoluto + tendência de 12 meses</td></tr></tbody></table></div>
+<h3 id="o-caso-da-media">O caso da média</h3>
+<p>Esse é o erro mais comum e o mais perigoso.</p>
+<pre>"Nosso prazo médio é 62 dias."
+
+Distribuição real:
+  40% das obras: 45 dias  ✅
+  35% das obras: 60 dias  ✅
+  25% das obras: 95 dias  🔴 ← esses são os clientes que reclamam
+
+A média de 62 dias esconde que 1 em cada 4 clientes está furioso.</pre>
+<p><strong>Regra:</strong> toda média deve vir acompanhada de <strong>pior caso</strong> e <strong>% fora da faixa aceitável</strong>. É a cauda que gera reclamação, retrabalho e perda de indicação.</p>
+<hr>
+<h2 id="o-painel-de-7-numeros">O Painel de 7 Números</h2>
+<p>Uma marcenaria de 15 a 40 pessoas precisa de <strong>sete números</strong>. Não mais.</p>
+<pre>═══════════════════════════════════════════════════════════════
+              PAINEL EXECUTIVO — 7 NÚMEROS
+═══════════════════════════════════════════════════════════════
+
+DINHEIRO (3)
+ 1. CAIXA PROJETADO 90 DIAS      → sobrevivência
+ 2. MARGEM DE CONTRIBUIÇÃO MÉDIA → saúde do modelo
+ 3. FATURAMENTO POR PESSOA       → produtividade econômica
+
+ENTREGA (2)
+ 4. ADERÊNCIA AO CRONOGRAMA      → previsibilidade (a proposta de valor)
+ 5. RETRABALHO (%)               → qualidade do processo
+
+FUTURO (2)
+ 6. MARGEM VENDIDA NO MÊS        → pipeline convertido
+ 7. TURNOVER + BACKUP CRÍTICO    → capacidade de continuar existindo
+═══════════════════════════════════════════════════════════════</pre>
+<h2 id="detalhamento-de-cada-numero">Detalhamento de cada número</h2>
+<h3 id="1-caixa-projetado-a-90-dias">1. Caixa projetado a 90 dias</h3>
+<p><strong>Como calcular:</strong> saldo atual + recebimentos previstos − pagamentos previstos, semana a semana, 13 semanas à frente. <strong>Frequência:</strong> semanal. Toda sexta. <strong>Por que é o nº 1:</strong> empresa não morre de prejuízo. Morre de falta de caixa. Você pode operar dois anos no prejuízo se tiver caixa; não opera dois meses sem caixa mesmo dando lucro. <strong>Sinal vermelho:</strong> qualquer semana negativa nas próximas 13.</p>
+<h3 id="2-margem-de-contribuicao-media">2. Margem de contribuição média</h3>
+<p><strong>Como calcular:</strong> (Faturamento − Custo variável direto) ÷ Faturamento. Custo variável direto = material + mão de obra direta + comissão + frete + imposto sobre venda. <strong>Frequência:</strong> mensal, por obra entregue. <strong>Referência para marcenaria sob medida premium:</strong> 32% a 45%. <strong>Por que importa:</strong> é o único número que diz se o seu modelo de negócio funciona. Margem baixa não se resolve vendendo mais — se resolve vendendo diferente.</p>
+<h3 id="3-faturamento-por-pessoa-12-meses-moveis">3. Faturamento por pessoa (12 meses móveis)</h3>
+<p><strong>Como calcular:</strong> faturamento dos últimos 12 meses ÷ número total de pessoas (todas, inclusive administrativo e sócios que trabalham). <strong>Frequência:</strong> mensal. <strong>Referência:</strong> R$ 220k a R$ 350k/ano em marcenaria sob medida premium. Abaixo de R$ 180k costuma indicar problema estrutural. <strong>⚠ Cuidado:</strong> só compare com o mesmo denominador. Contar só a produção infla o número e te dá falsa sensação de eficiência.</p>
+<h3 id="4-aderencia-ao-cronograma">4. Aderência ao cronograma</h3>
+<p><strong>Como calcular:</strong> % real de avanço − % planejado para hoje, por ambiente. <strong>Escala:</strong> Verde ≥ 0 · Amarelo −1 a −10 · Laranja −11 a −25 · Vermelho &lt; −25. <strong>Frequência:</strong> semanal. <strong>Regra de agregação:</strong> o projeto só fica verde se <strong>todos</strong> os ambientes estiverem aderentes. Um ambiente laranja derruba o projeto.</p>
+<h3 id="5-retrabalho">5. Retrabalho</h3>
+<p><strong>Como calcular:</strong> horas de retrabalho ÷ horas produtivas totais. Ou, se for mais fácil: R$ de custo de refazer ÷ custo de produção. <strong>Frequência:</strong> semanal. <strong>Referência:</strong> &lt; 4% é bom. Acima de 8% está comendo sua margem inteira. <strong>Classifique sempre pela causa:</strong> projeto / fábrica / montagem / material / cliente. É a classificação que vira ação.</p>
+<h3 id="6-margem-vendida-no-mes">6. Margem vendida no mês</h3>
+<p><strong>Como calcular:</strong> soma da margem de contribuição das obras <strong>fechadas</strong> no mês (não entregues). <strong>Frequência:</strong> mensal. <strong>Por que não faturamento vendido:</strong> porque venda com desconto grande enche o pipeline e esvazia o caixa 4 meses depois.</p>
+<h3 id="7-turnover-cobertura-de-backup">7. Turnover + cobertura de backup</h3>
+<p><strong>Turnover:</strong> (desligamentos ÷ headcount médio) × 100, anualizado. Referência: &lt; 25%/ano. <strong>Cobertura de backup:</strong> % de funções críticas com ao menos 2 pessoas capazes. Meta: 100%. <strong>Frequência:</strong> mensal. <strong>Por que estão juntos:</strong> os dois medem a mesma coisa — a capacidade de a empresa continuar existindo independentemente de indivíduos.</p>
+<hr>
+<h2 id="como-montar-o-painel-na-pratica">Como montar o painel na prática</h2>
+<h2 id="passo-1-defina-a-fonte-de-cada-dado">Passo 1 — Defina a fonte de cada dado</h2>
+<pre>Nº  INDICADOR              FONTE           QUEM LEVANTA   QUANDO
+1   Caixa 90 dias          Planilha/banco  Financeiro     Sexta
+2   Margem contribuição    DRE por obra    Financeiro     Dia 5
+3   Faturamento/pessoa     NF + folha      Financeiro     Dia 5
+4   Aderência cronograma   ERP             Ger. Fábrica   Sexta
+5   Retrabalho             Apontamento     Ger. Fábrica   Sexta
+6   Margem vendida         Contratos       Comercial      Dia 3
+7   Turnover + backup      Folha + matriz  Adm            Dia 5</pre>
+<p><strong>Se você não tem a fonte de algum, essa é a sua primeira tarefa.</strong> Não invente o número.</p>
+<h2 id="passo-2-meca-60-dias-sem-meta">Passo 2 — Meça 60 dias sem meta</h2>
+<p>Você precisa saber onde está antes de dizer onde quer chegar. Meta inventada é meta decorativa.</p>
+<h2 id="passo-3-defina-faixa-nao-ponto">Passo 3 — Defina faixa, não ponto</h2>
+<pre>❌ Meta: retrabalho de 4%
+✅ Verde: ≤ 4%  |  Amarelo: 4,1% a 6%  |  Vermelho: &gt; 6%</pre>
+<p>Faixa evita a discussão de "faltou 0,2%" e comunica gravidade.</p>
+<h2 id="passo-4-todo-vermelho-vira-item-de-pauta">Passo 4 — Todo vermelho vira item de pauta</h2>
+<p>Automaticamente, na reunião de segunda. Sem discussão sobre "se merece".</p>
+<hr>
+<h2 id="como-interpretar-indicadores-sem-se-enganar">Como interpretar indicadores sem se enganar</h2>
+<h2 id="regra-1-tendencia-vale-mais-que-ponto">Regra 1 — Tendência vale mais que ponto</h2>
+<p>Um mês ruim pode ser azar. Três meses caindo é padrão.</p>
+<pre>Retrabalho:  Jan 5,1%  Fev 5,8%  Mar 6,2%  Abr 6,9%
+             ↑ Isso é um problema, mesmo que 6,9% ainda pareça "ok"
+
+Retrabalho:  Jan 8,1%  Fev 3,2%  Mar 7,9%  Abr 4,1%
+             ↑ Isso é variabilidade — o processo não está sob controle.
+               Pior que média alta e estável.</pre>
+<p><strong>Variabilidade alta é um problema em si.</strong> Processo que oscila não é previsível, e previsibilidade é o que você vende.</p>
+<h2 id="regra-2-todo-numero-precisa-de-contexto-de-comparacao">Regra 2 — Todo número precisa de contexto de comparação</h2>
+<p>Um número sozinho não diz nada. Compare sempre com pelo menos dois:</p>
+<ul><li><strong>Você mesmo no passado</strong> (mês anterior, mesmo mês do ano anterior)</li><li><strong>A meta</strong></li><li><strong>O melhor que você já fez</strong></li></ul>
+<h2 id="regra-3-correlacao-nao-e-causa">Regra 3 — Correlação não é causa</h2>
+<p><em>"O faturamento subiu depois que a gente contratou o vendedor novo."</em> Talvez. Ou talvez tenha sido a sazonalidade, ou uma obra grande que já estava no pipeline.</p>
+<p><strong>Teste simples:</strong> o que mais mudou no mesmo período? Se você mudou três coisas de uma vez, não sabe qual funcionou.</p>
+<h2 id="regra-4-desconfie-do-dado-bom-demais">Regra 4 — Desconfie do dado bom demais</h2>
+<p>Se um indicador melhorou 40% de um mês pro outro sem que nada tenha mudado no processo, o dado está errado ou alguém mudou a forma de medir. <strong>Investigue melhora inexplicada com o mesmo rigor que piora.</strong></p>
+<h2 id="regra-5-o-dado-precisa-chegar-em-tempo-de-agir">Regra 5 — O dado precisa chegar em tempo de agir</h2>
+<p>Aderência de cronograma medida no fim da obra é história. Medida toda semana é gestão.</p>
+<p><strong>Regra prática:</strong> o intervalo de medição tem que ser menor que o intervalo em que dá pra corrigir. Prazo de fábrica de 15 dias exige medição semanal, no mínimo.</p>
+<hr>
+<h2 id="indicadores-de-resultado-indicadores-de-direcao">Indicadores de resultado × indicadores de direção</h2>
+<p>Essa distinção muda a forma como você gerencia.</p>
+<div class="tabwrap"><table><thead><tr><th></th><th>Indicador de resultado</th><th>Indicador de direção</th></tr></thead><tbody><tr><td><strong>O que é</strong></td><td>O que aconteceu</td><td>O que vai acontecer</td></tr><tr><td><strong>Quando você sabe</strong></td><td>Depois. Tarde demais pra agir</td><td>Antes. Dá pra agir</td></tr><tr><td><strong>Você controla?</strong></td><td>Não diretamente</td><td>Sim</td></tr><tr><td><strong>Exemplos</strong></td><td>Faturamento, margem, obra atrasada</td><td>Nº de reuniões qualificadas, % de cadernos aprovados no prazo, material disponível no dia</td></tr></tbody></table></div>
+<p><strong>Exemplo prático:</strong></p>
+<pre>RESULTADO: obras entregues com atraso no mês = 4
+DIREÇÃO:   % de cadernos técnicos aprovados dentro do prazo
+           % de obras com material completo no dia D
+           % de obras liberadas pra montagem no dia programado
+
+Se os três de direção estão verdes, o de resultado vai estar verde
+daqui a 60 dias — e você sabe disso hoje.</pre>
+<p><strong>Numa PME, você gerencia pelos de direção e reporta os de resultado.</strong> Se você só olha resultado, você é historiador, não gestor.</p>
+<hr>
+<h2 id="as-5-analises-que-todo-dono-deveria-fazer-trimestralmente">As 5 análises que todo dono deveria fazer trimestralmente</h2>
+<h3 id="analise-1-margem-por-obra-a-mais-importante">Análise 1 — Margem por obra (a mais importante)</h3>
+<pre>Liste as obras entregues no trimestre, ordenadas por margem %.
+Marque: tipo de cliente, ambiente predominante, origem do lead,
+        ticket, se teve alteração pós-caderno, arquiteto envolvido.
+
+O QUE PROCURAR:
+• Que tipo de obra está sistematicamente na cauda ruim?
+• Obra com arquiteto dá mais ou menos margem que sem?
+• Ticket maior = margem maior? (Quase sempre não.)
+• Obra com alteração pós-caderno perde quantos pontos de margem?</pre>
+<p><strong>Esse relatório costuma mudar a estratégia comercial da empresa inteira.</strong></p>
+<h3 id="analise-2-origem-do-lead-conversao-margem">Análise 2 — Origem do lead × conversão × margem</h3>
+<pre>Origem          Leads   Convert.   Ticket    Margem   CAC
+Indicação         28       46%     R$ 145k     41%    R$ 0
+Arquiteto         19       37%     R$ 210k     33%    R$ 0
+Instagram         64        9%     R$ 98k      36%    R$ 340
+Tráfego pago      91        6%     R$ 87k      31%    R$ 890</pre>
+<p><strong>O que fazer com isso:</strong> aumentar o investimento no que converte com margem, não no que gera mais lead.</p>
+<h3 id="analise-3-causa-raiz-do-retrabalho">Análise 3 — Causa raiz do retrabalho</h3>
+<pre>Causa            Ocorrências   Custo      %
+Erro de projeto        11     R$ 14.200   38%
+Erro de fábrica        18     R$  9.800   26%
+Erro de montagem        9     R$  7.100   19%
+Material com defeito    6     R$  4.300   12%
+Mudança de cliente      3     R$  1.900    5%</pre>
+<p><strong>A regra 80/20 quase sempre aparece:</strong> duas causas respondem por 60%+ do custo. Ataque essas duas.</p>
+<h3 id="analise-4-tempo-de-ciclo-por-etapa">Análise 4 — Tempo de ciclo por etapa</h3>
+<pre>Etapa                     Média   Pior caso   Meta
+Briefing → medição         12d       31d       8d
+Medição → caderno          14d       28d      10d
+Caderno → aprovação        9d        42d       5d   ← o cliente
+Aprovação → material       11d       25d       7d
+Material → 100% fábrica    19d       34d      15d
+Fábrica → obra 100%        16d       29d      15d
+TOTAL                      81d      189d      60d</pre>
+<p><strong>Onde está o seu ganho:</strong> não na média, no <strong>pior caso</strong>. Reduzir o pior caso de 189 para 110 muda a percepção do cliente muito mais que reduzir a média de 81 pra 75.</p>
+<h3 id="analise-5-capacidade-demanda">Análise 5 — Capacidade × demanda</h3>
+<pre>Capacidade instalada (m²/mês):
+  Fábrica: ____    Montagem: ____
+  → A ENTREGA É A MENOR DAS DUAS.
+
+Demanda contratada nos próximos 90 dias (m²): ____
+
+Se demanda &gt; capacidade: você vai atrasar. Decida agora:
+  ( ) Contratar (onde? no gargalo!)
+  ( ) Terceirizar parte
+  ( ) Segurar venda / aumentar preço
+  ( ) Aceitar o atraso e comunicar ao cliente ANTES</pre>
+<p><strong>A quarta opção é legítima e quase ninguém usa.</strong> Comunicar atraso antes é gestão. Comunicar depois é desculpa.</p>
+<hr>
+<h2 id="erros-comuns">Erros comuns</h2>
+<div class="tabwrap"><table><thead><tr><th>#</th><th>Erro</th><th>Consequência</th></tr></thead><tbody><tr><td>1</td><td>Medir o que é fácil, não o que importa</td><td>Painel bonito, decisão ruim</td></tr><tr><td>2</td><td>Olhar só média</td><td>A cauda gera toda a reclamação</td></tr><tr><td>3</td><td>Faturamento como número principal</td><td>Cresce e empobrece</td></tr><tr><td>4</td><td>Dado que chega tarde demais</td><td>Historiador, não gestor</td></tr><tr><td>5</td><td>Não confiar no dado e usar mesmo assim</td><td>Decisão errada com falsa confiança</td></tr><tr><td>6</td><td>30 indicadores</td><td>Ninguém olha nenhum</td></tr><tr><td>7</td><td>Indicador sem dono</td><td>Vermelho eterno</td></tr><tr><td>8</td><td>Confundir correlação com causa</td><td>Investe no lugar errado</td></tr><tr><td>9</td><td>Não investigar melhora inexplicada</td><td>Dado quebrado passa despercebido</td></tr><tr><td>10</td><td>Só indicador de resultado</td><td>Descobre tarde, não dá pra agir</td></tr><tr><td>11</td><td>Comparar m²/pessoa com denominador diferente</td><td>Ilusão de eficiência</td></tr><tr><td>12</td><td>Digitação manual sem conferência</td><td>Erro acumulado invalida a série</td></tr></tbody></table></div>
+<hr>
+<h2 id="perguntas-que-o-lider-deve-fazer">Perguntas que o líder deve fazer</h2>
+<ol><li>Qual foi a última decisão que eu tomei por causa de um número? Quando foi?</li><li>Quais dos meus indicadores eu não olho há 30 dias? (Elimine.)</li><li>Meus números são de resultado ou de direção?</li><li>Eu confio no meu dado? Alguém já auditou a fonte?</li><li>Qual é o meu pior caso, não a minha média?</li><li>Se o dado do meu painel estiver errado, quanto tempo levo pra perceber?</li><li>Que decisão eu venho adiando por falta de número? Como consigo esse número em 30 dias?</li></ol>
+<hr>
+<h2 id="exercicios-do-modulo-3">Exercícios do Módulo 3</h2>
+<h3 id="exercicio-1-teste-do-descarte-30-min">Exercício 1 — Teste do descarte (30 min)</h3>
+<p>Liste tudo que você mede hoje. Aplique os 4 testes. Elimine o que reprovar.</p>
+<h3 id="exercicio-2-monte-o-painel-de-7-1h">Exercício 2 — Monte o Painel de 7 (1h)</h3>
+<p>Preencha a tabela de fonte, responsável e frequência. Onde não tem fonte, é a sua tarefa do mês.</p>
+<h3 id="exercicio-3-margem-por-obra-2h-com-o-financeiro">Exercício 3 — Margem por obra (2h, com o financeiro)</h3>
+<p>Liste as obras entregues nos últimos 12 meses, com margem. Ordene. Marque os atributos. Identifique a cauda ruim.</p>
+<h3 id="exercicio-4-media-vs-pior-caso-45-min">Exercício 4 — Média vs. pior caso (45 min)</h3>
+<p>Pegue seu prazo de entrega. Calcule média, pior caso e % fora da faixa. Compare com o que você fala pro cliente.</p>
+<h3 id="exercicio-5-causa-raiz-do-retrabalho-1-mes">Exercício 5 — Causa raiz do retrabalho (1 mês)</h3>
+<p>Classifique todo retrabalho por causa, durante 30 dias. Aplique o 80/20.</p>
+<h3 id="exercicio-6-capacidade-demanda-1h">Exercício 6 — Capacidade × demanda (1h)</h3>
+<p>Calcule a capacidade de fábrica e de montagem separadamente. Compare com a demanda contratada dos próximos 90 dias.</p>
+<hr>
+<h2 id="frases-de-impacto">Frases de impacto</h2>
+<ul><li><em>"Número que não muda decisão nenhuma é curiosidade cara. Tire do painel."</em></li><li><em>"Empresa não morre de prejuízo. Morre de falta de caixa."</em></li><li><em>"A média esconde a cauda. E é a cauda que reclama."</em></li><li><em>"Dado ruim é pior que nenhum dado, porque gera decisão errada com falsa confiança."</em></li><li><em>"Se você só olha indicador de resultado, você é historiador, não gestor."</em></li><li><em>"Variabilidade alta é problema em si. Processo que oscila não é previsível — e previsibilidade é o que você vende."</em></li><li><em>"Investigue melhora inexplicada com o mesmo rigor que piora."</em></li><li><em>"Faturamento é vaidade, margem é realidade, caixa é sobrevivência."</em></li></ul>
+<hr>
+<h2 id="entregavel-do-modulo-3">Entregável do Módulo 3</h2>
+<ol><li>Painel de 7 números montado, com fonte, dono e frequência.</li><li>Teste do descarte aplicado — lista do que foi eliminado.</li><li>Análise de margem por obra dos últimos 12 meses.</li><li>Análise de tempo de ciclo por etapa, com média e pior caso.</li><li>Cálculo de capacidade (fábrica e montagem separadas) × demanda de 90 dias.</li></ol>
+<p><strong>Próximo módulo:</strong> Expansão — quando crescer, como crescer e, principalmente, quando não crescer.</p>
+
+  <div class="rodape"><span>FASE 5 · MÓDULO 03 · Fase 5 — Escala</span><span>Material de formação em gestão para donos de PME</span></div>
+  <div class="direitos"><img src="data:image/png;base64,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" alt="ARESTA APM"><span>&copy; 2026 ARESTA APM &middot; Conteúdo e método proprietários. Uso restrito ao aluno matriculado — proibida a reprodução, revenda ou redistribuição, total ou parcial.</span></div>
+</div>
+
+<script>
+// mantem a marca digitada pelo usuario neste navegador
+(function(){
+  var m=document.querySelector('.marca');
+  var k='mkt-marca';
+  try{ var s=localStorage.getItem(k); if(s) m.innerHTML=s; }catch(e){}
+  m.addEventListener('blur',function(){ try{localStorage.setItem(k,m.innerHTML);}catch(e){} });
+})();
+</script>
+</body>
+</html>

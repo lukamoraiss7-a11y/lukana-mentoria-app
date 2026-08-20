@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MÓDULO 8 — TREINAMENTO E DESENVOLVIMENTO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --tinta:#2C2825; --ouro:#B8925A; --claro:#F5F1EA; --linha:#D8D2C7;
+  --fraco:#6E675E; --papel:#FFFFFF; --caixa:#FAF8F4;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+@page{size:A4;margin:14mm 13mm 13mm}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact;scroll-behavior:smooth}
+body{font:11pt/1.62 'Inter',-apple-system,'Helvetica Neue',Arial,sans-serif;
+  color:var(--tinta);background:var(--claro)}
+.folha{max-width:196mm;margin:0 auto;padding:14mm 10mm 20mm;background:var(--papel);
+  box-shadow:0 1px 3px rgba(0,0,0,.06)}
+
+/* cabecalho */
+.topo{display:flex;justify-content:space-between;align-items:flex-end;
+  border-bottom:1.5pt solid var(--tinta);padding-bottom:6pt;gap:12pt;flex-wrap:wrap}
+.marca{font:600 15pt/1 'Cormorant Garamond',Georgia,serif;letter-spacing:.22em;
+  text-transform:uppercase;outline:none}
+.marca small{display:block;font:400 6.5pt/1 'Inter',sans-serif;letter-spacing:.34em;
+  color:var(--fraco);margin-top:3pt}
+.marca:focus{background:#FFF6DF}
+.doc{text-align:right}
+.doc .fase{font-size:7pt;letter-spacing:.2em;color:var(--ouro);font-weight:600;
+  text-transform:uppercase}
+.doc .cod{font-size:7pt;letter-spacing:.18em;color:var(--fraco);margin-top:2pt}
+.regua{height:2.5pt;background:var(--ouro);margin:0 0 14pt}
+
+/* tipografia */
+h1{font:600 21pt/1.18 'Cormorant Garamond',Georgia,serif;letter-spacing:.01em;
+  margin:0 0 3pt}
+h1 + .lead{font-size:10.5pt;color:var(--fraco);font-style:italic;margin-bottom:14pt;
+  padding-bottom:10pt;border-bottom:.75pt solid var(--linha)}
+h2{font:600 10.5pt/1.25 'Inter',sans-serif;letter-spacing:.13em;text-transform:uppercase;
+  background:var(--claro);border-left:3pt solid var(--ouro);padding:6pt 8pt;
+  margin:22pt 0 9pt;break-after:avoid;page-break-after:avoid}
+h3{font:600 11.5pt/1.3 'Cormorant Garamond',Georgia,serif;letter-spacing:.02em;
+  margin:15pt 0 5pt;break-after:avoid;page-break-after:avoid}
+h4{font:600 8.5pt/1.25 'Inter',sans-serif;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--fraco);margin:12pt 0 4pt;break-after:avoid}
+p{margin:0 0 8pt;text-align:left}
+strong{font-weight:600}
+em{font-style:italic}
+a{color:var(--ouro);text-decoration:none}
+hr{border:none;border-top:.75pt solid var(--linha);margin:16pt 0}
+
+/* listas */
+ul,ol{margin:0 0 9pt 16pt}
+li{margin-bottom:3.5pt}
+ul.chk{list-style:none;margin-left:0}
+ul.chk li{display:flex;gap:7pt;align-items:flex-start;padding:3.5pt 0;
+  border-bottom:.5pt dotted var(--linha);break-inside:avoid}
+ul.chk li::before{content:"";flex:0 0 9.5pt;height:9.5pt;margin-top:2.5pt;
+  border:.9pt solid var(--tinta);border-radius:1pt;background:#fff}
+
+/* citacao / destaque */
+blockquote{border-left:2.5pt solid var(--ouro);background:var(--caixa);
+  padding:9pt 12pt;margin:11pt 0;break-inside:avoid}
+blockquote p:last-child{margin-bottom:0}
+
+/* codigo / templates ascii */
+pre{background:var(--caixa);border:.75pt solid var(--linha);border-radius:2pt;
+  padding:10pt 11pt;margin:11pt 0;overflow-x:auto;break-inside:avoid;
+  font:9pt/1.42 'SFMono-Regular',Menlo,Consolas,'Courier New',monospace;
+  white-space:pre;color:#332F2A}
+code{font:9.2pt/1.4 'SFMono-Regular',Menlo,Consolas,monospace;
+  background:var(--claro);padding:1pt 3pt;border-radius:2pt}
+pre code{background:none;padding:0;font-size:inherit}
+
+/* tabelas */
+.tabwrap{overflow-x:auto;margin:11pt 0}
+table{border-collapse:collapse;width:100%;font-size:9.3pt;break-inside:avoid}
+th{background:var(--claro);text-align:left;font-weight:600;font-size:7.5pt;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--fraco);
+  padding:5.5pt 7pt;border:.75pt solid var(--linha)}
+td{padding:5.5pt 7pt;border:.75pt solid var(--linha);vertical-align:top;line-height:1.42}
+tbody tr:nth-child(even){background:#FCFBF9}
+
+/* indice */
+.indice{background:var(--caixa);border:.75pt solid var(--linha);padding:11pt 13pt;
+  margin:0 0 18pt;break-inside:avoid}
+.indice h4{margin-top:0}
+.indice ol{margin:0 0 0 15pt;font-size:9.5pt;column-gap:18pt}
+.indice li{margin-bottom:2.5pt}
+.indice a{color:var(--tinta)}
+.indice a:hover{color:var(--ouro)}
+
+/* rodape */
+.rodape{margin-top:22pt;padding-top:6pt;border-top:.75pt solid var(--linha);
+  display:flex;justify-content:space-between;font-size:7.5pt;color:var(--fraco);
+  letter-spacing:.06em;gap:10pt;flex-wrap:wrap}
+
+/* direitos — a marca do Aresta e o aviso de propriedade.
+   Fica no rodape, nao no topo: o cabecalho e' do aluno (.marca editavel),
+   e a autoria do metodo nao disputa espaco com a marca dele. */
+.direitos{margin-top:7pt;display:flex;align-items:center;gap:7pt;
+  font-size:6.4pt;line-height:1.45;color:var(--fraco);letter-spacing:.02em}
+.direitos img{height:11pt;width:auto;flex-shrink:0;opacity:.85}
+@media print{.direitos{break-inside:avoid}}
+
+/* navegacao entre modulos (some na impressao) */
+.nav{max-width:196mm;margin:0 auto 10mm;padding:0 10mm;display:flex;
+  justify-content:space-between;gap:10pt;font-size:9pt}
+.nav a{display:inline-block;padding:6pt 11pt;border:.75pt solid var(--linha);
+  background:var(--papel);border-radius:2pt;color:var(--tinta)}
+.nav a:hover{border-color:var(--ouro);color:var(--ouro)}
+.topbar{max-width:196mm;margin:0 auto;padding:8mm 10mm 0;display:flex;
+  justify-content:space-between;font-size:9pt}
+.topbar a{color:var(--fraco)}
+.topbar a:hover{color:var(--ouro)}
+
+@media print{
+  body{background:#fff}
+  .folha{box-shadow:none;padding:0;max-width:none}
+  .nav,.topbar{display:none}
+  .indice{break-after:page}
+}
+@media (max-width:640px){
+  body{font-size:11.5pt}
+  .folha{padding:8mm 5mm 14mm}
+  pre{font-size:7.6pt}
+  table{font-size:8.6pt}
+  .doc{text-align:left}
+}
+</style>
+</head>
+<body>
+
+<div class="folha">
+  <div class="topo">
+    <div class="marca" contenteditable="true" spellcheck="false">SUA MARCA<small>MARCENARIA</small></div>
+    <div class="doc"><div class="fase">Fase 4 — Liderança</div><div class="cod">FASE 4 · MÓDULO 08</div></div>
+  </div>
+  <div class="regua"></div>
+
+  <h1>MÓDULO 8 — TREINAMENTO E DESENVOLVIMENTO</h1>
+  <div class="lead">Método 4M: Mostrar, Mãos, Medir, Multiplicar</div>
+  <div class="indice"><h4>Neste módulo</h4><ol><li><a href="#o-diagnostico">O diagnóstico</a></li><li><a href="#o-metodo-4m">O Método 4M</a></li><li><a href="#como-montar-uma-trilha-de-treinamento">Como montar uma trilha de treinamento</a></li><li><a href="#passo-1-liste-as-tarefas-de-cada-funcao">Passo 1 — Liste as tarefas de cada função</a></li><li><a href="#passo-2-defina-a-ordem-e-o-tempo">Passo 2 — Defina a ordem e o tempo</a></li><li><a href="#passo-3-defina-os-marcos-de-validacao">Passo 3 — Defina os marcos de validação</a></li><li><a href="#o-papel-do-padrinho">O papel do PADRINHO</a></li><li><a href="#como-ensinar-as-5-regras-de-quem-ensina-bem">Como ensinar — as 5 regras de quem ensina bem</a></li><li><a href="#como-formar-lideres-nao-so-executores">Como formar LÍDERES (não só executores)</a></li><li><a href="#a-escada-de-formacao-de-lider-5-degraus">A Escada de Formação de Líder — 5 degraus</a></li><li><a href="#as-4-ferramentas-de-formacao-de-lider">As 4 ferramentas de formação de líder</a></li><li><a href="#como-validar-aprendizado-nao-confie-em-achei-que-entendeu">Como validar aprendizado (não confie em "achei que entendeu")</a></li><li><a href="#modelo-ficha-de-trilha-por-colaborador">Modelo — Ficha de Trilha por Colaborador</a></li><li><a href="#como-medir-evolucao-os-indicadores-de-treinamento">Como medir evolução — os indicadores de treinamento</a></li><li><a href="#como-criar-um-manual-da-casa-sem-virar-burocracia">Como criar um "Manual da Casa" sem virar burocracia</a></li><li><a href="#erros-comuns">Erros comuns</a></li><li><a href="#perguntas-que-o-lider-deve-fazer">Perguntas que o líder deve fazer</a></li><li><a href="#exercicios-do-modulo-8">Exercícios do Módulo 8</a></li><li><a href="#frases-de-impacto-do-modulo-8">Frases de impacto do Módulo 8</a></li><li><a href="#entregavel-do-modulo-8">Entregável do Módulo 8</a></li></ol></div>
+  <hr>
+<h2 id="o-diagnostico">O diagnóstico</h2>
+<p>Pergunte a qualquer dono de marcenaria como ele treina alguém novo. A resposta é sempre uma variação de:</p>
+<blockquote><p><em>"Ah, eu coloco junto com o [fulano] pra ele ir aprendendo."</em></p></blockquote>
+<p>Isso não é treinamento. Isso é <strong>torcida</strong>. E gera três problemas:</p>
+<ol><li><strong>O novato aprende os vícios do fulano</strong>, não o padrão da empresa. Em três anos você tem oito jeitos diferentes de fazer a mesma coisa.</li><li><strong>O fulano perde produtividade</strong> e ninguém compensa isso — então ele ensina mal, rápido e com má vontade.</li><li><strong>Ninguém sabe se o cara aprendeu</strong>, porque não existe validação. Você descobre no primeiro erro caro.</li></ol>
+<p><strong>A consequência econômica:</strong> numa marcenaria média, um marceneiro leva de 8 a 14 meses pra chegar em produtividade plena. Com trilha estruturada, leva de 4 a 6. A diferença, em 25 pessoas com rotatividade normal, é uma pessoa e meia de produção por ano — de graça.</p>
+<blockquote><p><strong>Frase pra colar na parede:</strong> <em>"Se você não tem trilha de treinamento, você não forma gente. Você espera que ela se forme sozinha e demite quem não conseguiu."</em></p></blockquote>
+<hr>
+<h2 id="o-metodo-4m">O Método 4M</h2>
+<pre>M — MOSTRAR      Eu faço, você olha. Com explicação do porquê.
+M — MÃOS         Você faz, eu olho. Corrigindo na hora.
+M — MEDIR        Você faz sozinho, eu valido com critério objetivo.
+M — MULTIPLICAR  Você ensina outro. Só aí você aprendeu de verdade.</pre>
+<p>Esse ciclo funciona pra tudo: operar máquina, montar armário, fazer orçamento, conduzir uma reunião, aplicar um CORTE.</p>
+<h3 id="m1-mostrar-voce-faz-ele-olha">M1 — MOSTRAR (você faz, ele olha)</h3>
+<p><strong>Erro comum:</strong> mostrar só o "como", nunca o "por quê".</p>
+<p>Quem aprende só o como repete o movimento. Quem aprende o porquê consegue adaptar quando a situação muda — e na marcenaria sob medida, a situação sempre muda.</p>
+<p><strong>Estrutura da demonstração:</strong></p>
+<pre>1. "Vou te mostrar como a gente faz [tarefa]. Presta atenção
+    porque depois você vai fazer."
+2. Faça devagar, narrando cada passo.
+3. Em cada passo crítico, explique o PORQUÊ:
+   "Eu confiro a medida aqui porque se estiver 2mm fora, na hora
+    de montar a gaveta não entra e a gente perde a peça inteira."
+4. Ao final: "Alguma dúvida? Me conta com suas palavras o que
+   você entendeu."</pre>
+<p><strong>A última pergunta é obrigatória.</strong> Se ele não consegue explicar de volta, ele não entendeu — só assistiu.</p>
+<h3 id="m2-maos-ele-faz-voce-olha">M2 — MÃOS (ele faz, você olha)</h3>
+<p><strong>Erro comum:</strong> deixar ele fazer errado até o fim "pra aprender com o erro".</p>
+<p>Errado. Na marcenaria, erro custa chapa. Corrija <strong>no momento</strong>, antes do erro se materializar.</p>
+<p><strong>Estrutura:</strong></p>
+<pre>1. "Agora você faz. Eu fico aqui do lado."
+2. Deixe começar. Não interrompa por detalhe estético.
+3. Interrompa IMEDIATAMENTE se: risco de segurança, risco de
+   perder material, ou desvio do padrão crítico.
+4. Ao interromper: "Para um segundo. O que você ia fazer agora?"
+   → Deixe ele verbalizar. Muitas vezes ele mesmo corrige.
+5. Ao final: "O que foi mais difícil? O que você faria diferente?"</pre>
+<p><strong>Quantas repetições:</strong> de 3 a 5, dependendo da tarefa. A regra prática é: repete até ele fazer duas vezes seguidas sem intervenção nenhuma.</p>
+<h3 id="m3-medir-ele-faz-sozinho-voce-valida">M3 — MEDIR (ele faz sozinho, você valida)</h3>
+<p>Aqui é onde 95% das empresas param de treinar — e por isso nunca sabem se a pessoa está pronta.</p>
+<p><strong>Toda tarefa treinada precisa de um critério de validação escrito.</strong></p>
+<pre>VALIDAÇÃO — Operação de coladeira de bordas
+
+Nível ATINGIDO quando o colaborador, sem qualquer supervisão:
+[ ] Faz o setup da máquina (temperatura, pressão, velocidade)
+    para 3 espessuras de fita diferentes
+[ ] Processa 20 peças consecutivas com zero refugo
+[ ] Identifica e corrige uma falha de colagem sem chamar ajuda
+[ ] Faz a limpeza de fim de turno conforme o POP
+[ ] Sabe dizer quando a máquina precisa de manutenção e por quê
+
+Validado por: ____________  Data: ___/___/___
+Assinatura do colaborador: ______________________</pre>
+<p><strong>Isso vira o registro de competência da pessoa</strong> — e alimenta direto a matriz do Módulo 4.</p>
+<h3 id="m4-multiplicar-ele-ensina-outro">M4 — MULTIPLICAR (ele ensina outro)</h3>
+<p>O teste final. Quem ensina, domina.</p>
+<p><strong>Regra:</strong> ninguém sobe de nível na matriz de competências sem ter <strong>formado alguém</strong> no nível abaixo.</p>
+<p>Isso resolve três coisas de uma vez:</p>
+<ol><li>Prova que a pessoa dominou de verdade</li><li>Cria multiplicadores e reduz sua dependência de treinar tudo</li><li>Dá propósito ao sênior, que passa a ter um papel além de produzir</li></ol>
+<hr>
+<h2 id="como-montar-uma-trilha-de-treinamento">Como montar uma trilha de treinamento</h2>
+<h2 id="passo-1-liste-as-tarefas-de-cada-funcao">Passo 1 — Liste as tarefas de cada função</h2>
+<p>Pegue uma função. Liste <strong>tudo</strong> que a pessoa precisa saber fazer. Não pense em curso — pense em tarefa.</p>
+<p><strong>Exemplo — Marceneiro:</strong></p>
+<pre>BLOCO A — SEGURANÇA E ORGANIZAÇÃO
+A1. EPI: quando usar cada um
+A2. Operação segura de esquadrejadeira
+A3. Operação segura de tupia e furadeira
+A4. Organização do posto e devolução de ferramenta
+A5. O que fazer em caso de acidente
+
+BLOCO B — LEITURA E PLANEJAMENTO
+B1. Ler caderno técnico: vistas, cortes, cotas
+B2. Identificar peça faltante ou medida conflitante
+B3. Conferir lista de material contra o projeto
+B4. Montar plano de corte com aproveitamento
+
+BLOCO C — EXECUÇÃO
+C1. Corte na esquadrejadeira
+C2. Corte na seccionadora
+C3. Aplicação de fita de borda
+C4. Furação de dobradiça e corrediça
+C5. Usinagem básica (tupia)
+C6. Pré-montagem e conferência de esquadro
+
+BLOCO D — ACABAMENTO E ENTREGA
+D1. Lixamento e preparação
+D2. Padrão de acabamento da casa
+D3. Conferência final com checklist
+D4. Embalagem e identificação
+D5. Carregamento e amarração
+
+BLOCO E — COMPORTAMENTO E PROCESSO
+E1. Valores da empresa e o que significam na prática
+E2. Fluxo de comunicação: quem avisa quem, quando
+E3. Uso do KPI 25/50/75/100
+E4. O que fazer quando encontra um problema</pre>
+<h2 id="passo-2-defina-a-ordem-e-o-tempo">Passo 2 — Defina a ordem e o tempo</h2>
+<div class="tabwrap"><table><thead><tr><th>Bloco</th><th>Quando</th><th>Quem ensina</th><th>Duração</th></tr></thead><tbody><tr><td>A — Segurança</td><td>Dia 1</td><td>Encarregado</td><td>4h</td></tr><tr><td>E1, E2 — Cultura e fluxo</td><td>Dia 1</td><td>Dono</td><td>1h</td></tr><tr><td>B — Leitura</td><td>Dias 2–5</td><td>Sênior padrinho</td><td>8h + prática</td></tr><tr><td>C — Execução</td><td>Semanas 2–8</td><td>Sênior padrinho</td><td>Na prática</td></tr><tr><td>D — Acabamento</td><td>Semanas 4–10</td><td>Sênior padrinho</td><td>Na prática</td></tr><tr><td>E3, E4 — KPI e problemas</td><td>Semana 2</td><td>Encarregado</td><td>1h</td></tr></tbody></table></div>
+<h2 id="passo-3-defina-os-marcos-de-validacao">Passo 3 — Defina os marcos de validação</h2>
+<pre>MARCO 30 DIAS — "Autônomo em tarefa simples"
+Valida: A completo, B1-B3, C1, C3, D1
+Consequência: passa a executar sem supervisão constante
+
+MARCO 90 DIAS — "Autônomo em ambiente completo"
+Valida: B completo, C1-C4, D completo
+Consequência: fim do período de experiência + confirmação
+
+MARCO 180 DIAS — "Nível Júnior consolidado"
+Valida: todos os blocos
+Consequência: elegível para nível 2 da matriz</pre>
+<hr>
+<h2 id="o-papel-do-padrinho">O papel do PADRINHO</h2>
+<p>Todo novato tem um padrinho — um sênior designado, não sorteado.</p>
+<h3 id="responsabilidades-do-padrinho">Responsabilidades do padrinho</h3>
+<ul><li>Acompanhar o novato nas primeiras 4 semanas</li><li>Ensinar seguindo o 4M, não do jeito dele</li><li>Reportar ao encarregado uma vez por semana: o que já domina, o que trava</li><li>Ser o "canal de dúvida boba" — aquilo que a pessoa tem vergonha de perguntar ao chefe</li></ul>
+<h3 id="o-que-o-padrinho-ganha">O que o padrinho ganha</h3>
+<p>Isso é o que faz o programa funcionar. Padrinho sem contrapartida ensina mal.</p>
+<div class="tabwrap"><table><thead><tr><th>Contrapartida</th><th>Como implantar</th></tr></thead><tbody><tr><td><strong>Bônus de formação</strong></td><td>R$ 300 a R$ 500 quando o afilhado passa no marco de 90 dias</td></tr><tr><td><strong>Ponto na matriz</strong></td><td>"Formação" é competência de nível 3+. Ser padrinho é requisito para subir</td></tr><tr><td><strong>Reconhecimento público</strong></td><td>Citado nominalmente na reunião quando o afilhado é validado</td></tr><tr><td><strong>Ajuste de meta</strong></td><td>Se ele produz menos por estar ensinando, a meta dele é ajustada. Senão ele vai priorizar produção e ensinar mal</td></tr></tbody></table></div>
+<p><strong>O último item é o mais importante e o mais esquecido.</strong> Se você cobra a mesma produção de quem está ensinando, você está pedindo pra ele escolher entre bater a meta e formar bem. Ele vai escolher a meta.</p>
+<hr>
+<h2 id="como-ensinar-as-5-regras-de-quem-ensina-bem">Como ensinar — as 5 regras de quem ensina bem</h2>
+<h3 id="regra-1-ensine-em-pedaco-nao-em-bloco">Regra 1 — Ensine em pedaço, não em bloco</h3>
+<p>O cérebro adulto retém de 3 a 5 informações novas por sessão. Se você despeja 20, ele retém 4 aleatórias. <strong>Prática:</strong> sessões de 20 a 40 minutos, uma tarefa por sessão.</p>
+<h3 id="regra-2-contexto-antes-do-conteudo">Regra 2 — Contexto antes do conteúdo</h3>
+<p>Antes de ensinar o "como", explique onde essa tarefa entra no todo e o que acontece se ela falhar.</p>
+<blockquote><p><em>"Essa conferência aqui parece boba, mas é ela que impede a gente de mandar uma carga incompleta pra obra a 30 km daqui. Cada volta custa R$ 400 e meio dia de dois montadores."</em></p></blockquote>
+<h3 id="regra-3-erro-simulado-e-o-melhor-professor">Regra 3 — Erro simulado é o melhor professor</h3>
+<p>Depois que a pessoa domina o certo, mostre o errado:</p>
+<blockquote><p><em>"Agora deixa eu te mostrar o que acontece se a temperatura da coladeira estiver 20 graus abaixo. Olha o resultado."</em></p></blockquote>
+<p>Ela nunca mais esquece.</p>
+<h3 id="regra-4-peca-pra-explicar-de-volta">Regra 4 — Peça pra explicar de volta</h3>
+<p>Nunca aceite "entendi". Peça: <em>"me conta com suas palavras o que você vai fazer."</em> 90% das falhas de treinamento aparecem nessa hora.</p>
+<h3 id="regra-5-ensine-o-criterio-nao-so-o-procedimento">Regra 5 — Ensine o critério, não só o procedimento</h3>
+<p>Procedimento: "lixa com 180 e depois 220". Critério: "está pronto quando você passa a mão e não sente emenda nenhuma, e quando a luz rasante não mostra risco."</p>
+<p><strong>Procedimento treina execução. Critério treina julgamento.</strong> E é julgamento que faz alguém trabalhar sem supervisão.</p>
+<hr>
+<h2 id="como-formar-lideres-nao-so-executores">Como formar LÍDERES (não só executores)</h2>
+<p>Formar líder é diferente de formar técnico. Técnico se forma com repetição. Líder se forma com <strong>responsabilidade crescente e reflexão estruturada</strong>.</p>
+<h2 id="a-escada-de-formacao-de-lider-5-degraus">A Escada de Formação de Líder — 5 degraus</h2>
+<div class="tabwrap"><table><thead><tr><th>Degrau</th><th>Responsabilidade</th><th>Duração</th><th>Como avaliar</th></tr></thead><tbody><tr><td><strong>1 — Dono de tarefa</strong></td><td>Responde por uma tarefa do início ao fim, incluindo qualidade</td><td>1–3 meses</td><td>Entrega sem retrabalho e sem lembrete</td></tr><tr><td><strong>2 — Dono de processo</strong></td><td>Responde por uma etapa inteira, com 2–3 pessoas envolvidas</td><td>3–6 meses</td><td>A etapa funciona quando ele está. E quando não está?</td></tr><tr><td><strong>3 — Dono de resultado</strong></td><td>Responde por um número, com equipe pequena</td><td>6–12 meses</td><td>O número melhora e ele sabe explicar por quê</td></tr><tr><td><strong>4 — Dono de pessoas</strong></td><td>Contrata, treina, dá feedback, avalia</td><td>12+ meses</td><td>A equipe dele cresce. Alguém dele foi promovido</td></tr><tr><td><strong>5 — Dono de área</strong></td><td>Responde por resultado, pessoas e orçamento</td><td>—</td><td>A área anda sem ele por 15 dias</td></tr></tbody></table></div>
+<p><strong>A regra:</strong> você promove pro degrau seguinte <strong>depois</strong> que a pessoa provou o atual, não antes. E cada degrau tem que ter durado tempo suficiente pra ter enfrentado pelo menos uma crise.</p>
+<h2 id="as-4-ferramentas-de-formacao-de-lider">As 4 ferramentas de formação de líder</h2>
+<h3 id="1-delegacao-com-nivel-declarado-a-mais-poderosa">1. Delegação com nível declarado (a mais poderosa)</h3>
+<p>Antes de delegar qualquer coisa, declare <strong>qual nível de autonomia</strong> aquela tarefa tem:</p>
+<pre>NÍVEL 1 — "Faça exatamente como eu falei e me reporte"
+NÍVEL 2 — "Analise, me traga opções, eu decido"
+NÍVEL 3 — "Analise, decida, me consulte antes de executar"
+NÍVEL 4 — "Decida e execute, me informe depois"
+NÍVEL 5 — "Decida, execute, só me chame se der problema"</pre>
+<p><strong>O erro de 90% dos donos:</strong> delegar sem dizer o nível. Você acha que deu nível 4, a pessoa entendeu nível 2, e aí você reclama que ela "não toma iniciativa" enquanto ela reclama que "não pode decidir nada".</p>
+<p><strong>Prática:</strong> ao delegar, fale o nível em voz alta. <em>"Isso aqui é nível 4: decide e executa, depois me conta."</em></p>
+<p><strong>Formação:</strong> a mesma tarefa sobe de nível ao longo dos meses. É assim que se forma autonomia — gradualmente, com explicitação.</p>
+<h3 id="2-substituicao-planejada">2. Substituição planejada</h3>
+<p>O líder tira 5 dias de férias. Alguém assume. Combinado antes, com escopo definido. É o melhor teste de prontidão que existe — e o mais barato.</p>
+<h3 id="3-reflexao-estruturada-o-que-separa-experiencia-de-aprendiza">3. Reflexão estruturada (o que separa experiência de aprendizado)</h3>
+<p>Experiência não ensina nada sozinha. Reflexão ensina.</p>
+<p>Depois de todo evento relevante (uma obra que deu errado, um conflito, uma decisão difícil), 20 minutos com o líder em formação:</p>
+<pre>1. O que aconteceu? (fato)
+2. O que você decidiu e por quê?
+3. O que funcionou?
+4. O que você faria diferente?
+5. Que princípio geral você tira disso pra próxima vez?</pre>
+<p><strong>A pergunta 5 é o que transforma um caso em aprendizado transferível.</strong></p>
+<h3 id="4-exposicao-a-decisao-real">4. Exposição a decisão real</h3>
+<p>Leve o líder em formação pra reuniões que ele ainda não deveria estar. Reunião com cliente difícil, negociação com fornecedor, análise de resultado. Depois, converse:</p>
+<blockquote><p><em>"Por que você acha que eu decidi daquele jeito?"</em></p></blockquote>
+<p>Isso ensina critério, que é o que não está em nenhum manual.</p>
+<hr>
+<h2 id="como-validar-aprendizado-nao-confie-em-achei-que-entendeu">Como validar aprendizado (não confie em "achei que entendeu")</h2>
+<div class="tabwrap"><table><thead><tr><th>Nível de validação</th><th>Como fazer</th><th>Confiabilidade</th></tr></thead><tbody><tr><td><strong>Ruim</strong> — "Entendeu?"</td><td>Perguntar</td><td>10%</td></tr><tr><td><strong>Fraco</strong> — Prova escrita</td><td>Teste teórico</td><td>30%</td></tr><tr><td><strong>Bom</strong> — Demonstração</td><td>Faz na frente de você</td><td>70%</td></tr><tr><td><strong>Ótimo</strong> — Execução autônoma</td><td>Faz sozinho, você audita depois</td><td>85%</td></tr><tr><td><strong>Melhor</strong> — Ensina outro</td><td>Treina alguém que é validado</td><td>95%</td></tr></tbody></table></div>
+<p><strong>Regra prática:</strong> use "demonstração" pra fechar treinamento e "ensina outro" pra confirmar domínio.</p>
+<hr>
+<h2 id="modelo-ficha-de-trilha-por-colaborador">Modelo — Ficha de Trilha por Colaborador</h2>
+<pre>═══════════════════════════════════════════════════════════════
+TRILHA DE FORMAÇÃO
+Colaborador: ______________  Função: ________  Entrada: __/__/__
+Padrinho: _________________  Encarregado: ______________________
+
+BLOCO / TAREFA          MOSTRAR  MÃOS   MEDIR   MULTIPLICAR
+                        (data)   (data) (data)  (data)
+A1 EPI                  ______   ______ ______  ______
+A2 Esquadrejadeira      ______   ______ ______  ______
+B1 Caderno técnico      ______   ______ ______  ______
+C1 Corte                ______   ______ ______  ______
+C3 Fita de borda        ______   ______ ______  ______
+D3 Conferência final    ______   ______ ______  ______
+...
+
+MARCOS
+[ ] 30 dias — Autônomo em tarefa simples    Validado em: __/__/__
+[ ] 90 dias — Autônomo em ambiente completo Validado em: __/__/__
+[ ] 180 dias — Nível Júnior consolidado     Validado em: __/__/__
+
+OBSERVAÇÕES DO PADRINHO (semanal)
+Semana 1: ______________________________________________
+Semana 2: ______________________________________________
+Semana 3: ______________________________________________
+Semana 4: ______________________________________________
+
+O QUE ELE APRENDE RÁPIDO: ______________________________
+ONDE ELE TRAVA: ________________________________________
+═══════════════════════════════════════════════════════════════</pre>
+<hr>
+<h2 id="como-medir-evolucao-os-indicadores-de-treinamento">Como medir evolução — os indicadores de treinamento</h2>
+<div class="tabwrap"><table><thead><tr><th>Indicador</th><th>Como calcular</th><th>Meta</th></tr></thead><tbody><tr><td><strong>Tempo até produtividade plena</strong></td><td>Dias da entrada até validação do marco 90</td><td>Reduzir 30% em 12 meses</td></tr><tr><td><strong>Taxa de retenção em 12 meses</strong></td><td>% de contratados que ficam 1 ano</td><td>&gt; 70%</td></tr><tr><td><strong>Cobertura da matriz</strong></td><td>% de competências críticas com 2+ pessoas validadas</td><td>100% nas críticas</td></tr><tr><td><strong>Multiplicadores ativos</strong></td><td>Nº de pessoas que já formaram alguém</td><td>≥ 1 por área</td></tr><tr><td><strong>Retrabalho por tempo de casa</strong></td><td>Retrabalho de quem tem &lt; 6 meses vs. &gt; 1 ano</td><td>Diferença &lt; 2x</td></tr><tr><td><strong>Horas de treinamento/pessoa/mês</strong></td><td>Total de horas dedicadas</td><td>4h a 8h</td></tr></tbody></table></div>
+<p><strong>O indicador mais revelador é o primeiro.</strong> Se você reduzir o tempo de rampa de 12 pra 6 meses, você ganhou meia pessoa de produção por cada contratação — sem gastar um real a mais de folha.</p>
+<hr>
+<h2 id="como-criar-um-manual-da-casa-sem-virar-burocracia">Como criar um "Manual da Casa" sem virar burocracia</h2>
+<p>Você não precisa de manual de 200 páginas. Precisa de <strong>POPs de uma página</strong> para as 15 a 20 tarefas críticas.</p>
+<p><strong>Formato de POP de 1 página:</strong></p>
+<pre>POP-[número] — [NOME DA TAREFA]
+Versão: __  Data: __/__/__  Responsável: __________
+
+PARA QUE SERVE (1 frase)
+____________________________________________________
+
+QUANDO SE FAZ
+____________________________________________________
+
+MATERIAL/FERRAMENTA NECESSÁRIA
+____________________________________________________
+
+PASSO A PASSO
+1. ________________________________________________
+2. ________________________________________________
+3. ________________________________________________
+
+PONTOS CRÍTICOS (onde mais se erra)
+⚠ _________________________________________________
+⚠ _________________________________________________
+
+COMO SEI QUE FICOU CERTO
+✓ _________________________________________________
+
+O QUE FAZER SE DER ERRADO
+____________________________________________________
+
+[Foto ou desenho, se ajudar]</pre>
+<p><strong>Regra de ouro dos POPs:</strong> <strong>quem faz, escreve.</strong> O marceneiro escreve o POP de corte, não o dono. Três motivos: fica mais correto, ele se apropria, e você não gasta o seu tempo.</p>
+<p><strong>Como implantar sem travar a operação:</strong> 1 POP por semana, escrito pela própria pessoa, revisado pelo encarregado. Em 20 semanas você tem o manual da casa inteiro.</p>
+<hr>
+<h2 id="erros-comuns">Erros comuns</h2>
+<div class="tabwrap"><table><thead><tr><th>#</th><th>Erro</th><th>Consequência</th></tr></thead><tbody><tr><td>1</td><td>"Fica junto com o fulano"</td><td>Aprende vício, não padrão</td></tr><tr><td>2</td><td>Padrinho sem contrapartida</td><td>Ensina mal e com má vontade</td></tr><tr><td>3</td><td>Não ajustar a meta de quem ensina</td><td>Escolhe produção sobre formação</td></tr><tr><td>4</td><td>Ensinar tudo na primeira semana</td><td>Retém 20%</td></tr><tr><td>5</td><td>Ensinar o "como" sem o "por quê"</td><td>Não sabe adaptar quando muda</td></tr><tr><td>6</td><td>Não validar com critério objetivo</td><td>Descobre a falha no erro caro</td></tr><tr><td>7</td><td>Achar que treinamento é curso</td><td>70% do aprendizado é fazendo</td></tr><tr><td>8</td><td>Não formar multiplicadores</td><td>Você continua sendo o único que ensina</td></tr><tr><td>9</td><td>Delegar sem declarar o nível</td><td>"Não toma iniciativa" × "não posso decidir"</td></tr><tr><td>10</td><td>Não medir tempo de rampa</td><td>Nunca melhora porque nunca mediu</td></tr><tr><td>11</td><td>Manual de 200 páginas</td><td>Ninguém lê. POP de 1 página, todo mundo usa</td></tr><tr><td>12</td><td>Dono escrevendo o POP de todo mundo</td><td>Fica errado e nunca termina</td></tr></tbody></table></div>
+<hr>
+<h2 id="perguntas-que-o-lider-deve-fazer">Perguntas que o líder deve fazer</h2>
+<ol><li>Quanto tempo leva pra alguém novo ficar produtivo aqui? Eu sei o número ou eu acho?</li><li>Se meu melhor marceneiro sair amanhã, quem sabe fazer o que ele faz?</li><li>Quantas competências críticas da minha empresa dependem de uma pessoa só?</li><li>Quem na minha equipe já formou alguém? Isso é reconhecido de alguma forma?</li><li>Eu ensino o critério ou só o procedimento?</li><li>Meus líderes sabem em que nível de autonomia cada delegação está?</li><li>Quantas horas por mês eu dedico a formar gente? É suficiente pro que eu cobro?</li></ol>
+<hr>
+<h2 id="exercicios-do-modulo-8">Exercícios do Módulo 8</h2>
+<h3 id="exercicio-1-mapa-de-tarefas-1h">Exercício 1 — Mapa de tarefas (1h)</h3>
+<p>Escolha a função mais numerosa. Liste todas as tarefas em blocos, como no exemplo do marceneiro.</p>
+<h3 id="exercicio-2-matriz-de-cobertura-30-min">Exercício 2 — Matriz de cobertura (30 min)</h3>
+<p>Para cada tarefa crítica, liste quem sabe fazer. Onde só uma pessoa sabe, você tem um ponto único de falha.</p>
+<div class="tabwrap"><table><thead><tr><th>Tarefa crítica</th><th>Quem sabe hoje</th><th>Nº de pessoas</th><th>Risco</th></tr></thead><tbody><tr><td></td><td></td><td></td><td></td></tr></tbody></table></div>
+<h3 id="exercicio-3-primeiro-pop-40-min">Exercício 3 — Primeiro POP (40 min)</h3>
+<p>Escolha a tarefa que mais gera erro. Peça pra quem executa escrever o POP de 1 página. Revise junto.</p>
+<h3 id="exercicio-4-teste-do-nivel-de-delegacao-20-min">Exercício 4 — Teste do nível de delegação (20 min)</h3>
+<p>Liste 5 coisas que você delegou recentemente. Para cada uma, escreva qual nível você achou que deu e pergunte à pessoa qual nível ela entendeu. Compare.</p>
+<h3 id="exercicio-5-escolha-um-padrinho-30-min">Exercício 5 — Escolha um padrinho (30 min)</h3>
+<p>Escolha um sênior, defina a contrapartida, e designe formalmente. Comunique à equipe.</p>
+<h3 id="exercicio-6-reflexao-estruturada-20-min">Exercício 6 — Reflexão estruturada (20 min)</h3>
+<p>Pegue um evento recente com alguém em formação e faça as 5 perguntas de reflexão. Anote o "princípio geral" que sair.</p>
+<hr>
+<h2 id="frases-de-impacto-do-modulo-8">Frases de impacto do Módulo 8</h2>
+<ul><li><em>"Se você não tem trilha, você não forma gente. Você torce."</em></li><li><em>"Quem ensina, domina. Ninguém sobe de nível sem ter formado alguém."</em></li><li><em>"Procedimento treina execução. Critério treina julgamento. Autonomia vem do segundo."</em></li><li><em>"Nunca aceite 'entendi'. Peça pra explicar de volta."</em></li><li><em>"Se você cobra a mesma produção de quem está ensinando, ele vai escolher a produção. E vai ensinar mal."</em></li><li><em>"Experiência não ensina nada sozinha. Reflexão ensina."</em></li><li><em>"Quem faz, escreve o POP. Se o dono escreve, fica errado e nunca termina."</em></li><li><em>"Delegar sem declarar o nível de autonomia é a origem de metade das frustrações entre chefe e liderado."</em></li></ul>
+<hr>
+<h2 id="entregavel-do-modulo-8">Entregável do Módulo 8</h2>
+<ol><li>Mapa de tarefas de 1 função completo.</li><li>Matriz de cobertura de competências críticas.</li><li>Ao menos 3 POPs de 1 página escritos por quem executa.</li><li>Programa de padrinho definido, com contrapartida.</li><li>Ficha de trilha em uso para o próximo contratado.</li></ol>
+<p><strong>Próximo módulo:</strong> Remuneração variável — como fazer o dinheiro puxar o comportamento certo.</p>
+
+  <div class="rodape"><span>FASE 4 · MÓDULO 08 · Fase 4 — Liderança</span><span>Material de formação em gestão para donos de PME</span></div>
+  <div class="direitos"><img src="data:image/png;base64,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" alt="ARESTA APM"><span>&copy; 2026 ARESTA APM &middot; Conteúdo e método proprietários. Uso restrito ao aluno matriculado — proibida a reprodução, revenda ou redistribuição, total ou parcial.</span></div>
+</div>
+
+<script>
+// mantem a marca digitada pelo usuario neste navegador
+(function(){
+  var m=document.querySelector('.marca');
+  var k='mkt-marca';
+  try{ var s=localStorage.getItem(k); if(s) m.innerHTML=s; }catch(e){}
+  m.addEventListener('blur',function(){ try{localStorage.setItem(k,m.innerHTML);}catch(e){} });
+})();
+</script>
+</body>
+</html>

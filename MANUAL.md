@@ -222,7 +222,7 @@ independente do que ele comprou.
 
 Quando os HTMLs de uma fase ficam prontos em `mentoria-conteudo/publicar/`, existem
 dois caminhos. **Os dois gravam na mesma pasta do bucket:** o número da fase **menos 1**
-(Fase 2 → `1/`, Fase 5 → `4/`). Errar isso publica na pasta errada e o RLS bloqueia
+(Fase 1 → `0/`, Fase 4 → `3/`). Errar isso publica na pasta errada e o RLS bloqueia
 justamente o aluno que comprou — falha silenciosa, só aparece quando ele reclama.
 
 **Caminho 1 — pelo painel (2 minutos, sem chave nenhuma)**
@@ -235,7 +235,7 @@ justamente o aluno que comprou — falha silenciosa, só aparece quando ele recl
 
 > ⚠️ **Só clique uma vez.** `publicar()` é `insert` puro, sem upsert, e a lista não
 > deduplica. Clicar de novo cria 16 cards duplicados — foi exatamente assim que a
-> Fase 5 ficou com 34 registros para 18 nomes em 07/08/2026. Se a barra travar,
+> a antiga Fase 5 ficou com 34 registros para 18 nomes em 07/08/2026. Se a barra travar,
 > confira a aba Materiais **antes** de tentar de novo.
 
 **Caminho 2 — pelo script (idempotente, pode rodar de novo sem medo)**
@@ -257,7 +257,7 @@ esperado, houve duplicação: apague os excedentes pelo ✕ antes de qualquer ou
 
 ### O que ainda não está trancado nos arquivos
 
-A lista respeita a fase comprada: quem não tem a Fase 4 não recebe o PCP do banco, nem
+A lista respeita a fase comprada: quem não tem a Fase 3 não recebe o PCP do banco, nem
 vê o card. Mas o arquivo em si continua acessível por URL direta — quem tiver o link de
 `/files/pcp_simplificado_pro.xlsx` baixa sem estar logado.
 

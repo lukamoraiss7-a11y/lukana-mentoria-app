@@ -286,8 +286,8 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
 .mtn{font-family:'Inter',sans-serif;font-size:16px;font-weight:700;}
 
 /* Bloco de fase na aba Materiais — fechado por padrao, abre no clique,
-   igual a Trilha e o escopo. Com as 6 fases liberadas a tela despejava
-   os 54 cards de uma vez e a aba virava um paredao de rolagem. Fase
+   igual a Trilha e o escopo. Com as 5 fases liberadas a tela despejava
+   os 69 cards de uma vez e a aba virava um paredao de rolagem. Fase
    trancada NAO usa isto: a vitrine dela precisa nascer aberta, e' o que
    vende. */
 .mgrp{background:var(--navy-light);border:1px solid #333;border-radius:4px;overflow:hidden;margin-bottom:11px;}
@@ -392,7 +392,7 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
     <nav class="sb-nav">
       <div class="nav-sec">Principal</div>
       <div class="nav-it" id="nav-dashboard" onclick="sv('dashboard')"><svg class="nav-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg>Dashboard</div>
-      <div class="nav-it" id="nav-trilha" onclick="sv('trilha')"><svg class="nav-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><polygon points="6.5,5.5 11.5,8 6.5,10.5" fill="currentColor" stroke="none"/></svg>Trilha de Aulas<span class="nav-bg">8</span></div>
+      <div class="nav-it" id="nav-trilha" onclick="sv('trilha')"><svg class="nav-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><polygon points="6.5,5.5 11.5,8 6.5,10.5" fill="currentColor" stroke="none"/></svg>Trilha de Aulas<span class="nav-bg">7</span></div>
       <div class="nav-it" id="nav-pilares" onclick="sv('pilares')"><svg class="nav-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.5L14 5v6l-6 3.5L2 11V5L8 1.5z"/></svg>5 Pilares</div>
       <div class="nav-sec">Recursos</div>
       <div class="nav-it" id="nav-materiais" onclick="sv('materiais')"><svg class="nav-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 1h6l4 4v9a1 1 0 01-1 1H4a1 1 0 01-1-1V2a1 1 0 011-1z"/><polyline points="10,1 10,5 14,5"/></svg>Materiais<span class="nav-bg" style="background:rgba(200,146,42,.1);color:var(--accent);" id="mat-count">8</span></div>
@@ -423,7 +423,7 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
     <div class="sb-foot">
       <div class="prow">Progresso<span class="pval">0%</span></div>
       <div class="ptrk"><div class="pfil"></div></div>
-      <div class="psub">0 de 6 fases concluídas</div>
+      <div class="psub">0 de 5 fases concluídas</div>
       <div class="psub" id="sb-plano" style="margin-top:4px;"></div>
     </div>
     <div class="aresta-direitos lateral">
@@ -438,7 +438,7 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
     <div class="topbar">
       <div class="tbc">Alta Performance na Marcenaria<span class="s">›</span><em id="tbc">Dashboard</em></div>
       <div class="tbr">
-        <span class="chip cg">6 Fases · 5 Pilares · 2 Bônus</span>
+        <span class="chip cg">5 Fases · 5 Pilares · 2 Bônus</span>
         <button class="bg" onclick="sv('materiais')">Materiais</button>
         <button class="bgo" onclick="sv('trilha')">Continuar Trilha →</button>
       </div>
@@ -452,9 +452,9 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
         <div class="hero">
           <div class="he">Área de Membros · Alta Performance na Marcenaria</div>
           <div class="hh">Do plano <span class="tg">à realidade.</span></div>
-          <div class="hs">6 fases, 5 pilares, cada aula com entregável concreto e ferramenta aplicável. Não é teoria de livro — é o que muda a operação de uma marcenaria de verdade.</div>
+          <div class="hs">5 fases, 5 pilares, cada aula com entregável concreto e ferramenta aplicável. Não é teoria de livro — é o que muda a operação de uma marcenaria de verdade.</div>
           <div class="hst">
-            <div><div class="hsv">6</div><div class="hsl">Fases</div></div>
+            <div><div class="hsv">5</div><div class="hsl">Fases</div></div>
             <div><div class="hsv">5</div><div class="hsl">Pilares</div></div>
             <div><div class="hsv">~60h</div><div class="hsl">Prática Real</div></div>
             <div><div class="hsv">8</div><div class="hsl">Ferramentas</div></div>
@@ -462,17 +462,17 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
         </div>
         <div class="sr"><div class="st">Blocos do Programa</div></div>
         <div class="phr" style="margin-bottom:26px;">
-          <div class="pc on"><div class="pt">Bloco 1 · Fases 1–2</div><div class="pn">Fundamentos & Rentabilidade</div><div class="pd">Base empresarial, jurídico, contabilidade e precificação.</div><div class="ptr"><div class="pf" style="width:0%"></div></div><div class="pm">0 de 2 fases</div></div>
-          <div class="pc"><div class="pt off">Bloco 2 · Fases 3–4</div><div class="pn off">Comercial & Operação</div><div class="pd">Máquina de vendas e fábrica funcionando com método.</div><div class="ptr"><div class="pf" style="width:0%"></div></div><div class="pm">0 de 2 fases</div></div>
-          <div class="pc"><div class="pt off">Bloco 3 · Fases 5–6 + Bônus</div><div class="pn off">Liderança & Escala</div><div class="pd">Time, crescimento e automação inteligente.</div><div class="ptr"><div class="pf" style="width:0%"></div></div><div class="pm">0 de 4 fases</div></div>
+          <div class="pc on"><div class="pt">Bloco 1 · Fases 1–2</div><div class="pn">Fundamentos & Máquina Comercial</div><div class="pd">Base empresarial, contabilidade, lucro, precificação e a máquina de vendas.</div><div class="ptr"><div class="pf" style="width:0%"></div></div><div class="pm">0 de 2 fases</div></div>
+          <div class="pc"><div class="pt off">Bloco 2 · Fases 3–4</div><div class="pn off">Operação & Liderança</div><div class="pd">Fábrica com método, contratos no lugar e time que responde por número.</div><div class="ptr"><div class="pf" style="width:0%"></div></div><div class="pm">0 de 2 fases</div></div>
+          <div class="pc"><div class="pt off">Bloco 3 · Fase 5 + Bônus</div><div class="pn off">Escala & Bônus</div><div class="pd">Crescimento, marketing e automação inteligente.</div><div class="ptr"><div class="pf" style="width:0%"></div></div><div class="pm">0 de 3 fases</div></div>
         </div>
         <div class="sr"><div class="st">Continue de Onde Parou</div></div>
         <div class="cc" onclick="smd(0)">
           <div class="ccp"><div class="ccpa"></div></div>
           <div class="cci">
-            <div class="ccl">Fase 1 · Visão</div>
+            <div class="ccl">Fase 1 · Lucro</div>
             <div class="cct">Fundamentos</div>
-            <div class="ccs">Você para de pensar como marceneiro e começa a pensar como empresário.</div>
+            <div class="ccs">Você para de pensar como marceneiro, passa a pensar como empresário — e aprende a transformar faturamento em lucro.</div>
           </div>
           <button class="bgo">Iniciar Aula →</button>
         </div>
@@ -481,8 +481,8 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
       </div>
 
       <div class="view" id="view-trilha">
-        <div style="margin-bottom:22px;"><div style="font-family:'Inter',sans-serif;font-size:24px;font-weight:700;margin-bottom:5px;">Trilha de Aulas</div><div style="font-size:13px;color:var(--text-secondary);">6 fases em sequência. Clique em cada fase para ver o conteúdo.</div></div>
-        <div class="fa-sec-title">Estrutura — 6 Fases de Evolução</div>
+        <div style="margin-bottom:22px;"><div style="font-family:'Inter',sans-serif;font-size:24px;font-weight:700;margin-bottom:5px;">Trilha de Aulas</div><div style="font-size:13px;color:var(--text-secondary);">5 fases em sequência. Clique em cada fase para ver o conteúdo.</div></div>
+        <div class="fa-sec-title">Estrutura — 5 Fases de Evolução</div>
         <div id="fa-fases"></div>
         <div class="fa-sec-title" style="margin-top:28px;">Bônus — Exclusivo para Mentorados</div>
         <div id="fa-bonus"></div>
@@ -540,11 +540,10 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
                 <select class="adm-select" id="am-fase" style="margin-bottom:0;">
                   <option value="">Geral (todas as fases)</option>
                   <option value="0">Fase 1 — Fundamentos</option>
-                  <option value="1">Fase 2 — Rentabilidade</option>
-                  <option value="2">Fase 3 — Máquina Comercial</option>
-                  <option value="3">Fase 4 — Operação</option>
-                  <option value="4">Fase 5 — Liderança</option>
-                  <option value="5">Fase 6 — Escala</option>
+                  <option value="1">Fase 2 — Máquina Comercial</option>
+                  <option value="2">Fase 3 — Operação</option>
+                  <option value="3">Fase 4 — Liderança</option>
+                  <option value="4">Fase 5 — Escala</option>
                   <option value="6">Bônus 1 — Marketing</option>
                   <option value="7">Bônus 2 — IA</option>
                 </select>
@@ -562,11 +561,10 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
               <select class="adm-select" id="au-fase">
                 <option value="">Geral (todas as fases)</option>
                 <option value="0">Fase 1 — Fundamentos</option>
-                <option value="1">Fase 2 — Rentabilidade</option>
-                <option value="2">Fase 3 — Máquina Comercial</option>
-                <option value="3">Fase 4 — Operação</option>
-                <option value="4">Fase 5 — Liderança</option>
-                <option value="5">Fase 6 — Escala</option>
+                <option value="1">Fase 2 — Máquina Comercial</option>
+                <option value="2">Fase 3 — Operação</option>
+                <option value="3">Fase 4 — Liderança</option>
+                <option value="4">Fase 5 — Escala</option>
                 <option value="6">Bônus 1 — Marketing</option>
                 <option value="7">Bônus 2 — IA</option>
               </select>
@@ -603,11 +601,10 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
               <input type="text" class="adm-input" id="av-url" placeholder="URL (YouTube, Vimeo, Loom...)">
               <select class="adm-select" id="av-fase">
                 <option value="0">Fase 1 — Fundamentos</option>
-                <option value="1">Fase 2 — Rentabilidade</option>
-                <option value="2">Fase 3 — Máquina Comercial</option>
-                <option value="3">Fase 4 — Operação</option>
-                <option value="4">Fase 5 — Liderança</option>
-                <option value="5">Fase 6 — Escala</option>
+                <option value="1">Fase 2 — Máquina Comercial</option>
+                <option value="2">Fase 3 — Operação</option>
+                <option value="3">Fase 4 — Liderança</option>
+                <option value="4">Fase 5 — Escala</option>
                 <option value="6">Bônus 1 — Marketing</option>
                 <option value="7">Bônus 2 — IA</option>
               </select>
@@ -625,11 +622,10 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
               <input type="text" class="adm-input" id="al-desc" placeholder="Descrição (opcional)">
               <select class="adm-select" id="al-fase">
                 <option value="0">Fase 1 — Fundamentos</option>
-                <option value="1">Fase 2 — Rentabilidade</option>
-                <option value="2">Fase 3 — Máquina Comercial</option>
-                <option value="3">Fase 4 — Operação</option>
-                <option value="4">Fase 5 — Liderança</option>
-                <option value="5">Fase 6 — Escala</option>
+                <option value="1">Fase 2 — Máquina Comercial</option>
+                <option value="2">Fase 3 — Operação</option>
+                <option value="3">Fase 4 — Liderança</option>
+                <option value="4">Fase 5 — Escala</option>
                 <option value="6">Bônus 1 — Marketing</option>
                 <option value="7">Bônus 2 — IA</option>
               </select>
@@ -645,11 +641,10 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
               <textarea class="adm-input" id="ac-text" placeholder="Texto do comentário ou nota para esta fase" style="height:90px;resize:vertical;margin-bottom:10px;"></textarea>
               <select class="adm-select" id="ac-fase">
                 <option value="0">Fase 1 — Fundamentos</option>
-                <option value="1">Fase 2 — Rentabilidade</option>
-                <option value="2">Fase 3 — Máquina Comercial</option>
-                <option value="3">Fase 4 — Operação</option>
-                <option value="4">Fase 5 — Liderança</option>
-                <option value="5">Fase 6 — Escala</option>
+                <option value="1">Fase 2 — Máquina Comercial</option>
+                <option value="2">Fase 3 — Operação</option>
+                <option value="3">Fase 4 — Liderança</option>
+                <option value="4">Fase 5 — Escala</option>
                 <option value="6">Bônus 1 — Marketing</option>
                 <option value="7">Bônus 2 — IA</option>
               </select>
@@ -713,45 +708,46 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
    deles. O app fica porque nao e arquivo — quem manda no acesso dele e a flag
    `acesso.ferramentas`, nao a fase. */
 const F=[
-  {id:"app",name:"Ferramentas APM",url:"ferramentas.html",type:"html",destaque:true,desc:"As 9 planilhas em um app só, mais o simulador de cenários: você lança os números e ele devolve diagnóstico, semáforo e o que fazer hoje. Painel executivo, financeiro, pró-labore, precificação, simulador, KPI 25/50/75/100, kanban, PCP, checklists, CRM e estoque.",mods:[1,2,3],sz:""}
+  {id:"app",name:"Ferramentas APM",url:"ferramentas.html",type:"html",destaque:true,desc:"As 9 planilhas em um app só, mais o simulador de cenários: você lança os números e ele devolve diagnóstico, semáforo e o que fazer hoje. Painel executivo, financeiro, pró-labore, precificação, simulador, KPI 25/50/75/100, kanban, PCP, checklists, CRM e estoque.",mods:[0,1,2],sz:""}
 ];
 
+/* CINCO FASES, nao seis. A antiga Fase 1 (Fundamentos) foi dissolvida em
+   20/08/2026: o curriculo dela foi absorvido pela antiga Rentabilidade, que
+   passou a se chamar Fundamentos e virou a Fase 1; os tres contratos que
+   eram material dela foram para a Operacao.
+
+   O `id` NAO e' enfeite: e' o mesmo `conteudo.fase_id` do banco e o mesmo
+   valor guardado em `acesso.fases`. Mexer na ordem daqui sem rodar a
+   migracao correspondente (renumerar-cinco-fases.sql) troca o material de
+   fase para todo aluno, em silencio. */
 const M=[
-  {id:0,ph:1,p:"Visão",s:"current",dur:"3h aula + 4h prática",
+  {id:0,ph:1,p:"Lucro",s:"current",dur:"6h aula + 9h prática",
    t:"Fase 1 — Fundamentos",
-   o:"Você para de pensar como marceneiro e começa a pensar como empresário.",
-   tp:["Marceneiro × empreendedor × empresário","Por que empresas quebram mesmo vendendo muito","A verdadeira função do dono","Como sair da operação sem a empresa parar","Mentalidade de crescimento","Quem trabalha para quem","Construindo uma empresa que funciona sem você","Contabilidade básica — o que todo dono precisa entender","Como ler balancete e DRE sem depender do contador","Pró-labore, distribuição de lucro e retirada: impacto fiscal","Contratos com cliente final, fornecedores e CLT × PJ × autônomo","Apresentação de orçamento: layout, o que entra, o que não entra, como apresentar o preço"],
-   d:"Mapa da Realidade. Contratos padrão (cliente, prestador, CLT). Modelo de Proposta Comercial.",
-   ck:["Entregar Mapa da Realidade preenchido","Nomear quais decisões você pode delegar hoje","Revisar contrato padrão com cliente final","Adaptar modelo de proposta comercial para sua operação","Apresentar 1 proposta nova no layout correto"],
-   marco:"Mapa da Realidade entregue. Aluno nomeia quais decisões pode delegar hoje e quais dependem de processo para serem delegadas. Tem contrato padrão de cliente revisado e proposta comercial no layout correto."
+   o:"Você para de pensar como marceneiro, passa a pensar como empresário — e aprende a transformar faturamento em lucro.",
+   tp:["Marceneiro × empreendedor × empresário","Por que empresas quebram mesmo vendendo muito","A verdadeira função do dono","Quem trabalha para quem","Mentalidade de crescimento","Como sair da operação sem a empresa parar","Construindo uma empresa que funciona sem você","Contabilidade básica — o que todo dono precisa entender","Como ler balancete e DRE sem depender do contador","Faturamento não paga boleto","Lucro, caixa e patrimônio","Quanto realmente sobra","Custos fixos e variáveis","Margem de contribuição","Precificação estruturada","Apresentação de orçamento: layout, o que entra, o que não entra, como apresentar o preço","Desconto inteligente","Quando dizer não para uma venda","Fluxo de caixa e capital de giro","Compras inteligentes","Pró-labore, distribuição de lucro e retirada: impacto fiscal","Planejamento tributário básico","Contratos com cliente final, fornecedores e CLT × PJ × autônomo","Como criar uma empresa que gera riqueza"],
+   d:"Mapa da Realidade. Modelo de Proposta Comercial. Calculadora de Margem. Planilha de Precificação. DRE Simplificado. Fluxo de Caixa. Meta de Lucro.",
+   ck:["Entregar Mapa da Realidade preenchido","Nomear quais decisões você pode delegar hoje","Adaptar modelo de proposta comercial para sua operação","Apresentar 1 proposta nova no layout correto","Apurar margem bruta real de ao menos 3 obras recentes","Fechar DRE do último mês","Calcular o preço mínimo de uma obra padrão","Identificar onde está o maior vazamento de margem","Definir política de desconto máximo por categoria","Separar de verdade pró-labore, lucro e caixa da empresa"],
+   marco:"Mapa da Realidade entregue — o aluno nomeia quais decisões pode delegar hoje e quais dependem de processo para serem delegadas. Margem bruta real apurada em ao menos 3 obras recentes, DRE do último mês fechado e preço mínimo de uma obra padrão calculado."
   },
-  {id:1,ph:1,p:"Lucro",s:"locked",dur:"3h aula + 5h prática",
-   t:"Fase 2 — Rentabilidade",
-   o:"Você aprende a transformar faturamento em lucro.",
-   tp:["Faturamento não paga boleto","Lucro, caixa e patrimônio","Quanto realmente sobra","Margem de contribuição","Custos fixos e variáveis","Precificação estruturada","Desconto inteligente","Quando dizer não para uma venda","Como criar uma empresa que gera riqueza","Fluxo de caixa e capital de giro","Planejamento tributário básico","Compras inteligentes"],
-   d:"Calculadora de Margem. Planilha de Precificação. DRE Simplificado. Fluxo de Caixa. Meta de Lucro.",
-   ck:["Apurar margem bruta real de ao menos 3 obras recentes","Fechar DRE do último mês","Calcular o preço mínimo de uma obra padrão","Identificar onde está o maior vazamento de margem","Definir política de desconto máximo por categoria"],
-   marco:"Aluno apurou margem bruta real de ao menos 3 obras recentes. Tem DRE do último mês fechado. Sabe o preço mínimo de uma obra padrão."
-  },
-  {id:2,ph:2,p:"Vendas",s:"locked",dur:"3h aula + 4h prática",
-   t:"Fase 3 — Máquina Comercial",
+  {id:1,ph:1,p:"Vendas",s:"locked",dur:"3h aula + 4h prática",
+   t:"Fase 2 — Máquina Comercial",
    o:"Sua empresa aprende a vender de forma previsível.",
    tp:["Por que clientes compram confiança, não marcenaria","Posicionamento e autoridade","Branding e valor percebido","ICP — Perfil de Cliente Ideal","Vender para arquitetos e clientes finais","Experiência do cliente como diferencial","Funil comercial e CRM","Prospecção, atendimento e qualificação","Briefing, apresentação e fechamento","Pós-venda e indicações","KPIs comerciais por origem","Protocolo de comunicação com o cliente","Como apresentar o processo como garantia de entrega","Comunicar impacto de prazo sem tom acusatório","Conduta quando o cliente pressiona para ceder"],
    d:"Playbook Comercial. Scripts de Atendimento. Checklist de Briefing. KPIs Comerciais. ICP definido.",
    ck:["Definir seu ICP com clareza","Estruturar funil com etapas e critério de avanço","Levantar taxa de conversão e ticket médio por origem","Escrever processo de atendimento em 1 página","Ativar KPI comercial separado: pago vs orgânico"],
    marco:"Funil ativo com 1 mês de dados por origem. Aluno sabe sua taxa de conversão e ticket médio. Tem processo de atendimento escrito."
   },
-  {id:3,ph:2,p:"Processo",s:"locked",dur:"3h aula + 5h prática",
-   t:"Fase 4 — Operação",
-   o:"A fábrica passa a funcionar com método e padrão.",
-   tp:["Fluxo produtivo do caderno à entrega","KPI 25/50/75/100 por ambiente","Cronograma-alvo: ciclo de 60 dias úteis","Planejamento e PCP","Compras, estoque e fornecedores","Caderno técnico como documento de produção","Eliminação de retrabalho","Padronização de processos","Assistência técnica como termômetro","SLA interno de comunicação","Fluxo obrigatório de gestão de alterações","Comunicação proativa de prazos"],
-   d:"Fluxograma Produtivo. Checklist por Etapa. Kanban de Produção. Cronograma Mestre. KPI 25/50/75/100.",
-   ck:["Documentar fluxograma produtivo do caderno à entrega","Implantar KPI 25/50/75/100 em ao menos 2 projetos ativos","Publicar cronograma-alvo antes de iniciar produção","Escrever SLA interno de resposta entre departamentos","Definir fluxo de aprovação para alterações de cliente"],
+  {id:2,ph:2,p:"Processo",s:"locked",dur:"3h aula + 5h prática",
+   t:"Fase 3 — Operação",
+   o:"A fábrica passa a funcionar com método e padrão — e o que você combina com cliente, prestador e funcionário passa a estar escrito.",
+   tp:["Fluxo produtivo do caderno à entrega","KPI 25/50/75/100 por ambiente","Cronograma-alvo: ciclo de 60 dias úteis","Planejamento e PCP","Compras, estoque e fornecedores","Caderno técnico como documento de produção","Eliminação de retrabalho","Padronização de processos","Assistência técnica como termômetro","SLA interno de comunicação","Fluxo obrigatório de gestão de alterações","Comunicação proativa de prazos","Contratos de cliente final, prestador e CLT aplicados à rotina"],
+   d:"Fluxograma Produtivo. Checklist por Etapa. Kanban de Produção. Cronograma Mestre. KPI 25/50/75/100. Contratos padrão (cliente final, prestador, CLT).",
+   ck:["Documentar fluxograma produtivo do caderno à entrega","Implantar KPI 25/50/75/100 em ao menos 2 projetos ativos","Publicar cronograma-alvo antes de iniciar produção","Escrever SLA interno de resposta entre departamentos","Definir fluxo de aprovação para alterações de cliente","Revisar e adotar os contratos padrão de cliente, prestador e CLT"],
    cx:{tl:"KPI 25/50/75/100 — Critérios Objetivos",it:[{k:"Fábrica 25%",v:"Material em fábrica"},{k:"Fábrica 50%",v:"Corte executado"},{k:"Fábrica 75%",v:"Pré-montagem finalizada"},{k:"Fábrica 100%",v:"Móveis embalados para envio"},{k:"Obra 25%",v:"Móveis in loco"},{k:"Obra 50%",v:"Montagem realizada"},{k:"Obra 75%",v:"Acabamentos e regulagens feitas"},{k:"Obra 100%",v:"Limpeza concluída e embalagem retirada"}],nt:"Desvio = % real − % planejado. Verde ≥ 0 | Amarelo −1 a −10 | Laranja −11 a −25 | Vermelho < −25. Um ambiente em laranja derruba o projeto inteiro."},
-   marco:"Fluxograma documentado. KPI 25/50/75/100 rodando em ao menos 2 projetos ativos. Cronograma-alvo publicado antes de iniciar a produção."
+   marco:"Fluxograma documentado. KPI 25/50/75/100 rodando em ao menos 2 projetos ativos. Cronograma-alvo publicado antes de iniciar a produção. Contratos padrão revisados e em uso."
   },
-  {id:4,ph:3,p:"Pessoas",s:"locked",dur:"3h aula + 4h prática",
-   t:"Fase 5 — Liderança",
+  {id:3,ph:2,p:"Pessoas",s:"locked",dur:"3h aula + 4h prática",
+   t:"Fase 4 — Liderança",
    o:"Você deixa de ser o gargalo e começa a construir líderes.",
    tp:["Como contratar certo","Como demitir com método","Cultura e valores na marcenaria","Treinamento e desenvolvimento","Feedback como ferramenta de gestão","Remuneração variável atrelada a resultado","Plano de carreira","Avaliação de desempenho","Cadência de reunião mínima viável","Como criar gestores","Liderança em empresa familiar","Indicadores de KPI por função","Método CORTE — ferramenta oficial de feedback","Escada disciplinar: conversa → advertência → desligamento"],
    d:"One-on-One. PDI. Avaliação de Desempenho. Regulamento de Variável. Checklist de Onboarding. Formulário CORTE. SLA Interno.",
@@ -759,15 +755,15 @@ const M=[
    cx:{tl:"Método CORTE — Escada Disciplinar",it:[{k:"Degrau 1",v:"Conversa direta — verbal, informal, imediata"},{k:"Degrau 2",v:"Conversa com registro — formulário CORTE assinado"},{k:"Degrau 3",v:"Advertência formal documentada"},{k:"Degrau 4",v:"Suspensão"},{k:"Degrau 5",v:"Desligamento"}],nt:"Feedback sempre registrado a partir do degrau 2. Dono aprova CORTE a partir do degrau 3. Decisão final em desligamento é do CEO."},
    marco:"Ao menos 1 líder intermediário com KPI definido. Regulamento de variável escrito e comunicado. Cadência de reunião rodando há 30+ dias."
   },
-  {id:5,ph:3,p:"Visão",s:"locked",dur:"3h aula + 5h prática",
-   t:"Fase 6 — Escala",
+  {id:4,ph:3,p:"Visão",s:"locked",dur:"3h aula + 5h prática",
+   t:"Fase 5 — Escala",
    o:"Você prepara a marcenaria para crescer sem perder qualidade.",
    tp:["Processos como ativo da empresa","Indicadores e gestão por número","Metas e OKRs","Plano de 90 dias como unidade de execução","Tomada de decisão com dado","Tecnologia, automação e IA","Expansão: filiais, franquias, novos mercados","Como crescer sem perder qualidade","Os próximos 5 anos","Protocolo de contingência: ponto único de falha","Backup operacional — 70% de eficiência em ausência","Revisão periódica de processos (6 meses)","Integração e treinamento de novos membros"],
    d:"Painel Executivo. Scorecard Estratégico. Plano de 90 dias. Plano Estratégico 3–5 anos. Mapa de Expansão.",
    ck:["Construir Scorecard Estratégico com 5–8 indicadores","Escrever Plano de 90 dias com responsáveis e prazos","Mapear ponto único de falha e criar plano de contingência","Definir protocolo de revisão de processos (a cada 6 meses)","Apresentar Plano Estratégico para a equipe de gestão"],
    marco:"Plano Estratégico Completo: situação atual (diagnóstico entrada vs. saída), metas 12 meses, plano de 90 dias com responsáveis e indicadores, mapa de expansão com premissas."
   },
-  {id:6,ph:3,p:"Digital",s:"locked",dur:"2h aula + 3h prática",
+  {id:5,ph:3,p:"Digital",s:"locked",dur:"2h aula + 3h prática",
    t:"Bônus 1 — Marketing para Marcenarias",
    o:"Como o marketing digital gera reuniões qualificadas, não seguidores.",
    tp:["Instagram: o que postar e qual o objetivo real","Google Meu Negócio e avaliações como ativo","Relacionamento com arquitetos","Produção de conteúdo com autoridade","Tráfego pago: CAC, não clique","WhatsApp como canal de vendas","Programa de indicações como sistema"],
@@ -775,7 +771,7 @@ const M=[
    ck:["Criar calendário editorial 4 semanas (3 Reels + 3 Stories)","Configurar Google Meu Negócio com fotos e avaliações","Definir KPI: custo por reunião qualificada","Criar protocolo de relacionamento com arquitetos","Estruturar programa de indicações com incentivo claro"],
    marco:"Calendário editorial ativo. Pelo menos 1 canal digital com KPI definido e monitorado."
   },
-  {id:7,ph:3,p:"Digital",s:"locked",dur:"2h aula + 3h prática",
+  {id:6,ph:3,p:"Digital",s:"locked",dur:"2h aula + 3h prática",
    t:"Bônus 2 — IA Aplicada à Marcenaria",
    o:"Automação inteligente: o que delegar para a máquina e o que só você pode fazer.",
    tp:["ChatGPT e Claude na prática","Automação de orçamentos e relatórios","Agente de orçamentos por m² e complexidade","CRM com IA: qualificação de leads no WhatsApp","IA no ARESTA","O que automatizar e o que não automatizar"],
@@ -785,22 +781,27 @@ const M=[
   }
 ];
 
+/* Quantas fases existem antes dos bonus. Era `6` escrito na mao em seis
+   lugares diferentes; com cinco fases um esquecido bastava para o Bonus 1
+   aparecer como "Fase 6" numa tela e "Bonus 1" na outra. */
+const NF=5;
+
 const PIL=[
-  {peso:"30%",fase:"Fase 4 — Operação",nm:"Processos",sb:"Fluxo produtivo, KPI 25/50/75/100, PCP, estoque, cronograma",tp:["Mapeamento do fluxo produtivo completo (caderno à entrega)","KPI 25/50/75/100 por ambiente — critérios objetivos","Cronograma-alvo: ciclo de 60 dias úteis end-to-end","PCP e planejamento de produção","Compras, estoque mínimo e gestão de fornecedores","Eliminação de retrabalho e padronização de POPs","SLA interno de comunicação entre departamentos","Assistência técnica como termômetro de qualidade"]},
-  {peso:"25%",fase:"Fase 2 — Rentabilidade",nm:"Financeiro",sb:"Margem por obra, DRE gerencial, fluxo de caixa, precificação",tp:["DRE gerencial por projeto: margem real de cada obra","Separação real Pessoal/PJ — não só no papel","Fluxo de caixa projetado 90 dias","Margem de contribuição e ponto de equilíbrio","Precificação estruturada: custo + overhead + margem mínima","Desconto inteligente: quando e quanto ceder","Compras e capital de giro","Planejamento tributário básico"]},
-  {peso:"20%",fase:"Fase 5 — Liderança",nm:"Liderança",sb:"Equipe, contratação, demissão, variável, feedback, onboarding",tp:["Estrutura de liderança intermediária","Processo de contratação por perfil — não por urgência","Como demitir com método e documentação","Remuneração variável atrelada a KPI auditável","Método CORTE: feedback estruturado e escada disciplinar","Avaliação de desempenho que gera decisão","Cadência de reunião mínima viável","Liderança em empresa familiar: o que muda"]},
-  {peso:"15%",fase:"Fase 3 — Máquina Comercial",nm:"Vendas",sb:"Funil, ICP, CRM, briefing, conversão, ticket médio",tp:["Processo comercial em etapas definidas","ICP — Perfil de Cliente Ideal","Funil comercial com critério de entrada","Scripts de abordagem, pitch e follow-up","KPIs comerciais por origem: pago vs orgânico","Taxa de conversão e ciclo médio","Briefing estruturado e apresentação de proposta","Pós-venda e geração de indicações"]},
-  {peso:"10%",fase:"Fase 6 + Bônus",nm:"Digital & IA",sb:"Instagram, Google, tráfego pago, automação e IA",tp:["Instagram com estratégia de conversão — não de curtidas","Google Meu Negócio como ativo de reputação","Tráfego pago local: CAC por reunião qualificada","Automação de orçamentos com IA","CRM com qualificação de lead via WhatsApp","O que automatizar e o que não automatizar","Calendário editorial: Repertório, Processo, Educação","Stack mínima viável para marcenaria organizada"]}
+  {peso:"30%",fase:"Fase 3 — Operação",nm:"Processos",sb:"Fluxo produtivo, KPI 25/50/75/100, PCP, estoque, cronograma",tp:["Mapeamento do fluxo produtivo completo (caderno à entrega)","KPI 25/50/75/100 por ambiente — critérios objetivos","Cronograma-alvo: ciclo de 60 dias úteis end-to-end","PCP e planejamento de produção","Compras, estoque mínimo e gestão de fornecedores","Eliminação de retrabalho e padronização de POPs","SLA interno de comunicação entre departamentos","Assistência técnica como termômetro de qualidade"]},
+  {peso:"25%",fase:"Fase 1 — Fundamentos",nm:"Financeiro",sb:"Margem por obra, DRE gerencial, fluxo de caixa, precificação",tp:["DRE gerencial por projeto: margem real de cada obra","Separação real Pessoal/PJ — não só no papel","Fluxo de caixa projetado 90 dias","Margem de contribuição e ponto de equilíbrio","Precificação estruturada: custo + overhead + margem mínima","Desconto inteligente: quando e quanto ceder","Compras e capital de giro","Planejamento tributário básico"]},
+  {peso:"20%",fase:"Fase 4 — Liderança",nm:"Liderança",sb:"Equipe, contratação, demissão, variável, feedback, onboarding",tp:["Estrutura de liderança intermediária","Processo de contratação por perfil — não por urgência","Como demitir com método e documentação","Remuneração variável atrelada a KPI auditável","Método CORTE: feedback estruturado e escada disciplinar","Avaliação de desempenho que gera decisão","Cadência de reunião mínima viável","Liderança em empresa familiar: o que muda"]},
+  {peso:"15%",fase:"Fase 2 — Máquina Comercial",nm:"Vendas",sb:"Funil, ICP, CRM, briefing, conversão, ticket médio",tp:["Processo comercial em etapas definidas","ICP — Perfil de Cliente Ideal","Funil comercial com critério de entrada","Scripts de abordagem, pitch e follow-up","KPIs comerciais por origem: pago vs orgânico","Taxa de conversão e ciclo médio","Briefing estruturado e apresentação de proposta","Pós-venda e geração de indicações"]},
+  {peso:"10%",fase:"Fase 5 + Bônus",nm:"Digital & IA",sb:"Instagram, Google, tráfego pago, automação e IA",tp:["Instagram com estratégia de conversão — não de curtidas","Google Meu Negócio como ativo de reputação","Tráfego pago local: CAC por reunião qualificada","Automação de orçamentos com IA","CRM com qualificação de lead via WhatsApp","O que automatizar e o que não automatizar","Calendário editorial: Repertório, Processo, Educação","Stack mínima viável para marcenaria organizada"]}
 ];
 
 const PK={"Visão":"#C9A84C","Lucro":"#059669","Vendas":"#10B981","Processo":"#3B82F6","Pessoas":"#8B5CF6","Digital":"#F59E0B"};
 const PC={"Visão":"visao","Lucro":"lucro","Vendas":"vendas","Processo":"processo","Pessoas":"pessoas","Digital":"digital"};
 
-const FA_PILARES={0:['Visão'],1:['Lucro','Resultado'],2:['Visão','Lucro','Resultado'],3:['Processo','Resultado'],4:['Pessoas','Resultado'],5:['Visão','Processo','Pessoas','Resultado'],6:[],7:[]};
+const FA_PILARES={0:['Visão','Lucro','Resultado'],1:['Visão','Lucro','Resultado'],2:['Processo','Resultado'],3:['Pessoas','Resultado'],4:['Visão','Processo','Pessoas','Resultado'],5:[],6:[]};
 
 function faCard(m){
-  const isBonus=m.id>=6;
-  const num=isBonus?'BÔNUS '+(m.id-5):'FASE '+(m.id+1);
+  const isBonus=m.id>=NF;
+  const num=isBonus?'BÔNUS '+(m.id-NF+1):'FASE '+(m.id+1);
   const title=m.t.split('—')[1]?.trim()||m.t;
   const pilares=FA_PILARES[m.id]||[];
   const tools=m.d.split('. ').map(t=>t.replace(/\.$/, '').trim()).filter(Boolean);
@@ -839,13 +840,13 @@ function faCard(m){
 }
 
 function renderTrilha(){
-  document.getElementById('fa-fases').innerHTML=M.filter(m=>m.id<6).map(faCard).join('');
-  document.getElementById('fa-bonus').innerHTML=M.filter(m=>m.id>=6).map(faCard).join('');
+  document.getElementById('fa-fases').innerHTML=M.filter(m=>m.id<NF).map(faCard).join('');
+  document.getElementById('fa-bonus').innerHTML=M.filter(m=>m.id>=NF).map(faCard).join('');
 }
 
 function toggleFa(id){document.getElementById('fa-'+id).classList.toggle('open');}
 
-function flabel(m){return m.id<6?'F'+(m.id+1):'B'+(m.id-5);}
+function flabel(m){return m.id<NF?'F'+(m.id+1):'B'+(m.id-NF+1);}
 
 function badge(s){
   if(s==='completed')return'<span class="sb sd">Concluído</span>';
@@ -861,7 +862,7 @@ function badgeM(m){return(!SEM_GATE&&!liberada(m.id))?seloVenda():badge(stat(m))
 function pstyle(p){const c=PK[p]||'#888';return`background:${c}16;border:1px solid ${c}38;color:${c};`;}
 
 /* ---- QUEM COMPROU O QUE ----
-   FASES vem de `acesso.fases` e guarda o id do modulo (0 a 7), o mesmo
+   FASES vem de `acesso.fases` e guarda o id do modulo (0 a 6), o mesmo
    que o `conteudo.fase_id` do banco. A trava de verdade e a politica de
    RLS: video e material de fase nao comprada nao saem do banco. O que
    esta aqui e a parte visivel — a fase continua na trilha, com cadeado,
@@ -914,7 +915,7 @@ const ICO_LOCK='<svg width="12" height="12" viewBox="0 0 16 16" fill="none" stro
 /* ---- QUANTO MATERIAL ELE ESTA' DEIXANDO NA MESA ----
    A politica de RLS nao deixa o material de fase fechada sair do banco —
    e' o certo. Mas o numero pode sair: saber que existem 12 planilhas
-   prontas na Fase 4 e' exatamente o que da vontade de comprar, e um
+   prontas na Fase 3 e' exatamente o que da vontade de comprar, e um
    numero nao e' o arquivo. Vem da RPC `contagem_por_fase`
    (mentoria-app/contagem-por-fase.sql).
    Se a RPC nao existir, o objeto fica vazio e a tela some com os numeros
@@ -993,7 +994,7 @@ function listaEmenta(id,titulo){
 /* Fases que ele nao tem, e quantos materiais moram la' dentro. */
 function fechadas(){return SEM_GATE||EH_ADMIN?[]:M.filter(m=>!liberada(m.id));}
 function matFechados(){return fechadas().reduce((s,m)=>s+(nMat(m.id)||0),0);}
-function rotuloFase(m){return m.id<6?'Fase '+(m.id+1):'Bônus '+(m.id-5);}
+function rotuloFase(m){return m.id<NF?'Fase '+(m.id+1):'Bônus '+(m.id-NF+1);}
 /* Entregaveis da fase: a lista vem do proprio arquivo (`m.d`), nao do
    banco. E' texto de vitrine, nao material — pode ser mostrado trancado. */
 function entregaveis(m){return m.d.split('. ').map(t=>t.replace(/\.$/,'').trim()).filter(Boolean);}
@@ -1016,7 +1017,7 @@ function card(m){
       <div class="ctm"><div class="cpb"><div class="cpa"></div></div><div class="cpp">${m.p}</div></div>
     </div>
     <div class="cb">
-      <div class="cw">${m.id<6?'Fase '+(m.id+1):m.t.split('—')[0].trim()} · ${m.p}</div>
+      <div class="cw">${m.id<NF?'Fase '+(m.id+1):m.t.split('—')[0].trim()} · ${m.p}</div>
       <div class="ctt">${m.t}</div>
       <div class="cd">${obj}</div>
       <div class="cf">${rodape}${badgeM(m)}</div>
@@ -1139,17 +1140,19 @@ function renderVenda(){
   const fx=fechadas(), faixa=document.getElementById('vnd-faixa'),
         sbp=document.getElementById('sb-plano');
   if(!fx.length){[faixa,sbp].forEach(e=>{if(e)e.innerHTML='';});return;}
-  const tem=M.length-fx.length, nm=matFechados();
+  const temF=M.filter(m=>m.id<NF&&liberada(m.id)).length,
+        temB=M.filter(m=>m.id>=NF&&liberada(m.id)).length,
+        nm=matFechados();
   const nomes=fx.map(rotuloFase).join(' · ');
   const href=ctaHref('Quero liberar as '+fx.length+' fases que faltam no meu acesso da mentoria APM');
   if(faixa)faixa.innerHTML=`<div class="vfx">
     <div style="flex:1;min-width:230px;">
-      <div class="vfx-t">Seu acesso hoje: ${tem} de ${M.length} fases</div>
+      <div class="vfx-t">Seu acesso hoje: ${temF} de ${NF} fases${temB?' e '+temB+' de '+(M.length-NF)+' bônus':''}</div>
       <div class="vfx-s">${fx.length} ${fx.length===1?'fase continua fechada':'fases continuam fechadas'}${nm?' — e '+nm+(nm===1?' material já publicado não abre':' materiais já publicados não abrem')+' para você':''}.<br>${nomes}</div>
     </div>
     <a class="vb" href="${href}" target="_blank" rel="noopener">${ICO_ZAP}Liberar o restante</a>
   </div>`;
-  if(sbp)sbp.innerHTML=`<span style="color:var(--accent-light);cursor:pointer;" onclick="sv('trilha')">${tem} de ${M.length} fases liberadas →</span>`;
+  if(sbp)sbp.innerHTML=`<span style="color:var(--accent-light);cursor:pointer;" onclick="sv('trilha')">${temF} de ${NF} fases liberadas →</span>`;
 }
 
 /* Os 11 modulos do app, so' o nome. Espelha o `NAV` do `ferramentas.html`
@@ -1194,7 +1197,7 @@ function blocoFechado(mi,lbl){
      nunca saber o que estava pedindo. */
   const lista=listaEmenta(mi.id,'O que está publicado aqui');
   return`<div style="margin-bottom:26px;">
-    <div class="mh"><span class="mtg" style="background:rgba(201,168,76,.14);color:var(--accent-light);border:1px solid rgba(201,168,76,.42);">${lbl}</span><span class="mtn" style="display:inline-flex;align-items:center;gap:7px;">${ICO_LOCK}${mi.t} <span style="font-weight:400;font-size:11.5px;color:var(--text-muted);">${mi.id<6?'(bloqueada)':'(bloqueado)'}</span></span></div>
+    <div class="mh"><span class="mtg" style="background:rgba(201,168,76,.14);color:var(--accent-light);border:1px solid rgba(201,168,76,.42);">${lbl}</span><span class="mtn" style="display:inline-flex;align-items:center;gap:7px;">${ICO_LOCK}${mi.t} <span style="font-weight:400;font-size:11.5px;color:var(--text-muted);">${mi.id<NF?'(bloqueada)':'(bloqueado)'}</span></span></div>
     ${lista}
     <div class="vnd" style="margin-bottom:0;">
       <div class="vnd-p" style="margin-bottom:15px;">
@@ -1262,13 +1265,13 @@ function renderMat(){
         destaque.length,grade(destaque.map(f=>fcrd(f,false)).join('')))
       :blocoAppFechado();
   }
-  /* Varre as 8 na ordem, nao so' as que tem material. Fase fechada entra
-     no lugar dela — entre a 3 e a 5, nao empurrada para o rodape — porque
+  /* Varre as 7 na ordem, nao so' as que tem material. Fase fechada entra
+     no lugar dela — entre a 2 e a 4, nao empurrada para o rodape — porque
      e' o buraco no meio da lista que incomoda e faz pedir acesso. Fase
      comprada sem material publicado continua nao aparecendo: ali nao ha
      nada a dizer nem a vender. */
   M.forEach(mi=>{
-    const id=mi.id, lbl=id<6?'F'+(id+1):'B'+(id-5);
+    const id=mi.id, lbl=id<NF?'F'+(id+1):'B'+(id-NF+1);
     if(!SEM_GATE&&!liberada(id)){h+=blocoFechado(mi,lbl);return;}
     if(!bm[id])return;
     h+=blocoDobra('f'+id,
@@ -1350,7 +1353,7 @@ function smdBloqueada(m,bloco){
 function smd(id){
   const m=M[id];
   const lbl=flabel(m);
-  const bloco=['','Fundamentos & Rentabilidade','Máquina Comercial & Operação','Liderança, Escala & Bônus'][m.ph];
+  const bloco=['','Fundamentos & Máquina Comercial','Operação & Liderança','Escala & Bônus'][m.ph];
   if(!liberada(m.id)){smdBloqueada(m,bloco);return;}
   const mf=F.filter(f=>f.mods.includes(m.id));
   const adm=getAdminData();
@@ -1358,7 +1361,7 @@ function smd(id){
   const allMats=[...mf,...admMatsForPhase];
   const fh=allMats.length?`<div class="xc" style="margin-bottom:13px;"><div class="xt">Materiais desta Fase</div>${allMats.map(f=>{
     const x=f.type==='xlsx';const c=x?'#22c55e':f.type==='pdf'?'#ef4444':'#C9A84C';
-    /* O app aparece nas fases 2, 3 e 4. Sem o `if` abaixo o botao dizia
+    /* O app aparece nas fases 1, 2 e 3. Sem o `if` abaixo o botao dizia
        ACESSAR para quem nao comprou o app, levava para fora da area de
        membros e terminava numa parede. Agora ele entra em modo
        demonstracao: ve os 10 modulos com dados de exemplo e nao consegue
@@ -1520,13 +1523,13 @@ function admTab(name,el){
 function axNomeFase(n){
   const m=M[n-1];
   if(!m)return'Fase '+n;
-  return n<=6 ? 'Fase '+n+' — '+(m.t.split('—')[1]||'').trim()
-              : 'Bônus '+(n-6)+' — '+(m.t.split('—')[1]||'').trim();
+  return n<=NF ? 'Fase '+n+' — '+(m.t.split('—')[1]||'').trim()
+               : 'Bônus '+(n-NF)+' — '+(m.t.split('—')[1]||'').trim();
 }
 function axMontarCheckboxes(){
   const box=document.getElementById('ax-fases');
   if(!box||box.dataset.pronto)return;
-  box.innerHTML=[1,2,3,4,5,6,7,8].map(n=>
+  box.innerHTML=[1,2,3,4,5,6,7].map(n=>
     `<label style="display:flex;align-items:center;gap:8px;background:var(--navy-mid);border:1px solid #333;border-radius:4px;padding:9px 11px;cursor:pointer;">
        <input type="checkbox" class="ax-f" value="${n}">
        <span style="font-size:12px;">${axNomeFase(n)}</span>
@@ -1541,7 +1544,7 @@ function axMarcadas(){
   return [...document.querySelectorAll('.ax-f')].filter(c=>c.checked).map(c=>parseInt(c.value));
 }
 function admMarcarTudo(){
-  const todas=axMarcadas().length===8;
+  const todas=axMarcadas().length===M.length;
   document.querySelectorAll('.ax-f').forEach(c=>c.checked=!todas);
 }
 function axCarregarNoForm(email,fases,ferr){
@@ -1572,7 +1575,7 @@ async function admAbrirAcessos(){
   if(!linhas.length){lista.innerHTML='<div class="adm-empty">Nenhuma conta cadastrada.</div>';return;}
   lista.innerHTML=linhas.map(r=>{
     const fs=(r.fases||[]);
-    const resumo=fs.length? fs.map(n=>n<=6?'F'+n:'B'+(n-6)).join(' · ') : 'nenhuma fase';
+    const resumo=fs.length? fs.map(n=>n<=NF?'F'+n:'B'+(n-NF)).join(' · ') : 'nenhuma fase';
     const extras=[r.ferramentas?'App':null, r.admin?'Admin':null].filter(Boolean).join(' · ');
     /* `tem_senha` so' existe depois de `senha-de-acesso.sql`. Se a coluna
        nao vier (undefined), nao inventa aviso nenhum — dizer "sem senha"

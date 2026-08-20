@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MÓDULO 4 — PLANO DE CARREIRA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --tinta:#2C2825; --ouro:#B8925A; --claro:#F5F1EA; --linha:#D8D2C7;
+  --fraco:#6E675E; --papel:#FFFFFF; --caixa:#FAF8F4;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+@page{size:A4;margin:14mm 13mm 13mm}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact;scroll-behavior:smooth}
+body{font:11pt/1.62 'Inter',-apple-system,'Helvetica Neue',Arial,sans-serif;
+  color:var(--tinta);background:var(--claro)}
+.folha{max-width:196mm;margin:0 auto;padding:14mm 10mm 20mm;background:var(--papel);
+  box-shadow:0 1px 3px rgba(0,0,0,.06)}
+
+/* cabecalho */
+.topo{display:flex;justify-content:space-between;align-items:flex-end;
+  border-bottom:1.5pt solid var(--tinta);padding-bottom:6pt;gap:12pt;flex-wrap:wrap}
+.marca{font:600 15pt/1 'Cormorant Garamond',Georgia,serif;letter-spacing:.22em;
+  text-transform:uppercase;outline:none}
+.marca small{display:block;font:400 6.5pt/1 'Inter',sans-serif;letter-spacing:.34em;
+  color:var(--fraco);margin-top:3pt}
+.marca:focus{background:#FFF6DF}
+.doc{text-align:right}
+.doc .fase{font-size:7pt;letter-spacing:.2em;color:var(--ouro);font-weight:600;
+  text-transform:uppercase}
+.doc .cod{font-size:7pt;letter-spacing:.18em;color:var(--fraco);margin-top:2pt}
+.regua{height:2.5pt;background:var(--ouro);margin:0 0 14pt}
+
+/* tipografia */
+h1{font:600 21pt/1.18 'Cormorant Garamond',Georgia,serif;letter-spacing:.01em;
+  margin:0 0 3pt}
+h1 + .lead{font-size:10.5pt;color:var(--fraco);font-style:italic;margin-bottom:14pt;
+  padding-bottom:10pt;border-bottom:.75pt solid var(--linha)}
+h2{font:600 10.5pt/1.25 'Inter',sans-serif;letter-spacing:.13em;text-transform:uppercase;
+  background:var(--claro);border-left:3pt solid var(--ouro);padding:6pt 8pt;
+  margin:22pt 0 9pt;break-after:avoid;page-break-after:avoid}
+h3{font:600 11.5pt/1.3 'Cormorant Garamond',Georgia,serif;letter-spacing:.02em;
+  margin:15pt 0 5pt;break-after:avoid;page-break-after:avoid}
+h4{font:600 8.5pt/1.25 'Inter',sans-serif;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--fraco);margin:12pt 0 4pt;break-after:avoid}
+p{margin:0 0 8pt;text-align:left}
+strong{font-weight:600}
+em{font-style:italic}
+a{color:var(--ouro);text-decoration:none}
+hr{border:none;border-top:.75pt solid var(--linha);margin:16pt 0}
+
+/* listas */
+ul,ol{margin:0 0 9pt 16pt}
+li{margin-bottom:3.5pt}
+ul.chk{list-style:none;margin-left:0}
+ul.chk li{display:flex;gap:7pt;align-items:flex-start;padding:3.5pt 0;
+  border-bottom:.5pt dotted var(--linha);break-inside:avoid}
+ul.chk li::before{content:"";flex:0 0 9.5pt;height:9.5pt;margin-top:2.5pt;
+  border:.9pt solid var(--tinta);border-radius:1pt;background:#fff}
+
+/* citacao / destaque */
+blockquote{border-left:2.5pt solid var(--ouro);background:var(--caixa);
+  padding:9pt 12pt;margin:11pt 0;break-inside:avoid}
+blockquote p:last-child{margin-bottom:0}
+
+/* codigo / templates ascii */
+pre{background:var(--caixa);border:.75pt solid var(--linha);border-radius:2pt;
+  padding:10pt 11pt;margin:11pt 0;overflow-x:auto;break-inside:avoid;
+  font:9pt/1.42 'SFMono-Regular',Menlo,Consolas,'Courier New',monospace;
+  white-space:pre;color:#332F2A}
+code{font:9.2pt/1.4 'SFMono-Regular',Menlo,Consolas,monospace;
+  background:var(--claro);padding:1pt 3pt;border-radius:2pt}
+pre code{background:none;padding:0;font-size:inherit}
+
+/* tabelas */
+.tabwrap{overflow-x:auto;margin:11pt 0}
+table{border-collapse:collapse;width:100%;font-size:9.3pt;break-inside:avoid}
+th{background:var(--claro);text-align:left;font-weight:600;font-size:7.5pt;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--fraco);
+  padding:5.5pt 7pt;border:.75pt solid var(--linha)}
+td{padding:5.5pt 7pt;border:.75pt solid var(--linha);vertical-align:top;line-height:1.42}
+tbody tr:nth-child(even){background:#FCFBF9}
+
+/* indice */
+.indice{background:var(--caixa);border:.75pt solid var(--linha);padding:11pt 13pt;
+  margin:0 0 18pt;break-inside:avoid}
+.indice h4{margin-top:0}
+.indice ol{margin:0 0 0 15pt;font-size:9.5pt;column-gap:18pt}
+.indice li{margin-bottom:2.5pt}
+.indice a{color:var(--tinta)}
+.indice a:hover{color:var(--ouro)}
+
+/* rodape */
+.rodape{margin-top:22pt;padding-top:6pt;border-top:.75pt solid var(--linha);
+  display:flex;justify-content:space-between;font-size:7.5pt;color:var(--fraco);
+  letter-spacing:.06em;gap:10pt;flex-wrap:wrap}
+
+/* direitos — a marca do Aresta e o aviso de propriedade.
+   Fica no rodape, nao no topo: o cabecalho e' do aluno (.marca editavel),
+   e a autoria do metodo nao disputa espaco com a marca dele. */
+.direitos{margin-top:7pt;display:flex;align-items:center;gap:7pt;
+  font-size:6.4pt;line-height:1.45;color:var(--fraco);letter-spacing:.02em}
+.direitos img{height:11pt;width:auto;flex-shrink:0;opacity:.85}
+@media print{.direitos{break-inside:avoid}}
+
+/* navegacao entre modulos (some na impressao) */
+.nav{max-width:196mm;margin:0 auto 10mm;padding:0 10mm;display:flex;
+  justify-content:space-between;gap:10pt;font-size:9pt}
+.nav a{display:inline-block;padding:6pt 11pt;border:.75pt solid var(--linha);
+  background:var(--papel);border-radius:2pt;color:var(--tinta)}
+.nav a:hover{border-color:var(--ouro);color:var(--ouro)}
+.topbar{max-width:196mm;margin:0 auto;padding:8mm 10mm 0;display:flex;
+  justify-content:space-between;font-size:9pt}
+.topbar a{color:var(--fraco)}
+.topbar a:hover{color:var(--ouro)}
+
+@media print{
+  body{background:#fff}
+  .folha{box-shadow:none;padding:0;max-width:none}
+  .nav,.topbar{display:none}
+  .indice{break-after:page}
+}
+@media (max-width:640px){
+  body{font-size:11.5pt}
+  .folha{padding:8mm 5mm 14mm}
+  pre{font-size:7.6pt}
+  table{font-size:8.6pt}
+  .doc{text-align:left}
+}
+</style>
+</head>
+<body>
+
+<div class="folha">
+  <div class="topo">
+    <div class="marca" contenteditable="true" spellcheck="false">SUA MARCA<small>MARCENARIA</small></div>
+    <div class="doc"><div class="fase">Fase 4 — Liderança</div><div class="cod">FASE 4 · MÓDULO 04</div></div>
+  </div>
+  <div class="regua"></div>
+
+  <h1>MÓDULO 4 — PLANO DE CARREIRA</h1>
+  <div class="lead">Método TRILHO: a escada que existe antes de alguém pedir aumento</div>
+  <div class="indice"><h4>Neste módulo</h4><ol><li><a href="#o-problema-real">O problema real</a></li><li><a href="#por-que-pme-acha-que-nao-pode-ter">Por que PME acha que não pode ter</a></li><li><a href="#o-metodo-trilho">O Método TRILHO</a></li><li><a href="#t-trilha-os-niveis">T — TRILHA: os níveis</a></li><li><a href="#regra-de-ouro-4-a-5-niveis-por-funcao-nunca-mais">Regra de ouro: 4 a 5 níveis por função. Nunca mais.</a></li><li><a href="#r-regua-a-matriz-de-competencias">R — RÉGUA: a Matriz de Competências</a></li><li><a href="#como-montar-o-formato-que-funciona-em-pme">Como montar (o formato que funciona em PME)</a></li><li><a href="#matriz-de-competencias-marceneiro-modelo-completo-pronto-pra">Matriz de Competências — MARCENEIRO (modelo completo, pronto pra usar)</a></li><li><a href="#matriz-de-competencias-encarregado-lider-modelo">Matriz de Competências — ENCARREGADO / LÍDER (modelo)</a></li><li><a href="#i-indicador-o-numero-que-prova">I — INDICADOR: o número que prova</a></li><li><a href="#l-largura-a-faixa-salarial">L — LARGURA: a faixa salarial</a></li><li><a href="#estrutura-de-faixa-por-que-nao-e-um-valor-unico">Estrutura de faixa (por que não é um valor único)</a></li><li><a href="#modelo-de-tabela-salarial-marcenaria-de-porte-medio-20-a-30-">Modelo de tabela salarial — marcenaria de porte médio (20 a 30 pessoas) (referência 2026, cidade média)</a></li><li><a href="#como-definir-seus-numeros-sem-quebrar">Como definir seus números sem quebrar</a></li><li><a href="#h-hora-o-calendario-fixo">H — HORA: o calendário fixo</a></li><li><a href="#a-regra-que-resolve-80-dos-problemas">A regra que resolve 80% dos problemas</a></li><li><a href="#calendario-padrao">Calendário-padrão</a></li><li><a href="#script-quando-alguem-pede-aumento-fora-da-janela">Script — quando alguém pede aumento fora da janela</a></li><li><a href="#o-oportunidade-como-a-vaga-aparece">O — OPORTUNIDADE: como a vaga aparece</a></li><li><a href="#regra-1-vaga-de-lideranca-e-anunciada-internamente-primeiro">Regra 1 — Vaga de liderança é anunciada internamente primeiro</a></li><li><a href="#regra-2-promocao-nao-e-premio-por-tempo-de-casa">Regra 2 — Promoção não é prêmio por tempo de casa</a></li><li><a href="#regra-3-toda-promocao-tem-90-dias-de-prova">Regra 3 — Toda promoção tem 90 dias de prova</a></li><li><a href="#como-evitar-promocoes-emocionais">Como evitar promoções emocionais</a></li><li><a href="#plano-de-desenvolvimento-individual-pdi-modelo-de-1-pagina">Plano de Desenvolvimento Individual (PDI) — modelo de 1 página</a></li><li><a href="#erros-comuns">Erros comuns</a></li><li><a href="#perguntas-que-o-lider-deve-fazer">Perguntas que o líder deve fazer</a></li><li><a href="#exercicios-do-modulo-4">Exercícios do Módulo 4</a></li><li><a href="#frases-de-impacto-do-modulo-4">Frases de impacto do Módulo 4</a></li><li><a href="#entregavel-do-modulo-4">Entregável do Módulo 4</a></li></ol></div>
+  <hr>
+<h2 id="o-problema-real">O problema real</h2>
+<p>Você já viveu essa cena: o marceneiro bom te chama de lado e diz <em>"queria conversar sobre meu salário"</em>. E você, sem régua nenhuma, decide na hora — com base em quanto você gosta dele, em quanto tem no caixa e no medo de perder o cara.</p>
+<p>Você dá o aumento. Duas semanas depois, outro dois vêm pedir. Você nega, porque não tem caixa. Agora você tem três problemas: um caro, dois ressentidos, e zero critério.</p>
+<p><strong>A raiz:</strong> numa empresa sem plano de carreira, salário é negociado por quem tem coragem de pedir — não por quem entrega mais. Isso premia o comportamento errado e faz o funcionário calado e bom sair primeiro.</p>
+<blockquote><p><strong>Frase pra colar na parede:</strong> <em>"Empresa sem plano de carreira paga mais pra quem reclama, não pra quem entrega."</em></p></blockquote>
+<h2 id="por-que-pme-acha-que-nao-pode-ter">Por que PME acha que não pode ter</h2>
+<p>As três desculpas, e por que são falsas:</p>
+<div class="tabwrap"><table><thead><tr><th>Desculpa</th><th>Realidade</th></tr></thead><tbody><tr><td>"Sou pequeno demais, não tenho cargos pra oferecer"</td><td>Carreira não é só cargo. É <strong>faixa salarial dentro do mesmo cargo</strong>, com critério. Você pode ter 4 níveis de marceneiro sem criar nenhum cargo novo.</td></tr><tr><td>"Não posso me comprometer com aumento"</td><td>Plano de carreira não promete aumento. Promete <strong>critério</strong>. "Quando você atingir X, você entra na faixa Y" — se ele não atingir, não tem aumento e não tem discussão.</td></tr><tr><td>"Vou perder a flexibilidade"</td><td>Você perde a flexibilidade de errar. Ganha a de não negociar caso a caso.</td></tr></tbody></table></div>
+<p><strong>O que um plano de carreira realmente entrega pra você, dono:</strong></p>
+<ol><li>Para de negociar salário no impulso.</li><li>O funcionário sabe o que fazer pra ganhar mais — e faz.</li><li>Você consegue prever o custo de folha dos próximos 24 meses.</li><li>Você tem argumento objetivo pra dizer não.</li><li>Você retém o bom sem precisar pagar acima do mercado.</li></ol>
+<hr>
+<h2 id="o-metodo-trilho">O Método TRILHO</h2>
+<pre>T — TRILHA      Definir os níveis de cada função (a escada)
+R — RÉGUA       Matriz de competências: o que precisa saber em cada nível
+I — INDICADOR   O número que comprova a competência
+L — LARGURA     Faixa salarial de cada nível (piso, meio, teto)
+H — HORA        Quando se avalia e quando se promove (calendário fixo)
+O — OPORTUNIDADE Como a vaga aparece e quem concorre</pre>
+<hr>
+<h2 id="t-trilha-os-niveis">T — TRILHA: os níveis</h2>
+<h2 id="regra-de-ouro-4-a-5-niveis-por-funcao-nunca-mais">Regra de ouro: 4 a 5 níveis por função. Nunca mais.</h2>
+<p>Mais que isso vira burocracia e os degraus ficam pequenos demais pra motivar.</p>
+<h3 id="modelo-de-trilha-producao-marcenaria">Modelo de trilha — Produção (marcenaria)</h3>
+<pre>NÍVEL 1 — AUXILIAR
+"Faz com supervisão direta e constante."
+
+NÍVEL 2 — MARCENEIRO JÚNIOR
+"Faz sozinho o padrão. Ainda pergunta no não-padrão."
+
+NÍVEL 3 — MARCENEIRO PLENO
+"Faz sozinho o padrão e o não-padrão. Resolve imprevisto."
+
+NÍVEL 4 — MARCENEIRO SÊNIOR / ESPECIALISTA
+"Faz o mais difícil. Ensina os outros. É referência técnica."
+
+NÍVEL 5 — ENCARREGADO
+"Responde pelo resultado de um time, não pela própria produção."</pre>
+<p><strong>Detalhe crítico:</strong> entre o nível 4 e o 5 há uma <strong>mudança de natureza</strong>, não de grau. O sênior é avaliado pelo que ele faz. O encarregado é avaliado pelo que os outros fazem. São competências diferentes, e é aqui que a maioria das promoções dá errado.</p>
+<h3 id="as-duas-trilhas-paralelas-a-solucao-que-quase-ninguem-usa">As duas trilhas paralelas (a solução que quase ninguém usa)</h3>
+<p>O maior erro de PME é ter uma escada só. Aí o único jeito de o excelente marceneiro ganhar mais é virar encarregado — e você perde o melhor executor pra ganhar um líder ruim.</p>
+<p><strong>Solução: duas trilhas com o mesmo teto salarial.</strong></p>
+<pre>                      ┌─ TRILHA TÉCNICA ─────────────────┐
+                      │  N3 Pleno                        │
+                      │  N4 Sênior                       │
+                      │  N5 Especialista/Mestre          │  ← mesmo teto
+                      │     (faz o impossível, ensina)   │     salarial
+   N1 Aux → N2 Jr ────┤                                  │
+                      │                                  │
+                      ├─ TRILHA DE GESTÃO ───────────────┤
+                      │  N3 Líder de célula              │
+                      │  N4 Encarregado                  │  ← mesmo teto
+                      │  N5 Coordenador/Gerente          │     salarial
+                      └──────────────────────────────────┘</pre>
+<p><strong>Como comunicar:</strong> <em>"Aqui você pode ganhar o mesmo sendo o melhor marceneiro da casa ou sendo o encarregado. São caminhos diferentes, não um melhor que o outro. Escolhe o que combina com você."</em></p>
+<p>Isso resolve dois problemas de uma vez: você para de perder técnicos bons e para de criar líderes que não queriam liderar.</p>
+<h3 id="modelo-de-trilha-outras-funcoes">Modelo de trilha — outras funções</h3>
+<div class="tabwrap"><table><thead><tr><th>Função</th><th>N1</th><th>N2</th><th>N3</th><th>N4</th><th>N5</th></tr></thead><tbody><tr><td><strong>Montagem</strong></td><td>Ajudante</td><td>Montador Jr</td><td>Montador Pleno</td><td>Montador Sênior</td><td>Encarregado de Montagem</td></tr><tr><td><strong>Projetos</strong></td><td>Assistente</td><td>Projetista Jr</td><td>Projetista Pleno</td><td>Projetista Sênior</td><td>Coord. de Projetos</td></tr><tr><td><strong>Comercial</strong></td><td>SDR</td><td>Vendedor Jr</td><td>Vendedor Pleno</td><td>Vendedor Sênior / Key Account</td><td>Gestor Comercial</td></tr><tr><td><strong>Administrativo</strong></td><td>Aux. Adm</td><td>Assistente</td><td>Analista</td><td>Analista Sênior</td><td>Coord. Administrativo</td></tr><tr><td><strong>Compras</strong></td><td>Aux. Compras</td><td>Comprador Jr</td><td>Comprador Pleno</td><td>Comprador Sênior</td><td>Coord. Suprimentos</td></tr></tbody></table></div>
+<hr>
+<h2 id="r-regua-a-matriz-de-competencias">R — RÉGUA: a Matriz de Competências</h2>
+<p>Sem matriz, promoção é sentimento. Com matriz, é fato.</p>
+<h2 id="como-montar-o-formato-que-funciona-em-pme">Como montar (o formato que funciona em PME)</h2>
+<p>Para cada função, escolha <strong>6 a 8 competências</strong>. Para cada uma, descreva o que significa em cada nível — <strong>com comportamento observável, não adjetivo.</strong></p>
+<h2 id="matriz-de-competencias-marceneiro-modelo-completo-pronto-pra">Matriz de Competências — MARCENEIRO (modelo completo, pronto pra usar)</h2>
+<div class="tabwrap"><table><thead><tr><th>Competência</th><th>N1 Auxiliar</th><th>N2 Júnior</th><th>N3 Pleno</th><th>N4 Sênior</th></tr></thead><tbody><tr><td><strong>Leitura de caderno técnico</strong></td><td>Identifica peça e medida com ajuda</td><td>Lê sozinho e identifica peça faltante</td><td>Lê, identifica erro no caderno e avisa antes de cortar</td><td>Valida caderno técnico e sugere melhoria de projeto</td></tr><tr><td><strong>Operação de máquina</strong></td><td>Opera esquadrejadeira com supervisão</td><td>Opera esquadrejadeira e coladeira sozinho</td><td>Opera todas, faz setup básico e regulagem</td><td>Faz setup completo, calibra, detecta desgaste antes da falha</td></tr><tr><td><strong>Aproveitamento de chapa</strong></td><td>Segue o plano de corte dado</td><td>Segue e usa retalho quando indicado</td><td>Monta plano de corte com aproveitamento acima de 85%</td><td>Otimiza mix de projetos e reduz sobra estruturalmente</td></tr><tr><td><strong>Acabamento</strong></td><td>Lixa e prepara conforme instrução</td><td>Entrega no padrão sem retorno</td><td>Entrega no padrão em peça complexa (curva, cor difícil)</td><td>Define o padrão de acabamento de itens novos</td></tr><tr><td><strong>Conferência e qualidade</strong></td><td>Confere quando mandam</td><td>Confere sempre, marca checklist</td><td>Pega erro de outro antes de seguir</td><td>Cria/ajusta o checklist da etapa</td></tr><tr><td><strong>Autonomia</strong></td><td>Precisa de instrução por tarefa</td><td>Recebe o ambiente e executa</td><td>Recebe o ambiente, planeja a sequência e executa</td><td>Recebe o projeto, distribui e responde pelo conjunto</td></tr><tr><td><strong>Ensino</strong></td><td>—</td><td>Mostra tarefa simples pra novato</td><td>Treina auxiliar em rotina completa</td><td>Forma marceneiro do zero, é padrinho de onboarding</td></tr><tr><td><strong>Postura e valores</strong></td><td>Cumpre horário e regras</td><td>Avisa problema cedo, sem ser cobrado</td><td>Corrige colega com respeito, sustenta padrão no time</td><td>Referência de comportamento — o time copia ele</td></tr></tbody></table></div>
+<h2 id="matriz-de-competencias-encarregado-lider-modelo">Matriz de Competências — ENCARREGADO / LÍDER (modelo)</h2>
+<div class="tabwrap"><table><thead><tr><th>Competência</th><th>N1 Líder de célula</th><th>N2 Encarregado</th><th>N3 Coordenador</th></tr></thead><tbody><tr><td><strong>Planejamento</strong></td><td>Organiza o dia da própria célula</td><td>Programa a semana da área</td><td>Programa o mês e antecipa gargalo</td></tr><tr><td><strong>Gestão de número</strong></td><td>Sabe e reporta o número do dia</td><td>Analisa o desvio e age sem ser mandado</td><td>Prevê o desvio antes dele acontecer</td></tr><tr><td><strong>Feedback</strong></td><td>Corrige na hora, informalmente</td><td>Aplica CORTE verbal e com registro</td><td>Forma outros líderes em CORTE</td></tr><tr><td><strong>Decisão</strong></td><td>Decide dentro do turno</td><td>Decide realocação de equipe e prioridade</td><td>Decide investimento, contratação e escopo</td></tr><tr><td><strong>Comunicação</strong></td><td>Passa recado com clareza</td><td>Comunica pendência antes de estourar</td><td>Negocia com cliente/arquiteto/fornecedor</td></tr><tr><td><strong>Formação</strong></td><td>Ensina tarefa</td><td>Desenvolve pessoa em plano</td><td>Forma sucessor pra própria função</td></tr><tr><td><strong>Resultado</strong></td><td>Cumpre o dele</td><td>Responde pelo número da área</td><td>Responde pelo número e pela margem</td></tr></tbody></table></div>
+<hr>
+<h2 id="i-indicador-o-numero-que-prova">I — INDICADOR: o número que prova</h2>
+<p>Competência descrita ainda é interpretável. Competência com número é fato.</p>
+<p><strong>Regra:</strong> cada nível tem <strong>1 a 3 indicadores objetivos</strong> que precisam estar cumpridos por <strong>3 meses consecutivos</strong>.</p>
+<h3 id="exemplo-criterios-objetivos-de-promocao">Exemplo — critérios objetivos de promoção</h3>
+<pre>N2 → N3 (Marceneiro Júnior → Pleno)
+[ ] Retrabalho atribuído a ele abaixo de 3% por 3 meses seguidos
+[ ] Executou ao menos 8 ambientes completos sozinho
+[ ] Zero item faltante em carga por 3 meses
+[ ] Nota ≥ 3 em todas as competências da matriz N3
+[ ] Nenhum CORTE registrado nos últimos 6 meses
+[ ] Aprovação do encarregado + do dono
+
+N3 → N4 (Pleno → Sênior)
+[ ] Todos os critérios de N3 mantidos por 6 meses
+[ ] Executou ao menos 3 ambientes de alta complexidade (curva, laca,
+    marcenaria especial) com zero retorno
+[ ] Treinou ao menos 1 pessoa que passou de N1 pra N2
+[ ] Propôs e implantou 1 melhoria de processo com ganho medido
+
+N4 → N5 GESTÃO (Sênior → Encarregado)
+[ ] Todos os critérios de N4
+[ ] Aprovado em avaliação de perfil de liderança (Módulo 11)
+[ ] Substituiu o encarregado por ao menos 15 dias com resultado mantido
+[ ] Aceita explicitamente que vai produzir menos e liderar mais</pre>
+<p><strong>O último item é o mais importante.</strong> Muita gente quer o salário do encarregado sem querer o trabalho do encarregado. Pergunte na cara: <em>"você entende que a partir daqui você vai ser cobrado pelo resultado dos outros, não pelo seu?"</em></p>
+<hr>
+<h2 id="l-largura-a-faixa-salarial">L — LARGURA: a faixa salarial</h2>
+<h2 id="estrutura-de-faixa-por-que-nao-e-um-valor-unico">Estrutura de faixa (por que não é um valor único)</h2>
+<p>Cada nível tem <strong>três pontos</strong>: piso, meio e teto. Isso te dá espaço pra reconhecer sem promover.</p>
+<pre>NÍVEL 3 — MARCENEIRO PLENO
+Piso:  R$ 3.000  → entrou no nível agora
+Meio:  R$ 3.400  → consolidado, 12+ meses no nível
+Teto:  R$ 3.800  → no topo do nível, próximo da promoção</pre>
+<p><strong>Regra da sobreposição:</strong> o teto de um nível deve ser <strong>maior</strong> que o piso do nível seguinte. Assim o sênior no topo ganha mais que o encarregado recém-promovido — e isso é correto, porque ele entrega mais hoje.</p>
+<h2 id="modelo-de-tabela-salarial-marcenaria-de-porte-medio-20-a-30-">Modelo de tabela salarial — marcenaria de porte médio (20 a 30 pessoas) (referência 2026, cidade média)</h2>
+<div class="tabwrap"><table><thead><tr><th>Nível</th><th>Cargo</th><th>Piso</th><th>Meio</th><th>Teto</th><th>Variável máx./mês</th></tr></thead><tbody><tr><td>N1</td><td>Auxiliar</td><td>R$ 1.800</td><td>R$ 2.000</td><td>R$ 2.300</td><td>R$ 150</td></tr><tr><td>N2</td><td>Marceneiro Jr</td><td>R$ 2.400</td><td>R$ 2.700</td><td>R$ 3.000</td><td>R$ 250</td></tr><tr><td>N3</td><td>Marceneiro Pleno</td><td>R$ 3.000</td><td>R$ 3.400</td><td>R$ 3.800</td><td>R$ 400</td></tr><tr><td>N4</td><td>Marceneiro Sênior</td><td>R$ 3.800</td><td>R$ 4.300</td><td>R$ 4.900</td><td>R$ 600</td></tr><tr><td>N5-T</td><td>Especialista/Mestre</td><td>R$ 4.900</td><td>R$ 5.500</td><td>R$ 6.200</td><td>R$ 800</td></tr><tr><td>N5-G</td><td>Encarregado</td><td>R$ 4.200</td><td>R$ 4.800</td><td>R$ 5.500</td><td>R$ 1.000</td></tr><tr><td>N6</td><td>Coordenador</td><td>R$ 5.500</td><td>R$ 6.500</td><td>R$ 7.500</td><td>R$ 1.800</td></tr></tbody></table></div>
+<blockquote><p><strong>Ajuste os valores à sua região e ao seu porte.</strong> O que importa é a <strong>estrutura</strong>: faixas, sobreposição, e variável crescendo mais rápido que o fixo conforme sobe o nível.</p></blockquote>
+<h2 id="como-definir-seus-numeros-sem-quebrar">Como definir seus números sem quebrar</h2>
+<ol><li><strong>Levante o mercado real da sua cidade.</strong> Ligue pra 3 concorrentes fingindo interesse em contratar, ou pergunte a fornecedores. Sindicato dá o piso, não o real.</li><li><strong>Posicione-se.</strong> Escolha: pagar no mercado (P50), acima (P75) ou abaixo com outros diferenciais. Não existe certo — existe consciente.</li><li><strong>Teste o impacto na folha.</strong> Simule todo mundo subindo 1 nível em 24 meses. Sua margem aguenta? Se não aguenta, ou os degraus são menores, ou a produtividade precisa subir junto.</li><li><strong>Amarre à produtividade.</strong> Regra prática de marcenaria: se a folha total subir X%, o faturamento por pessoa precisa subir pelo menos X%. Senão você está distribuindo margem, não crescimento.</li></ol>
+<hr>
+<h2 id="h-hora-o-calendario-fixo">H — HORA: o calendário fixo</h2>
+<h2 id="a-regra-que-resolve-80-dos-problemas">A regra que resolve 80% dos problemas</h2>
+<blockquote><p><strong>Salário só se discute em duas janelas do ano. Fora delas, a resposta é "vamos falar disso em março".</strong></p></blockquote>
+<p>Sem janela fixa, você discute salário 12 meses por ano, individualmente, sob pressão. Com janela, você discute duas vezes, com preparo, comparando todo mundo.</p>
+<h2 id="calendario-padrao">Calendário-padrão</h2>
+<div class="tabwrap"><table><thead><tr><th>Quando</th><th>O quê</th><th>Duração</th></tr></thead><tbody><tr><td><strong>Março</strong></td><td>Avaliação completa + promoções + reajuste de mérito</td><td>2 semanas</td></tr><tr><td><strong>Setembro</strong></td><td>Avaliação de meio de ano + correções pontuais</td><td>1 semana</td></tr><tr><td><strong>Data-base do sindicato</strong></td><td>Reajuste coletivo (não é mérito, é reposição)</td><td>—</td></tr><tr><td><strong>Mensal</strong></td><td>One-on-one — fala de desenvolvimento, <strong>não de salário</strong></td><td>30 min/pessoa</td></tr></tbody></table></div>
+<h2 id="script-quando-alguem-pede-aumento-fora-da-janela">Script — quando alguém pede aumento fora da janela</h2>
+<pre>"Entendi. Eu quero que você ganhe mais, isso não é discussão.
+Mas aqui a gente decide salário em duas janelas por ano: março e
+setembro. Isso vale pra todo mundo, inclusive pra mim.
+
+Então vamos fazer o seguinte, que é melhor pra você do que uma
+resposta minha agora: vou te mostrar exatamente o que precisa
+estar cumprido em março pra você subir de faixa.
+
+[Pega a matriz. Mostra o nível dele e o próximo.]
+
+Hoje você está aqui. Pra ir pra cá, falta [X, Y, Z].
+Nos próximos meses, vamos trabalhar nisso nos nossos one-on-ones.
+Em março, se estiver cumprido, sobe. Se não estiver, eu te mostro
+o que faltou — e não vai ser surpresa pra nenhum de nós.
+
+Tá combinado?"</pre>
+<p><strong>Por que funciona:</strong> você não disse não. Disse <em>"aqui está o caminho"</em>. A pessoa sai com clareza em vez de frustração — e com trabalho pra fazer.</p>
+<hr>
+<h2 id="o-oportunidade-como-a-vaga-aparece">O — OPORTUNIDADE: como a vaga aparece</h2>
+<h2 id="regra-1-vaga-de-lideranca-e-anunciada-internamente-primeiro">Regra 1 — Vaga de liderança é anunciada internamente primeiro</h2>
+<p>Sempre. Mesmo que você já saiba quem quer. Por dois motivos: você descobre gente com interesse que você não sabia, e a equipe vê que existe caminho real.</p>
+<pre>COMUNICADO INTERNO
+
+Abrimos a vaga de [CARGO].
+
+Requisitos: [3 a 5 critérios objetivos da matriz]
+Como se candidatar: falar comigo até [data]
+Processo: entrevista + caso prático + decisão até [data]
+
+Quem se candidatar e não for escolhido vai receber de mim, por
+escrito, exatamente o que faltou e o que fazer pra estar pronto
+na próxima.</pre>
+<p><strong>A última frase é o que faz o programa funcionar.</strong> Sem ela, quem se candidata e perde fica ressentido e você perde a pessoa.</p>
+<h2 id="regra-2-promocao-nao-e-premio-por-tempo-de-casa">Regra 2 — Promoção não é prêmio por tempo de casa</h2>
+<p>Diga isso em voz alta, para todos, uma vez por ano:</p>
+<blockquote><p><em>"Tempo de casa a gente reconhece com dinheiro e com respeito. Cargo a gente dá pra quem tem a competência que o cargo exige. São coisas diferentes."</em></p></blockquote>
+<h2 id="regra-3-toda-promocao-tem-90-dias-de-prova">Regra 3 — Toda promoção tem 90 dias de prova</h2>
+<pre>"Você está sendo promovido a [cargo] a partir de [data].
+Os primeiros 90 dias são de adaptação, com acompanhamento
+quinzenal comigo.
+
+No dia 90 a gente avalia. Se estiver funcionando, confirma.
+Se não estiver, a gente conversa com honestidade e você volta
+pra sua função anterior — sem perder o salário do período,
+sem constrangimento e sem que isso conte contra você no futuro.
+
+Estou te falando isso agora, na frente, pra você poder aceitar
+o desafio sem medo de errar."</pre>
+<p><strong>Isso salva carreira e salva empresa.</strong> Sem essa cláusula, o promovido que não deu certo pede demissão (você perde um bom técnico) ou você aguenta um líder ruim por anos.</p>
+<hr>
+<h2 id="como-evitar-promocoes-emocionais">Como evitar promoções emocionais</h2>
+<p>Promoção emocional é aquela feita por gratidão, por medo de perder a pessoa, por pressão, ou porque "já tá na hora".</p>
+<h3 id="os-6-gatilhos-de-promocao-emocional-e-o-antidoto">Os 6 gatilhos de promoção emocional e o antídoto</h3>
+<div class="tabwrap"><table><thead><tr><th>Gatilho</th><th>Como soa na sua cabeça</th><th>Antídoto</th></tr></thead><tbody><tr><td><strong>Gratidão</strong></td><td>"Ele está comigo desde o começo"</td><td>Lealdade se paga com dinheiro e estabilidade, não com cargo</td></tr><tr><td><strong>Medo</strong></td><td>"Se eu não promover, ele sai"</td><td>Se ele sai por não ser promovido sem estar pronto, ele ia sair de qualquer jeito. Promover não retém — resolve por 6 meses e cria um problema maior</td></tr><tr><td><strong>Pena</strong></td><td>"Ele precisa do dinheiro"</td><td>Necessidade financeira se resolve com ajuda pontual, adiantamento ou aumento de faixa — não com cargo que ele não sustenta</td></tr><tr><td><strong>Pressão</strong></td><td>"Todo mundo acha que ele merece"</td><td>A matriz decide, não a votação</td></tr><tr><td><strong>Vazio</strong></td><td>"Não tenho mais ninguém"</td><td>Promover errado por falta de opção é criar dois problemas. Melhor: interino declarado + contratação externa em paralelo</td></tr><tr><td><strong>Antiguidade</strong></td><td>"Já está aqui há 8 anos"</td><td>Tempo não é competência. 8 anos podem ser 1 ano repetido 8 vezes</td></tr></tbody></table></div>
+<h3 id="o-teste-dos-3-filtros-antes-de-qualquer-promocao">O teste dos 3 filtros (antes de qualquer promoção)</h3>
+<pre>FILTRO 1 — COMPETÊNCIA
+Ele já faz, hoje, informalmente, 70% do que o cargo novo exige?
+( ) Sim → segue    ( ) Não → não promove, desenvolve
+
+FILTRO 2 — COMPORTAMENTO
+As pessoas que vão reportar a ele já o respeitam hoje, sem cargo?
+( ) Sim → segue    ( ) Não → não promove. Cargo não gera respeito.
+
+FILTRO 3 — DESEJO
+Ele quer liderar, ou só quer ganhar mais?
+Pergunte direto: "o que te atrai nesse cargo?"
+( ) Quer liderar → segue
+( ) Só quer ganhar mais → resolve com trilha técnica, não com gestão</pre>
+<p><strong>Se falhar em qualquer um dos três, não promove.</strong> Explique o filtro que faltou e o plano pra resolver.</p>
+<hr>
+<h2 id="plano-de-desenvolvimento-individual-pdi-modelo-de-1-pagina">Plano de Desenvolvimento Individual (PDI) — modelo de 1 página</h2>
+<p>O PDI é o documento que liga a matriz à pessoa. Um por colaborador, revisado nos one-on-ones.</p>
+<pre>═══════════════════════════════════════════════════════════════
+PLANO DE DESENVOLVIMENTO INDIVIDUAL
+Colaborador: ______________________  Função/Nível: ____________
+Líder: ____________________________  Período: ____ a ____
+═══════════════════════════════════════════════════════════════
+
+ONDE ESTOU HOJE (nível atual e nota por competência)
+Competência                          Nota atual   Nota do próximo nível
+1. _________________________            ___             ___
+2. _________________________            ___             ___
+3. _________________________            ___             ___
+4. _________________________            ___             ___
+
+PARA ONDE QUERO IR
+Próximo nível almejado: ______________  Prazo realista: ________
+Trilha escolhida: ( ) Técnica   ( ) Gestão
+
+AS 3 LACUNAS PRIORITÁRIAS
+Lacuna 1: ________________________________________________
+  Como vou fechar: _______________________________________
+  Prazo: ______  Como vamos verificar: ___________________
+
+Lacuna 2: ________________________________________________
+  Como vou fechar: _______________________________________
+  Prazo: ______  Como vamos verificar: ___________________
+
+Lacuna 3: ________________________________________________
+  Como vou fechar: _______________________________________
+  Prazo: ______  Como vamos verificar: ___________________
+
+COMO VOU DESENVOLVER (regra 70/20/10)
+70% — Fazendo na prática:
+  ______________________________________________________
+20% — Aprendendo com alguém:
+  Padrinho/mentor: _____________  Frequência: ___________
+10% — Estudo formal:
+  Curso/leitura: _______________________________________
+
+O QUE EU PRECISO DA EMPRESA
+______________________________________________________
+
+REVISÕES
+Próxima conversa: ___/___/___    Avaliação formal: ___/___/___
+
+Assinaturas: _______________   _______________
+═══════════════════════════════════════════════════════════════</pre>
+<p><strong>A regra 70/20/10</strong> é o que impede o PDI de virar lista de cursos. A maior parte do desenvolvimento acontece <strong>fazendo coisa nova sob supervisão</strong> — não em sala de aula.</p>
+<hr>
+<h2 id="erros-comuns">Erros comuns</h2>
+<div class="tabwrap"><table><thead><tr><th>#</th><th>Erro</th><th>Consequência</th></tr></thead><tbody><tr><td>1</td><td>Criar plano de carreira e não usar</td><td>Pior que não ter. Vira prova de que a empresa não cumpre o que escreve</td></tr><tr><td>2</td><td>Níveis demais</td><td>Degraus pequenos, ninguém se motiva, burocracia</td></tr><tr><td>3</td><td>Critério subjetivo ("ser proativo")</td><td>Volta a ser sentimento com nome bonito</td></tr><tr><td>4</td><td>Não ter trilha técnica</td><td>Perde os melhores executores para cargos de gestão que eles não querem</td></tr><tr><td>5</td><td>Promover sem período de prova</td><td>Não consegue reverter, aguenta líder ruim por anos</td></tr><tr><td>6</td><td>Faixas sem sobreposição</td><td>Sênior bom ganha menos que líder novo. Injustiça visível</td></tr><tr><td>7</td><td>Não comunicar a tabela</td><td>Se só você sabe, não é plano de carreira, é planilha</td></tr><tr><td>8</td><td>Prometer prazo de promoção</td><td>Nunca prometa data. Prometa critério</td></tr><tr><td>9</td><td>Promover pra reter</td><td>Resolve 6 meses e cria problema permanente</td></tr><tr><td>10</td><td>Não amarrar folha à produtividade</td><td>Folha cresce, margem some</td></tr></tbody></table></div>
+<hr>
+<h2 id="perguntas-que-o-lider-deve-fazer">Perguntas que o líder deve fazer</h2>
+<ol><li>Se eu perdesse meu melhor técnico hoje, qual é o caminho de carreira que ele tinha aqui? Ele sabia qual era?</li><li>Quantas das minhas últimas 5 promoções passariam nos 3 filtros?</li><li>Quanto a minha folha cresce se todo mundo subir 1 nível em 24 meses? Minha margem aguenta?</li><li>Cada pessoa da minha equipe sabe dizer, sem consultar ninguém, o que precisa fazer pra ganhar mais?</li><li>Eu tenho gente no teto da faixa há mais de 2 anos sem caminho? (Essa pessoa vai sair.)</li><li>Quantas pessoas eu promovi por medo de perder?</li></ol>
+<hr>
+<h2 id="exercicios-do-modulo-4">Exercícios do Módulo 4</h2>
+<h3 id="exercicio-1-trilha-das-3-funcoes-principais-1h30">Exercício 1 — Trilha das 3 funções principais (1h30)</h3>
+<p>Desenhe os 4–5 níveis das 3 funções mais numerosas da sua empresa. Só o nome e a frase de definição de cada nível.</p>
+<h3 id="exercicio-2-matriz-de-competencias-2h">Exercício 2 — Matriz de competências (2h)</h3>
+<p>Monte a matriz completa (6–8 competências × 4 níveis) da função mais crítica. Use comportamento observável.</p>
+<h3 id="exercicio-3-onde-cada-um-esta-45-min">Exercício 3 — Onde cada um está (45 min)</h3>
+<p>Posicione cada pessoa da equipe num nível. Se você travar em alguém, é sinal de que a matriz não está clara o bastante.</p>
+<h3 id="exercicio-4-simulacao-de-folha-30-min">Exercício 4 — Simulação de folha (30 min)</h3>
+<p>Monte a tabela salarial. Simule o custo se todo mundo subir 1 nível em 24 meses. Compare com sua margem projetada.</p>
+<h3 id="exercicio-5-auditoria-de-promocoes-20-min">Exercício 5 — Auditoria de promoções (20 min)</h3>
+<p>Suas últimas 5 promoções: qual gatilho emocional estava presente em cada uma? Quantas passariam nos 3 filtros hoje?</p>
+<hr>
+<h2 id="frases-de-impacto-do-modulo-4">Frases de impacto do Módulo 4</h2>
+<ul><li><em>"Empresa sem plano de carreira paga mais pra quem reclama, não pra quem entrega."</em></li><li><em>"Tempo de casa se reconhece com dinheiro. Cargo se dá por competência."</em></li><li><em>"Promover pra reter resolve seis meses e cria um problema permanente."</em></li><li><em>"Se o único jeito de o seu melhor marceneiro ganhar mais é virar encarregado, você vai perder o melhor marceneiro e ganhar um encarregado ruim."</em></li><li><em>"Não prometa data. Prometa critério."</em></li><li><em>"Toda promoção precisa de porta de saída. Sem ela, o erro vira permanente."</em></li><li><em>"Ninguém deveria descobrir em março que não foi promovido. Deveria saber desde outubro o que faltava."</em></li></ul>
+<hr>
+<h2 id="entregavel-do-modulo-4">Entregável do Módulo 4</h2>
+<ol><li>Trilha de níveis das 3 funções principais.</li><li>Matriz de competências de ao menos 1 função, completa.</li><li>Tabela salarial com piso/meio/teto e sobreposição.</li><li>Calendário de janelas de avaliação definido e comunicado.</li><li>PDI preenchido para ao menos 3 pessoas.</li></ol>
+<p><strong>Próximo módulo:</strong> Cadência mínima de reuniões — o lugar onde tudo isso acontece.</p>
+
+  <div class="rodape"><span>FASE 4 · MÓDULO 04 · Fase 4 — Liderança</span><span>Material de formação em gestão para donos de PME</span></div>
+  <div class="direitos"><img src="data:image/png;base64,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" alt="ARESTA APM"><span>&copy; 2026 ARESTA APM &middot; Conteúdo e método proprietários. Uso restrito ao aluno matriculado — proibida a reprodução, revenda ou redistribuição, total ou parcial.</span></div>
+</div>
+
+<script>
+// mantem a marca digitada pelo usuario neste navegador
+(function(){
+  var m=document.querySelector('.marca');
+  var k='mkt-marca';
+  try{ var s=localStorage.getItem(k); if(s) m.innerHTML=s; }catch(e){}
+  m.addEventListener('blur',function(){ try{localStorage.setItem(k,m.innerHTML);}catch(e){} });
+})();
+</script>
+</body>
+</html>

@@ -50,7 +50,7 @@ pe   = cf ÷ mcRl ÷ (1 − i)              ponto de equilíbrio, em faturamento
 | `cfp` | 15% a 20% | 20% a 25% | > 25% |
 | `llp` | 15% a 25% | 8% a 15% | < 8% |
 
-**Premissa crítica:** a folha de produção está em `cf`, não em `cv`. Se for classificada como variável, o `pe` despenca artificialmente e todo o resto do app mente junto. É o erro nº 1 do setor e está documentado no módulo 2 da Fase 2.
+**Premissa crítica:** a folha de produção está em `cf`, não em `cv`. Se for classificada como variável, o `pe` despenca artificialmente e todo o resto do app mente junto. É o erro nº 1 do setor e está documentado no módulo 2 da Fase 1.
 
 ---
 
@@ -385,7 +385,7 @@ Se ultrapassar, alguma coisa está sendo contada duas vezes — e é a origem ma
 
 # 11. Onde cada fórmula é ensinada
 
-| Módulo do app | Fase 2 | Método |
+| Módulo do app | Fase 1 | Método |
 |---|---|---|
 | Diagnóstico Financeiro | M3 e M5 | REGRA DO RESTO · DRE DE UMA PÁGINA |
 | Resultado Mensal ⭐ | M5 | DRE DE UMA PÁGINA |
@@ -408,5 +408,5 @@ Vale declarar, porque mentorado esperto pergunta:
 1. **A NCG usa o proxy clássico** `ciclo × desembolso diário`. É a aproximação didática padrão; a definição contábil rigorosa é ativo circulante operacional menos passivo circulante operacional. Para decidir prazo com fornecedor, o proxy basta.
 2. **O Diagnóstico Financeiro usa 3 meses.** Não captura sazonalidade — é para isso que existe o Resultado Mensal de 12 meses.
 3. **A tendência do DRE é regressão linear simples.** Com 3 ou 4 meses lançados ela é frágil. A partir de 8 meses, confiável.
-4. **A alíquota de imposto é única e linear.** O Simples é progressivo por faixa; para preço, a alíquota efetiva média do ano é a aproximação correta — e é o que a Fase 2 M12 ensina a pedir ao contador.
+4. **A alíquota de imposto é única e linear.** O Simples é progressivo por faixa; para preço, a alíquota efetiva média do ano é a aproximação correta — e é o que a Fase 1 M12 ensina a pedir ao contador.
 5. **O rateio por dia-frente pressupõe frentes homogêneas.** Se uma frente é muito mais cara que outra (equipe grande × equipe pequena), o rateio distorce. A alternativa é rateio por m² de gargalo.

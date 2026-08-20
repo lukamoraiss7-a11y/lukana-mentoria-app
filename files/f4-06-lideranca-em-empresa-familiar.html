@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MÓDULO 6 — LIDERANÇA EM EMPRESA FAMILIAR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --tinta:#2C2825; --ouro:#B8925A; --claro:#F5F1EA; --linha:#D8D2C7;
+  --fraco:#6E675E; --papel:#FFFFFF; --caixa:#FAF8F4;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+@page{size:A4;margin:14mm 13mm 13mm}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact;scroll-behavior:smooth}
+body{font:11pt/1.62 'Inter',-apple-system,'Helvetica Neue',Arial,sans-serif;
+  color:var(--tinta);background:var(--claro)}
+.folha{max-width:196mm;margin:0 auto;padding:14mm 10mm 20mm;background:var(--papel);
+  box-shadow:0 1px 3px rgba(0,0,0,.06)}
+
+/* cabecalho */
+.topo{display:flex;justify-content:space-between;align-items:flex-end;
+  border-bottom:1.5pt solid var(--tinta);padding-bottom:6pt;gap:12pt;flex-wrap:wrap}
+.marca{font:600 15pt/1 'Cormorant Garamond',Georgia,serif;letter-spacing:.22em;
+  text-transform:uppercase;outline:none}
+.marca small{display:block;font:400 6.5pt/1 'Inter',sans-serif;letter-spacing:.34em;
+  color:var(--fraco);margin-top:3pt}
+.marca:focus{background:#FFF6DF}
+.doc{text-align:right}
+.doc .fase{font-size:7pt;letter-spacing:.2em;color:var(--ouro);font-weight:600;
+  text-transform:uppercase}
+.doc .cod{font-size:7pt;letter-spacing:.18em;color:var(--fraco);margin-top:2pt}
+.regua{height:2.5pt;background:var(--ouro);margin:0 0 14pt}
+
+/* tipografia */
+h1{font:600 21pt/1.18 'Cormorant Garamond',Georgia,serif;letter-spacing:.01em;
+  margin:0 0 3pt}
+h1 + .lead{font-size:10.5pt;color:var(--fraco);font-style:italic;margin-bottom:14pt;
+  padding-bottom:10pt;border-bottom:.75pt solid var(--linha)}
+h2{font:600 10.5pt/1.25 'Inter',sans-serif;letter-spacing:.13em;text-transform:uppercase;
+  background:var(--claro);border-left:3pt solid var(--ouro);padding:6pt 8pt;
+  margin:22pt 0 9pt;break-after:avoid;page-break-after:avoid}
+h3{font:600 11.5pt/1.3 'Cormorant Garamond',Georgia,serif;letter-spacing:.02em;
+  margin:15pt 0 5pt;break-after:avoid;page-break-after:avoid}
+h4{font:600 8.5pt/1.25 'Inter',sans-serif;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--fraco);margin:12pt 0 4pt;break-after:avoid}
+p{margin:0 0 8pt;text-align:left}
+strong{font-weight:600}
+em{font-style:italic}
+a{color:var(--ouro);text-decoration:none}
+hr{border:none;border-top:.75pt solid var(--linha);margin:16pt 0}
+
+/* listas */
+ul,ol{margin:0 0 9pt 16pt}
+li{margin-bottom:3.5pt}
+ul.chk{list-style:none;margin-left:0}
+ul.chk li{display:flex;gap:7pt;align-items:flex-start;padding:3.5pt 0;
+  border-bottom:.5pt dotted var(--linha);break-inside:avoid}
+ul.chk li::before{content:"";flex:0 0 9.5pt;height:9.5pt;margin-top:2.5pt;
+  border:.9pt solid var(--tinta);border-radius:1pt;background:#fff}
+
+/* citacao / destaque */
+blockquote{border-left:2.5pt solid var(--ouro);background:var(--caixa);
+  padding:9pt 12pt;margin:11pt 0;break-inside:avoid}
+blockquote p:last-child{margin-bottom:0}
+
+/* codigo / templates ascii */
+pre{background:var(--caixa);border:.75pt solid var(--linha);border-radius:2pt;
+  padding:10pt 11pt;margin:11pt 0;overflow-x:auto;break-inside:avoid;
+  font:9pt/1.42 'SFMono-Regular',Menlo,Consolas,'Courier New',monospace;
+  white-space:pre;color:#332F2A}
+code{font:9.2pt/1.4 'SFMono-Regular',Menlo,Consolas,monospace;
+  background:var(--claro);padding:1pt 3pt;border-radius:2pt}
+pre code{background:none;padding:0;font-size:inherit}
+
+/* tabelas */
+.tabwrap{overflow-x:auto;margin:11pt 0}
+table{border-collapse:collapse;width:100%;font-size:9.3pt;break-inside:avoid}
+th{background:var(--claro);text-align:left;font-weight:600;font-size:7.5pt;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--fraco);
+  padding:5.5pt 7pt;border:.75pt solid var(--linha)}
+td{padding:5.5pt 7pt;border:.75pt solid var(--linha);vertical-align:top;line-height:1.42}
+tbody tr:nth-child(even){background:#FCFBF9}
+
+/* indice */
+.indice{background:var(--caixa);border:.75pt solid var(--linha);padding:11pt 13pt;
+  margin:0 0 18pt;break-inside:avoid}
+.indice h4{margin-top:0}
+.indice ol{margin:0 0 0 15pt;font-size:9.5pt;column-gap:18pt}
+.indice li{margin-bottom:2.5pt}
+.indice a{color:var(--tinta)}
+.indice a:hover{color:var(--ouro)}
+
+/* rodape */
+.rodape{margin-top:22pt;padding-top:6pt;border-top:.75pt solid var(--linha);
+  display:flex;justify-content:space-between;font-size:7.5pt;color:var(--fraco);
+  letter-spacing:.06em;gap:10pt;flex-wrap:wrap}
+
+/* direitos — a marca do Aresta e o aviso de propriedade.
+   Fica no rodape, nao no topo: o cabecalho e' do aluno (.marca editavel),
+   e a autoria do metodo nao disputa espaco com a marca dele. */
+.direitos{margin-top:7pt;display:flex;align-items:center;gap:7pt;
+  font-size:6.4pt;line-height:1.45;color:var(--fraco);letter-spacing:.02em}
+.direitos img{height:11pt;width:auto;flex-shrink:0;opacity:.85}
+@media print{.direitos{break-inside:avoid}}
+
+/* navegacao entre modulos (some na impressao) */
+.nav{max-width:196mm;margin:0 auto 10mm;padding:0 10mm;display:flex;
+  justify-content:space-between;gap:10pt;font-size:9pt}
+.nav a{display:inline-block;padding:6pt 11pt;border:.75pt solid var(--linha);
+  background:var(--papel);border-radius:2pt;color:var(--tinta)}
+.nav a:hover{border-color:var(--ouro);color:var(--ouro)}
+.topbar{max-width:196mm;margin:0 auto;padding:8mm 10mm 0;display:flex;
+  justify-content:space-between;font-size:9pt}
+.topbar a{color:var(--fraco)}
+.topbar a:hover{color:var(--ouro)}
+
+@media print{
+  body{background:#fff}
+  .folha{box-shadow:none;padding:0;max-width:none}
+  .nav,.topbar{display:none}
+  .indice{break-after:page}
+}
+@media (max-width:640px){
+  body{font-size:11.5pt}
+  .folha{padding:8mm 5mm 14mm}
+  pre{font-size:7.6pt}
+  table{font-size:8.6pt}
+  .doc{text-align:left}
+}
+</style>
+</head>
+<body>
+
+<div class="folha">
+  <div class="topo">
+    <div class="marca" contenteditable="true" spellcheck="false">SUA MARCA<small>MARCENARIA</small></div>
+    <div class="doc"><div class="fase">Fase 4 — Liderança</div><div class="cod">FASE 4 · MÓDULO 06</div></div>
+  </div>
+  <div class="regua"></div>
+
+  <h1>MÓDULO 6 — LIDERANÇA EM EMPRESA FAMILIAR</h1>
+  <div class="lead">Método TRÊS PORTAS: separar o que é família, o que é sociedade e o que é empresa</div>
+  <div class="indice"><h4>Neste módulo</h4><ol><li><a href="#por-que-esse-modulo-existe">Por que esse módulo existe</a></li><li><a href="#as-tres-portas">As Três Portas</a></li><li><a href="#regra-1-parente-entra-pela-mesma-porta-que-todo-mundo">Regra 1 — Parente entra pela mesma porta que todo mundo</a></li><li><a href="#regra-2-parente-nao-reporta-ao-parente">Regra 2 — Parente não reporta ao parente</a></li><li><a href="#regra-3-salario-de-parente-segue-a-tabela">Regra 3 — Salário de parente segue a tabela</a></li><li><a href="#regra-4-parente-e-avaliado-publicamente-pelo-mesmo-criterio">Regra 4 — Parente é avaliado publicamente pelo mesmo critério</a></li><li><a href="#regra-5-parente-ruim-e-desligado-ponto">Regra 5 — Parente ruim é desligado. Ponto.</a></li><li><a href="#regra-6-autoridade-nao-se-herda-se-constroi">Regra 6 — Autoridade não se herda, se constrói</a></li><li><a href="#os-7-conflitos-classicos-e-como-resolver">Os 7 conflitos clássicos e como resolver</a></li><li><a href="#protocolo-de-desligamento-de-parente">Protocolo de desligamento de parente</a></li><li><a href="#governanca-minima-para-empresa-familiar">Governança mínima para empresa familiar</a></li><li><a href="#erros-comuns">Erros comuns</a></li><li><a href="#perguntas-que-o-lider-deve-fazer">Perguntas que o líder deve fazer</a></li><li><a href="#exercicios-do-modulo-6">Exercícios do Módulo 6</a></li><li><a href="#frases-de-impacto-do-modulo-6">Frases de impacto do Módulo 6</a></li><li><a href="#entregavel-do-modulo-6">Entregável do Módulo 6</a></li></ol></div>
+  <hr>
+<h2 id="por-que-esse-modulo-existe">Por que esse módulo existe</h2>
+<p>A maioria das marcenarias do Brasil é familiar. Começou com o pai, o tio, os dois irmãos. Hoje tem primo na produção, cunhado nas compras e a mãe no financeiro.</p>
+<p>Isso não é um defeito. Empresa familiar tem vantagens reais que empresa profissional não tem: lealdade em crise, visão de longo prazo, disposição de sacrificar retirada num mês ruim. Ninguém segura uma empresa numa crise como uma família segura.</p>
+<p><strong>O problema não é ter família na empresa. É não ter regra.</strong></p>
+<p>E o custo de não ter regra é sempre o mesmo: os funcionários não-familiares percebem que existem duas réguas, param de acreditar em meritocracia, e os bons vão embora primeiro. Você fica com quem aceita a régua dupla — que é justamente quem você não queria.</p>
+<blockquote><p><strong>Frase pra colar na parede:</strong> <em>"Não é o parente na empresa que destrói a cultura. É o parente sem as mesmas regras."</em></p></blockquote>
+<hr>
+<h2 id="as-tres-portas">As Três Portas</h2>
+<p>Toda pessoa da sua família que se relaciona com a empresa entra por uma de três portas. E o erro que gera 90% dos conflitos é <strong>misturar as portas na mesma conversa</strong>.</p>
+<pre>┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐
+│   PORTA 1       │  │   PORTA 2       │  │   PORTA 3       │
+│   FAMÍLIA       │  │   SOCIEDADE     │  │   EMPRESA       │
+│                 │  │                 │  │                 │
+│ Vínculo: sangue │  │ Vínculo: capital│  │ Vínculo:trabalho│
+│ Moeda: amor     │  │ Moeda: dividendo│  │ Moeda: salário  │
+│ Regra: incondi- │  │ Regra: contrato │  │ Regra: desempe- │
+│ cional          │  │ social          │  │ nho             │
+│ Não se demite   │  │ Não se demite   │  │ Se demite       │
+│ Fórum: casa     │  │ Fórum: reunião  │  │ Fórum: reunião  │
+│                 │  │ de sócios       │  │ de gestão       │
+└─────────────────┘  └─────────────────┘  └─────────────────┘</pre>
+<p><strong>Uma pessoa pode estar nas três ao mesmo tempo.</strong> Seu irmão pode ser irmão (porta 1), sócio de 30% (porta 2) e gerente de fábrica (porta 3). São três relações diferentes, com três conjuntos de regras diferentes.</p>
+<h3 id="o-erro-que-gera-todo-conflito">O erro que gera todo conflito</h3>
+<p>Discutir assunto de uma porta no fórum de outra.</p>
+<div class="tabwrap"><table><thead><tr><th>Erro típico</th><th>Por que dá errado</th></tr></thead><tbody><tr><td>Cobrar desempenho do irmão no almoço de domingo</td><td>Assunto da porta 3 no fórum da porta 1. A família inteira vira testemunha e o conflito vaza pra casa</td></tr><tr><td>Discutir divisão de lucro numa reunião de produção</td><td>Assunto da porta 2 na frente de funcionários. Destrói autoridade dos dois</td></tr><tr><td>Dar aumento pro sobrinho porque a irmã pediu</td><td>Decisão da porta 3 tomada com critério da porta 1</td></tr><tr><td>Não demitir o cunhado ruim por causa do Natal</td><td>Decisão da porta 3 tomada com medo da porta 1</td></tr><tr><td>Cobrar do sócio um comportamento pessoal (bebida, atraso) em reunião de sócios</td><td>Mistura porta 1 com porta 2</td></tr></tbody></table></div>
+<h3 id="a-regra-de-ouro-das-tres-portas">A regra de ouro das Três Portas</h3>
+<blockquote><p><strong>Antes de qualquer conversa difícil com um parente, você declara em voz alta por qual porta está falando.</strong></p></blockquote>
+<pre>"Agora eu não estou falando como seu irmão. Estou falando como
+dono da empresa, sobre o seu trabalho. Isso não muda nada entre
+a gente lá fora — mas aqui dentro eu preciso te falar uma coisa."</pre>
+<p>Parece formal demais. Não é. Essa frase é a coisa mais poderosa desse módulo. Ela permite que a pessoa receba a crítica sem sentir que a relação familiar está em risco — que é exatamente o que trava as duas partes.</p>
+<hr>
+<h2 id="regra-1-parente-entra-pela-mesma-porta-que-todo-mundo">Regra 1 — Parente entra pela mesma porta que todo mundo</h2>
+<p>Nenhum parente entra sem:</p>
+<ul><li>Vaga que realmente existe (não criada pra ele)</li><li>Scorecard escrito da função (Módulo 1)</li><li>Processo de seleção completo, incluindo teste prático</li><li>Alguém que não seja você entrevistando</li></ul>
+<p><strong>Se ele não passaria no processo sendo um estranho, ele não entra.</strong> Se você abrir essa exceção, todas as outras vêm atrás.</p>
+<h3 id="script-quando-o-parente-pede-vaga">Script — quando o parente pede vaga</h3>
+<pre>"Eu quero muito que dê certo, e por isso vou ser honesto contigo
+sobre como funciona.
+
+Aqui não tem vaga de favor — nem porque eu não queira te ajudar,
+mas porque uma vaga de favor te destrói. Você ia entrar carregando
+o rótulo de 'sobrinho do dono' e ia levar cinco anos pra tirar,
+se tirasse.
+
+Então: a vaga que eu tenho hoje é [X]. O processo é o mesmo pra
+todo mundo: entrevista, teste prático, referência. Quem decide
+comigo é o [gestor da área], porque eu sou suspeito.
+
+Se você passar, entra com o mesmo salário e as mesmas cobranças
+que qualquer outro. E vou te falar uma coisa que é difícil: eu
+vou ser mais duro contigo do que com os outros, porque todo mundo
+vai estar olhando.
+
+Se você não passar, a gente continua família igual. Topa?"</pre>
+<hr>
+<h2 id="regra-2-parente-nao-reporta-ao-parente">Regra 2 — Parente não reporta ao parente</h2>
+<p>Sempre que possível, o parente reporta a um gestor <strong>não familiar</strong>.</p>
+<p>Motivos:</p>
+<ul><li>Você não consegue ser objetivo com seu filho, e ele sabe disso</li><li>O feedback vira briga familiar</li><li>Os outros funcionários nunca vão acreditar na avaliação</li></ul>
+<p><strong>Se não for possível</strong> (empresa pequena demais), então:</p>
+<ul><li>A avaliação dele é feita <strong>em conjunto</strong> com outro gestor</li><li>As decisões sobre ele são registradas por escrito</li><li>Ele tem os mesmos indicadores públicos que os outros da mesma função</li></ul>
+<hr>
+<h2 id="regra-3-salario-de-parente-segue-a-tabela">Regra 3 — Salário de parente segue a tabela</h2>
+<p>Sem exceção. Se ele é marceneiro pleno, ganha a faixa de marceneiro pleno.</p>
+<p><strong>Se você quer dar mais dinheiro pro seu filho porque ele é seu filho, dê como sócio (porta 2) ou como ajuda pessoal (porta 1) — nunca como salário (porta 3).</strong></p>
+<p>Essa separação é essencial. Salário acima da tabela é visível na empresa inteira em uma semana e destrói o plano de carreira de todo mundo. Distribuição de lucro e ajuda pessoal são assuntos de outra porta e ninguém precisa saber.</p>
+<h2 id="regra-4-parente-e-avaliado-publicamente-pelo-mesmo-criterio">Regra 4 — Parente é avaliado publicamente pelo mesmo critério</h2>
+<p>O parente tem KPI, tem avaliação, aparece no placar como todo mundo. Se ele está vermelho, aparece vermelho na reunião.</p>
+<p><strong>Isso é a prova de fogo da meritocracia.</strong> Se o número do seu irmão está vermelho três meses e ninguém fala nada na reunião semanal, sua empresa acabou de aprender que placar é decoração.</p>
+<h2 id="regra-5-parente-ruim-e-desligado-ponto">Regra 5 — Parente ruim é desligado. Ponto.</h2>
+<p>O mais difícil e o mais importante.</p>
+<p>Manter um parente incompetente custa:</p>
+<ul><li>A credibilidade de todo o seu sistema de gestão</li><li>Os melhores funcionários (que saem)</li><li>A sua própria autoridade</li><li>E, ironicamente, <strong>a relação familiar</strong> — porque o ressentimento acumula dos dois lados</li></ul>
+<p><strong>Como fazer:</strong> ver o protocolo específico no fim deste módulo.</p>
+<hr>
+<h2 id="regra-6-autoridade-nao-se-herda-se-constroi">Regra 6 — Autoridade não se herda, se constrói</h2>
+<p>O filho do dono que entra e já quer mandar é o cenário mais destrutivo de empresa familiar.</p>
+<p><strong>Protocolo do sucessor — os 4 anos:</strong></p>
+<div class="tabwrap"><table><thead><tr><th>Fase</th><th>Duração</th><th>O que faz</th><th>O que NÃO faz</th></tr></thead><tbody><tr><td><strong>Ano 1 — Mão na massa</strong></td><td>12 meses</td><td>Trabalha na produção, na função mais básica. Bate ponto. Ganha o piso da função.</td><td>Não opina em decisão de gestão. Não usa "meu pai"</td></tr><tr><td><strong>Ano 2 — Rodízio</strong></td><td>12 meses</td><td>Passa 3 meses em cada área: fábrica, obra, projetos, comercial/adm</td><td>Não lidera ninguém ainda</td></tr><tr><td><strong>Ano 3 — Liderança pequena</strong></td><td>12 meses</td><td>Assume uma célula pequena ou um projeto com resultado mensurável</td><td>Não decide sozinho sobre gente ou dinheiro</td></tr><tr><td><strong>Ano 4 — Gestão com número</strong></td><td>12 meses</td><td>Assume uma área com KPI e orçamento próprios. É avaliado como qualquer gestor</td><td>Ainda não é a decisão final</td></tr></tbody></table></div>
+<p><strong>A regra que faz funcionar:</strong> o sucessor precisa ter, em algum momento, sido <strong>liderado por um não-familiar</strong> e recebido um feedback duro dele. Sem isso, ele nunca vai entender o que é ser cobrado.</p>
+<p><strong>Sinal de que está funcionando:</strong> quando um funcionário antigo, sem cargo, diz espontaneamente <em>"o menino trabalha, viu"</em>. Isso vale mais que qualquer título.</p>
+<hr>
+<h2 id="os-7-conflitos-classicos-e-como-resolver">Os 7 conflitos clássicos e como resolver</h2>
+<h3 id="conflito-1-socio-que-nao-trabalha-na-proporcao-do-que-recebe">Conflito 1 — "Sócio que não trabalha na proporção do que recebe"</h3>
+<p>Dois irmãos, 50% cada. Um trabalha 10 horas por dia, o outro aparece três vezes por semana. Ambos retiram igual.</p>
+<p><strong>Por que apodrece:</strong> o que trabalha mais acumula ressentimento por anos e explode em algum momento — geralmente numa crise, quando o dano é maior.</p>
+<p><strong>Solução — separar as duas remunerações:</strong></p>
+<pre>PRÓ-LABORE = pagamento pelo TRABALHO (porta 3)
+  → proporcional à função, à responsabilidade e às horas
+  → quem trabalha mais, recebe mais
+  → segue a tabela salarial da empresa, como todo mundo
+
+DISTRIBUIÇÃO DE LUCRO = retorno do CAPITAL (porta 2)
+  → proporcional à participação societária
+  → 50/50 se a sociedade é 50/50, independente do trabalho</pre>
+<p>Se um irmão é gerente de fábrica e o outro é sócio investidor, o primeiro recebe pró-labore de gerente + 50% do lucro. O segundo recebe só os 50% do lucro. Isso é justo e é matemática, não briga.</p>
+<p><strong>Como implantar:</strong> faça a conversa na porta 2 (reunião de sócios, com contador presente), com números na mesa, nunca em jantar de família.</p>
+<h3 id="conflito-2-meu-pai-nao-solta">Conflito 2 — "Meu pai não solta"</h3>
+<p>O fundador tem 65 anos, diz que quer se aposentar, e continua mudando decisão do filho na frente da equipe.</p>
+<p><strong>Por que acontece:</strong> a empresa é a identidade dele. Sair da empresa é sentir que virou nada.</p>
+<p><strong>Solução — Contrato de Transição escrito:</strong></p>
+<pre>CONTRATO DE TRANSIÇÃO — [FUNDADOR] → [SUCESSOR]
+
+DECISÕES QUE PASSAM PARA [SUCESSOR] A PARTIR DE [DATA]:
+- Contratação e demissão até nível [X]
+- Compras até R$ [valor]
+- Precificação dentro da tabela
+- Programação de produção
+- Feedback e avaliação da equipe
+
+DECISÕES QUE PERMANECEM COM [FUNDADOR]:
+- Investimento acima de R$ [valor]
+- Mudança societária
+- Novos negócios ou linhas
+- Venda de ativo
+
+REGRA DE OURO:
+Nenhum dos dois desautoriza o outro na frente de terceiros.
+Divergência se resolve em particular, e a decisão combinada
+é comunicada por quem tem a alçada.
+
+PAPEL PERMANENTE DO FUNDADOR:
+[Defina um papel real e honroso: presidente do conselho, relação
+com clientes históricos, curadoria de qualidade, mentoria técnica]
+
+REVISÃO: a cada 6 meses.</pre>
+<p><strong>A parte mais importante é a última:</strong> o fundador precisa de um papel novo, não de aposentadoria. Ninguém sai de cena pra virar nada. Se você quer que ele solte a operação, dê a ele outra coisa que só ele pode fazer.</p>
+<h3 id="conflito-3-o-funcionario-antigo-que-se-acha-da-familia">Conflito 3 — "O funcionário antigo que se acha da família"</h3>
+<p>Não é parente, mas está há 20 anos, chama o dono pelo apelido, opina em tudo e não aceita ser liderado pelo gestor novo.</p>
+<p><strong>Solução:</strong> conversa direta, na porta 3.</p>
+<pre>"[Nome], você é muito importante aqui e isso não muda.
+Mas eu preciso te dizer uma coisa com clareza: o [gestor] é o
+responsável pela área agora. Quando você passa por cima dele e
+vem direto em mim, você tira a autoridade dele — e eu preciso
+que ele tenha autoridade, senão eu volto a fazer tudo.
+
+O que muda: você fala com ele. Se vocês travarem, vocês dois
+vêm juntos.
+O que não muda: meu respeito por você e o seu lugar aqui.
+
+Isso vale a partir de hoje."</pre>
+<p>E aí você precisa <strong>sustentar</strong>. Na primeira vez que ele te procurar direto, devolva. Sem isso, a conversa não valeu nada.</p>
+<h3 id="conflito-4-a-cunhada-no-financeiro-que-ninguem-audita">Conflito 4 — "A cunhada no financeiro que ninguém audita"</h3>
+<p>Familiar em função sensível (financeiro, compras, caixa) sem controle porque "é da família, é de confiança".</p>
+<p><strong>Verdade dura:</strong> a maioria das fraudes em PME é cometida por pessoa de confiança. Não porque família rouba mais, mas porque <strong>família é a única que tem acesso sem controle.</strong></p>
+<p><strong>Solução:</strong> controle não é desconfiança, é processo.</p>
+<ul><li>Segregação de função: quem paga não concilia, quem compra não recebe</li><li>Conciliação bancária mensal feita por outra pessoa (pode ser o contador)</li><li>Aprovação de pagamento acima de R$ X pelo dono</li><li>Férias obrigatórias de 15 dias corridos, com outra pessoa assumindo (o teste mais eficaz que existe)</li></ul>
+<p><strong>Como comunicar:</strong> <em>"não é sobre você. É sobre a empresa ter controle independente de quem está no cargo. Vale pra mim também."</em></p>
+<h3 id="conflito-5-dois-irmaos-brigando-na-frente-da-equipe">Conflito 5 — "Dois irmãos brigando na frente da equipe"</h3>
+<p><strong>Regra absoluta:</strong> divergência entre sócios nunca acontece na frente de funcionário. Nunca. Uma única vez destrói meses de autoridade dos dois.</p>
+<p><strong>Protocolo:</strong></p>
+<ol><li>Sinal combinado entre os sócios para interromper ("vamos falar disso depois")</li><li>Sala fechada, no mesmo dia</li><li>Se não chegarem a acordo em 2 rodadas: mediação de terceiro (contador, consultor, conselheiro)</li><li>A decisão sai unificada — quem discordou defende a decisão como se fosse dele</li></ol>
+<h3 id="conflito-6-genro-nora-na-empresa">Conflito 6 — "Genro/nora na empresa"</h3>
+<p>Complexidade extra: se o casamento acaba, a empresa herda o conflito.</p>
+<p><strong>Regra:</strong> cônjuge de sócio, se entrar, entra pela porta 3 com contrato de trabalho normal — <strong>nunca com participação societária</strong>. E existe um acordo prévio sobre o que acontece em caso de separação.</p>
+<p>Conversa desconfortável? Sim. Muito menos desconfortável que a alternativa.</p>
+<h3 id="conflito-7-herdeiro-que-nao-quer-a-empresa">Conflito 7 — "Herdeiro que não quer a empresa"</h3>
+<p>Filho não quer, mas entra por obrigação. Fica dez anos infeliz e a empresa fica com um gestor sem vontade.</p>
+<p><strong>Solução:</strong> pergunte, honestamente, e aceite a resposta.</p>
+<pre>"Eu quero te fazer uma pergunta e quero a resposta de verdade,
+não a que você acha que eu quero ouvir.
+
+Você quer isso? Não a empresa como herança — o trabalho, o dia a dia,
+o problema de sexta às 18h. Você quer?
+
+Se não quiser, tá tudo bem. Eu prefiro te ter como sócio que recebe
+lucro e faz outra coisa da vida do que te ter aqui infeliz destruindo
+o que eu construí — e a nossa relação junto."</pre>
+<p><strong>Separação essencial:</strong> herdar patrimônio ≠ dirigir empresa. É perfeitamente possível o filho ser sócio e a empresa ser dirigida por um gestor profissional.</p>
+<hr>
+<h2 id="protocolo-de-desligamento-de-parente">Protocolo de desligamento de parente</h2>
+<p>O momento mais difícil. Segue os passos, sem pular nenhum.</p>
+<p><strong>Passo 1 — Confirme que é competência, não estilo (2 semanas)</strong> Reúna evidência objetiva: números, prazos, ocorrências. Se você não consegue reunir evidência, talvez o problema seja você não gostar do jeito dele.</p>
+<p><strong>Passo 2 — Aplique o processo formal completo (60–90 dias)</strong> CORTE verbal, CORTE com registro, plano de melhoria com prazo. <strong>Exatamente como faria com qualquer um.</strong> É isso que torna a decisão defensável — pra empresa e pra família.</p>
+<p><strong>Passo 3 — Avise a família antes de agir (a parte que ninguém faz)</strong> Converse com quem for mais afetado (seu pai, sua irmã, sua mãe) <strong>antes</strong> de desligar:</p>
+<pre>"Preciso te contar uma coisa antes de acontecer, porque você
+merece saber por mim e não por terceiro.
+
+O [nome] não está entregando o que a função exige. Eu tentei
+[descreva o que fez, com datas]. Não deu.
+
+Vou ter que desligar. Não é decisão contra ele — é decisão pela
+empresa, que sustenta todo mundo, inclusive ele indiretamente.
+
+Eu queria muito não estar nessa situação. Mas se eu mantiver,
+eu perco a empresa inteira — e aí não tem emprego pra ninguém."</pre>
+<p><strong>Passo 4 — Ofereça transição digna</strong> Prazo maior, ajuda pra recolocação, carta de recomendação honesta, apoio financeiro pessoal (porta 1, seu bolso, não da empresa) se fizer sentido.</p>
+<p><strong>Passo 5 — Separe as portas na conversa de desligamento</strong></p>
+<pre>"Hoje eu tô falando como dono da empresa e a decisão é essa.
+Amanhã, no almoço de domingo, eu sou seu irmão e nada disso
+vai pra mesa.
+Eu vou continuar sendo seu irmão pelo resto da vida. Mas eu
+não consigo continuar sendo seu chefe."</pre>
+<p><strong>Passo 6 — Comunique à equipe com respeito</strong> Sem detalhe, sem exposição:</p>
+<pre>"O [nome] não faz mais parte do time a partir de hoje.
+Foi uma decisão difícil e é definitiva. Não vou entrar em detalhe,
+porque não entro em detalhe de ninguém.
+O que eu quero que vocês saibam é: aqui a régua é uma só."</pre>
+<p><strong>A última frase vale ouro.</strong> Sua equipe está esperando essa prova há anos.</p>
+<hr>
+<h2 id="governanca-minima-para-empresa-familiar">Governança mínima para empresa familiar</h2>
+<p>Três instrumentos. Não precisa de mais.</p>
+<h3 id="1-acordo-de-socios-documento-juridico">1. Acordo de Sócios (documento jurídico)</h3>
+<p>Deve cobrir: entrada e saída de sócios, o que acontece em morte/divórcio/invalidez, regra de distribuição de lucro, alçada de decisão por valor, resolução de impasse, cláusula de compra e venda entre sócios. <strong>Feito por advogado, não por modelo da internet.</strong></p>
+<h3 id="2-conselho-de-familia-reuniao-trimestral-fora-da-empresa">2. Conselho de Família (reunião trimestral, fora da empresa)</h3>
+<p>Participam: sócios e familiares relevantes. Pauta: como a família se relaciona com a empresa, regras de entrada de novas gerações, expectativas, conflitos pessoais. <strong>Não se decide operação aqui.</strong></p>
+<h3 id="3-reuniao-de-socios-mensal-90-min">3. Reunião de Sócios (mensal, 90 min)</h3>
+<p>Participam: só sócios. Pauta: resultado, distribuição, investimento, decisão estratégica, avaliação dos gestores (inclusive os familiares). <strong>Ata escrita, sempre.</strong> É o documento que evita o "eu nunca concordei com isso" dois anos depois.</p>
+<hr>
+<h2 id="erros-comuns">Erros comuns</h2>
+<div class="tabwrap"><table><thead><tr><th>#</th><th>Erro</th><th>Consequência</th></tr></thead><tbody><tr><td>1</td><td>Criar vaga pro parente</td><td>Todo mundo sabe. Meritocracia morre no dia 1</td></tr><tr><td>2</td><td>Salário fora da tabela</td><td>Vira conhecido em 1 semana e destrói o plano de carreira</td></tr><tr><td>3</td><td>Cobrar parente em fórum de família</td><td>Conflito vaza pra casa e ninguém resolve nada</td></tr><tr><td>4</td><td>Não cobrar parente pra evitar briga</td><td>Todo mundo vê. Sua autoridade acaba</td></tr><tr><td>5</td><td>Parente reportando a parente</td><td>Feedback impossível, avaliação sem credibilidade</td></tr><tr><td>6</td><td>Sócio-irmão sem definição de papel</td><td>Dois chefes, equipe dividida</td></tr><tr><td>7</td><td>Não separar pró-labore de lucro</td><td>Ressentimento acumulado de anos</td></tr><tr><td>8</td><td>Fundador que não solta</td><td>Sucessor nunca ganha autoridade</td></tr><tr><td>9</td><td>Sucessor entrando direto na gestão</td><td>Nenhum funcionário respeita</td></tr><tr><td>10</td><td>Familiar em função sensível sem controle</td><td>Risco de fraude e impossibilidade de auditar</td></tr><tr><td>11</td><td>Adiar o desligamento do parente ruim</td><td>Custa os melhores funcionários</td></tr><tr><td>12</td><td>Não ter acordo de sócios</td><td>Uma morte ou um divórcio quebra a empresa</td></tr></tbody></table></div>
+<hr>
+<h2 id="perguntas-que-o-lider-deve-fazer">Perguntas que o líder deve fazer</h2>
+<ol><li>Se o meu parente não fosse meu parente, ele estaria nessa função com esse salário?</li><li>Quais decisões eu tomei nos últimos 12 meses que eu não teria tomado se a pessoa não fosse da família?</li><li>Minha equipe acredita que existe uma régua só? Se eu perguntasse anonimamente, o que responderiam?</li><li>Existe alguma função crítica ocupada por familiar sem nenhum controle independente?</li><li>Se eu morresse amanhã, quem manda? Está escrito em algum lugar?</li><li>O que acontece com a empresa se meu irmão e eu brigarmos feio?</li><li>Meu sucessor quer isso, ou está aqui por obrigação?</li></ol>
+<hr>
+<h2 id="exercicios-do-modulo-6">Exercícios do Módulo 6</h2>
+<h3 id="exercicio-1-mapa-das-tres-portas-30-min">Exercício 1 — Mapa das Três Portas (30 min)</h3>
+<p>Liste todos os familiares que se relacionam com a empresa. Para cada um, marque por quais portas ele entra e se as regras de cada porta estão claras.</p>
+<div class="tabwrap"><table><thead><tr><th>Nome</th><th>Família</th><th>Sócio (%)</th><th>Empregado (função)</th><th>Regras claras?</th></tr></thead><tbody><tr><td></td><td></td><td></td><td></td><td></td></tr></tbody></table></div>
+<h3 id="exercicio-2-teste-do-estranho-20-min">Exercício 2 — Teste do estranho (20 min)</h3>
+<p>Para cada familiar empregado, responda: <em>se essa pessoa fosse um estranho com o mesmo desempenho, eu manteria na função com esse salário?</em> Onde a resposta for não, você tem um problema estrutural — não de pessoa.</p>
+<h3 id="exercicio-3-separacao-pro-labore-lucro-1h-com-contador">Exercício 3 — Separação pró-labore × lucro (1h, com contador)</h3>
+<p>Calcule quanto cada sócio deveria receber de pró-labore (pela função de mercado) e quanto de distribuição (pela participação). Compare com o que recebem hoje.</p>
+<h3 id="exercicio-4-contrato-de-transicao-1h">Exercício 4 — Contrato de transição (1h)</h3>
+<p>Se você é sucessor ou tem sucessor, escreva o contrato de transição com as alçadas divididas.</p>
+<h3 id="exercicio-5-a-pergunta-honesta-30-min">Exercício 5 — A pergunta honesta (30 min)</h3>
+<p>Se você tem filho ou herdeiro na empresa, faça a pergunta do Conflito 7. E aceite a resposta.</p>
+<hr>
+<h2 id="frases-de-impacto-do-modulo-6">Frases de impacto do Módulo 6</h2>
+<ul><li><em>"Não é o parente na empresa que destrói a cultura. É o parente sem as mesmas regras."</em></li><li><em>"Antes de qualquer conversa difícil, diga por qual porta você está falando."</em></li><li><em>"Se ele não passaria no processo sendo um estranho, ele não entra."</em></li><li><em>"Trabalho se paga com salário. Capital se paga com lucro. Misturar os dois é o começo de toda briga de sócios."</em></li><li><em>"Autoridade não se herda. Se constrói na frente de quem vai te seguir."</em></li><li><em>"O fundador não precisa de aposentadoria. Precisa de um papel novo."</em></li><li><em>"Manter um parente incompetente custa a empresa e, no fim, custa a relação também."</em></li><li><em>"Herdar patrimônio e dirigir empresa são coisas diferentes. Confundir as duas quebra as duas."</em></li></ul>
+<hr>
+<h2 id="entregavel-do-modulo-6">Entregável do Módulo 6</h2>
+<ol><li>Mapa das Três Portas preenchido.</li><li>Separação escrita de pró-labore e distribuição de lucro.</li><li>Acordo de sócios (ou o briefing pro advogado, se ainda não existe).</li><li>Calendário de reunião de sócios e conselho de família.</li><li>Contrato de transição, se houver sucessão em curso.</li></ol>
+<p><strong>Próximo módulo:</strong> Como demitir com método — a habilidade que todo dono precisa e ninguém ensina.</p>
+
+  <div class="rodape"><span>FASE 4 · MÓDULO 06 · Fase 4 — Liderança</span><span>Material de formação em gestão para donos de PME</span></div>
+  <div class="direitos"><img src="data:image/png;base64,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" alt="ARESTA APM"><span>&copy; 2026 ARESTA APM &middot; Conteúdo e método proprietários. Uso restrito ao aluno matriculado — proibida a reprodução, revenda ou redistribuição, total ou parcial.</span></div>
+</div>
+
+<script>
+// mantem a marca digitada pelo usuario neste navegador
+(function(){
+  var m=document.querySelector('.marca');
+  var k='mkt-marca';
+  try{ var s=localStorage.getItem(k); if(s) m.innerHTML=s; }catch(e){}
+  m.addEventListener('blur',function(){ try{localStorage.setItem(k,m.innerHTML);}catch(e){} });
+})();
+</script>
+</body>
+</html>

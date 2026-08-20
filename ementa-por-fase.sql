@@ -57,7 +57,7 @@ as $$
    -- Ordem de leitura, não ordem de upload. O upload múltiplo de 07/08
    -- subiu os 32 módulos do último para o primeiro, então `criado_em`
    -- listava a aula 16 antes da aula 1. O nome do arquivo carrega a ordem
-   -- real (`f5-00` … `f5-15`) e ordena sozinho porque tem zero à esquerda.
+   -- real (`f4-00` … `f4-15`) e ordena sozinho porque tem zero à esquerda.
    order by c.fase_id, c.tipo,
             coalesce(nullif(btrim(c.dados->>'path'),''),
                      nullif(btrim(c.dados->>'file'),''),
@@ -97,7 +97,7 @@ grant execute on function public.contagem_por_fase() to authenticated;
 -- CONFERÊNCIA — rode depois e olhe o resultado.
 -- ═══════════════════════════════════════════════════════════════
 -- 1. O que o aluno vai ler nas fases fechadas
---    (fase_id '0' = Fase 1 … '7' = Bônus 2):
+--    (fase_id '0' = Fase 1 … '6' = Bônus 2):
 --    select * from public.ementa_por_fase();
 --
 -- 2. Os números da vitrine:

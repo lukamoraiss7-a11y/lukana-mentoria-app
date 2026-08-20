@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FASE 5 — EXTRAS II</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --tinta:#2C2825; --ouro:#B8925A; --claro:#F5F1EA; --linha:#D8D2C7;
+  --fraco:#6E675E; --papel:#FFFFFF; --caixa:#FAF8F4;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+@page{size:A4;margin:14mm 13mm 13mm}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact;scroll-behavior:smooth}
+body{font:11pt/1.62 'Inter',-apple-system,'Helvetica Neue',Arial,sans-serif;
+  color:var(--tinta);background:var(--claro)}
+.folha{max-width:196mm;margin:0 auto;padding:14mm 10mm 20mm;background:var(--papel);
+  box-shadow:0 1px 3px rgba(0,0,0,.06)}
+
+/* cabecalho */
+.topo{display:flex;justify-content:space-between;align-items:flex-end;
+  border-bottom:1.5pt solid var(--tinta);padding-bottom:6pt;gap:12pt;flex-wrap:wrap}
+.marca{font:600 15pt/1 'Cormorant Garamond',Georgia,serif;letter-spacing:.22em;
+  text-transform:uppercase;outline:none}
+.marca small{display:block;font:400 6.5pt/1 'Inter',sans-serif;letter-spacing:.34em;
+  color:var(--fraco);margin-top:3pt}
+.marca:focus{background:#FFF6DF}
+.doc{text-align:right}
+.doc .fase{font-size:7pt;letter-spacing:.2em;color:var(--ouro);font-weight:600;
+  text-transform:uppercase}
+.doc .cod{font-size:7pt;letter-spacing:.18em;color:var(--fraco);margin-top:2pt}
+.regua{height:2.5pt;background:var(--ouro);margin:0 0 14pt}
+
+/* tipografia */
+h1{font:600 21pt/1.18 'Cormorant Garamond',Georgia,serif;letter-spacing:.01em;
+  margin:0 0 3pt}
+h1 + .lead{font-size:10.5pt;color:var(--fraco);font-style:italic;margin-bottom:14pt;
+  padding-bottom:10pt;border-bottom:.75pt solid var(--linha)}
+h2{font:600 10.5pt/1.25 'Inter',sans-serif;letter-spacing:.13em;text-transform:uppercase;
+  background:var(--claro);border-left:3pt solid var(--ouro);padding:6pt 8pt;
+  margin:22pt 0 9pt;break-after:avoid;page-break-after:avoid}
+h3{font:600 11.5pt/1.3 'Cormorant Garamond',Georgia,serif;letter-spacing:.02em;
+  margin:15pt 0 5pt;break-after:avoid;page-break-after:avoid}
+h4{font:600 8.5pt/1.25 'Inter',sans-serif;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--fraco);margin:12pt 0 4pt;break-after:avoid}
+p{margin:0 0 8pt;text-align:left}
+strong{font-weight:600}
+em{font-style:italic}
+a{color:var(--ouro);text-decoration:none}
+hr{border:none;border-top:.75pt solid var(--linha);margin:16pt 0}
+
+/* listas */
+ul,ol{margin:0 0 9pt 16pt}
+li{margin-bottom:3.5pt}
+ul.chk{list-style:none;margin-left:0}
+ul.chk li{display:flex;gap:7pt;align-items:flex-start;padding:3.5pt 0;
+  border-bottom:.5pt dotted var(--linha);break-inside:avoid}
+ul.chk li::before{content:"";flex:0 0 9.5pt;height:9.5pt;margin-top:2.5pt;
+  border:.9pt solid var(--tinta);border-radius:1pt;background:#fff}
+
+/* citacao / destaque */
+blockquote{border-left:2.5pt solid var(--ouro);background:var(--caixa);
+  padding:9pt 12pt;margin:11pt 0;break-inside:avoid}
+blockquote p:last-child{margin-bottom:0}
+
+/* codigo / templates ascii */
+pre{background:var(--caixa);border:.75pt solid var(--linha);border-radius:2pt;
+  padding:10pt 11pt;margin:11pt 0;overflow-x:auto;break-inside:avoid;
+  font:9pt/1.42 'SFMono-Regular',Menlo,Consolas,'Courier New',monospace;
+  white-space:pre;color:#332F2A}
+code{font:9.2pt/1.4 'SFMono-Regular',Menlo,Consolas,monospace;
+  background:var(--claro);padding:1pt 3pt;border-radius:2pt}
+pre code{background:none;padding:0;font-size:inherit}
+
+/* tabelas */
+.tabwrap{overflow-x:auto;margin:11pt 0}
+table{border-collapse:collapse;width:100%;font-size:9.3pt;break-inside:avoid}
+th{background:var(--claro);text-align:left;font-weight:600;font-size:7.5pt;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--fraco);
+  padding:5.5pt 7pt;border:.75pt solid var(--linha)}
+td{padding:5.5pt 7pt;border:.75pt solid var(--linha);vertical-align:top;line-height:1.42}
+tbody tr:nth-child(even){background:#FCFBF9}
+
+/* indice */
+.indice{background:var(--caixa);border:.75pt solid var(--linha);padding:11pt 13pt;
+  margin:0 0 18pt;break-inside:avoid}
+.indice h4{margin-top:0}
+.indice ol{margin:0 0 0 15pt;font-size:9.5pt;column-gap:18pt}
+.indice li{margin-bottom:2.5pt}
+.indice a{color:var(--tinta)}
+.indice a:hover{color:var(--ouro)}
+
+/* rodape */
+.rodape{margin-top:22pt;padding-top:6pt;border-top:.75pt solid var(--linha);
+  display:flex;justify-content:space-between;font-size:7.5pt;color:var(--fraco);
+  letter-spacing:.06em;gap:10pt;flex-wrap:wrap}
+
+/* direitos — a marca do Aresta e o aviso de propriedade.
+   Fica no rodape, nao no topo: o cabecalho e' do aluno (.marca editavel),
+   e a autoria do metodo nao disputa espaco com a marca dele. */
+.direitos{margin-top:7pt;display:flex;align-items:center;gap:7pt;
+  font-size:6.4pt;line-height:1.45;color:var(--fraco);letter-spacing:.02em}
+.direitos img{height:11pt;width:auto;flex-shrink:0;opacity:.85}
+@media print{.direitos{break-inside:avoid}}
+
+/* navegacao entre modulos (some na impressao) */
+.nav{max-width:196mm;margin:0 auto 10mm;padding:0 10mm;display:flex;
+  justify-content:space-between;gap:10pt;font-size:9pt}
+.nav a{display:inline-block;padding:6pt 11pt;border:.75pt solid var(--linha);
+  background:var(--papel);border-radius:2pt;color:var(--tinta)}
+.nav a:hover{border-color:var(--ouro);color:var(--ouro)}
+.topbar{max-width:196mm;margin:0 auto;padding:8mm 10mm 0;display:flex;
+  justify-content:space-between;font-size:9pt}
+.topbar a{color:var(--fraco)}
+.topbar a:hover{color:var(--ouro)}
+
+@media print{
+  body{background:#fff}
+  .folha{box-shadow:none;padding:0;max-width:none}
+  .nav,.topbar{display:none}
+  .indice{break-after:page}
+}
+@media (max-width:640px){
+  body{font-size:11.5pt}
+  .folha{padding:8mm 5mm 14mm}
+  pre{font-size:7.6pt}
+  table{font-size:8.6pt}
+  .doc{text-align:left}
+}
+</style>
+</head>
+<body>
+
+<div class="folha">
+  <div class="topo">
+    <div class="marca" contenteditable="true" spellcheck="false">SUA MARCA<small>MARCENARIA</small></div>
+    <div class="doc"><div class="fase">Fase 5 — Escala</div><div class="cod">FASE 5 · MÓDULO 15</div></div>
+  </div>
+  <div class="regua"></div>
+
+  <h1>FASE 5 — EXTRAS II</h1>
+  <div class="lead">Plano Estratégico · Expansão · Contingência · Sucessão · Mapa de Riscos · Frameworks</div>
+  <div class="indice"><h4>Neste módulo</h4><ol><li><a href="#parte-1-plano-estrategico-completo">PARTE 1 — PLANO ESTRATÉGICO COMPLETO</a></li><li><a href="#parte-2-plano-de-expansao">PARTE 2 — PLANO DE EXPANSÃO</a></li><li><a href="#parte-3-plano-de-contingencia">PARTE 3 — PLANO DE CONTINGÊNCIA</a></li><li><a href="#parte-4-plano-de-sucessao">PARTE 4 — PLANO DE SUCESSÃO</a></li><li><a href="#parte-5-mapa-de-riscos">PARTE 5 — MAPA DE RISCOS</a></li><li><a href="#parte-6-framework-de-crescimento">PARTE 6 — FRAMEWORK DE CRESCIMENTO</a></li><li><a href="#o-framework-chassi">O Framework CHASSI</a></li><li><a href="#diagnostico-do-chassi-0-a-10-cada-pilar">Diagnóstico do CHASSI (0 a 10 cada pilar)</a></li><li><a href="#a-sequencia-de-crescimento-nao-pule-etapa">A sequência de crescimento (não pule etapa)</a></li><li><a href="#parte-7-framework-de-maturidade-empresarial">PARTE 7 — FRAMEWORK DE MATURIDADE EMPRESARIAL</a></li><li><a href="#os-5-niveis-da-marcenaria">Os 5 níveis da marcenaria</a></li><li><a href="#tabela-completa-de-maturidade">Tabela completa de maturidade</a></li><li><a href="#passagem-obrigatoria-entre-niveis">Passagem obrigatória entre níveis</a></li><li><a href="#autoavaliacao-em-que-nivel-voce-esta">Autoavaliação — em que nível você está</a></li><li><a href="#o-erro-de-nivel">O erro de nível</a></li><li><a href="#fechamento-da-fase-5">Fechamento da Fase 5</a></li></ol></div>
+  <hr>
+<h2 id="parte-1-plano-estrategico-completo">PARTE 1 — PLANO ESTRATÉGICO COMPLETO</h2>
+<p>Este é o entregável final da Fase 5. Uma reunião de 4 horas com a liderança preenche a estrutura; o refinamento leva mais duas semanas.</p>
+<pre>═══════════════════════════════════════════════════════════════
+                  PLANO ESTRATÉGICO — [EMPRESA]
+              Período: ______ a ______   Versão ___
+═══════════════════════════════════════════════════════════════
+
+┌─── SEÇÃO 1 — ONDE ESTAMOS ────────────────────────────────┐
+
+1.1 NÚMEROS DE PARTIDA
+Faturamento (12m):          R$ __________
+Nº de pessoas:              ______
+Faturamento por pessoa:     R$ __________
+Margem líquida:             ______%
+Margem de contribuição:     ______%
+Caixa livre (meses):        ______
+Aderência ao cronograma:    ______%
+Retrabalho:                 ______%
+Turnover:                   ______%
+Nível de maturidade (1-5):  ______
+
+1.2 O QUE FUNCIONA BEM (com evidência)
+1. ______________________________________________
+2. ______________________________________________
+3. ______________________________________________
+
+1.3 O QUE NÃO FUNCIONA (com evidência)
+1. ______________________________________________
+2. ______________________________________________
+3. ______________________________________________
+
+1.4 O MAIOR GARGALO DA EMPRESA HOJE (apenas UM)
+_________________________________________________
+Como sei que é esse: ____________________________
+
+1.5 OS 3 MAIORES RISCOS
+1. ______________  Probabilidade: ___  Impacto: ___
+2. ______________  Probabilidade: ___  Impacto: ___
+3. ______________  Probabilidade: ___  Impacto: ___
+└────────────────────────────────────────────────────────────┘
+
+┌─── SEÇÃO 2 — PARA ONDE VAMOS ─────────────────────────────┐
+
+2.1 PROPÓSITO (por que essa empresa existe, além de dar lucro)
+_________________________________________________
+
+2.2 O QUE VENDEMOS DE VERDADE (1 frase)
+_________________________________________________
+
+2.3 CLIENTE IDEAL
+Perfil: _________________________________________
+Ticket: R$ ______  Origem principal: _____________
+QUEM NÃO É NOSSO CLIENTE: _______________________
+
+2.4 POR QUE ELE NOS ESCOLHE (verificável, difícil de copiar)
+_________________________________________________
+
+2.5 O QUE NÃO FAZEMOS
+1. ____________________  4. ____________________
+2. ____________________  5. ____________________
+3. ____________________
+
+2.6 VISÃO DE 5 ANOS (Mapa 5×5)
+                   HOJE     ANO 1    ANO 3    ANO 5
+Faturamento        _____    _____    _____    _____
+Pessoas            _____    _____    _____    _____
+Fat./pessoa        _____    _____    _____    _____
+Margem líquida     _____    _____    _____    _____
+Capacidade (m²/mês)_____    _____    _____    _____
+Meu papel          _____    _____    _____    _____
+└────────────────────────────────────────────────────────────┘
+
+┌─── SEÇÃO 3 — COMO CHEGAMOS LÁ ────────────────────────────┐
+
+3.1 META DO ANO (1 frase, 2 números)
+_________________________________________________
+
+3.2 AS 3 ALAVANCAS
+ALAVANCA 1: ______________________  Dono: __________
+  RC 1.1: DE _____ PARA _____ até ___/___
+  RC 1.2: DE _____ PARA _____ até ___/___
+  RC 1.3: DE _____ PARA _____ até ___/___
+
+ALAVANCA 2: ______________________  Dono: __________
+  RC 2.1 a 2.3: [mesmo formato]
+
+ALAVANCA 3: ______________________  Dono: __________
+  RC 3.1 a 3.3: [mesmo formato]
+
+3.3 PLANO DE CAPACIDADE
+Capacidade hoje: ______ m²/mês (gargalo: ____________)
+Capacidade necessária no ano 3: ______ m²/mês
+Alavanca 1 — Produtividade: +____%  Prazo: ______
+Alavanca 2 — Terceirização: +____%  Prazo: ______
+Alavanca 3 — Contratação:   +____ pessoas  Prazo: ______
+Alavanca 4 — Máquina/espaço: R$ ______  Prazo: ______
+
+3.4 PLANO DE GENTE
+Funções a criar: ________________________________
+Quem formar internamente: _______________________
+Quem contratar de fora: _________________________
+Ritmo máximo: ____ contratações/trimestre (regra dos 15%)
+
+3.5 PLANO DE CAPITAL
+                   Ano 1    Ano 2    Ano 3
+Capital de giro    _____    _____    _____
+Equipamento        _____    _____    _____
+Espaço             _____    _____    _____
+Sistemas           _____    _____    _____
+TOTAL              _____    _____    _____
+Origem: lucro reinvestido ____% · financiamento ____%
+Parcela de dívida ÷ EBITDA: ____% (teto: 25%)
+└────────────────────────────────────────────────────────────┘
+
+┌─── SEÇÃO 4 — CENÁRIOS ────────────────────────────────────┐
+CONSERVADOR (___%): gatilho ______  ação ______
+BASE        (___%): [o plano principal]
+AGRESSIVO   (___%): gatilho ______  ação ______
+└────────────────────────────────────────────────────────────┘
+
+┌─── SEÇÃO 5 — GOVERNANÇA ──────────────────────────────────┐
+Cadência de revisão: trimestral (prioridades) · semestral
+(cenário) · anual (plano completo)
+Gatilhos de revisão emergencial: ________________
+Quem participa das decisões: ____________________
+Como o plano é comunicado à empresa: ____________
+└────────────────────────────────────────────────────────────┘
+
+┌─── SEÇÃO 6 — PLANO DE 90 DIAS ────────────────────────────┐
+[Ver Módulo 9 — as 3 prioridades do trimestre atual]
+└────────────────────────────────────────────────────────────┘
+
+Aprovado por: ___________  Data: ___/___/___
+Próxima revisão: ___/___/___
+═══════════════════════════════════════════════════════════════</pre>
+<hr>
+<h2 id="parte-2-plano-de-expansao">PARTE 2 — PLANO DE EXPANSÃO</h2>
+<pre>═══════════════════════════════════════════════════════════════
+PLANO DE EXPANSÃO — [iniciativa]     Data: ___/___/___
+═══════════════════════════════════════════════════════════════
+
+PRÉ-REQUISITO — TESTE DOS 4 SEMÁFOROS
+🚦1 Operação: margem &gt;10% ( ) aderência &gt;85% ( )
+              retrabalho &lt;5% ( ) rodou 15d sem mim ( )
+🚦2 Processo: escrito ( ) seguido ( ) onboarding ( )
+              rampa ≤6 meses ( )
+🚦3 Gente:    quem dirige ( ) já dirigiu aqui ( )
+              backup da matriz ( ) 30% do meu tempo ( )
+🚦4 Dinheiro: 18 meses de caixa ( ) matriz não fica sem
+              investimento ( ) ponto de equilíbrio calculado ( )
+              aguento a perda ( )
+
+⚠ SE ALGUM SEMÁFORO TIVER ITEM VERMELHO, PARE AQUI.
+
+1. A TESE
+Por que esse mercado: ___________________________
+Por que agora: __________________________________
+Por que a gente ganha ali: ______________________
+O que vai ser diferente do que já existe lá: ____
+
+2. O MERCADO
+Tamanho estimado: R$ ______/ano  Fonte: __________
+Concorrentes diretos: ____  Ticket praticado: R$ ____
+Participação-alvo em 3 anos: ____%
+
+3. O MODELO
+( ) Showroom + produção na matriz    ( ) Unidade completa
+( ) Representante / parceria         ( ) Franquia
+
+4. INVESTIMENTO
+CAPEX                          R$ ______
+Capital de giro (18 meses)     R$ ______
+Marketing de entrada           R$ ______
+Contingência (20%)             R$ ______
+TOTAL                          R$ ______
+
+5. PONTO DE EQUILÍBRIO
+Custo fixo mensal:             R$ ______
+Margem de contribuição:          ____%
+Faturamento de equilíbrio:     R$ ______/mês
+Obras/mês necessárias:           ____
+Prazo estimado:                  ____ meses
+
+6. LOGÍSTICA (crítico em marcenaria)
+Distância matriz → destino: ____ km
+Custo logístico por obra: R$ ______ = ____% da obra
+&lt; 3% ok · 3-6% monitorar · 6-10% avaliar fábrica local
+&gt; 10% produção local obrigatória
+Custo estimado de assistência técnica remota: R$ ____/ano
+
+7. GENTE
+Quem dirige: ____________  Já dirigiu o quê aqui: ______
+Quem substitui na matriz: ______________________
+Semente de cultura: ____ pessoas da matriz por ____ meses
+Equipe inicial: ____ pessoas
+
+8. MARCOS COM CRITÉRIO DE CONTINUAR
+Mês 3:  ______________  Se não atingir: ______________
+Mês 6:  ______________  Se não atingir: ______________
+Mês 12: ______________  Se não atingir: ______________
+Mês 18: ______________  Se não atingir: ______________
+
+9. CRITÉRIO DE ABORTAR ⭐ (escrever ANTES de começar)
+"Se em ____ meses o faturamento estiver abaixo de R$ ______
+e o caixa consumido passar de R$ ______, encerramos."
+Assinado: ____________  Data: ___/___/___
+
+10. ÂNCORAS DE PADRÃO
+[ ] 2 pessoas da matriz por 12 meses
+[ ] Mesmos POPs, checklists e sistema
+[ ] Mesmo painel, lado a lado com a matriz
+[ ] Ritmo de visita: 2x/sem → 1x/sem → 15/15 → mensal
+[ ] Auditoria de padrão trimestral (nota mín. 80%)
+
+11. RISCOS
+Risco 1: ____________  Mitigação: ____________
+Risco 2: ____________  Mitigação: ____________
+Risco 3: ____________  Mitigação: ____________
+═══════════════════════════════════════════════════════════════</pre>
+<hr>
+<h2 id="parte-3-plano-de-contingencia">PARTE 3 — PLANO DE CONTINGÊNCIA</h2>
+<pre>═══════════════════════════════════════════════════════════════
+PLANO DE CONTINGÊNCIA — [empresa]   Revisão: ___/___/___
+═══════════════════════════════════════════════════════════════
+
+CENÁRIO 1 — MÁQUINA CRÍTICA QUEBRA
+Máquina: ____________  % da produção que depende: ____%
+Custo de 1 dia parado: R$ ______
+Ação imediata: ____________________________
+Técnico de emergência: __________ Tel: ______ SLA: ____h
+Terceiro que corta pra gente: ______ Tel: ______ Preço: ____
+Peças críticas em estoque: ________________________
+
+CENÁRIO 2 — FORNECEDOR PRINCIPAL FALHA
+Fornecedor: __________ % das compras: ____%
+Alternativo homologado 1: ________ Tel: ______ Última compra: ___
+Alternativo homologado 2: ________ Tel: ______ Última compra: ___
+Estoque de segurança de item crítico: ____ dias
+
+CENÁRIO 3 — PERDA DE PESSOA-CHAVE
+Função: __________  Backup: __________  Nível hoje: ____%
+Documentação completa? ( )Sim ( )Não
+Último teste de ausência: ___/___/___
+Ação nas primeiras 48h: ___________________
+
+CENÁRIO 4 — QUEDA DE FATURAMENTO &gt; 30%
+Gatilho: ____ meses consecutivos abaixo de R$ ______
+AÇÕES NA ORDEM (não pule):
+1. Suspender: ______________  Economia: R$ ______/mês
+2. Suspender: ______________  Economia: R$ ______/mês
+3. Renegociar prazo com fornecedor  Ganho: ____ dias
+4. Banco de horas / redução de jornada
+5. Desligamentos (último recurso, critério: matriz Entrega×Jeito)
+Meses de caixa que isso compra: ____
+
+CENÁRIO 5 — SINISTRO NA FÁBRICA (incêndio, alagamento)
+Apólice nº ______  Seguradora: ______  Cobertura: R$ ______
+Corretor: ______ Tel: ______
+Backup de projetos: onde: __________ testado em: ___/___
+Local alternativo de produção: __________ Tel: ______
+Primeira ligação: __________  Segunda: __________
+
+CENÁRIO 6 — CLIENTE GRANDE NÃO PAGA
+Exposição máxima aceitável: R$ ______ ou ____% do faturamento
+Ação em 15 dias de atraso: ______________________
+Ação em 30 dias: ________________________________
+Advogado: __________ Tel: __________
+
+CENÁRIO 7 — PERDA DE DADOS
+Backup: 3-2-1 implantado? ( )Sim ( )Não
+Cópia 1: ______  Cópia 2: ______  Cópia 3 (fora): ______
+Último teste de restore: ___/___/___  Funcionou? ( )
+Tempo de restore: ____ horas
+⚠ Backup nunca testado não é backup.
+
+CENÁRIO 8 — AUSÊNCIA DO DONO
+Curta (até 15d): alçadas escritas · lista de emergência
+Longa (15-90d): gestor interino: __________ alçada: R$ ______
+Definitiva: ver Plano de Sucessão
+
+─── CONTATOS DE EMERGÊNCIA ───
+Contador: ______ Advogado: ______ Banco: ______
+Seguro: ______ Manutenção: ______ TI: ______
+═══════════════════════════════════════════════════════════════</pre>
+<hr>
+<h2 id="parte-4-plano-de-sucessao">PARTE 4 — PLANO DE SUCESSÃO</h2>
+<pre>═══════════════════════════════════════════════════════════════
+PLANO DE SUCESSÃO — [empresa]        Versão ___/___/___
+═══════════════════════════════════════════════════════════════
+
+PARTE A — SUCESSÃO PLANEJADA
+
+1. QUEM
+Sucessor identificado: __________________________
+Ele sabe que é o sucessor? ( ) Sim ( ) Não
+⚠ Se não sabe, isso é intenção, não plano.
+Sucessor alternativo: ___________________________
+Perfil: ( )Familiar ( )Interno não-familiar ( )Externo
+
+2. QUANDO
+Data-alvo da transição completa: ___/___/___
+Marco 25% (___/___): responsabilidades: ____________
+Marco 50% (___/___): responsabilidades: ____________
+Marco 75% (___/___): responsabilidades: ____________
+Marco 100%(___/___): responsabilidades: ____________
+
+3. TRILHA DE PREPARAÇÃO (se familiar — os 4 anos)
+Ano 1 — Mão na massa: função operacional, piso da função
+Ano 2 — Rodízio: 3 meses em cada área
+Ano 3 — Liderança pequena: célula ou projeto com número
+Ano 4 — Gestão com número: área com KPI e orçamento
+⚠ Precisa ter sido liderado por um NÃO-familiar e ter
+  recebido um feedback duro dele.
+
+4. CONTRATO DE TRANSIÇÃO
+DECISÕES QUE PASSAM PARA O SUCESSOR EM [DATA]:
+- Contratação e demissão até nível ____
+- Compras até R$ ______
+- Precificação dentro da tabela
+- Programação de produção
+- Feedback e avaliação da equipe
+
+DECISÕES QUE PERMANECEM COM O ATUAL:
+- Investimento acima de R$ ______
+- Mudança societária
+- Novos negócios ou linhas
+- Venda de ativo
+
+REGRA DE OURO: nenhum dos dois desautoriza o outro na frente
+de terceiros. Divergência se resolve em particular; a decisão
+combinada é comunicada por quem tem a alçada.
+
+PAPEL PERMANENTE DE QUEM SAI (real e honroso):
+_________________________________________________
+⚠ Ninguém sai de cena pra virar nada.
+
+REVISÃO: a cada 6 meses.
+
+5. CRITÉRIO DE REVERSÃO
+"Se em ____ meses [indicador] estiver abaixo de ______,
+revisamos a transição."
+Assinado: ______________  Data: ___/___/___
+
+PARTE B — SUCESSÃO EMERGENCIAL
+
+6. SE ALGO ACONTECER COMIGO (envelope lacrado)
+Quem assume imediatamente: ______________________
+Quem assume em 30 dias: _________________________
+Quem assume definitivamente: ____________________
+
+CONTATOS: contador ______ advogado ______ banco ______
+          conselheiro ______
+
+ONDE ESTÁ CADA COISA:
+Contrato social: ______  Contratos de cliente: ______
+Cofre de senhas: ______  Apólices: ______
+Dívidas e garantias: ______
+
+SITUAÇÃO FINANCEIRA:
+Contas: ______  Procuradores: ______
+Dívidas: ______  Recebíveis: ______
+
+PRIMEIROS 30 DIAS:
+[ ] Comunicar a equipe
+[ ] Comunicar clientes com obra ativa
+[ ] Comunicar fornecedores principais
+[ ] Manter a folha em dia — prioridade nº 1
+[ ] Reunião com contador e advogado em até 5 dias
+[ ] NÃO tomar decisão estrutural nos primeiros 60 dias
+
+O QUE EU GOSTARIA QUE ACONTECESSE COM A EMPRESA:
+_________________________________________________
+
+7. INSTRUMENTOS JURÍDICOS
+[ ] Acordo de sócios com cláusula de sucessão
+[ ] Procuração outorgada em cartório
+[ ] Segundo procurador no banco
+[ ] Testamento / holding familiar (se aplicável)
+[ ] Seguro de vida cobrindo 12 meses de custo fixo
+    Apólice: ______  Beneficiário: ______
+
+Atualizado em: ___/___/___   Próxima revisão: ___/___/___
+Cópias com: ______________________________________
+═══════════════════════════════════════════════════════════════</pre>
+<hr>
+<h2 id="parte-5-mapa-de-riscos">PARTE 5 — MAPA DE RISCOS</h2>
+<pre>═══════════════════════════════════════════════════════════════
+MAPA DE RISCOS — [empresa]        Revisão semestral: ___/___
+═══════════════════════════════════════════════════════════════
+
+MATRIZ DE PRIORIZAÇÃO
+                    IMPACTO
+              Baixo  Médio  Alto  Crítico
+        Alta    🟡     🟠     🔴     🔴
+PROBA-  Média   🟢     🟡     🟠     🔴
+BILIDADE Baixa  🟢     🟢     🟡     🟠
+
+🔴 Tratar em 30 dias | 🟠 90 dias | 🟡 Monitorar | 🟢 Aceitar
+
+─────────────────────────────────────────────────────────────
+CATEGORIA      | RISCO             | PROB | IMP | NÍVEL | AÇÃO
+───────────────┼───────────────────┼──────┼─────┼───────┼──────
+PESSOAS        |                   |      |     |       |
+  Ponto único  | ________________  | ___  | ___ | ___   | _____
+  Turnover alto| ________________  | ___  | ___ | ___   | _____
+  Sucessão     | ________________  | ___  | ___ | ___   | _____
+
+OPERACIONAL    |                   |      |     |       |
+  Máquina única| ________________  | ___  | ___ | ___   | _____
+  Gargalo      | ________________  | ___  | ___ | ___   | _____
+  Retrabalho   | ________________  | ___  | ___ | ___   | _____
+
+SUPRIMENTOS    |                   |      |     |       |
+  Fornec. único| ________________  | ___  | ___ | ___   | _____
+  Ruptura      | ________________  | ___  | ___ | ___   | _____
+  Alta de preço| ________________  | ___  | ___ | ___   | _____
+
+COMERCIAL      |                   |      |     |       |
+  Concentração | ________________  | ___  | ___ | ___   | _____
+  Origem única | ________________  | ___  | ___ | ___   | _____
+  Concorrência | ________________  | ___  | ___ | ___   | _____
+
+FINANCEIRO     |                   |      |     |       |
+  Caixa        | ________________  | ___  | ___ | ___   | _____
+  Inadimplência| ________________  | ___  | ___ | ___   | _____
+  Endividamento| ________________  | ___  | ___ | ___   | _____
+
+INFORMAÇÃO     |                   |      |     |       |
+  Perda de dado| ________________  | ___  | ___ | ___   | _____
+  Acesso único | ________________  | ___  | ___ | ___   | _____
+  Conhecimento | ________________  | ___  | ___ | ___   | _____
+                 não documentado   |      |     |       |
+
+LEGAL/FISCAL   |                   |      |     |       |
+  Trabalhista  | ________________  | ___  | ___ | ___   | _____
+  Contratual   | ________________  | ___  | ___ | ___   | _____
+  Tributário   | ________________  | ___  | ___ | ___   | _____
+
+EXTERNO        |                   |      |     |       |
+  Crise setor  | ________________  | ___  | ___ | ___   | _____
+  Sinistro     | ________________  | ___  | ___ | ___   | _____
+─────────────────────────────────────────────────────────────
+
+OS 5 RISCOS 🔴 — PLANO DE AÇÃO
+1. ______________  Dono: ______  Prazo: ______
+2. ______________  Dono: ______  Prazo: ______
+3. ______________  Dono: ______  Prazo: ______
+4. ______________  Dono: ______  Prazo: ______
+5. ______________  Dono: ______  Prazo: ______
+═══════════════════════════════════════════════════════════════</pre>
+<hr>
+<h2 id="parte-6-framework-de-crescimento">PARTE 6 — FRAMEWORK DE CRESCIMENTO</h2>
+<h2 id="o-framework-chassi">O Framework CHASSI</h2>
+<pre>        ┌──────────────────────────────────────────┐
+        │           CRESCIMENTO SUSTENTÁVEL        │
+        └──────────────────────────────────────────┘
+                           ▲
+        ┌──────────────────┴───────────────────────┐
+        │                                          │
+   ┌────┴─────┐  ┌──────────┐  ┌──────────┐  ┌────┴─────┐
+   │ CONTROLE │  │HABILIDADE│  │AUTONOMIA │  │ SISTEMA  │
+   │ Números  │  │ Processo │  │  Gente   │  │Tecnologia│
+   │ que dizem│  │documenta-│  │com alçada│  │que susten│
+   │ a verdade│  │    do    │  │e critério│  │    ta    │
+   └──────────┘  └──────────┘  └──────────┘  └──────────┘
+        │              │             │             │
+   ┌────┴─────┐  ┌─────┴────┐        │             │
+   │ SUCESSÃO │  │ INTENÇÃO │────────┴─────────────┘
+   │Redundân- │  │  Plano   │
+   │cia total │  │ escrito  │
+   └──────────┘  └──────────┘
+
+REGRA: o crescimento é limitado pelo pilar mais fraco.
+Investir no pilar forte não move nada.</pre>
+<h2 id="diagnostico-do-chassi-0-a-10-cada-pilar">Diagnóstico do CHASSI (0 a 10 cada pilar)</h2>
+<pre>CONTROLE
+[ ] Sei a margem de cada obra entregue           (2 pts)
+[ ] Tenho painel de 7 números atualizado         (2 pts)
+[ ] Caixa projetado 90 dias, semanal             (2 pts)
+[ ] Cada função tem número-mestre                (2 pts)
+[ ] Confio nos meus dados                        (2 pts)
+                                        SUBTOTAL: ____/10
+
+HABILIDADE
+[ ] Fluxograma macro documentado                 (2 pts)
+[ ] 20+ POPs escritos por quem executa           (2 pts)
+[ ] POPs revisados nos últimos 12 meses          (2 pts)
+[ ] Gargalo identificado com medição             (2 pts)
+[ ] Onboarding de 90 dias estruturado            (2 pts)
+                                        SUBTOTAL: ____/10
+
+AUTONOMIA
+[ ] Tenho 2+ líderes com alçada real             (2 pts)
+[ ] Níveis de delegação declarados               (2 pts)
+[ ] Empresa rodou 15 dias sem mim                (2 pts)
+[ ] Não reverto decisão de líder em público      (2 pts)
+[ ] Cadência de reunião rodando sem lembrete     (2 pts)
+                                        SUBTOTAL: ____/10
+
+SISTEMA
+[ ] CRM, ERP e financeiro funcionando            (2 pts)
+[ ] Dados exportáveis                            (2 pts)
+[ ] 3+ automações ativas                         (2 pts)
+[ ] Cada sistema se paga (payback calculado)     (2 pts)
+[ ] Nenhuma planilha crítica com 1 pessoa só     (2 pts)
+                                        SUBTOTAL: ____/10
+
+SUCESSÃO
+[ ] Mapa de riscos de continuidade feito         (2 pts)
+[ ] Backup treinado nas 3 funções críticas       (2 pts)
+[ ] Teste de ausência realizado                  (2 pts)
+[ ] Cofre de senhas + segundo procurador         (2 pts)
+[ ] Documento de sucessão do dono                (2 pts)
+                                        SUBTOTAL: ____/10
+
+INTENÇÃO
+[ ] Mapa 5×5 escrito                             (2 pts)
+[ ] Meta anual com 3 alavancas e 9 RCs           (2 pts)
+[ ] Plano de 90 dias com donos nominais          (2 pts)
+[ ] Lista do que NÃO vamos fazer                 (2 pts)
+[ ] Plano comunicado até o chão de fábrica       (2 pts)
+                                        SUBTOTAL: ____/10
+
+═══════════════════════════════════════════
+PILAR MAIS FRACO: ______________  Nota: ____
+→ É AQUI QUE VOCÊ TRABALHA NOS PRÓXIMOS 90 DIAS.
+   Não no que você tem mais vontade. No mais fraco.
+═══════════════════════════════════════════</pre>
+<h2 id="a-sequencia-de-crescimento-nao-pule-etapa">A sequência de crescimento (não pule etapa)</h2>
+<pre>ETAPA 1 — ARRUMAR (0 a 12 meses)
+Objetivo: margem e previsibilidade
+Foco: CONTROLE + HABILIDADE
+Sinais de conclusão: margem &gt;10%, aderência &gt;85%,
+                     retrabalho &lt;5%, POPs escritos
+
+ETAPA 2 — SOLTAR (12 a 24 meses)
+Objetivo: sair do gargalo
+Foco: AUTONOMIA + SUCESSÃO
+Sinais: 2+ líderes com alçada, 15 dias fora sem parar,
+        backups treinados e testados
+
+ETAPA 3 — ACELERAR (24 a 48 meses)
+Objetivo: crescer com margem
+Foco: SISTEMA + INTENÇÃO
+Sinais: faturamento/pessoa crescendo mais que faturamento,
+        plano de 90 dias rodando há 4 trimestres
+
+ETAPA 4 — MULTIPLICAR (48 meses+)
+Objetivo: replicar
+Foco: os 6 pilares em nível 8+
+Sinais: 30 dias fora sem perda, padrão replicado
+        em segunda unidade ou linha</pre>
+<p><strong>A regra:</strong> empresa que pula da Etapa 1 pra Etapa 3 (arruma pela metade e acelera) volta pra Etapa 1 em 18 meses — com mais dívida e mais gente.</p>
+<hr>
+<h2 id="parte-7-framework-de-maturidade-empresarial">PARTE 7 — FRAMEWORK DE MATURIDADE EMPRESARIAL</h2>
+<h2 id="os-5-niveis-da-marcenaria">Os 5 níveis da marcenaria</h2>
+<pre>┌───────────────────────────────────────────────────────────┐
+│ N5 PLATAFORMA   R$ 25M+     Modelo replicável             │
+│                             Gargalo: cultura na escala    │
+├───────────────────────────────────────────────────────────┤
+│ N4 MÁQUINA      R$ 8-25M    Roda sem o dono               │
+│                             Gargalo: capital e talento    │
+├───────────────────────────────────────────────────────────┤
+│ N3 EMPRESA      R$ 2,5-8M   Líderes, número e processo    │
+│                             Gargalo: margem e previsibil. │
+├───────────────────────────────────────────────────────────┤
+│ N2 OFICINA      R$ 0,6-2,5M Dono supervisiona tudo        │
+│                             Gargalo: supervisão do dono   │
+├───────────────────────────────────────────────────────────┤
+│ N1 ARTESÃO      até R$ 600k Dono faz                      │
+│                             Gargalo: as mãos do dono      │
+└───────────────────────────────────────────────────────────┘</pre>
+<h2 id="tabela-completa-de-maturidade">Tabela completa de maturidade</h2>
+<div class="tabwrap"><table><thead><tr><th>Dimensão</th><th>N1 Artesão</th><th>N2 Oficina</th><th>N3 Empresa</th><th>N4 Máquina</th><th>N5 Plataforma</th></tr></thead><tbody><tr><td><strong>Faturamento</strong></td><td>até 600k</td><td>600k–2,5M</td><td>2,5–8M</td><td>8–25M</td><td>25M+</td></tr><tr><td><strong>Pessoas</strong></td><td>2–5</td><td>6–15</td><td>15–40</td><td>40–100</td><td>100+</td></tr><tr><td><strong>Fat./pessoa</strong></td><td>100–150k</td><td>120–180k</td><td>160–250k</td><td>250–400k</td><td>300k+</td></tr><tr><td><strong>Quem decide</strong></td><td>Só o dono</td><td>Dono, com apoio</td><td>2–4 líderes</td><td>Diretoria</td><td>Governança</td></tr><tr><td><strong>Processo</strong></td><td>Na cabeça</td><td>Informal</td><td>Escrito</td><td>Escrito e auditado</td><td>Replicável</td></tr><tr><td><strong>Número</strong></td><td>Faturamento</td><td>Faturamento e caixa</td><td>Painel de 7</td><td>Scorecard 4 dimensões</td><td>BI e drill-down</td></tr><tr><td><strong>Cadência</strong></td><td>Nenhuma</td><td>Informal</td><td>4 batidas</td><td>4 batidas + conselho</td><td>Governança formal</td></tr><tr><td><strong>Contratação</strong></td><td>Urgência</td><td>Indicação</td><td>Scorecard e teste</td><td>Funil permanente</td><td>Employer brand</td></tr><tr><td><strong>Carreira</strong></td><td>Não existe</td><td>Informal</td><td>Trilha e matriz</td><td>Trilha e sucessão</td><td>Programa de talentos</td></tr><tr><td><strong>Variável</strong></td><td>Não existe</td><td>Bônus discricionário</td><td>Gatilho duplo</td><td>Por área, com metas</td><td>Participação em resultado</td></tr><tr><td><strong>Backup</strong></td><td>Nenhum</td><td>Nenhum</td><td>3 funções críticas</td><td>Todas as funções</td><td>Sucessão formal</td></tr><tr><td><strong>Dono trabalha em</strong></td><td>Produção</td><td>Supervisão</td><td>Gestão e exceção</td><td>Estratégia</td><td>Capital e novos negócios</td></tr><tr><td><strong>Ausência suportada</strong></td><td>0 dias</td><td>2 dias</td><td>15 dias</td><td>30 dias</td><td>90 dias</td></tr></tbody></table></div>
+<h2 id="passagem-obrigatoria-entre-niveis">Passagem obrigatória entre níveis</h2>
+<div class="tabwrap"><table><thead><tr><th>De → Para</th><th>O que TEM que acontecer</th><th>O que trava</th></tr></thead><tbody><tr><td><strong>N1 → N2</strong></td><td>Contratar o primeiro que não é o dono e documentar o básico</td><td>Dono não solta a mão</td></tr><tr><td><strong>N2 → N3</strong></td><td>Criar o primeiro líder com alçada real + processo escrito + número</td><td>Dono continua supervisionando tudo</td></tr><tr><td><strong>N3 → N4</strong></td><td>Gestão por indicador + margem controlada + backup + cadência sem o dono</td><td>Margem baixa e ponto único de falha</td></tr><tr><td><strong>N4 → N5</strong></td><td>Governança, replicação de cultura e capital estruturado</td><td>Cultura não escala com processo só</td></tr></tbody></table></div>
+<h2 id="autoavaliacao-em-que-nivel-voce-esta">Autoavaliação — em que nível você está</h2>
+<pre>Marque o que é VERDADE hoje:
+
+[ ] Existe documento escrito de como se faz cada etapa
+[ ] Cada função tem um número-mestre medido semanalmente
+[ ] Existe pelo menos 1 líder que decide sem me consultar
+[ ] Sei a margem de cada obra entregue no mês passado
+[ ] A empresa funcionou normalmente na minha ausência de 5+ dias
+[ ] Existe backup treinado para as 3 funções mais críticas
+[ ] Existe plano escrito com prioridades e donos para 90 dias
+[ ] O caixa é projetado 90 dias à frente, semanalmente
+[ ] Cliente novo é atendido igual, independente de quem atende
+[ ] Novo funcionário tem trilha de onboarding definida
+
+0–3 → N1 ou N2   |   4–6 → N3   |   7–9 → N3 avançado / N4
+10  → N4 ou N5</pre>
+<h2 id="o-erro-de-nivel">O erro de nível</h2>
+<blockquote><p><strong>O erro mais caro de um dono de PME é agir num nível acima do que a empresa está.</strong></p></blockquote>
+<div class="tabwrap"><table><thead><tr><th>Erro</th><th>Consequência</th></tr></thead><tbody><tr><td>N2 querendo expandir (N4)</td><td>Exporta problema, perde caixa</td></tr><tr><td>N1 contratando gerente (N3)</td><td>Gerente sem processo pra gerenciar, sai em 6 meses</td></tr><tr><td>N3 implantando BI (N5)</td><td>Dado ruim com aparência de precisão</td></tr><tr><td>N2 criando plano de carreira formal (N3)</td><td>Burocracia sem base, ninguém usa</td></tr></tbody></table></div>
+<p><strong>E o erro contrário também existe:</strong> N4 operando como N2 (o dono ainda decidindo compra de material) trava a empresa inteira.</p>
+<p><strong>A regra:</strong> identifique o nível, faça a passagem obrigatória, e só depois avance. Cada passagem leva de 12 a 24 meses feita de propósito — e nunca acontece sozinha.</p>
+<hr>
+<h2 id="fechamento-da-fase-5">Fechamento da Fase 5</h2>
+<p>Você começou essa fase com um diagnóstico de 10 perguntas. Refaça agora.</p>
+<p>Se o número de sins aumentou, o chassi está mais forte. Se não aumentou, você leu — não implantou.</p>
+<p>E fica a pergunta que resume tudo:</p>
+<blockquote><p><strong>"Se eu sumir 30 dias, a empresa entrega o mesmo?"</strong></p></blockquote>
+<p>Enquanto a resposta for não, você não tem uma empresa que escala. Tem uma empresa que depende de você — e o teto dela é o seu teto.</p>
+<hr>
+<p><strong>FIM DA FASE 5 — ESCALA.</strong></p>
+
+  <div class="rodape"><span>FASE 5 · MÓDULO 15 · Fase 5 — Escala</span><span>Material de formação em gestão para donos de PME</span></div>
+  <div class="direitos"><img src="data:image/png;base64,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" alt="ARESTA APM"><span>&copy; 2026 ARESTA APM &middot; Conteúdo e método proprietários. Uso restrito ao aluno matriculado — proibida a reprodução, revenda ou redistribuição, total ou parcial.</span></div>
+</div>
+
+<script>
+// mantem a marca digitada pelo usuario neste navegador
+(function(){
+  var m=document.querySelector('.marca');
+  var k='mkt-marca';
+  try{ var s=localStorage.getItem(k); if(s) m.innerHTML=s; }catch(e){}
+  m.addEventListener('blur',function(){ try{localStorage.setItem(k,m.innerHTML);}catch(e){} });
+})();
+</script>
+</body>
+</html>

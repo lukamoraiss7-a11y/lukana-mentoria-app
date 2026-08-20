@@ -42,12 +42,12 @@ begin
            ' — crie primeiro em Authentication > Users';
   end if;
 
-  -- Fora de 1..8 e engano de digitacao. Recusar e melhor do que gravar
+  -- Fora de 1..7 e engano de digitacao. Recusar e melhor do que gravar
   -- uma fase que nao existe e o aluno reclamar que nao abre.
   select n into v_ruim from unnest(coalesce(p_fases,'{}'::int[])) n
-   where n < 1 or n > 8 limit 1;
+   where n < 1 or n > 7 limit 1;
   if v_ruim is not null then
-    raise exception 'numero de fase invalido: % (use 1 a 6, 7 para o Bonus 1 e 8 para o Bonus 2)', v_ruim;
+    raise exception 'numero de fase invalido: % (use 1 a 5, 6 para o Bonus 1 e 7 para o Bonus 2)', v_ruim;
   end if;
 
   -- O painel manda o numero humano; o banco guarda o id do modulo.

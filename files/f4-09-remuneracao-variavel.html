@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MÓDULO 9 — REMUNERAÇÃO VARIÁVEL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --tinta:#2C2825; --ouro:#B8925A; --claro:#F5F1EA; --linha:#D8D2C7;
+  --fraco:#6E675E; --papel:#FFFFFF; --caixa:#FAF8F4;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+@page{size:A4;margin:14mm 13mm 13mm}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact;scroll-behavior:smooth}
+body{font:11pt/1.62 'Inter',-apple-system,'Helvetica Neue',Arial,sans-serif;
+  color:var(--tinta);background:var(--claro)}
+.folha{max-width:196mm;margin:0 auto;padding:14mm 10mm 20mm;background:var(--papel);
+  box-shadow:0 1px 3px rgba(0,0,0,.06)}
+
+/* cabecalho */
+.topo{display:flex;justify-content:space-between;align-items:flex-end;
+  border-bottom:1.5pt solid var(--tinta);padding-bottom:6pt;gap:12pt;flex-wrap:wrap}
+.marca{font:600 15pt/1 'Cormorant Garamond',Georgia,serif;letter-spacing:.22em;
+  text-transform:uppercase;outline:none}
+.marca small{display:block;font:400 6.5pt/1 'Inter',sans-serif;letter-spacing:.34em;
+  color:var(--fraco);margin-top:3pt}
+.marca:focus{background:#FFF6DF}
+.doc{text-align:right}
+.doc .fase{font-size:7pt;letter-spacing:.2em;color:var(--ouro);font-weight:600;
+  text-transform:uppercase}
+.doc .cod{font-size:7pt;letter-spacing:.18em;color:var(--fraco);margin-top:2pt}
+.regua{height:2.5pt;background:var(--ouro);margin:0 0 14pt}
+
+/* tipografia */
+h1{font:600 21pt/1.18 'Cormorant Garamond',Georgia,serif;letter-spacing:.01em;
+  margin:0 0 3pt}
+h1 + .lead{font-size:10.5pt;color:var(--fraco);font-style:italic;margin-bottom:14pt;
+  padding-bottom:10pt;border-bottom:.75pt solid var(--linha)}
+h2{font:600 10.5pt/1.25 'Inter',sans-serif;letter-spacing:.13em;text-transform:uppercase;
+  background:var(--claro);border-left:3pt solid var(--ouro);padding:6pt 8pt;
+  margin:22pt 0 9pt;break-after:avoid;page-break-after:avoid}
+h3{font:600 11.5pt/1.3 'Cormorant Garamond',Georgia,serif;letter-spacing:.02em;
+  margin:15pt 0 5pt;break-after:avoid;page-break-after:avoid}
+h4{font:600 8.5pt/1.25 'Inter',sans-serif;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--fraco);margin:12pt 0 4pt;break-after:avoid}
+p{margin:0 0 8pt;text-align:left}
+strong{font-weight:600}
+em{font-style:italic}
+a{color:var(--ouro);text-decoration:none}
+hr{border:none;border-top:.75pt solid var(--linha);margin:16pt 0}
+
+/* listas */
+ul,ol{margin:0 0 9pt 16pt}
+li{margin-bottom:3.5pt}
+ul.chk{list-style:none;margin-left:0}
+ul.chk li{display:flex;gap:7pt;align-items:flex-start;padding:3.5pt 0;
+  border-bottom:.5pt dotted var(--linha);break-inside:avoid}
+ul.chk li::before{content:"";flex:0 0 9.5pt;height:9.5pt;margin-top:2.5pt;
+  border:.9pt solid var(--tinta);border-radius:1pt;background:#fff}
+
+/* citacao / destaque */
+blockquote{border-left:2.5pt solid var(--ouro);background:var(--caixa);
+  padding:9pt 12pt;margin:11pt 0;break-inside:avoid}
+blockquote p:last-child{margin-bottom:0}
+
+/* codigo / templates ascii */
+pre{background:var(--caixa);border:.75pt solid var(--linha);border-radius:2pt;
+  padding:10pt 11pt;margin:11pt 0;overflow-x:auto;break-inside:avoid;
+  font:9pt/1.42 'SFMono-Regular',Menlo,Consolas,'Courier New',monospace;
+  white-space:pre;color:#332F2A}
+code{font:9.2pt/1.4 'SFMono-Regular',Menlo,Consolas,monospace;
+  background:var(--claro);padding:1pt 3pt;border-radius:2pt}
+pre code{background:none;padding:0;font-size:inherit}
+
+/* tabelas */
+.tabwrap{overflow-x:auto;margin:11pt 0}
+table{border-collapse:collapse;width:100%;font-size:9.3pt;break-inside:avoid}
+th{background:var(--claro);text-align:left;font-weight:600;font-size:7.5pt;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--fraco);
+  padding:5.5pt 7pt;border:.75pt solid var(--linha)}
+td{padding:5.5pt 7pt;border:.75pt solid var(--linha);vertical-align:top;line-height:1.42}
+tbody tr:nth-child(even){background:#FCFBF9}
+
+/* indice */
+.indice{background:var(--caixa);border:.75pt solid var(--linha);padding:11pt 13pt;
+  margin:0 0 18pt;break-inside:avoid}
+.indice h4{margin-top:0}
+.indice ol{margin:0 0 0 15pt;font-size:9.5pt;column-gap:18pt}
+.indice li{margin-bottom:2.5pt}
+.indice a{color:var(--tinta)}
+.indice a:hover{color:var(--ouro)}
+
+/* rodape */
+.rodape{margin-top:22pt;padding-top:6pt;border-top:.75pt solid var(--linha);
+  display:flex;justify-content:space-between;font-size:7.5pt;color:var(--fraco);
+  letter-spacing:.06em;gap:10pt;flex-wrap:wrap}
+
+/* direitos — a marca do Aresta e o aviso de propriedade.
+   Fica no rodape, nao no topo: o cabecalho e' do aluno (.marca editavel),
+   e a autoria do metodo nao disputa espaco com a marca dele. */
+.direitos{margin-top:7pt;display:flex;align-items:center;gap:7pt;
+  font-size:6.4pt;line-height:1.45;color:var(--fraco);letter-spacing:.02em}
+.direitos img{height:11pt;width:auto;flex-shrink:0;opacity:.85}
+@media print{.direitos{break-inside:avoid}}
+
+/* navegacao entre modulos (some na impressao) */
+.nav{max-width:196mm;margin:0 auto 10mm;padding:0 10mm;display:flex;
+  justify-content:space-between;gap:10pt;font-size:9pt}
+.nav a{display:inline-block;padding:6pt 11pt;border:.75pt solid var(--linha);
+  background:var(--papel);border-radius:2pt;color:var(--tinta)}
+.nav a:hover{border-color:var(--ouro);color:var(--ouro)}
+.topbar{max-width:196mm;margin:0 auto;padding:8mm 10mm 0;display:flex;
+  justify-content:space-between;font-size:9pt}
+.topbar a{color:var(--fraco)}
+.topbar a:hover{color:var(--ouro)}
+
+@media print{
+  body{background:#fff}
+  .folha{box-shadow:none;padding:0;max-width:none}
+  .nav,.topbar{display:none}
+  .indice{break-after:page}
+}
+@media (max-width:640px){
+  body{font-size:11.5pt}
+  .folha{padding:8mm 5mm 14mm}
+  pre{font-size:7.6pt}
+  table{font-size:8.6pt}
+  .doc{text-align:left}
+}
+</style>
+</head>
+<body>
+
+<div class="folha">
+  <div class="topo">
+    <div class="marca" contenteditable="true" spellcheck="false">SUA MARCA<small>MARCENARIA</small></div>
+    <div class="doc"><div class="fase">Fase 4 — Liderança</div><div class="cod">FASE 4 · MÓDULO 09</div></div>
+  </div>
+  <div class="regua"></div>
+
+  <h1>MÓDULO 9 — REMUNERAÇÃO VARIÁVEL</h1>
+  <div class="lead">Método GATILHO DUPLO: pagar pelo resultado sem destruir a margem nem a cultura</div>
+  <div class="indice"><h4>Neste módulo</h4><ol><li><a href="#a-verdade-sobre-variavel">A verdade sobre variável</a></li><li><a href="#as-5-leis-do-variavel">As 5 leis do variável</a></li><li><a href="#o-que-nunca-premiar">O que NUNCA premiar</a></li><li><a href="#modelos-prontos-por-funcao">Modelos prontos por função</a></li><li><a href="#como-calcular-o-teto-quanto-a-empresa-pode-pagar">Como calcular o teto: quanto a empresa pode pagar</a></li><li><a href="#o-regulamento-de-variavel-1-pagina-modelo-pronto">O Regulamento de Variável (1 página) — modelo pronto</a></li><li><a href="#cuidados-juridicos-leia-antes-de-implantar">⚠️ Cuidados jurídicos (leia antes de implantar)</a></li><li><a href="#como-implantar-sem-virar-bagunca">Como implantar sem virar bagunça</a></li><li><a href="#os-15-erros-mais-comuns">Os 15 erros mais comuns</a></li><li><a href="#perguntas-que-o-lider-deve-fazer">Perguntas que o líder deve fazer</a></li><li><a href="#exercicios-do-modulo-9">Exercícios do Módulo 9</a></li><li><a href="#frases-de-impacto-do-modulo-9">Frases de impacto do Módulo 9</a></li><li><a href="#entregavel-do-modulo-9">Entregável do Módulo 9</a></li></ol></div>
+  <hr>
+<h2 id="a-verdade-sobre-variavel">A verdade sobre variável</h2>
+<p>Variável mal desenhada é pior que não ter variável.</p>
+<p>Não é exagero. Um sistema de bônus errado ensina a equipe a otimizar o número errado, e as pessoas são muito boas nisso. Você vai conseguir exatamente o que pagou — e vai descobrir tarde demais que não era o que você queria.</p>
+<p><strong>Casos reais de marcenaria:</strong></p>
+<div class="tabwrap"><table><thead><tr><th>O que foi premiado</th><th>O que a empresa conseguiu</th></tr></thead><tbody><tr><td>Bônus por volume de peças cortadas</td><td>Chapa desperdiçada, corte apressado, retrabalho na montagem</td></tr><tr><td>Comissão sobre venda bruta</td><td>Vendedor dando desconto pra fechar. Margem despencou 6 pontos</td></tr><tr><td>Prêmio por entrega no prazo</td><td>Móvel montado com defeito pra bater a data. Assistência técnica explodiu</td></tr><tr><td>Bônus por "produtividade individual"</td><td>Marceneiro parou de ajudar colega e de ensinar auxiliar</td></tr><tr><td>Prêmio por zero acidente</td><td>Acidente deixou de ser reportado. Ninguém ficou mais seguro</td></tr></tbody></table></div>
+<blockquote><p><strong>Frase pra colar na parede:</strong> <em>"Me mostra como você paga e eu te digo o que sua equipe faz."</em></p></blockquote>
+<hr>
+<h2 id="as-5-leis-do-variavel">As 5 leis do variável</h2>
+<h3 id="lei-1-so-se-premia-o-que-se-mede-sem-discussao">Lei 1 — Só se premia o que se mede sem discussão</h3>
+<p>Se dois gestores podem discordar sobre se a meta foi batida, a meta está errada. Número tem que ser objetivo, auditável e visível.</p>
+<h3 id="lei-2-todo-variavel-precisa-de-gatilho-duplo">Lei 2 — Todo variável precisa de gatilho duplo</h3>
+<p><strong>Esse é o conceito central do módulo.</strong> Um número sozinho sempre pode ser gamificado. Dois números que se contrapõem, não.</p>
+<pre>GATILHO 1 = quantidade / velocidade  (o que você quer mais)
+GATILHO 2 = qualidade / margem       (o que não pode piorar)
+
+PAGA SÓ SE OS DOIS FOREM ATINGIDOS.</pre>
+<p>Exemplo prático:</p>
+<ul><li>Gatilho 1: ambiente entregue no prazo do cronograma</li><li>Gatilho 2: zero retorno de assistência técnica em 30 dias</li></ul>
+<p>Sozinho, o gatilho 1 gera montagem apressada. Com o 2, não gera — porque montar apressado mata o pagamento.</p>
+<h3 id="lei-3-variavel-nunca-e-salario-disfarcado">Lei 3 — Variável nunca é salário disfarçado</h3>
+<p>Se todo mês todo mundo bate, não é variável — é salário parcelado com nome bonito. E quando alguém não bater, vai reclamar de "corte de salário".</p>
+<p><strong>Regra de calibragem:</strong> o variável cheio deve ser atingido por <strong>60% a 70%</strong> da equipe num mês normal. Se for 100%, a meta está frouxa. Se for 20%, está inatingível e desmotiva.</p>
+<h3 id="lei-4-variavel-tem-que-ser-entendido-em-30-segundos">Lei 4 — Variável tem que ser entendido em 30 segundos</h3>
+<p>Se você precisa de uma planilha pra explicar, o funcionário não vai mudar de comportamento — porque ele não sabe o que fazer amanhã pra ganhar mais.</p>
+<p><strong>Teste:</strong> peça pra 3 pessoas da equipe explicarem o variável delas. Se as três explicações forem diferentes, o modelo é complexo demais.</p>
+<h3 id="lei-5-variavel-nao-conserta-salario-ruim">Lei 5 — Variável não conserta salário ruim</h3>
+<p>Se o fixo está abaixo do mercado, o variável vira desespero, não motivação. Primeiro arrume o fixo (Módulo 4). Depois construa o variável.</p>
+<hr>
+<h2 id="o-que-nunca-premiar">O que NUNCA premiar</h2>
+<div class="tabwrap"><table><thead><tr><th>Nunca premie</th><th>Por quê</th><th>Prêmie no lugar</th></tr></thead><tbody><tr><td><strong>Volume sem qualidade</strong></td><td>Gera refugo e retrabalho</td><td>Volume <strong>com</strong> índice de qualidade</td></tr><tr><td><strong>Venda bruta</strong></td><td>Vendedor entrega margem pra fechar</td><td>Margem de contribuição da venda</td></tr><tr><td><strong>Horas trabalhadas</strong></td><td>Premia lentidão</td><td>Entrega no prazo</td></tr><tr><td><strong>Presença/assiduidade</strong></td><td>É obrigação, não mérito</td><td>Nada. É condição de emprego</td></tr><tr><td><strong>Zero acidente</strong></td><td>Esconde acidente</td><td>Ações preventivas realizadas, quase-acidentes reportados</td></tr><tr><td><strong>Resultado individual em trabalho coletivo</strong></td><td>Destrói cooperação</td><td>Resultado da célula/equipe</td></tr><tr><td><strong>Metas subjetivas</strong> ("dedicação")</td><td>Vira favoritismo</td><td>Comportamento observável e contável</td></tr><tr><td><strong>Coisa fora do controle da pessoa</strong></td><td>Gera revolta</td><td>Só o que ela pode influenciar</td></tr><tr><td><strong>Ausência de reclamação</strong></td><td>Esconde reclamação</td><td>NPS medido por terceiro</td></tr></tbody></table></div>
+<h3 id="o-erro-mais-caro-comissao-sobre-venda-bruta">O erro mais caro: comissão sobre venda bruta</h3>
+<p>Se o vendedor ganha 2% sobre a venda, o incentivo dele é fechar — a qualquer preço. Um desconto de 10% pra ele custa 10% da comissão dele, mas pra você pode custar <strong>40% da margem</strong>.</p>
+<p><strong>Solução — comissão sobre margem, não sobre venda:</strong></p>
+<pre>Obra vendida por R$ 200.000, custo direto R$ 130.000
+Margem de contribuição = R$ 70.000
+Comissão = 6% da margem = R$ 4.200
+
+Mesma obra com 10% de desconto: R$ 180.000
+Margem = R$ 50.000  (caiu 28%!)
+Comissão = 6% × R$ 50.000 = R$ 3.000  (caiu 28% também)</pre>
+<p>Agora o vendedor sente o desconto na mesma proporção que você. <strong>Alinhamento de incentivo é isso.</strong></p>
+<p><strong>Se você não consegue calcular margem por obra ainda:</strong> use uma tabela de comissão por faixa de desconto:</p>
+<div class="tabwrap"><table><thead><tr><th>Desconto concedido</th><th>Comissão sobre a venda</th></tr></thead><tbody><tr><td>0% (tabela cheia)</td><td>2,5%</td></tr><tr><td>até 3%</td><td>2,0%</td></tr><tr><td>até 6%</td><td>1,4%</td></tr><tr><td>até 10%</td><td>0,7%</td></tr><tr><td>acima de 10%</td><td>0% + aprovação do dono</td></tr></tbody></table></div>
+<hr>
+<h2 id="modelos-prontos-por-funcao">Modelos prontos por função</h2>
+<h3 id="modelo-1-producao-fabrica-por-celula">MODELO 1 — Produção (fábrica), por célula</h3>
+<pre>═══════════════════════════════════════════════════════════════
+VARIÁVEL DA PRODUÇÃO — CÉLULA
+Valor máximo: R$ 400/mês por pessoa da célula
+
+GATILHO 1 — ENTREGA (peso 50%)
+% de ambientes concluídos no prazo do cronograma
+  ≥ 95% ............ R$ 200
+  90% a 94% ........ R$ 140
+  85% a 89% ........ R$ 80
+  &lt; 85% ............ R$ 0
+
+GATILHO 2 — QUALIDADE (peso 50%) — trava
+Itens devolvidos/refeitos por erro da fábrica, no mês
+  0 item ........... R$ 200
+  1 item ........... R$ 120
+  2 itens .......... R$ 50
+  3+ itens ......... R$ 0  →  E ZERA O GATILHO 1 TAMBÉM
+
+REGRA DA TRAVA: com 3 ou mais itens de retrabalho, o variável
+inteiro é zero, independente da entrega. Volume não compra
+qualidade aqui.
+
+BÔNUS DE FORMAÇÃO (fora do teto)
++ R$ 300 quando um afilhado seu passa no marco de 90 dias.
+═══════════════════════════════════════════════════════════════</pre>
+<h3 id="modelo-2-montagem-obra">MODELO 2 — Montagem / obra</h3>
+<pre>GATILHO 1 — Ambiente entregue com KPI 100% (limpo e aceito)
+   R$ 60 por ambiente entregue no prazo
+
+GATILHO 2 — TRAVA DE QUALIDADE
+   Zero retorno de assistência técnica em 30 dias após a entrega.
+   Se houver retorno atribuído à montagem, o valor daquele
+   ambiente não é pago.
+
+GATILHO 3 — TRAVA DE CLIENTE
+   Avaliação do cliente na entrega ≥ 8 (pesquisa de 1 pergunta,
+   feita pelo administrativo, não pelo montador).
+
+Pagamento: no mês seguinte ao fechamento dos 30 dias de carência.</pre>
+<p><strong>Detalhe crítico:</strong> os 30 dias de carência são o que impede a montagem "boa até a saída da equipe". Sem carência, você paga por um resultado que ainda não existe.</p>
+<h3 id="modelo-3-encarregado-lider">MODELO 3 — Encarregado / Líder</h3>
+<p>Líder é pago pelo resultado do time, não pelo dele.</p>
+<pre>BASE: R$ 1.000/mês, condicionado a 3 gatilhos.
+
+GATILHO 1 — RESULTADO DA ÁREA (40%)
+   Aderência ao cronograma da área ≥ 90% .......... R$ 400
+
+GATILHO 2 — QUALIDADE (30%)
+   Índice de retrabalho da área ≤ 4% .............. R$ 300
+
+GATILHO 3 — PESSOAS (30%) ← o diferencial
+   Cumpriu a rotina de gestão:
+   [ ] Diária realizada em ≥ 90% dos dias úteis
+   [ ] One-on-one com cada liderado no mês
+   [ ] Zero pendência de CORTE sem acompanhamento
+   [ ] Nenhum liderado saiu por insatisfação com liderança
+   Os 4 cumpridos .................................. R$ 300
+   3 cumpridos ..................................... R$ 150
+   ≤ 2 ............................................. R$ 0</pre>
+<p><strong>Por que o gatilho 3 existe:</strong> sem ele, o líder foca só em número e negligencia gente — e daí a seis meses você perde a equipe inteira. Pagar pela <strong>rotina de gestão</strong> é o que transforma encarregado em líder.</p>
+<h3 id="modelo-4-comercial">MODELO 4 — Comercial</h3>
+<pre>COMISSÃO SOBRE MARGEM
+   6% da margem de contribuição da obra
+   Pago em 3 parcelas: 40% na assinatura, 30% na aprovação do
+   caderno técnico, 30% na entrega final.
+
+   Por quê parcelado: alinha o vendedor com o ciclo inteiro.
+   Vendedor que some depois da assinatura para de sumir.
+
+TRAVA 1 — QUALIDADE DO BRIEFING
+   Se o caderno técnico atrasar por informação faltante que era
+   responsabilidade do briefing comercial, a 2ª parcela cai 50%.
+
+TRAVA 2 — INADIMPLÊNCIA
+   Comissão só é paga sobre parcela efetivamente recebida.
+
+TRAVA 3 — ALTERAÇÃO PÓS-VENDA
+   Alteração pedida pelo cliente que decorra de erro de escopo
+   do vendedor sai da comissão dele.
+
+BÔNUS DE ORIGEM (opcional)
+   +1% se o lead foi prospectado por ele (não veio de indicação
+   ou de tráfego pago da empresa).</pre>
+<h3 id="modelo-5-projetos">MODELO 5 — Projetos</h3>
+<pre>GATILHO 1 — PRODUTIVIDADE
+   R$ 40 por ambiente com caderno técnico entregue no prazo
+
+GATILHO 2 — TRAVA DE QUALIDADE (a mais importante)
+   Zero erro de projeto identificado na fábrica ou na obra.
+   Cada erro atribuído ao projeto desconta 1 ambiente do mês.
+
+   [Erro de projeto = medida errada, ferragem incompatível,
+   informação faltante que trava a produção]
+
+GATILHO 3 — REVISÕES
+   Média de rodadas de revisão com cliente ≤ 2 por projeto.</pre>
+<h3 id="modelo-6-administrativo-financeiro">MODELO 6 — Administrativo / Financeiro</h3>
+<p>Difícil de medir por volume. Meça por <strong>exceção e prazo</strong>.</p>
+<pre>GATILHO 1 — Fechamento do mês entregue até o dia 10 ......... R$ 150
+GATILHO 2 — Zero erro em folha e em pagamento a fornecedor .. R$ 150
+GATILHO 3 — Inadimplência de clientes abaixo de X% .......... R$ 200
+GATILHO 4 — Zero multa ou juros por atraso de obrigação ..... R$ 100</pre>
+<hr>
+<h2 id="como-calcular-o-teto-quanto-a-empresa-pode-pagar">Como calcular o teto: quanto a empresa pode pagar</h2>
+<p>Regra de segurança: <strong>o variável total nunca pode consumir mais que 25% do ganho incremental que ele gera.</strong></p>
+<pre>CÁLCULO DE VIABILIDADE
+
+1. Qual é o ganho esperado?
+   Ex: reduzir retrabalho de 8% para 4% numa base de custo de
+   produção de R$ 200.000/mês = R$ 8.000/mês de ganho
+
+2. Qual é o teto do variável?
+   R$ 8.000 × 25% = R$ 2.000/mês distribuído
+
+3. Divida pela equipe elegível
+   R$ 2.000 ÷ 12 pessoas = R$ 167/pessoa/mês
+
+4. Ajuste pra número redondo e comunicável: R$ 150/pessoa/mês</pre>
+<p><strong>Se o cálculo der um valor irrisório</strong> (menos de 5% do salário), o variável não vai mudar comportamento. Nesse caso: ou o ganho projetado é pequeno demais pra justificar o programa, ou você deve concentrar em menos pessoas.</p>
+<p><strong>Faixa de referência do variável como % do salário:</strong></p>
+<div class="tabwrap"><table><thead><tr><th>Nível</th><th>Variável como % do fixo</th><th>Por quê</th></tr></thead><tbody><tr><td>Operacional</td><td>5% a 12%</td><td>Pouco controle sobre o resultado global</td></tr><tr><td>Encarregado</td><td>15% a 25%</td><td>Controla o resultado da área</td></tr><tr><td>Coordenador/Gerente</td><td>25% a 40%</td><td>Controla resultado e custo</td></tr><tr><td>Comercial</td><td>40% a 100%+</td><td>Resultado é diretamente atribuível</td></tr></tbody></table></div>
+<hr>
+<h2 id="o-regulamento-de-variavel-1-pagina-modelo-pronto">O Regulamento de Variável (1 página) — modelo pronto</h2>
+<p>Esse documento é obrigatório <strong>antes</strong> de anunciar qualquer variável. Sem ele, toda dúvida vira negociação individual.</p>
+<pre>═══════════════════════════════════════════════════════════════
+REGULAMENTO DE REMUNERAÇÃO VARIÁVEL
+[EMPRESA] — Vigência a partir de ___/___/______  Versão ___
+
+1. QUEM PARTICIPA
+   Colaboradores CLT das áreas [X, Y, Z], após [90] dias de casa.
+
+2. QUAL É O VALOR
+   [Tabela por função, com teto mensal]
+
+3. COMO SE GANHA
+   [Gatilhos, com número exato e fonte do dado]
+   Fonte do dado: __________ (ex: ERP, planilha de produção)
+   Quem apura: _____________
+   Quando apura: dia ___ do mês seguinte
+
+4. O QUE ZERA O VARIÁVEL DO MÊS
+   [ ] Falta injustificada
+   [ ] CORTE com registro (degrau 2 ou superior) no mês
+   [ ] Advertência formal
+   [ ] Descumprimento de norma de segurança
+   [ ] [Trava de qualidade específica da função]
+
+5. QUANDO É PAGO
+   Junto com a folha do mês seguinte à apuração.
+
+6. NATUREZA JURÍDICA
+   Este prêmio é variável, condicionado ao atingimento de metas,
+   não integra o salário para nenhum efeito, e pode ser revisto
+   ou encerrado a critério da empresa mediante comunicação prévia
+   de 30 dias.
+   [⚠ Redação a ser validada por advogado trabalhista — ver seção
+   de cuidados jurídicos]
+
+7. TRANSPARÊNCIA
+   O resultado de cada gatilho é publicado no quadro/grupo até
+   o dia ___ de cada mês, com o número de todos.
+
+8. REVISÃO
+   As metas são revistas a cada [6/12] meses. Mudança é comunicada
+   com 30 dias de antecedência e nunca retroage.
+
+9. DÚVIDAS E CONTESTAÇÃO
+   Contestação de apuração deve ser feita até 5 dias após a
+   publicação, ao [gestor]. Resposta em até 3 dias úteis.
+
+Comunicado em: ___/___/___    Ciente: ______________________
+═══════════════════════════════════════════════════════════════</pre>
+<h2 id="cuidados-juridicos-leia-antes-de-implantar">⚠️ Cuidados jurídicos (leia antes de implantar)</h2>
+<div class="tabwrap"><table><thead><tr><th>Risco</th><th>Como mitigar</th></tr></thead><tbody><tr><td><strong>Prêmio virar salário</strong></td><td>Redação clara de que é condicionado a metas, com regulamento escrito e comunicado. Consulte advogado sobre o enquadramento (art. 457, §2º e §4º CLT)</td></tr><tr><td><strong>Habitualidade</strong></td><td>Se paga o mesmo valor todo mês pra todo mundo, a Justiça entende como salário. Variação real é a sua proteção</td></tr><tr><td><strong>Reflexos</strong></td><td>Prêmio corretamente configurado não integra base de férias, 13º e FGTS. Mal configurado, integra tudo, retroativo</td></tr><tr><td><strong>Redução unilateral</strong></td><td>Não corte variável já conquistado. Mudanças só prospectivas, com aviso de 30 dias</td></tr><tr><td><strong>Discriminação</strong></td><td>Mesma regra para todos na mesma função. Exceção individual gera passivo</td></tr></tbody></table></div>
+<blockquote><p><strong>Faça o regulamento passar pelo seu advogado trabalhista antes de comunicar.</strong> Custo: uma consulta. Risco de não fazer: reflexos retroativos de 5 anos.</p></blockquote>
+<hr>
+<h2 id="como-implantar-sem-virar-bagunca">Como implantar sem virar bagunça</h2>
+<h3 id="protocolo-de-implantacao-120-dias">Protocolo de implantação — 120 dias</h3>
+<p><strong>Fase 1 (dias 1–30) — Medir sem pagar</strong> Comece a medir os indicadores e <strong>publicar</strong> os números, sem pagar nada ainda.</p>
+<pre>"Pessoal, a partir de hoje vou publicar todo mês três números:
+[X, Y, Z]. Por enquanto é só informação — quero que todo mundo
+entenda o número antes da gente amarrar dinheiro nele."</pre>
+<p><strong>Por quê:</strong> você calibra a meta com dado real, não com chute. E a equipe se acostuma com o indicador sem ansiedade.</p>
+<p><strong>Fase 2 (dias 31–60) — Simular</strong> Continue medindo e publique quanto <strong>teria sido pago</strong> se o programa estivesse valendo.</p>
+<pre>"Se o variável já estivesse rodando, a célula A teria recebido
+R$ 380 e a célula B, R$ 140. Olhem por quê."</pre>
+<p>Isso gera conversa concreta sobre o que fazer diferente, sem custo nenhum.</p>
+<p><strong>Fase 3 (dia 61) — Lançar</strong> Comunicação formal, regulamento entregue, ciência assinada.</p>
+<p><strong>Fase 4 (dias 61–120) — Rodar e ajustar</strong> Se no primeiro mês 100% bateu, a meta estava frouxa — ajuste <strong>para o próximo ciclo</strong>, nunca retroativamente.</p>
+<h3 id="script-de-comunicacao-do-lancamento">Script de comunicação do lançamento</h3>
+<pre>"Vou apresentar o programa de variável que começa dia [X].
+
+Por que a gente está fazendo: [motivo real — ex: nossa margem
+não permite aumentar o fixo de todo mundo, mas permite dividir
+o ganho quando a gente melhora. Se a gente melhorar junto,
+vocês ganham junto].
+
+Como funciona: [explique em 2 minutos, com os números].
+
+O que zera: [seja claro sobre as travas].
+
+Onde vocês vão ver o número: [quadro/grupo], todo dia [X].
+
+Três coisas que eu quero deixar claras:
+1. Isso não substitui reajuste. Reajuste continua em [mês].
+2. Se ninguém bater, a meta está errada e eu vou revisar —
+   e vou avisar antes, não vou mudar escondido.
+3. Se todo mundo bater todo mês, a meta também está errada
+   e eu vou ajustar, avisando com 30 dias.
+
+Perguntas?"</pre>
+<p><strong>O item 2 e o 3 são o que geram confiança.</strong> Você está dizendo que o jogo é honesto nos dois sentidos.</p>
+<hr>
+<h2 id="os-15-erros-mais-comuns">Os 15 erros mais comuns</h2>
+<div class="tabwrap"><table><thead><tr><th>#</th><th>Erro</th><th>Consequência</th></tr></thead><tbody><tr><td>1</td><td>Um gatilho só</td><td>Sempre é gamificado</td></tr><tr><td>2</td><td>Premiar volume sem trava de qualidade</td><td>Refugo e retrabalho</td></tr><tr><td>3</td><td>Comissão sobre venda bruta</td><td>Margem destruída por desconto</td></tr><tr><td>4</td><td>Não ter regulamento escrito</td><td>Cada dúvida vira negociação</td></tr><tr><td>5</td><td>Não validar juridicamente</td><td>Prêmio vira salário com reflexos retroativos</td></tr><tr><td>6</td><td>Meta que ninguém alcança</td><td>Desmotiva mais que não ter variável</td></tr><tr><td>7</td><td>Meta que todo mundo alcança</td><td>Vira salário parcelado</td></tr><tr><td>8</td><td>Mudar a regra no meio do ciclo</td><td>Destrói confiança permanentemente</td></tr><tr><td>9</td><td>Não publicar o número</td><td>Ninguém sabe como está, ninguém muda nada</td></tr><tr><td>10</td><td>Variável individual em trabalho coletivo</td><td>Mata cooperação</td></tr><tr><td>11</td><td>Fórmula complexa</td><td>Ninguém entende, ninguém muda comportamento</td></tr><tr><td>12</td><td>Premiar coisa fora do controle da pessoa</td><td>Revolta</td></tr><tr><td>13</td><td>Não ter carência na qualidade</td><td>Paga por resultado que ainda não existe</td></tr><tr><td>14</td><td>Usar variável pra compensar fixo baixo</td><td>Vira desespero, não motivação</td></tr><tr><td>15</td><td>Nunca revisar</td><td>Meta de 2 anos atrás não serve mais</td></tr></tbody></table></div>
+<hr>
+<h2 id="perguntas-que-o-lider-deve-fazer">Perguntas que o líder deve fazer</h2>
+<ol><li>Se alguém quisesse "burlar" meu variável, como faria? (Se tem jeito fácil, adicione o gatilho 2.)</li><li>O que eu estou pagando hoje está gerando o comportamento que eu quero?</li><li>Cada pessoa sabe, sem consultar ninguém, quanto ela ganhou de variável neste mês até hoje?</li><li>Meu variável premia cooperação ou competição interna?</li><li>Quanto do ganho gerado eu estou distribuindo? Está dentro dos 25%?</li><li>Meu regulamento passou por advogado?</li><li>Quando foi a última vez que revisei as metas?</li></ol>
+<hr>
+<h2 id="exercicios-do-modulo-9">Exercícios do Módulo 9</h2>
+<h3 id="exercicio-1-auditoria-do-incentivo-atual-30-min">Exercício 1 — Auditoria do incentivo atual (30 min)</h3>
+<p>Liste tudo o que você paga hoje além do salário. Para cada item: qual comportamento isso premia? É o comportamento que você quer?</p>
+<h3 id="exercicio-2-teste-de-burla-20-min">Exercício 2 — Teste de burla (20 min)</h3>
+<p>Pra cada variável que você tem ou pretende ter, responda: <em>se eu fosse funcionário e quisesse maximizar meu ganho sem me importar com a empresa, o que eu faria?</em> A resposta te dá o gatilho 2 que falta.</p>
+<h3 id="exercicio-3-calculo-de-viabilidade-45-min">Exercício 3 — Cálculo de viabilidade (45 min)</h3>
+<p>Escolha 1 indicador que você quer melhorar. Calcule o ganho financeiro se melhorar. Aplique a regra dos 25%. Chegue no valor por pessoa.</p>
+<h3 id="exercicio-4-desenhe-o-gatilho-duplo-1h">Exercício 4 — Desenhe o gatilho duplo (1h)</h3>
+<p>Para as 3 funções principais, escreva gatilho 1 (quantidade), gatilho 2 (qualidade) e a regra de trava.</p>
+<h3 id="exercicio-5-escreva-o-regulamento-1h">Exercício 5 — Escreva o regulamento (1h)</h3>
+<p>Use o modelo. Uma página. Leve pro advogado antes de comunicar.</p>
+<h3 id="exercicio-6-fase-1-30-dias">Exercício 6 — Fase 1 (30 dias)</h3>
+<p>Comece a medir e publicar os números sem pagar nada. Só isso já muda comportamento.</p>
+<hr>
+<h2 id="frases-de-impacto-do-modulo-9">Frases de impacto do Módulo 9</h2>
+<ul><li><em>"Me mostra como você paga e eu te digo o que sua equipe faz."</em></li><li><em>"Um número sozinho sempre é gamificado. Dois números que se contrapõem, não."</em></li><li><em>"Variável que todo mundo bate todo mês não é variável. É salário parcelado com nome bonito."</em></li><li><em>"Se o funcionário precisa de planilha pra entender, ele não vai mudar de comportamento amanhã."</em></li><li><em>"Comissão sobre venda bruta paga o vendedor pra dar o seu desconto."</em></li><li><em>"Volume não compra qualidade. Escreva isso na trava."</em></li><li><em>"Variável não conserta salário ruim. Conserte o fixo primeiro."</em></li><li><em>"Mudar a regra no meio do ciclo destrói mais confiança do que não ter variável nenhum."</em></li></ul>
+<hr>
+<h2 id="entregavel-do-modulo-9">Entregável do Módulo 9</h2>
+<ol><li>Auditoria dos incentivos atuais.</li><li>Gatilho duplo desenhado para as 3 funções principais.</li><li>Cálculo de viabilidade com a regra dos 25%.</li><li>Regulamento de variável em 1 página, validado juridicamente.</li><li>Fase 1 (medir e publicar) iniciada.</li></ol>
+<p><strong>Próximo módulo:</strong> Avaliação de desempenho — o sistema que sustenta carreira, variável e decisão de gente.</p>
+
+  <div class="rodape"><span>FASE 4 · MÓDULO 09 · Fase 4 — Liderança</span><span>Material de formação em gestão para donos de PME</span></div>
+  <div class="direitos"><img src="data:image/png;base64,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" alt="ARESTA APM"><span>&copy; 2026 ARESTA APM &middot; Conteúdo e método proprietários. Uso restrito ao aluno matriculado — proibida a reprodução, revenda ou redistribuição, total ou parcial.</span></div>
+</div>
+
+<script>
+// mantem a marca digitada pelo usuario neste navegador
+(function(){
+  var m=document.querySelector('.marca');
+  var k='mkt-marca';
+  try{ var s=localStorage.getItem(k); if(s) m.innerHTML=s; }catch(e){}
+  m.addEventListener('blur',function(){ try{localStorage.setItem(k,m.innerHTML);}catch(e){} });
+})();
+</script>
+</body>
+</html>
