@@ -237,6 +237,15 @@ independente do que ele comprou.
 
 ### Publicar uma fase inteira de uma vez
 
+> **O nome do arquivo decide se aquilo é aula.** A barra de andamento do aluno conta
+> só os módulos escritos: arquivo `f<fase>-<numero>-titulo.html` que subiu para o
+> bucket (`f1-00-…`, `f4-13-…`). Todo o resto — planilha, PDF, contrato, checklist de
+> campo, fluxograma — entra como **material de apoio** e não mexe na barra. É de
+> propósito: contrato baixado não é aula estudada, e sem essa separação a Operação
+> marcaria progresso porque alguém abriu o contrato de CLT. Consequência prática: aula
+> publicada com outro padrão de nome aparece na fase, abre normal, mas não conta.
+> O `publicar-fase.py` já nomeia certo — é mais um motivo para publicar por ele.
+
 Quando os HTMLs de uma fase ficam prontos em `mentoria-conteudo/publicar/`, existem
 dois caminhos. **Os dois gravam na mesma pasta do bucket:** o número da fase **menos 1**
 (Fase 1 → `0/`, Fase 4 → `3/`). Errar isso publica na pasta errada e o RLS bloqueia

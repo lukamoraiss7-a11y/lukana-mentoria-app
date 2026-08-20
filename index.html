@@ -1071,7 +1071,23 @@ let PROG_CHAVE='apm-prog';
 let PROG_SERVIDOR=false;   /* a tabela existe e respondeu */
 let PROG_TIMER=null;
 
-function ehAula(f){return f.type==='html';}
+/* AULA nao e' "qualquer html". Os documentos operacionais — contrato,
+   ata, checklist de montagem, fluxograma — tambem sao `type: "html"`
+   (veja `migrar-ferramentas-para-tabela.sql`), e contar contrato como
+   aula faria a barra da Operacao andar sozinha.
+   O que separa: aula e' o modulo escrito, publicado pelo
+   `publicar-fase.py`, que sobe para o bucket (`path`) com nome
+   `f<fase>-<numero>-titulo.html` — `f1-00`, `f4-13`, `f5-15`. Documento
+   antigo nao tem `path` (ainda mora em `files/`) e nunca teve esse
+   nome. Os dois testes juntos, porque um so' nao basta: `path` sozinho
+   pegaria qualquer arquivo que o admin subir pelo painel.
+   Consequencia a saber: aula publicada com outro nome de arquivo entra
+   como material de apoio e nao conta na barra. Publicar fase e' pelo
+   script — e' o caminho documentado no MANUAL. */
+function ehAula(f){
+  if(f.type!=='html'||!f.path)return false;
+  return /^f\d+-\d{2}/i.test(String(f.path).split('/').pop());
+}
 /* A identidade do material. `path` e' o caminho no bucket e e' o que
    dura; material antigo cadastrado por URL nao tem path e cai no
    `file`/`url`. O nome e' o ultimo recurso — muda quando o admin
