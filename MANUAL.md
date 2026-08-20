@@ -47,6 +47,23 @@ Conferência de 08/08: as quatro funções (`admin_definir_senha`, `admin_listar
 executáveis por aluno logado e **nenhuma** por visitante anônimo. A trava de admin de
 `admin_definir_senha` foi testada e recusa até chamada com poder de `postgres`.
 
+### 1-C. Rodar o `progresso.sql` — ⬜ **PENDENTE**
+
+Um arquivo só, uma vez: `mentoria-app/progresso.sql`. Painel do Supabase → SQL Editor →
+New query → colar → Run.
+
+Cria a tabela `public.progresso` (uma linha por aluno) com RLS: cada um lê e escreve
+só a própria linha.
+
+**O app não quebra sem ela.** Sem a tabela, o andamento — quais aulas o aluno já abriu,
+quais itens do checklist ele já marcou — fica guardado no navegador dele e nada mais.
+O que a tabela resolve é o mesmo problema que a senha resolveu em 08/08: o acesso passou
+a ser da conta, e o progresso precisa seguir a conta também. Sem ela, quem abre a aula no
+computador da fábrica e depois entra pelo celular vê a barra voltar a zero.
+
+Quando a tabela entra, o que já estava no navegador **soma** com o que está no servidor —
+não substitui. Ninguém perde o que já leu.
+
 ### 2. Configurar o SMTP (uma vez, 10 minutos) — **deixou de ser bloqueio**
 
 O serviço de e-mail embutido do Supabase entrega **2 mensagens por hora no projeto

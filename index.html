@@ -173,6 +173,43 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
 .cct{font-family:'Inter',sans-serif;font-size:20px;font-weight:700;letter-spacing:.3px;margin-bottom:3px;}
 .ccs{font-size:12px;color:var(--text-muted);}
 
+/* ═══ ANDAMENTO ═══
+   Uma familia de classes para as quatro telas (barra lateral, dashboard,
+   trilha e fase). Antes cada barra era `style="width:0%"` escrito na mao
+   no HTML: tres numeros parados que nunca sairam do zero. */
+.pgw{display:flex;align-items:center;gap:26px;flex-wrap:wrap;background:var(--navy-light);border:1px solid #333;border-radius:6px;padding:19px 23px;margin-bottom:26px;position:relative;overflow:hidden;}
+.pgw::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold-gradient);}
+.pgv{font-family:'Inter',sans-serif;font-size:34px;font-weight:700;line-height:1;color:var(--accent-light);}
+.pgvl{font-size:9px;text-transform:uppercase;letter-spacing:1.6px;color:var(--text-muted);margin-top:5px;}
+.pgb{flex:1;min-width:230px;}
+.pgm{font-size:11.5px;color:var(--text-secondary);line-height:1.6;margin-top:8px;}
+.pgt{height:6px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;}
+.pgf{height:100%;background:var(--gold-gradient);border-radius:3px;transition:width .3s;}
+/* Fase a fase, do lado do numero grande. Cabe as 5 fases e os 2 bonus
+   sem virar tabela. */
+.pgs{display:flex;gap:9px;flex-wrap:wrap;}
+.pgc{min-width:74px;background:rgba(255,255,255,.02);border:1px solid #2c2c2c;border-radius:4px;padding:8px 10px;cursor:pointer;transition:border-color .15s;}
+.pgc:hover{border-color:rgba(201,168,76,.35);}
+.pgc.ok{border-color:rgba(34,197,94,.3);background:rgba(34,197,94,.05);}
+.pgc.lk{opacity:.5;cursor:default;}
+.pgcn{font-family:'Inter',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:1.2px;color:var(--accent);margin-bottom:5px;}
+.pgcv{font-size:10px;color:var(--text-muted);margin-top:5px;}
+.pgct{height:3px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden;}
+.pgcf{height:100%;background:var(--gold-gradient);border-radius:2px;}
+/* Lista de aulas dentro da fase. `ok` = ja aberta. */
+.aul{display:flex;align-items:center;gap:11px;padding:9px 11px;background:rgba(255,255,255,.02);border:1px solid #2c2c2c;border-radius:4px;margin-bottom:5px;transition:border-color .15s,background .15s;}
+.aul:hover{border-color:rgba(201,168,76,.3);}
+.aul.ok{background:rgba(34,197,94,.04);border-color:rgba(34,197,94,.2);}
+.auc{width:20px;height:20px;border-radius:50%;border:1px solid #3a3a3a;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Inter',sans-serif;font-size:9.5px;font-weight:700;color:var(--text-muted);cursor:pointer;background:none;padding:0;transition:all .15s;}
+.auc:hover{border-color:rgba(201,168,76,.5);color:var(--accent-light);}
+.aul.ok .auc{background:rgba(34,197,94,.14);border-color:rgba(34,197,94,.45);color:#22c55e;}
+.aun{flex:1;min-width:0;font-size:12.5px;color:var(--text-secondary);line-height:1.45;}
+.aul.ok .aun{color:var(--text-primary);}
+.aus{font-size:9.5px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-top:2px;}
+/* Chip de andamento no cabecalho da trilha (slot do selo). */
+.fa-prg{font-size:10px;color:var(--text-muted);white-space:nowrap;}
+.fa-prg b{color:var(--accent-light);font-weight:700;}
+
 /* Trilha */
 .pb{margin-bottom:32px;}
 .pbh{display:flex;align-items:center;gap:13px;margin-bottom:15px;padding-bottom:13px;border-bottom:1px solid #222;}
@@ -421,9 +458,9 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
       </button>
     </div>
     <div class="sb-foot">
-      <div class="prow">Progresso<span class="pval">0%</span></div>
-      <div class="ptrk"><div class="pfil"></div></div>
-      <div class="psub">0 de 5 fases concluídas</div>
+      <div class="prow">Progresso<span class="pval" id="sb-pct">0%</span></div>
+      <div class="ptrk"><div class="pfil" id="sb-bar"></div></div>
+      <div class="psub" id="sb-fases">0 de 5 fases concluídas</div>
       <div class="psub" id="sb-plano" style="margin-top:4px;"></div>
     </div>
     <div class="aresta-direitos lateral">
@@ -460,22 +497,16 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
             <div><div class="hsv">8</div><div class="hsl">Ferramentas</div></div>
           </div>
         </div>
+        <!-- Andamento, blocos e "continue de onde parou" sao montados por
+             JS a partir do que o aluno realmente abriu. Antes eram tres
+             cartoes escritos na mao com 0% e "0 de 2 fases" cravados no
+             HTML: nao mediam nada e nunca mudavam. -->
+        <div class="sr"><div class="st">Seu Andamento</div><span class="sl2" onclick="sv('materiais')">Ver materiais &rarr;</span></div>
+        <div id="dash-andamento"></div>
         <div class="sr"><div class="st">Blocos do Programa</div></div>
-        <div class="phr" style="margin-bottom:26px;">
-          <div class="pc on"><div class="pt">Bloco 1 · Fases 1–2</div><div class="pn">Fundamentos & Máquina Comercial</div><div class="pd">Base empresarial, contabilidade, lucro, precificação e a máquina de vendas.</div><div class="ptr"><div class="pf" style="width:0%"></div></div><div class="pm">0 de 2 fases</div></div>
-          <div class="pc"><div class="pt off">Bloco 2 · Fases 3–4</div><div class="pn off">Operação & Liderança</div><div class="pd">Fábrica com método, contratos no lugar e time que responde por número.</div><div class="ptr"><div class="pf" style="width:0%"></div></div><div class="pm">0 de 2 fases</div></div>
-          <div class="pc"><div class="pt off">Bloco 3 · Fase 5 + Bônus</div><div class="pn off">Escala & Bônus</div><div class="pd">Crescimento, marketing e automação inteligente.</div><div class="ptr"><div class="pf" style="width:0%"></div></div><div class="pm">0 de 3 fases</div></div>
-        </div>
+        <div class="phr" id="dash-blocos" style="margin-bottom:26px;"></div>
         <div class="sr"><div class="st">Continue de Onde Parou</div></div>
-        <div class="cc" onclick="smd(0)">
-          <div class="ccp"><div class="ccpa"></div></div>
-          <div class="cci">
-            <div class="ccl">Fase 1 · Lucro</div>
-            <div class="cct">Fundamentos</div>
-            <div class="ccs">Você para de pensar como marceneiro, passa a pensar como empresário — e aprende a transformar faturamento em lucro.</div>
-          </div>
-          <button class="bgo">Iniciar Aula →</button>
-        </div>
+        <div id="dash-continuar"></div>
         <div class="sr"><div class="st">Próximas Aulas</div><span class="sl2" onclick="sv('trilha')">Ver trilha completa →</span></div>
         <div class="cgrid" id="dash-cards"></div>
       </div>
@@ -815,10 +846,11 @@ function faCard(m){
       <span class="fa-num">${num}</span>
       <span class="fa-title">${title}</span>
       <span class="fa-tag">${m.o}</span>
-      ${fechada?seloVenda():'<span></span>'}
+      ${fechada?seloVenda():chipFase(m)}
       <svg class="fa-chev" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="2,5 8,11 14,5"/></svg>
     </div>
     <div class="fa-body">
+      ${fechada?'':`<div style="margin-bottom:15px;">${barraFase(m.id)}</div>`}
       ${pilares.map(p=>`<span class="fa-pilar">${p}</span>`).join('')}
       <div class="fa-sec">Conteúdo</div>
       <div class="fa-cgrid">${m.tp.map(t=>`<div class="fa-item">${t}</div>`).join('')}</div>
@@ -839,9 +871,23 @@ function faCard(m){
   </div>`;
 }
 
+/* Chip do cabecalho: ocupa o mesmo lugar do selo de venda. Fase sem
+   aula publicada nao mostra nada — melhor vazio do que "0/0". */
+function chipFase(m){
+  const p=progFase(m.id);
+  if(!p.total)return'<span></span>';
+  if(p.abertas===p.total)return`<span class="fa-prg" style="color:#22c55e;">${ICO_OK} ${p.total} aulas</span>`;
+  return`<span class="fa-prg"><b>${p.abertas}</b>/${p.total} aulas</span>`;
+}
+
 function renderTrilha(){
+  /* A trilha e refeita a cada aula marcada. Sem guardar quem estava
+     aberto, marcar uma aula fecharia na cara do aluno a fase que ele
+     acabou de expandir. */
+  const abertas=[...document.querySelectorAll('.fa.open')].map(e=>e.id);
   document.getElementById('fa-fases').innerHTML=M.filter(m=>m.id<NF).map(faCard).join('');
   document.getElementById('fa-bonus').innerHTML=M.filter(m=>m.id>=NF).map(faCard).join('');
+  abertas.forEach(id=>document.getElementById(id)?.classList.add('open'));
 }
 
 function toggleFa(id){document.getElementById('fa-'+id).classList.toggle('open');}
@@ -999,6 +1045,407 @@ function rotuloFase(m){return m.id<NF?'Fase '+(m.id+1):'Bônus '+(m.id-NF+1);}
    banco. E' texto de vitrine, nao material — pode ser mostrado trancado. */
 function entregaveis(m){return m.d.split('. ').map(t=>t.replace(/\.$/,'').trim()).filter(Boolean);}
 
+/* ═══════════════════════════════════════════════════════════════
+   ANDAMENTO — o que o aluno já abriu
+   ═══════════════════════════════════════════════════════════════
+   AULA e MATERIAL DE APOIO nao sao a mesma coisa. Aula e' o modulo
+   escrito, publicado como `html` pelo `publicar-fase.py`. Planilha,
+   contrato e link sao apoio: entram na conta de "materiais", nunca na
+   barra de aulas. Sem essa separacao a Fase 3 marcaria progresso
+   porque o aluno baixou um contrato, e a barra andaria sem ninguem
+   ter estudado nada.
+
+   VIDEO ainda nao existe. Quando existir, ele vira aula tambem — e o
+   par video+texto do mesmo modulo tem de contar UMA vez, nao duas.
+   E' por isso que `aulasDaFase` esta num lugar so': quando o primeiro
+   video subir, a decisao se toma aqui dentro e as cinco telas seguem.
+
+   ONDE FICA: `PROG` vai para o localStorage (por conta, nao por
+   navegador — a chave leva o id do aluno) e, se `progresso.sql` ja
+   tiver rodado, sobe tambem para a tabela `public.progresso`. Sem a
+   tabela nada quebra: fica local e o app abre igual. Com ela, quem
+   abriu a aula no computador da fabrica ve a mesma barra no celular. */
+
+let PROG={aulas:{},checks:{}};
+let PROG_CHAVE='apm-prog';
+let PROG_SERVIDOR=false;   /* a tabela existe e respondeu */
+let PROG_TIMER=null;
+
+function ehAula(f){return f.type==='html';}
+/* A identidade do material. `path` e' o caminho no bucket e e' o que
+   dura; material antigo cadastrado por URL nao tem path e cai no
+   `file`/`url`. O nome e' o ultimo recurso — muda quando o admin
+   renomeia, e ai o aluno perde aquela marca. Nao ha o que fazer: sem
+   arquivo nao ha identidade estavel. */
+function chaveMat(f){return String(f.path||f.file||f.url||f.name||'');}
+function matsDaFase(id){return (CONTEUDO.materials||[]).filter(f=>String(f.faseId)===String(id));}
+function aulasDaFase(id){return matsDaFase(id).filter(ehAula);}
+function apoioDaFase(id){return matsDaFase(id).filter(f=>!ehAula(f));}
+function aberto(f){return !!PROG.aulas[chaveMat(f)];}
+
+function progFase(id){
+  const as=aulasDaFase(id), ab=as.filter(aberto).length;
+  return {total:as.length,abertas:ab,pct:as.length?Math.round(ab*100/as.length):0};
+}
+/* Agrega uma lista de fases. Fase fechada nao entra no denominador: a
+   barra mede o que ele comprou, nao o catalogo. Contar o que nao esta
+   no plano dele deixaria o progresso preso em 40% para sempre. */
+function progLista(ms){
+  let total=0,abertas=0,concluidas=0,fechadas=0,liberadas=0;
+  ms.forEach(m=>{
+    if(!liberada(m.id)){fechadas++;return;}
+    liberadas++;
+    const p=progFase(m.id);
+    total+=p.total;abertas+=p.abertas;
+    if(p.total&&p.abertas===p.total)concluidas++;
+  });
+  return {total,abertas,pct:total?Math.round(abertas*100/total):0,concluidas,fechadas,liberadas};
+}
+/* Todas as aulas que ele ainda nao abriu, na ordem da trilha. A
+   primeira e' o "continue de onde parou"; as tres seguintes sao as
+   "proximas aulas". */
+function pendentes(){
+  const out=[];
+  M.forEach(m=>{
+    if(!liberada(m.id))return;
+    const as=aulasDaFase(m.id);
+    as.forEach((f,i)=>{if(!aberto(f))out.push({m,f,i,total:as.length});});
+  });
+  return out;
+}
+function apoioBaixado(){
+  let n=0;
+  M.forEach(m=>{if(liberada(m.id))n+=apoioDaFase(m.id).filter(aberto).length;});
+  return n;
+}
+
+/* ---- gravar ---- */
+function progSalvarLocal(){
+  try{localStorage.setItem(PROG_CHAVE,JSON.stringify(PROG));}catch(e){}
+}
+function progSalvar(){
+  progSalvarLocal();
+  if(!PROG_SERVIDOR||!ALUNO)return;
+  /* Espera o dedo parar. Marcar tres aulas seguidas nao pode virar tres
+     gravacoes. */
+  clearTimeout(PROG_TIMER);
+  PROG_TIMER=setTimeout(async()=>{
+    try{
+      const {error}=await sb.from('progresso')
+        .upsert({user_id:ALUNO.id,payload:PROG,updated_at:new Date().toISOString()},{onConflict:'user_id'});
+      if(error)console.warn('progresso salvar',error.message);
+    }catch(e){console.warn('progresso salvar',e);}
+  },800);
+}
+/* Uniao, nunca substituicao: o que veio do servidor e o que estava no
+   navegador se somam, e a data que fica e' a da PRIMEIRA abertura. Se
+   isto sobrescrevesse, entrar num computador novo apagaria o
+   andamento inteiro — foi o mesmo erro que o app de ferramentas
+   fechou em 10/08/2026. */
+function progMesclar(o){
+  if(!o||typeof o!=='object')return;
+  const a=o.aulas||{};
+  Object.keys(a).forEach(k=>{
+    const t=Number(a[k])||1;
+    if(!PROG.aulas[k]||t<PROG.aulas[k])PROG.aulas[k]=t;
+  });
+  const c=o.checks||{};
+  Object.keys(c).forEach(k=>{
+    const v=Array.isArray(c[k])?c[k]:[];
+    const at=PROG.checks[k]||[];
+    PROG.checks[k]=v.map((x,i)=>!!x||!!at[i]);
+    at.forEach((x,i)=>{if(x)PROG.checks[k][i]=true;});
+  });
+}
+async function progCarregar(){
+  PROG_CHAVE='apm-prog-'+((ALUNO&&ALUNO.id)||'anon');
+  try{
+    const s=localStorage.getItem(PROG_CHAVE);
+    if(s)progMesclar(JSON.parse(s));
+  }catch(e){}
+  const local=JSON.stringify(PROG);
+  if(!ALUNO)return;
+  try{
+    const {data,error}=await sb.from('progresso').select('payload').eq('user_id',ALUNO.id).maybeSingle();
+    if(error){
+      /* Tabela ainda nao criada (`progresso.sql` nao rodou). Segue local:
+         a area de membros abre igual, so' nao acompanha o aluno de um
+         computador para outro. */
+      console.warn('progresso indisponivel — andamento fica neste navegador:',error.message);
+      return;
+    }
+    PROG_SERVIDOR=true;
+    if(data&&data.payload)progMesclar(data.payload);
+    progSalvarLocal();
+    /* So' sobe se o navegador sabia de algo que o servidor nao sabia.
+       Sem esta comparacao toda abertura da area gravaria uma linha. */
+    if(JSON.stringify(PROG)!==JSON.stringify((data&&data.payload)||{}))progSalvar();
+    else if(local!==JSON.stringify(PROG))progSalvar();
+  }catch(e){console.warn('progresso',e);}
+}
+
+/* ---- marcar ---- */
+function marcarAberto(chave){
+  if(!chave||PROG.aulas[chave])return;
+  PROG.aulas[chave]=Date.now();
+  progSalvar();
+  repintar(chave);
+}
+/* O aluno pode desmarcar. Abriu por engano, ou quer rever: a barra e'
+   dele. Sem isso o unico caminho de volta seria limpar o navegador. */
+function alternarAula(chave){
+  if(!chave)return;
+  if(PROG.aulas[chave])delete PROG.aulas[chave];
+  else PROG.aulas[chave]=Date.now();
+  progSalvar();
+  repintar(chave);
+}
+function marcarCheck(faseId,i,valor){
+  const k=String(faseId);
+  PROG.checks[k]=PROG.checks[k]||[];
+  PROG.checks[k][i]=!!valor;
+  progSalvar();
+  repintarChecklist(faseId);
+}
+function checkFeito(faseId,i){return !!((PROG.checks[String(faseId)]||[])[i]);}
+
+/* Redesenha o que depende do andamento. A tela da fase (`smd`) fica de
+   fora de proposito: ela e' onde o aluno acabou de clicar, e refazer o
+   innerHTML dali jogaria o scroll para o topo. O que muda nela e' a
+   linha da aula, trocada no lugar pelo seletor abaixo. */
+function repintar(chave){
+  if(chave){
+    const on=!!PROG.aulas[chave];
+    document.querySelectorAll('[data-mat]').forEach(el=>{
+      if(el.getAttribute('data-mat')===chave){
+        el.classList.toggle('ok',on);
+        const b=el.querySelector('[data-toggle]');
+        if(b)b.innerHTML=on?ICO_OK:'';
+      }
+    });
+    const cab=document.getElementById('smd-prg');
+    if(cab&&cab.dataset.fase!==undefined)cab.innerHTML=barraFase(Number(cab.dataset.fase));
+  }
+  renderAndamento();renderBlocos();renderContinuar();renderProximas();
+  renderTrilha();renderSb();renderMat();
+}
+function repintarChecklist(faseId){
+  const el=document.getElementById('smd-ckn');
+  if(!el)return;
+  const m=M[faseId];if(!m||!m.ck)return;
+  const f=m.ck.filter((_,i)=>checkFeito(faseId,i)).length;
+  el.textContent=f+' de '+m.ck.length+' feitos';
+}
+
+const ICO_OK='<svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.6"><polyline points="3,8.5 6.5,12 13,4.5"/></svg>';
+
+/* Uma escuta so' para toda a area de membros. Duas coisas diferentes:
+   `data-toggle` e' o circulinho que o aluno marca na mao; `data-abrir`
+   e' o link que sai para `files/` ou para fora — esse nao volta para
+   dizer se deu certo, entao contar o clique e' o mais perto da verdade
+   que da. O material do bucket NAO usa `data-abrir`: ele e' marcado
+   dentro do `abrirDoBucket`, depois de a URL assinada responder. */
+document.addEventListener('click',function(e){
+  const t=e.target.closest&&e.target.closest('[data-toggle]');
+  if(t){e.preventDefault();e.stopPropagation();alternarAula(t.getAttribute('data-toggle'));return;}
+  const a=e.target.closest&&e.target.closest('[data-abrir]');
+  if(a)marcarAberto(a.getAttribute('data-abrir'));
+});
+
+/* ---- as telas ---- */
+function esc(t){return String(t).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
+function barra(pct,alt){return`<div class="pgt" style="${alt?'height:'+alt+'px;':''}"><div class="pgf" style="width:${pct}%"></div></div>`;}
+
+/* A faixa do topo do dashboard. Numero grande, barra, e uma pastilha
+   por fase — a pastilha e' o que responde "onde eu parei" sem abrir
+   nada. */
+function renderAndamento(){
+  const el=document.getElementById('dash-andamento');if(!el)return;
+  const g=progLista(M), fases=progLista(M.filter(m=>m.id<NF));
+  if(!g.total){
+    el.innerHTML=`<div class="pgw"><div class="pgb">
+      <div style="font-family:'Inter',sans-serif;font-size:15px;font-weight:700;margin-bottom:5px;">Nenhuma aula publicada no seu plano ainda</div>
+      <div class="pgm">Assim que a primeira aula subir, o andamento aparece aqui — aula por aula, fase por fase.</div>
+    </div></div>`;
+    return;
+  }
+  const ap=apoioBaixado();
+  const linha=[
+    g.abertas+' de '+g.total+' aulas abertas',
+    fases.concluidas+' de '+fases.liberadas+' fases concluídas',
+    ap?(ap===1?'1 material de apoio baixado':ap+' materiais de apoio baixados'):null
+  ].filter(Boolean).join(' &middot; ');
+  el.innerHTML=`<div class="pgw">
+    <div>
+      <div class="pgv">${g.pct}%</div>
+      <div class="pgvl">do seu plano</div>
+    </div>
+    <div class="pgb">
+      ${barra(g.pct)}
+      <div class="pgm">${linha}${g.fechadas?` &middot; <span style="color:var(--accent-light);">${g.fechadas} ${g.fechadas===1?'fase fechada fora da conta':'fases fechadas fora da conta'}</span>`:''}</div>
+    </div>
+    <div class="pgs">${M.map(pastilhaFase).join('')}</div>
+  </div>`;
+}
+function pastilhaFase(m){
+  const lbl=flabel(m);
+  if(!liberada(m.id))return`<div class="pgc lk" title="Fora do seu plano"><div class="pgcn" style="color:var(--text-muted)">${lbl}</div><div class="pgct"></div><div class="pgcv">${ICO_LOCK}</div></div>`;
+  const p=progFase(m.id);
+  const cheio=p.total&&p.abertas===p.total;
+  return`<div class="pgc${cheio?' ok':''}" onclick="smd(${m.id})" title="${esc(m.t)}">
+    <div class="pgcn">${lbl}</div>
+    <div class="pgct"><div class="pgcf" style="width:${p.pct}%"></div></div>
+    <div class="pgcv">${p.total?p.abertas+'/'+p.total:'—'}</div>
+  </div>`;
+}
+
+/* Os tres blocos. O texto sai do proprio `M` (`m.ph`), nao de HTML
+   escrito na mao: quando as seis fases viraram cinco em 20/08/2026, os
+   rotulos "Fases 1–2" ficaram para tras no arquivo e ninguem viu. */
+const BLOCOS=[
+  {ph:1,nm:'Fundamentos & Máquina Comercial',d:'Base empresarial, contabilidade, lucro, precificação e a máquina de vendas.'},
+  {ph:2,nm:'Operação & Liderança',d:'Fábrica com método, contratos no lugar e time que responde por número.'},
+  {ph:3,nm:'Escala & Bônus',d:'Crescimento, marketing e automação inteligente.'}
+];
+function rotuloBloco(ms){
+  const fs=ms.filter(m=>m.id<NF).map(m=>m.id+1), bn=ms.filter(m=>m.id>=NF).length;
+  let t=fs.length?(fs.length>1?'Fases '+fs[0]+'–'+fs[fs.length-1]:'Fase '+fs[0]):'';
+  if(bn)t+=(t?' + ':'')+(bn>1?bn+' Bônus':'Bônus');
+  return t;
+}
+function renderBlocos(){
+  const el=document.getElementById('dash-blocos');if(!el)return;
+  const prox=pendentes()[0];
+  el.innerHTML=BLOCOS.map((b,i)=>{
+    const ms=M.filter(m=>m.ph===b.ph);
+    const p=progLista(ms);
+    const atual=!!(prox&&prox.m.ph===b.ph);
+    const rodape=p.total
+      ?`${p.abertas} de ${p.total} aulas &middot; ${p.concluidas} de ${p.liberadas} ${p.liberadas===1?'fase concluída':'fases concluídas'}`
+      :(p.liberadas?'Nenhuma aula publicada aqui ainda':'Nenhuma fase deste bloco no seu plano');
+    return`<div class="pc${atual?' on':''}">
+      <div class="pt${atual?'':' off'}">Bloco ${i+1} &middot; ${rotuloBloco(ms)}</div>
+      <div class="pn${atual?'':' off'}">${b.nm}</div>
+      <div class="pd">${b.d}</div>
+      <div class="ptr"><div class="pf" style="width:${p.pct}%"></div></div>
+      <div class="pm">${rodape}${(p.fechadas&&p.liberadas)?` &middot; <span style="color:var(--accent-light)">${p.fechadas} ${p.fechadas===1?'fechada':'fechadas'}</span>`:''}</div>
+    </div>`;
+  }).join('');
+}
+
+/* Continue de onde parou. Aponta para a AULA, nao para a fase: antes
+   este cartao estava cravado em `smd(0)` e mandava todo mundo para a
+   Fase 1, tivesse ele parado onde tivesse. */
+function renderContinuar(){
+  const el=document.getElementById('dash-continuar');if(!el)return;
+  const pend=pendentes(), g=progLista(M);
+  if(!pend.length){
+    if(!g.total){
+      /* Nada publicado no plano dele: cai no comportamento antigo, que
+         e' abrir a primeira fase liberada. */
+      const m=M.find(x=>liberada(x.id))||M[0];
+      el.innerHTML=`<div class="cc" onclick="smd(${m.id})">
+        <div class="ccp"><div class="ccpa"></div></div>
+        <div class="cci"><div class="ccl">${rotuloFase(m)} &middot; ${m.p}</div><div class="cct">${m.t.split('—')[1]?.trim()||m.t}</div><div class="ccs">${m.o}</div></div>
+        <button class="bgo">Abrir fase &rarr;</button>
+      </div>`;
+      return;
+    }
+    el.innerHTML=`<div class="cc" onclick="sv('trilha')">
+      <div class="ccp" style="background:linear-gradient(135deg,#16a34a,#22c55e);"><span style="color:var(--navy);display:flex;">${ICO_OK}</span></div>
+      <div class="cci">
+        <div class="ccl">Tudo aberto</div>
+        <div class="cct">Você abriu as ${g.total} aulas do seu plano</div>
+        <div class="ccs">O que sobra agora é execução: os checklists de cada fase são o que transforma aula lida em operação mudada.</div>
+      </div>
+      <button class="bgo">Ver a trilha &rarr;</button>
+    </div>`;
+    return;
+  }
+  const {m,f,i,total}=pend[0];
+  el.innerHTML=`<div class="cc" onclick="smd(${m.id})">
+    <div class="ccp"><div class="ccpa"></div></div>
+    <div class="cci">
+      <div class="ccl">${rotuloFase(m)} &middot; Aula ${i+1} de ${total}</div>
+      <div class="cct">${f.name}</div>
+      <div class="ccs">${f.desc||m.o}</div>
+    </div>
+    <span onclick="event.stopPropagation()">${fbtn(f,'padding:8px 16px;font-size:10px;')}</span>
+  </div>`;
+}
+
+/* Proximas aulas. Deixa de fora a que ja esta no "continue de onde
+   parou" — repetir o mesmo cartao duas vezes na mesma tela nao ajuda
+   ninguem. Sem aula pendente, volta a mostrar as fases. */
+function renderProximas(){
+  const el=document.getElementById('dash-cards');if(!el)return;
+  const prox=pendentes().slice(1,4);
+  if(!prox.length){el.innerHTML=M.filter(m=>m.s!=='completed').slice(0,3).map(card).join('');return;}
+  el.innerHTML=prox.map(cardAula).join('');
+}
+function cardAula(a){
+  const m=a.m, cls=PC[m.p]||'visao';
+  return`<div class="mc" data-mat="${esc(chaveMat(a.f))}" onclick="smd(${m.id})">
+    <div class="ct ${cls}">
+      <div class="cn">${flabel(m)}</div>
+      <div class="ctm"><div class="cpb"><div class="cpa"></div></div><div class="cpp" style="${pstyle(m.p)}">Aula ${a.i+1}/${a.total}</div></div>
+    </div>
+    <div class="cb">
+      <div class="cw">${rotuloFase(m)} &middot; ${m.p}</div>
+      <div class="ctt" style="font-size:14px;">${a.f.name}</div>
+      <div class="cd">${a.f.desc||m.o}</div>
+      <div class="cf"><div class="cdur">${a.f.sz||''}</div><span onclick="event.stopPropagation()">${fbtn(a.f,'padding:4px 10px;font-size:9px;')}</span></div>
+    </div>
+  </div>`;
+}
+
+/* Rodape da barra lateral. Conta so' as fases: bonus nao e' fase, e
+   somar os dois faria "2 de 7" aparecer embaixo de um programa que se
+   vende como cinco. */
+function renderSb(){
+  const fases=progLista(M.filter(m=>m.id<NF)), g=progLista(M);
+  const pct=document.getElementById('sb-pct'), bar=document.getElementById('sb-bar'), sub=document.getElementById('sb-fases');
+  if(pct)pct.textContent=g.pct+'%';
+  if(bar)bar.style.width=g.pct+'%';
+  if(sub)sub.textContent=fases.concluidas+' de '+fases.liberadas+' fases concluídas';
+}
+
+/* A barra da fase, usada no cabecalho da tela da fase e no chip da
+   trilha. Fase sem aula publicada nao mostra barra: 0% ali diria
+   "voce nao estudou" quando o certo e' "ainda nao publicamos". */
+function barraFase(id){
+  const p=progFase(id);
+  if(!p.total)return`<div class="pgm" style="margin:0;">Nenhuma aula publicada nesta fase ainda.</div>`;
+  return`<div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+    <div style="font-family:'Inter',sans-serif;font-size:22px;font-weight:700;color:${p.abertas===p.total?'#22c55e':'var(--accent-light)'};line-height:1;">${p.pct}%</div>
+    <div style="flex:1;min-width:180px;">${barra(p.pct)}</div>
+    <div style="font-size:11.5px;color:var(--text-secondary);">${p.abertas} de ${p.total} aulas abertas</div>
+  </div>`;
+}
+
+/* A lista de aulas da fase. E' a tela que o aluno usa de verdade:
+   numero, nome, circulinho que ele marca na mao e o botao que abre.
+   O circulinho existe porque abrir nao e' estudar — quem leu no
+   celular e voltou depois precisa poder dizer isso. */
+function listaAulas(id){
+  const as=aulasDaFase(id);
+  if(!as.length)return'';
+  const linhas=as.map((f,i)=>{
+    const on=aberto(f);
+    return`<div class="aul${on?' ok':''}" data-mat="${esc(chaveMat(f))}">
+      <button class="auc" data-toggle="${esc(chaveMat(f))}" title="${on?'Marcar como não vista':'Marcar como vista'}">${on?ICO_OK:''}</button>
+      <div style="font-family:'Inter',sans-serif;font-size:11px;font-weight:700;color:var(--text-muted);width:22px;flex-shrink:0;">${String(i+1).padStart(2,'0')}</div>
+      <div class="aun">${f.name}${f.desc?`<div class="aus">${f.desc}</div>`:''}</div>
+      ${fbtn(f,'padding:4px 10px;font-size:9px;')}
+    </div>`;
+  }).join('');
+  return`<div class="xc" style="margin-bottom:13px;">
+    <div class="xt">Aulas desta Fase</div>
+    ${linhas}
+    <div style="font-size:11px;color:var(--text-muted);margin-top:9px;">Abrir a aula já marca o círculo. Clique nele para desmarcar e reler depois.</div>
+  </div>`;
+}
+
 function card(m){
   const cls=PC[m.p]||'visao';
   const lbl=flabel(m);
@@ -1063,9 +1510,15 @@ async function abrirDoBucket(ev,path,abrirNaAba,nome){
        nao subiu, rede — o aluno abre a copia da web em vez de levar um alerta.
        Nao vale para o que so existe no bucket: ai o 404 aparece e e' honesto. */
     const web='files/'+path.split('/').pop();
+    marcarAberto(path);
     if(aba){aba.location=web;}else{location.href=web;}
     return false;
   }
+  /* A URL assinada respondeu: o arquivo existe e o plano dele deixa
+     abrir. E' o unico ponto do app em que da para afirmar isso — por
+     isso a marca de "ja abri" nasce aqui, e nao no clique. */
+  marcarAberto(path);
+
   /* Download (xlsx, pdf) segue direto: o navegador salva o arquivo e o
      cabecalho do Supabase nao atrapalha. */
   if(!aba){location.href=data.signedUrl;return false;}
@@ -1103,9 +1556,13 @@ function fbtn(f,extra){
     const abre=f.type==='html';
     return`<a href="#" onclick='return abrirDoBucket(event,${JSON.stringify(f.path)},${abre?1:0},${JSON.stringify(f.name||'')})' class="bdl"${st}>${abre?ICO_OPEN+'Abrir':ICO_DL+'Baixar'}</a>`;
   }
-  if(f.file&&f.type==='html')return`<a href="files/${f.file}" target="_blank" rel="noopener" class="bdl"${st}>${ICO_OPEN}Abrir</a>`;
-  if(f.file)return`<a href="files/${f.file}" download class="bdl"${st}>${ICO_DL}Baixar</a>`;
-  if(f.url)return`<a href="${f.url}" target="_blank" rel="noopener" class="bdl"${st}>${ICO_OPEN}Acessar</a>`;
+  /* Estes tres saem do app sem voltar para dizer se deu certo. Contar
+     o clique e' o mais perto da verdade que da — quem marca e' a
+     escuta unica de `data-abrir`. */
+  const mk=` data-abrir="${esc(chaveMat(f))}"`;
+  if(f.file&&f.type==='html')return`<a href="files/${f.file}" target="_blank" rel="noopener" class="bdl"${st}${mk}>${ICO_OPEN}Abrir</a>`;
+  if(f.file)return`<a href="files/${f.file}" download class="bdl"${st}${mk}>${ICO_DL}Baixar</a>`;
+  if(f.url)return`<a href="${f.url}" target="_blank" rel="noopener" class="bdl"${st}${mk}>${ICO_OPEN}Acessar</a>`;
   return'';
 }
 
@@ -1114,11 +1571,16 @@ function fcrd(f,showDel){
   const c=x?'#22c55e':isPdf?'#ef4444':f.type==='video'?'#93C5FD':'#C9A84C';
   const dlBtn=fbtn(f);
   const delBtn=showDel?`<button class="adm-del" style="margin-left:8px;" onclick="event.stopPropagation();admDelMatSec('${f._id}')">Remover</button>`:'';
-  return`<div class="fc"><div class="fh"><div style="flex-shrink:0;margin-top:2px;">${fileIc(f.type,c)}</div><div><div class="fn">${f.name}<span class="fbx ${fbxCls(f.type)}">${f.type.toUpperCase()}</span></div><div class="fdesc">${f.desc||''}</div></div></div><div class="ff"><span class="fsz">${f.sz||''}</span><div style="display:flex;align-items:center;">${dlBtn}${delBtn}</div></div></div>`;
+  /* O app (`F`) nao tem chave de arquivo e nao entra no andamento: nao
+     e' aula nem material, e' produto a parte. */
+  const ch=f.id==='app'?'':chaveMat(f);
+  const vis=ch&&PROG.aulas[ch]
+    ?`<span title="Você já abriu" style="color:#22c55e;display:inline-flex;margin-right:7px;">${ICO_OK}</span>`:'';
+  return`<div class="fc"${ch?` data-mat="${esc(ch)}"`:''}><div class="fh"><div style="flex-shrink:0;margin-top:2px;">${fileIc(f.type,c)}</div><div><div class="fn">${f.name}<span class="fbx ${fbxCls(f.type)}">${f.type.toUpperCase()}</span></div><div class="fdesc">${f.desc||''}</div></div></div><div class="ff"><span class="fsz">${f.sz||''}</span><div style="display:flex;align-items:center;">${vis}${dlBtn}${delBtn}</div></div></div>`;
 }
 
 function init(){
-  document.getElementById('dash-cards').innerHTML=M.filter(m=>m.s!=='completed').slice(0,3).map(card).join('');
+  renderAndamento();renderBlocos();renderContinuar();renderProximas();renderSb();
   renderTrilha();
   document.getElementById('pilares').innerHTML=PIL.map(p=>`<div class="plc">
     <div class="plphase">${p.fase}</div>
@@ -1233,7 +1695,7 @@ function blocoDobra(k,cab,n,corpo){
   return`<div class="mgrp${ab?' open':''}" id="mg-${k}">
     <div class="mgrp-h" onclick="toggleMg('${k}')">
       ${cab}
-      <span class="mgrp-n">${n===1?'1 item':n+' itens'}</span>
+      <span class="mgrp-n">${typeof n==='string'?n:(n===1?'1 item':n+' itens')}</span>
       ${ICO_CHEV}
     </div>
     <div class="mgrp-b">${corpo}</div>
@@ -1274,9 +1736,16 @@ function renderMat(){
     const id=mi.id, lbl=id<NF?'F'+(id+1):'B'+(id-NF+1);
     if(!SEM_GATE&&!liberada(id)){h+=blocoFechado(mi,lbl);return;}
     if(!bm[id])return;
+    /* A contagem do cabecalho passa a dizer duas coisas: quantos itens
+       tem a fase e quantas aulas ele ja abriu. Sem a segunda, so' abrindo
+       o bloco fase por fase para saber onde parou. */
+    const pf=progFase(id);
+    const rot=pf.total
+      ? bm[id].length+(bm[id].length===1?' item · ':' itens · ')+pf.abertas+'/'+pf.total+' aulas'
+      : bm[id].length;
     h+=blocoDobra('f'+id,
       `<span class="mtg">${lbl}</span><span class="mtn">${mi.t}</span>`,
-      bm[id].length,grade(bm[id].map(f=>fcrd(f,isAdmin()&&!!f._isAdm)).join('')));
+      rot,grade(bm[id].map(f=>fcrd(f,isAdmin()&&!!f._isAdm)).join('')));
   });
   if(gn.length||gnAdm.length){
     const ger=[...gn,...gnAdm];
@@ -1357,9 +1826,12 @@ function smd(id){
   if(!liberada(m.id)){smdBloqueada(m,bloco);return;}
   const mf=F.filter(f=>f.mods.includes(m.id));
   const adm=getAdminData();
-  const admMatsForPhase=(adm.materials||[]).filter(f=>parseInt(f.faseId)===m.id);
+  /* So' o apoio entra aqui: planilha, contrato, link. A aula (`html`)
+     saiu para a lista propria la' em cima, com numero e marca de lida —
+     misturada no meio dos anexos, ninguem achava por onde comecar. */
+  const admMatsForPhase=(adm.materials||[]).filter(f=>parseInt(f.faseId)===m.id&&!ehAula(f));
   const allMats=[...mf,...admMatsForPhase];
-  const fh=allMats.length?`<div class="xc" style="margin-bottom:13px;"><div class="xt">Materiais desta Fase</div>${allMats.map(f=>{
+  const fh=allMats.length?`<div class="xc" style="margin-bottom:13px;"><div class="xt">Materiais de Apoio desta Fase</div>${allMats.map(f=>{
     const x=f.type==='xlsx';const c=x?'#22c55e':f.type==='pdf'?'#ef4444':'#C9A84C';
     /* O app aparece nas fases 1, 2 e 3. Sem o `if` abaixo o botao dizia
        ACESSAR para quem nao comprou o app, levava para fora da area de
@@ -1369,7 +1841,9 @@ function smd(id){
     const dlBtn=(f.id==='app'&&!appLiberado())
       ?`<a class="vb vb2" style="padding:5px 11px;font-size:9.5px;" href="ferramentas.html" target="_blank" rel="noopener">${ICO_LOCK}Ver por dentro</a>`
       :fbtn(f,'padding:4px 10px;font-size:9px;');
-    return`<div style="display:flex;align-items:center;gap:9px;padding:8px 9px;background:var(--navy-mid);border-radius:4px;margin-bottom:5px;">${fileIc(f.type,c)}<div style="flex:1;"><div style="font-size:13px;font-weight:500;">${f.name}</div><div style="font-size:10px;color:var(--text-muted);">${f.desc||''}</div></div>${dlBtn}</div>`;
+    const ch=f.id==='app'?'':chaveMat(f);
+    const vis=ch&&PROG.aulas[ch]?`<span style="color:#22c55e;display:inline-flex;" title="Você já abriu">${ICO_OK}</span>`:'';
+    return`<div style="display:flex;align-items:center;gap:9px;padding:8px 9px;background:var(--navy-mid);border-radius:4px;margin-bottom:5px;"${ch?` data-mat="${esc(ch)}"`:''}>${fileIc(f.type,c)}<div style="flex:1;"><div style="font-size:13px;font-weight:500;">${f.name}</div><div style="font-size:10px;color:var(--text-muted);">${f.desc||''}</div></div>${vis}${dlBtn}</div>`;
   }).join('')}</div>`:'';
 
   const admVideos=(adm.videos||[]).filter(v=>parseInt(v.faseId)===m.id);
@@ -1392,10 +1866,16 @@ function smd(id){
       <div class="dm"><div class="mt">${bloco}</div><div class="mt">${m.dur}</div>${badge(stat(m))}</div>
     </div>
     ${videosHtml}
-    <div class="va">
-      <div class="vpr"><div class="vpa"></div></div>
-      <div class="vl">${lbl} · ${m.t}</div>
+    <!-- Aqui morava um player de video de 310px que nao tocava nada:
+         so' um triangulo dourado numa caixa vazia. Nao ha video ainda.
+         O lugar passa a mostrar o que existe de verdade — quanto desta
+         fase o aluno ja abriu. Quando o primeiro video subir, o player
+         volta ACIMA desta faixa, e a faixa continua valendo. -->
+    <div class="xc" style="margin-bottom:20px;">
+      <div class="xt">${lbl} &middot; Andamento desta fase</div>
+      <div id="smd-prg" data-fase="${m.id}">${barraFase(m.id)}</div>
     </div>
+    ${listaAulas(m.id)}
     <div class="dg">
       <div>
         <div class="xc"><div class="xt">Conteúdo da Fase</div>${m.tp.map(t=>`<div class="ti"><div class="td"></div><div class="tt">${t}</div></div>`).join('')}</div>
@@ -1409,7 +1889,7 @@ function smd(id){
         </div></div>
       </div>
     </div>
-    ${m.ck?`<div class="chk"><div class="xt">Checklist de Implementação</div><div class="chi">Faça isso <strong style="color:var(--text-secondary)">depois</strong> da aula. Sem executar, não adianta assistir.</div>${m.ck.map(i=>`<label class="chit"><input type="checkbox"><span>${i}</span></label>`).join('')}</div>`:''}
+    ${m.ck?`<div class="chk"><div class="xt">Checklist de Implementação <span id="smd-ckn" style="float:right;font-size:10px;color:var(--text-muted);font-weight:400;">${m.ck.filter((_,i)=>checkFeito(m.id,i)).length} de ${m.ck.length} feitos</span></div><div class="chi">Faça isso <strong style="color:var(--text-secondary)">depois</strong> da aula. Sem executar, não adianta assistir.</div>${m.ck.map((i,ix)=>`<label class="chit"><input type="checkbox"${checkFeito(m.id,ix)?' checked':''} onchange="marcarCheck(${m.id},${ix},this.checked)"><span>${i}</span></label>`).join('')}</div>`:''}
     ${m.cx?`<div class="ctx"><div class="cxt">${m.cx.tl}</div>${m.cx.it.map(i=>`<div class="cxr"><span class="cxk">${i.k}</span><span class="cxv">${i.v}</span></div>`).join('')}<div class="cxn">${m.cx.nt}</div></div>`:''}
     ${m.marco?`<div class="marco"><div class="marco-label">Marco de Progressão</div><div class="marco-text">${m.marco}</div></div>`:''}
     ${fh}
@@ -2031,6 +2511,10 @@ async function boot(){
      abre igual, so' sem os numeros e sem a lista de titulos. */
   await carregarContagem();
   await carregarEmenta();
+  /* Depois do `conteudo`: o andamento so' faz sentido contra a lista de
+     aulas que ele pode ver. Falha em silencio — sem a tabela
+     `progresso` o app abre igual, com o andamento preso no navegador. */
+  await progCarregar();
 
   if(isAdmin()){
     document.getElementById('lock-btn').classList.add('active');
