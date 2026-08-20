@@ -452,7 +452,13 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
         <span>Sair</span>
       </button>
     </div>
-    <div class="sb-lock">
+    <!-- Nasce escondido. Ate 20/08/2026 este botao aparecia para TODO
+         aluno: quem clicava caia numa tela dizendo que a conta nao era
+         administradora e mostrando o SQL do `tornar_admin`. Nao dava
+         poder nenhum — o painel e as funcoes sao trancados no banco —
+         mas mostrava a alunos pagantes uma porta que nao e' deles.
+         Quem liga e' o `boot()`, depois de ler `acesso.admin`. -->
+    <div class="sb-lock" id="sb-admin" style="display:none;">
       <button class="lock-btn" id="lock-btn" onclick="toggleAdmin()">
         <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="7" width="10" height="8" rx="1"/><path d="M5 7V5a3 3 0 016 0v2"/></svg>
         <span id="lock-label">Acesso Admin</span>
@@ -536,10 +542,12 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
         <div id="adm-login-area" style="display:none;">
           <div class="adm-login">
             <div class="adm-login-title">Acesso Administrador</div>
+            <!-- O SQL do `tornar_admin` saiu daqui em 20/08/2026 e ficou
+                 so' no MANUAL.md. Esta tela nao e' mais alcancavel por
+                 aluno, mas texto de instalacao nao mora na area de
+                 membros: basta um caminho novo para ele reaparecer. -->
             <p style="font-size:12.5px;line-height:1.6;color:var(--text-secondary);">
-              Esta conta não é administradora. Para tornar uma conta admin, rode no
-              SQL Editor do Supabase:<br><br>
-              <code style="color:var(--accent);font-size:12px;">select public.tornar_admin('voce@email.com');</code>
+              Esta conta não é administradora.
             </p>
           </div>
         </div>
@@ -1428,7 +1436,10 @@ function renderSb(){
   const pct=document.getElementById('sb-pct'), bar=document.getElementById('sb-bar'), sub=document.getElementById('sb-fases');
   if(pct)pct.textContent=g.pct+'%';
   if(bar)bar.style.width=g.pct+'%';
-  if(sub)sub.textContent=fases.concluidas+' de '+fases.liberadas+' fases concluídas';
+  /* Sem fase no plano, "0 de 0 fases concluidas" parece defeito. */
+  if(sub)sub.textContent=fases.liberadas
+    ?fases.concluidas+' de '+fases.liberadas+' fases concluídas'
+    :'Nenhuma fase no seu plano ainda';
 }
 
 /* A barra da fase, usada no cabecalho da tela da fase e no chip da
@@ -1931,14 +1942,15 @@ function sv(name){
   const navIds={dashboard:'nav-dashboard',trilha:'nav-trilha',pilares:'nav-pilares',materiais:'nav-materiais',admin:'nav-admin'};
   if(navIds[name])document.getElementById(navIds[name])?.classList.add('on');
   if(name==='admin'){
-    if(isAdmin()){
-      document.getElementById('adm-login-area').style.display='none';
-      document.getElementById('adm-panel-area').style.display='block';
-      renderAdminLists();
-    } else {
-      document.getElementById('adm-login-area').style.display='block';
-      document.getElementById('adm-panel-area').style.display='none';
-    }
+    /* Esconder o botao nao basta: `sv('admin')` continua alcancavel pelo
+       console e por qualquer link futuro. Aluno vai para o dashboard e
+       nem ve a tela. A trava de verdade segue no banco — `conteudo` e o
+       bucket so aceitam escrita de admin, e `admin_definir_acesso`
+       confere quem chamou antes de qualquer coisa. */
+    if(!isAdmin()){sv('dashboard');return;}
+    document.getElementById('adm-login-area').style.display='none';
+    document.getElementById('adm-panel-area').style.display='block';
+    renderAdminLists();
   }
   document.getElementById('tbc').textContent=VL[name]||name;
   document.querySelector('.content').scrollTop=0;
@@ -2538,6 +2550,7 @@ async function boot(){
   await progCarregar();
 
   if(isAdmin()){
+    document.getElementById('sb-admin').style.display='flex';
     document.getElementById('lock-btn').classList.add('active');
     document.getElementById('lock-label').textContent='Admin Ativo';
     document.getElementById('nav-admin').style.display='flex';
