@@ -746,9 +746,10 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
             <div class="adm-form">
               <div class="adm-form-title">Acompanhamento da turma</div>
               <div style="font-size:11px;color:var(--text-muted);line-height:1.6;margin-bottom:10px;">
-                Último acesso e o que cada mentorado abriu. A data é a da última vez que a área de
-                membros foi carregada — não a do login, que o Supabase renova sozinho e ficaria
-                parada em agosto para quem usa o app toda semana.
+                Último acesso e o que cada mentorado abriu. <b>Toda conta é aluno, menos a sua</b> —
+                cadastrou no Supabase, aparece aqui sozinho, sem passo nenhum a mais. A data é a da
+                última vez que a área de membros foi carregada, não a do login, que o Supabase
+                renova sozinho e ficaria parada em agosto para quem usa o app toda semana.
               </div>
               <div class="adm-row" style="grid-template-columns:auto auto 1fr;align-items:center;gap:10px;">
                 <button class="adm-add-btn" onclick="admAbrirAlunos()">Atualizar</button>
@@ -2235,6 +2236,18 @@ async function admSalvarAcesso(){
    chave. */
 let ALU={linhas:[],det:{},aberto:null,ordem:'parados'};
 
+/* QUEM E' ALUNO: todo mundo, menos o dono.
+   A regra era "quem nao tem a flag `admin`", e isso tem um jeito silencioso
+   de dar errado: no dia em que uma conta qualquer receber `acesso.admin` —
+   por engano, por teste, por um segundo operador — ela sai da turma sozinha
+   e o painel passa a contar 11 mentorados onde ha 12, sem avisar ninguem.
+   Ninguem olha um numero que so' encolheu um pouco.
+   Por e-mail nao ha esse buraco: uma conta so' fica de fora, e e' esta.
+   Conta nova nasce aluno sem precisar de nada — nem linha em `acesso`, nem
+   fase liberada, nem clique. Se um dia o e-mail do dono mudar, e' aqui. */
+const DONO='lukamoraiss7@gmail.com';
+function ehDono(email){return String(email||'').trim().toLowerCase()===DONO;}
+
 function alDias(iso){
   if(!iso)return null;
   const t=Date.parse(iso);
@@ -2312,9 +2325,12 @@ function alRender(){
     if(resumo)resumo.innerHTML='';
     return;
   }
-  /* O admin aparece na lista (a conta existe), mas fica fora da conta de
-     ativos e parados: ele nao e' mentorado e distorceria o numero da turma. */
-  const alunos=ALU.linhas.filter(r=>!r.admin);
+  /* A sua conta sai da lista inteira, nao so' dos numeros: ela nao e'
+     mentorado e ficaria eternamente verde no topo de uma fila que existe
+     para mostrar quem parou. Aparece numa linha discreta no rodape — some
+     da turma, nao da tela. */
+  const alunos=ALU.linhas.filter(r=>!ehDono(r.email));
+  const dono=ALU.linhas.filter(r=>ehDono(r.email));
   const ativos=alunos.filter(r=>{const d=alDias(r.ultimo_acesso);return d!==null&&d<=7;}).length;
   const parados=alunos.filter(r=>{const d=alDias(r.ultimo_acesso);return d!==null&&d>14;}).length;
   const nunca=alunos.filter(r=>!r.ultimo_acesso).length;
@@ -2330,7 +2346,7 @@ function alRender(){
          </div>`).join('')}
      </div>`;
 
-  const ord=ALU.linhas.slice().sort((a,b)=>{
+  const ord=alunos.slice().sort((a,b)=>{
     const da=Date.parse(a.ultimo_acesso||'')||0, db=Date.parse(b.ultimo_acesso||'')||0;
     /* "parados primeiro" poe quem nunca entrou no topo (data 0) — e' a
        fila de trabalho do mentor, nao um ranking. */
@@ -2342,8 +2358,13 @@ function alRender(){
     const plano=alAulasDoPlano(fs);
     const cor=alCor(r.ultimo_acesso);
     const resumoFases=fs.length? fs.map(n=>n<=NF?'F'+n:'B'+(n-NF)).join(' · ') : 'nenhuma fase';
-    const marca=[r.admin?'Admin':null, r.ferramentas?'App':null,
+    const marca=[r.ferramentas?'App':null,
                  r.tem_senha===false?'sem senha':null].filter(Boolean).join(' · ');
+    /* Aluno com `acesso.admin` continua na turma — a regra e' o e-mail —,
+       mas nao passa despercebido: essa flag publica conteudo, define senha
+       e libera fase de qualquer um. Se aparecer, e' engano de cadastro. */
+    const alerta=r.admin
+      ?`<span style="color:#ef4444;font-weight:700;"> · ADMIN — confira, esta conta publica e libera acesso</span>`:'';
     const aberto=(ALU.aberto===r.email);
     /* `aberturas` conta aula e apoio juntos; o "de N" so' vale para aula.
        Por isso os dois numeros nao aparecem na mesma fracao — misturar
@@ -2358,7 +2379,7 @@ function alRender(){
           <div class="adm-item-meta">
             <span style="color:${cor};font-weight:600;">${alQuando(r.ultimo_acesso)}</span>
             <span> · ${alData(r.ultimo_acesso)}</span>
-             · ${conta} · ${resumoFases}${marca?' · '+marca:''}
+             · ${conta} · ${resumoFases}${marca?' · '+marca:''}${alerta}
           </div>
         </div>
         <button class="adm-del" style="color:var(--accent);border-color:rgba(201,168,76,.4);"
@@ -2368,7 +2389,11 @@ function alRender(){
       </div>
       ${aberto?`<div style="margin-top:11px;border-top:1px solid #333;padding-top:11px;">${alDetalheHTML(r.email)}</div>`:''}
     </div>`;
-  }).join('');
+  }).join('')
+  + (dono.length?`<div style="font-size:11px;color:var(--text-muted);padding:10px 2px 0;border-top:1px solid #262626;margin-top:6px;">
+       Fora da turma: ${dono.map(r=>esc(r.email)).join(', ')} — sua conta. Todo o resto é mentorado, inclusive conta nova.
+     </div>`:'')
+  + (!ord.length?`<div class="adm-empty">Nenhum mentorado cadastrado ainda. Toda conta criada no Supabase entra aqui sozinha.</div>`:'');
 }
 function alEditarAcesso(email,fases,ferr){
   const t=[...document.querySelectorAll('.adm-tab')].find(x=>x.textContent.trim()==='Acessos');

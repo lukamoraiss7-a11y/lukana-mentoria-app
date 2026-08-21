@@ -249,9 +249,24 @@ Você (admin) vê todas as fases sempre, mesmo com a lista vazia.
 
 Menu lateral → **Admin** → aba **Alunos**.
 
+**Toda conta é aluno, menos a sua.** Criou a conta no Supabase, ela aparece aqui sozinha —
+sem liberar fase, sem definir senha, sem marcar nada. As duas coisas são independentes:
+liberar fase decide o que ele **vê**; o acompanhamento mede o que ele **faz**, e vale desde
+o primeiro dia da conta.
+
+A única exceção é `lukamoraiss7@gmail.com`, que sai da turma e fica numa linha discreta no
+rodapé da lista. Se um dia esse e-mail mudar, é a constante `DONO` no `index.html` — um
+lugar só.
+
+A regra era "quem não tem a flag `admin`" e foi trocada de propósito: bastava uma conta
+qualquer receber `acesso.admin` — por engano, por teste, por um segundo operador — para
+ela sumir da turma sozinha, e ninguém desconfia de um número que só encolheu um pouco. Se
+alguma conta que não é a sua estiver com essa flag, ela continua contando como mentorado e
+ganha um aviso vermelho na linha: **ADMIN — confira**. Essa flag publica conteúdo, define
+senha e libera fase de qualquer aluno; se aparecer, é engano de cadastro.
+
 Quatro números no topo: quantos mentorados, quantos entraram nos últimos 7 dias, quantos
-estão parados há mais de 14 e quantos **nunca** entraram. Sua conta de admin aparece na
-lista mas fica fora dessa contagem — ela não é mentorado e distorceria o número da turma.
+estão parados há mais de 14 e quantos **nunca** entraram.
 
 Cada linha traz o último acesso em palavra e em data ("há 3 dias · 18/08/2026 14:02"),
 com uma faixa colorida na borda: verde até 7 dias, amarelo até 14, laranja até 30,
