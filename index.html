@@ -562,6 +562,7 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
             <div class="adm-tab" onclick="admTab('links',this)">Links</div>
             <div class="adm-tab" onclick="admTab('comentarios',this)">Comentários</div>
             <div class="adm-tab" onclick="admTab('acessos',this)">Acessos</div>
+            <div class="adm-tab" onclick="admTab('alunos',this)">Alunos</div>
           </div>
 
           <div class="adm-section on" id="adm-materiais">
@@ -734,6 +735,30 @@ html,body{height:100%;background:var(--navy);color:var(--text-primary);font-fami
             </div>
             <div class="adm-section-head">Quem tem o quê</div>
             <div class="adm-list" id="ax-list"></div>
+          </div>
+
+          <!-- Quem entrou quando, e o que abriu. O dado ja existia desde
+               20/08 (`public.progresso`); o que faltava era caminho ate o
+               admin — o RLS daquela tabela prende cada linha ao dono, e
+               isso vale para o Luka tambem. Quem furou o bloqueio foi a
+               funcao `admin_acompanhamento`, que confere quem chamou. -->
+          <div class="adm-section" id="adm-alunos">
+            <div class="adm-form">
+              <div class="adm-form-title">Acompanhamento da turma</div>
+              <div style="font-size:11px;color:var(--text-muted);line-height:1.6;margin-bottom:10px;">
+                Último acesso e o que cada mentorado abriu. A data é a da última vez que a área de
+                membros foi carregada — não a do login, que o Supabase renova sozinho e ficaria
+                parada em agosto para quem usa o app toda semana.
+              </div>
+              <div class="adm-row" style="grid-template-columns:auto auto 1fr;align-items:center;gap:10px;">
+                <button class="adm-add-btn" onclick="admAbrirAlunos()">Atualizar</button>
+                <button class="adm-add-btn" id="al-ordem-btn" style="background:transparent;color:var(--text-secondary);border:1px solid #333;white-space:nowrap;" onclick="alTrocarOrdem()">Ordem: parados primeiro</button>
+                <span id="al-msg" style="font-size:12px;"></span>
+              </div>
+            </div>
+            <div id="al-resumo" style="margin-bottom:14px;"></div>
+            <div class="adm-section-head">Mentorados</div>
+            <div class="adm-list" id="al-list"></div>
           </div>
         </div>
       </div>
@@ -1206,7 +1231,29 @@ async function progCarregar(){
        Sem esta comparacao toda abertura da area gravaria uma linha. */
     if(JSON.stringify(PROG)!==JSON.stringify((data&&data.payload)||{}))progSalvar();
     else if(local!==JSON.stringify(PROG))progSalvar();
+    progVisto();
   }catch(e){console.warn('progresso',e);}
+}
+
+/* ---- visto por ultimo ----
+   `auth.users.last_sign_in_at` marca o LOGIN, nao o uso: o Supabase renova
+   o token sozinho enquanto o aluno nao sai, entao quem entrou uma vez e usa
+   o app toda semana continua com a data de agosto. Para o painel de
+   acompanhamento isso e' pior que numero nenhum — acusa abandono onde nao
+   ha. Por isso a marca e' escrita aqui, uma vez por abertura da area.
+   Uma coluna, um UPDATE, sem historico: e' o "visto por ultimo", nao
+   analytics. Falha em silencio — sem a coluna (`acompanhamento-do-aluno.sql`
+   nao rodou) o app abre igual e o painel cai de volta no login. */
+async function progVisto(){
+  if(!PROG_SERVIDOR||!ALUNO)return;
+  try{
+    /* So' `visto_em` no payload: o `upsert` do PostgREST atualiza as colunas
+       que recebe, e mandar `payload` junto aqui sobrescreveria com o objeto
+       da memoria antes de o aluno ter clicado em nada. */
+    const {error}=await sb.from('progresso')
+      .upsert({user_id:ALUNO.id,visto_em:new Date().toISOString()},{onConflict:'user_id'});
+    if(error)console.warn('visto_em',error.message);
+  }catch(e){console.warn('visto_em',e);}
 }
 
 /* ---- marcar ---- */
@@ -2021,6 +2068,7 @@ function admTab(name,el){
   document.querySelectorAll('.adm-section').forEach(s=>s.classList.remove('on'));
   document.getElementById('adm-'+name).classList.add('on');
   if(name==='acessos')admAbrirAcessos();
+  if(name==='alunos')admAbrirAlunos();
 }
 
 /* ---- ACESSOS: quem pode ver o que ----
@@ -2168,6 +2216,232 @@ async function admSalvarAcesso(){
   if(error){axMsg('Não salvou: '+error.message,'#ef4444');return;}
   axMsg(String(data||'acesso atualizado'),'#10B981');
   admAbrirAcessos();
+}
+
+/* ---- ACOMPANHAMENTO: quem entrou quando, e o que abriu ----
+   O andamento e' gravado desde 20/08/2026, e ate agora nao chegava a
+   ninguem: as tres politicas da `progresso` sao `auth.uid() = user_id`,
+   o que tranca o aluno fora da linha do vizinho e tranca o admin fora de
+   todas. Afrouxar a politica com um `or admin` abriria a tabela inteira
+   a leitura direta pela chave publicavel — bastava a flag `admin` vazar
+   uma vez. Quem le por aqui e' `admin_acompanhamento`, `security definer`,
+   que confere quem chamou antes de devolver linha (acompanhamento-do-aluno.sql).
+
+   O DENOMINADOR NAO VEM DO BANCO. "12 de 47" precisa saber quantas aulas
+   existem nas fases que ELE comprou, e essa conta ja existe aqui em
+   `aulasDaFase` — a mesma que desenha a barra do aluno. Refaze-la em SQL
+   criaria duas definicoes de aula, e no dia em que o video entrar uma
+   delas ficaria para tras. O banco manda o que so' ele sabe: data e
+   chave. */
+let ALU={linhas:[],det:{},aberto:null,ordem:'parados'};
+
+function alDias(iso){
+  if(!iso)return null;
+  const t=Date.parse(iso);
+  if(isNaN(t))return null;
+  return Math.floor((Date.now()-t)/86400000);
+}
+function alQuando(iso){
+  const d=alDias(iso);
+  if(d===null)return'nunca entrou';
+  if(d<=0)return'hoje';
+  if(d===1)return'ontem';
+  if(d<30)return'há '+d+' dias';
+  if(d<60)return'há 1 mês';
+  return'há '+Math.floor(d/30)+' meses';
+}
+/* Semaforo, nao gradiente: o painel existe para dizer com quem falar hoje.
+   Nunca entrou e' vermelho de propósito mesmo com a conta criada ontem —
+   conta aberta e nao usada e' o caso que mais custa na primeira turma. */
+function alCor(iso){
+  const d=alDias(iso);
+  if(d===null)return'#ef4444';
+  if(d<=7)return'#10B981';
+  if(d<=14)return'#eab308';
+  if(d<=30)return'#f97316';
+  return'#ef4444';
+}
+function alData(iso){
+  if(!iso)return'—';
+  const t=new Date(iso);
+  if(isNaN(t))return'—';
+  return t.toLocaleDateString('pt-BR')+' '+t.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+}
+/* Quantas aulas existem no plano que ele comprou. Fase sem modulo escrito
+   (Comercial e Operacao, hoje) entra com zero e nao infla o denominador. */
+function alAulasDoPlano(fases){
+  let n=0;
+  (fases||[]).forEach(f=>{n+=aulasDaFase(f-1).length;});
+  return n;
+}
+function alMsg(t,cor){
+  const el=document.getElementById('al-msg');
+  if(el){el.textContent=t;el.style.color=cor||'var(--text-muted)';}
+}
+function alTrocarOrdem(){
+  ALU.ordem=ALU.ordem==='parados'?'recentes':'parados';
+  const b=document.getElementById('al-ordem-btn');
+  if(b)b.textContent='Ordem: '+(ALU.ordem==='parados'?'parados primeiro':'mais recentes');
+  alRender();
+}
+async function admAbrirAlunos(){
+  const lista=document.getElementById('al-list');
+  if(!lista)return;
+  lista.innerHTML='<div class="adm-empty">Carregando…</div>';
+  alMsg('');
+  const {data,error}=await sb.rpc('admin_acompanhamento');
+  if(error){
+    /* Falhar aberto aqui seria mostrar a turma inteira como "nunca entrou"
+       e o Luka ligar para dez pessoas que estao estudando. */
+    const faltaSQL=/does not exist|could not find/i.test(error.message||'');
+    lista.innerHTML='<div class="adm-empty">'+(faltaSQL
+      ? 'Rode antes o mentoria-app/acompanhamento-do-aluno.sql no SQL Editor do Supabase.'
+      : 'Não consegui carregar: '+esc(error.message))+'</div>';
+    document.getElementById('al-resumo').innerHTML='';
+    return;
+  }
+  ALU.linhas=data||[];
+  ALU.det={};ALU.aberto=null;
+  alRender();
+}
+function alRender(){
+  const lista=document.getElementById('al-list'), resumo=document.getElementById('al-resumo');
+  if(!lista)return;
+  if(!ALU.linhas.length){
+    lista.innerHTML='<div class="adm-empty">Nenhuma conta cadastrada.</div>';
+    if(resumo)resumo.innerHTML='';
+    return;
+  }
+  /* O admin aparece na lista (a conta existe), mas fica fora da conta de
+     ativos e parados: ele nao e' mentorado e distorceria o numero da turma. */
+  const alunos=ALU.linhas.filter(r=>!r.admin);
+  const ativos=alunos.filter(r=>{const d=alDias(r.ultimo_acesso);return d!==null&&d<=7;}).length;
+  const parados=alunos.filter(r=>{const d=alDias(r.ultimo_acesso);return d!==null&&d>14;}).length;
+  const nunca=alunos.filter(r=>!r.ultimo_acesso).length;
+  if(resumo)resumo.innerHTML=
+    `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;">
+       ${[[alunos.length,'mentorados','var(--text-primary)'],
+          [ativos,'ativos nos 7 dias','#10B981'],
+          [parados,'parados há +14 dias','#f97316'],
+          [nunca,'nunca entraram','#ef4444']].map(([n,rot,cor])=>
+        `<div style="background:var(--navy-light);border:1px solid #333;border-radius:4px;padding:11px 13px;">
+           <div style="font-size:20px;font-weight:700;color:${cor};line-height:1;">${n}</div>
+           <div style="font-size:10.5px;color:var(--text-muted);margin-top:4px;">${rot}</div>
+         </div>`).join('')}
+     </div>`;
+
+  const ord=ALU.linhas.slice().sort((a,b)=>{
+    const da=Date.parse(a.ultimo_acesso||'')||0, db=Date.parse(b.ultimo_acesso||'')||0;
+    /* "parados primeiro" poe quem nunca entrou no topo (data 0) — e' a
+       fila de trabalho do mentor, nao um ranking. */
+    return ALU.ordem==='parados' ? da-db : db-da;
+  });
+
+  lista.innerHTML=ord.map(r=>{
+    const fs=(r.fases||[]);
+    const plano=alAulasDoPlano(fs);
+    const cor=alCor(r.ultimo_acesso);
+    const resumoFases=fs.length? fs.map(n=>n<=NF?'F'+n:'B'+(n-NF)).join(' · ') : 'nenhuma fase';
+    const marca=[r.admin?'Admin':null, r.ferramentas?'App':null,
+                 r.tem_senha===false?'sem senha':null].filter(Boolean).join(' · ');
+    const aberto=(ALU.aberto===r.email);
+    /* `aberturas` conta aula e apoio juntos; o "de N" so' vale para aula.
+       Por isso os dois numeros nao aparecem na mesma fracao — misturar
+       daria 20 de 17 no dia em que ele baixar tres contratos. */
+    const conta=plano
+      ? `${r.aberturas||0} aberturas · ${plano} aulas no plano`
+      : `${r.aberturas||0} aberturas`;
+    return `<div class="adm-item" style="flex-direction:column;align-items:stretch;gap:0;border-left:3px solid ${cor};">
+      <div style="display:flex;align-items:flex-start;gap:10px;">
+        <div class="adm-item-info">
+          <div class="adm-item-name">${esc(r.email)}</div>
+          <div class="adm-item-meta">
+            <span style="color:${cor};font-weight:600;">${alQuando(r.ultimo_acesso)}</span>
+            <span> · ${alData(r.ultimo_acesso)}</span>
+             · ${conta} · ${resumoFases}${marca?' · '+marca:''}
+          </div>
+        </div>
+        <button class="adm-del" style="color:var(--accent);border-color:rgba(201,168,76,.4);"
+          onclick='alDetalhe(${JSON.stringify(r.email)})'>${aberto?'Fechar':'O que abriu'}</button>
+        <button class="adm-del"
+          onclick='alEditarAcesso(${JSON.stringify(r.email)},${JSON.stringify(fs)},${r.ferramentas?1:0})'>Acesso</button>
+      </div>
+      ${aberto?`<div style="margin-top:11px;border-top:1px solid #333;padding-top:11px;">${alDetalheHTML(r.email)}</div>`:''}
+    </div>`;
+  }).join('');
+}
+function alEditarAcesso(email,fases,ferr){
+  const t=[...document.querySelectorAll('.adm-tab')].find(x=>x.textContent.trim()==='Acessos');
+  if(t)admTab('acessos',t);
+  axMontarCheckboxes();
+  axCarregarNoForm(email,fases,ferr);
+}
+async function alDetalhe(email){
+  if(ALU.aberto===email){ALU.aberto=null;alRender();return;}
+  ALU.aberto=email;
+  alRender();
+  if(ALU.det[email])return;
+  const {data,error}=await sb.rpc('admin_aulas_do_aluno',{p_email:email});
+  ALU.det[email]=error?{erro:'Não consegui carregar o detalhe: '+error.message}:{linhas:data||[]};
+  if(ALU.aberto===email)alRender();
+}
+/* O detalhe e' a trilha DELE, nao a lista do que ele clicou. Mostrar so'
+   o aberto responde "ele estudou?" e esconde a pergunta seguinte, que e'
+   a util: "parou onde?". Por isso cada fase liberada sai inteira, com a
+   aula nao aberta em cinza. */
+function alDetalheHTML(email){
+  const d=ALU.det[email];
+  if(!d)return'<div class="adm-empty">Carregando…</div>';
+  if(d.erro)return'<div class="adm-empty">'+esc(d.erro)+'</div>';
+  const row=ALU.linhas.find(x=>x.email===email)||{};
+  const porChave={};(d.linhas||[]).forEach(r=>{porChave[r.chave]=r;});
+  const usados={};
+  const item=(nome,r,cinza)=>
+    `<div style="display:flex;gap:8px;align-items:baseline;padding:3px 0;font-size:11.5px;color:${cinza?'#5a5a5a':'var(--text-secondary)'};">
+       <span style="color:${cinza?'#444':'#10B981'};">${cinza?'○':'●'}</span>
+       <span style="flex:1;">${esc(nome)}</span>
+       <span style="color:var(--text-muted);font-size:10.5px;white-space:nowrap;">${r?alData(r.aberto_em):'não abriu'}</span>
+     </div>`;
+  let h='';
+  const fs=(row.fases||[]);
+  if(!fs.length)h+='<div style="font-size:11.5px;color:var(--text-muted);margin-bottom:8px;">Nenhuma fase liberada para esta conta.</div>';
+  fs.forEach(n=>{
+    const m=M[n-1];if(!m)return;
+    const as=aulasDaFase(n-1), ap=apoioDaFase(n-1);
+    const abertas=as.filter(f=>porChave[chaveMat(f)]).length;
+    h+=`<div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--accent);margin:10px 0 4px;">
+          ${esc(m.t)} <span style="color:var(--text-muted);font-weight:500;letter-spacing:0;text-transform:none;">— ${abertas} de ${as.length} aulas</span>
+        </div>`;
+    if(!as.length)h+='<div style="font-size:11px;color:var(--text-muted);padding:2px 0;">Nenhuma aula publicada nesta fase ainda.</div>';
+    as.forEach(f=>{
+      const k=chaveMat(f), r=porChave[k];
+      if(r)usados[k]=1;
+      h+=item(f.name||k,r,!r);
+    });
+    const apAb=ap.filter(f=>porChave[chaveMat(f)]);
+    if(apAb.length){
+      h+=`<div style="font-size:10.5px;color:var(--text-muted);margin:5px 0 2px;">Material de apoio baixado (${apAb.length} de ${ap.length})</div>`;
+      apAb.forEach(f=>{const k=chaveMat(f);usados[k]=1;h+=item(f.name||k,porChave[k],false);});
+    }
+  });
+  /* Sobra: material Geral, material de fase que ele nao tem (comprou,
+     abriu, depois o plano mudou) e registro cujo material foi
+     despublicado. Nenhum dos tres cabe na trilha acima, e apagar seria
+     reescrever o que ele estudou. */
+  const resto=(d.linhas||[]).filter(r=>!usados[r.chave]);
+  if(resto.length){
+    h+=`<div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);margin:12px 0 4px;">Fora da trilha atual</div>`;
+    resto.forEach(r=>{
+      const et=r.existe?faseLabel(r.fase_id):'material removido';
+      h+=`<div style="display:flex;gap:8px;align-items:baseline;padding:3px 0;font-size:11.5px;color:var(--text-secondary);">
+            <span style="color:#10B981;">●</span>
+            <span style="flex:1;">${esc(r.nome||r.chave)} <span style="color:var(--text-muted);font-size:10.5px;">· ${esc(et)}</span></span>
+            <span style="color:var(--text-muted);font-size:10.5px;white-space:nowrap;">${alData(r.aberto_em)}</span>
+          </div>`;
+    });
+  }
+  if(!h)h='<div style="font-size:11.5px;color:var(--text-muted);">Nada aberto ainda.</div>';
+  return h;
 }
 
 async function admAddMaterial(){

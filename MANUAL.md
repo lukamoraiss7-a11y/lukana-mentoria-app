@@ -66,6 +66,29 @@ computador da fábrica e depois entra pelo celular vê a barra voltar a zero.
 Quando a tabela entra, o que já estava no navegador **soma** com o que está no servidor —
 não substitui. Ninguém perde o que já leu.
 
+### 1-D. Rodar o `acompanhamento-do-aluno.sql` — ⬜ **PENDENTE**
+
+Supabase → **SQL Editor** → **New query** → colar o arquivo inteiro → **Run**.
+Pode rodar de novo quantas vezes quiser: só cria/substitui funções e acrescenta uma
+coluna. Não apaga conta, não apaga andamento, não mexe em fase nem em senha.
+
+É o que liga a aba **Alunos** do painel. Sem ele a aba abre e diz, com todas as letras,
+que falta rodar este arquivo — nada mais no app muda.
+
+**Por que precisou de SQL para ver um dado que já existia.** O andamento é gravado desde
+20/08 na `public.progresso`, e as três políticas daquela tabela são `auth.uid() =
+user_id`. Isso tranca o aluno fora da linha do vizinho — que é o certo — e tranca **você**
+fora de todas. Afrouxar a política com um `or admin` abriria a tabela inteira à leitura
+direta pela chave publicável, e bastaria a flag `admin` vazar uma vez para o andamento da
+turma sair junto. O caminho é o mesmo que o painel já usa para liberar acesso e definir
+senha: função `security definer` que confere quem chamou antes de devolver qualquer linha.
+
+O arquivo também acrescenta a coluna `progresso.visto_em`, que o app passa a gravar toda
+vez que a área de membros abre. Ela existe porque `last_sign_in_at` marca o **login**, não
+o uso: o Supabase renova o token sozinho, então quem entrou uma vez e estuda toda semana
+apareceria parado desde o dia do cadastro. Enquanto a coluna estiver vazia a lista cai de
+volta no login e na data da última aula aberta — nada fica em branco no meio.
+
 ### 2. Configurar o SMTP (uma vez, 10 minutos) — **deixou de ser bloqueio**
 
 O serviço de e-mail embutido do Supabase entrega **2 mensagens por hora no projeto
@@ -221,6 +244,42 @@ Material que você cadastrar como **Geral** aparece para todo aluno, tenha ele q
 fase. Use isso para recado e documento que vale para a turma inteira.
 
 Você (admin) vê todas as fases sempre, mesmo com a lista vazia.
+
+### Ver quem entrou e o que cada um abriu
+
+Menu lateral → **Admin** → aba **Alunos**.
+
+Quatro números no topo: quantos mentorados, quantos entraram nos últimos 7 dias, quantos
+estão parados há mais de 14 e quantos **nunca** entraram. Sua conta de admin aparece na
+lista mas fica fora dessa contagem — ela não é mentorado e distorceria o número da turma.
+
+Cada linha traz o último acesso em palavra e em data ("há 3 dias · 18/08/2026 14:02"),
+com uma faixa colorida na borda: verde até 7 dias, amarelo até 14, laranja até 30,
+vermelho acima disso **e também para quem nunca entrou** — conta aberta e nunca usada é o
+caso que mais custa numa primeira turma.
+
+A lista vem ordenada com os parados no topo, porque é uma fila de trabalho, não um
+ranking. O botão **Ordem** inverte para os mais recentes primeiro.
+
+**O que abriu** abre a trilha daquele aluno, fase por fase, com a aula aberta em verde e a
+data, e a aula que ele ainda não abriu em cinza com "não abriu". É essa segunda metade que
+responde a pergunta útil — não "ele estudou?", mas "parou onde?".
+
+Três avisos sobre o que você vai ler ali:
+
+- **Aula e material de apoio são contas separadas.** Planilha, contrato e formulário
+  entram como "material de apoio baixado", nunca na fração de aulas. Contrato e ata estão
+  gravados como `html` desde o começo, e sem essa separação a Operação marcaria progresso
+  porque o aluno baixou o contrato de CLT.
+- **"Fora da trilha atual"** é o que ele abriu e não cabe mais na trilha dele: material
+  Geral, material de uma fase que ele tinha e não tem mais, e material que foi
+  despublicado depois. Fica visível de propósito — apagar seria reescrever o que ele
+  estudou.
+- **Fase sem módulo escrito aparece com "nenhuma aula publicada nesta fase ainda"** e não
+  infla o denominador. Hoje é o caso de Comercial e Operação.
+
+O botão **Acesso** ao lado leva para a aba Acessos com o e-mail já carregado, para você
+liberar uma fase sem procurar a pessoa de novo.
 
 ### Incluir ou tirar um arquivo de uma fase
 
